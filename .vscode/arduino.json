@@ -1,0 +1,7 @@
+{
+    "configuration": "bootloader=uart0,pinout=standard,eeprom=keep,baudrate=default,variant=modelP,BOD=4v3,LTO=Os_flto,clock=20MHz_external",
+    "board": "MightyCore:avr:1284",
+    "port": "COM7",
+    "sketch": "hexapod.ino",
+    "output": "../build"
+}
