@@ -2,52 +2,45 @@
 
 #include <stdint.h>
 
-enum EClusters
-{
-	GENERAL = 0U,
-	IMU = 1U,
+enum EClusters {
+	GENERAL   = 0U,
+	IMU       = 1U,
 	PROXIMITY = 2U,
-	SERVO = 3U,
-	BATTERY = 4U,
-	BODY = 5U
+	SERVO     = 3U,
+	BATTERY   = 4U,
+	BODY      = 5U
 };
 
 static const uint8_t NB_CLUSTERS = 6U;
 
-enum EClusterCommandGeneric
-{
+enum EClusterCommandGeneric {
 	GENERIC = 0xFFU
 };
 
-enum EGeneralCommands
-{
+enum EGeneralCommands {
 	VERSION,
 	INSTANT_EXECUTION_TIME,
 	MAX_EXECUTION_TIME,
 	RESET_EXECUTION_TIME
 };
 
-enum EBatteryCommands
-{
+enum EBatteryCommands {
 	GET_VOLTAGE = 0x00U,
 	GET_BAT_STATUS,
 };
 
-enum EBodyCommands
-{
+enum EBodyCommands {
 	SET_LEG_X_Y_Z = 0,
 };
 
-enum EImuCommands
-{
+enum EImuCommands {
 	ALL,
 	ACC,
 	GYR,
 	MAG,
 	TMP
 };
-enum EServoCommands
-{
+enum EServoCommands {
 	GET_ALL = 0,
 	GET_ANGLE,
 	SET_ANGLE,
@@ -64,8 +57,7 @@ enum EServoCommands
 	SAVE,
 };
 
-enum EProximityCommands
-{
+enum EProximityCommands {
 	US_LEFT,
 	US_RIGHT,
 	LASER,

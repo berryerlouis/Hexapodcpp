@@ -4,21 +4,21 @@
 
 class Led {
 public:
-  enum LedState {
-    ON = 0,
-    OFF
-  };
+	enum LedState {
+		ON = 0,
+		OFF
+	};
 
-  Led(const uint8_t gpio);
-  ~Led() = default;
+	Led(const uint8_t gpio);
+	~Led() = default;
 
 
-  bool On();
-  bool Off();
-  bool Toggle();
-  LedState Get() const;
+	bool On();
+	bool Off();
+	bool Toggle();
+	LedState Get() const;
 
 private:
-  const uint8_t mIo;
-  LedState mState;
+	const uint8_t mIo;
+	LedState mState;
 };
