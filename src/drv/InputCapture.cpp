@@ -1,49 +1,57 @@
+#include "Isr.h"
 #include "InputCapture.h"
-static InputCapture *inputCapture[2U]  = {};
-static uint8_t       inputCaptureIndex = 0;
+#include "Tick.h"
 
-InputCapture::InputCapture(const uint8_t gpio)
-	: mIo(gpio)
+static InputCapture *inputCapture[2U]  = {};
+static uint8_t       inputCaptureIndex = 0U;
+
+InputCapture::InputCapture(const SGpio &gpio)
+	: mGpio(Gpio(gpio, EPortDirection::IN) )
 	, mState(false)
-	, mStartTime(0)
-	, mDelay(0) {
+	, mStartTime(0UL)
+	, mDelay(0UL)
+{
 }
 
-void InputCapture::Initialize (void) {
-	pinMode(this->mIo, INPUT_PULLUP);
-	PCICR  |= (1 << PCIE0);
-	PCMSK0 |= (1 << (this->mIo - 24U));
+void InputCapture::Initialize (void)
+{
+	PCICR  |= (1U << PCIE0);
+	PCMSK0 |= (1U << (this->mGpio.GetPin() ) );
 	inputCapture[inputCaptureIndex] = this;
 	inputCaptureIndex++;
 }
 
-void InputCapture::Update (const uint32_t currentTime) {
+void InputCapture::Update (const uint32_t currentTime)
+{
+	(void) currentTime;
 }
 
-uint64_t InputCapture::GetInputCaptureTime (void) {
-	return(this->mDelay);
+uint64_t InputCapture::GetInputCaptureTime (void)
+{
+	return (this->mDelay);
 }
 
-void InputCapture::EdgeChange (void) {
-	int state = digitalRead(this->mIo);
+void InputCapture::EdgeChange (void)
+{
+	int state = this->mGpio.Get();
 
-	if (state != this->mState && state == true) {
-		this->mStartTime = micros();
+	if (state != this->mState && state == true)
+	{
+		this->mStartTime = MyTick.GetUs();
 	}
-	else if (state != this->mState && state == false) {
-		this->mDelay = micros() - this->mStartTime;
+	else if (state != this->mState && state == false)
+	{
+		this->mDelay = MyTick.GetUs() - this->mStartTime;
 	}
 	this->mState = state;
 }
 
-ISR(PCINT0_vect) {
-	uint8_t oldSREG = SREG;
-
-	cli();
-
-	for (size_t i = 0; i < inputCaptureIndex; i++) {
+ISR(PCINT0_vect)
+{
+	ISR_EMBEDDED_CODE(
+		for ( size_t i = 0U; i < inputCaptureIndex; i++ )
+	{
 		inputCapture[i]->EdgeChange();
 	}
-
-	SREG = oldSREG;
+		);
 }

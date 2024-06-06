@@ -1,16 +1,36 @@
 #include "Adc.h"
+#include "Isr.h"
 
-Adc::Adc(const uint8_t gpio)
-	: mIo(gpio) {
+volatile uint16_t Adc::sAdcValue = 0U;
+
+Adc::Adc(const SGpio & gpio)
+	: mGpio(Gpio(gpio, EPortDirection::IN) )
+{
 }
 
-void Adc::Initialize (void) {
-	pinMode(this->mIo, INPUT);
+void Adc::Initialize (void)
+{
+	ADMUX  = (1 << REFS0) | (1 << REFS1);
+	ADCSRA = (1 << ADEN) | (1 << ADPS0) | (1 << ADPS1) | (1 << ADIE);
+	ADMUX  = ( (ADMUX & 0xE0U) | (uint8_t) this->mGpio.GetPin() );
 }
 
-void Adc::Update (const uint32_t currentTime) {
+void Adc::Update (const uint32_t currentTime)
+{
+	(void) currentTime;
 }
 
-uint16_t Adc::Read () {
-	return((uint16_t)(100.0 * ADC_VOLT(analogRead(this->mIo) / BRIDGE_DIVIDER)));
+void Adc::StartConversion (void)
+{
+	ADCSRA |= (1U << ADSC);
+}
+
+uint16_t Adc::Read ()
+{
+	return ( (uint16_t) (100.0 * ADC_VOLT(Adc::sAdcValue / BRIDGE_DIVIDER) ) );
+}
+
+ISR(ADC_vect)
+{
+	ISR_EMBEDDED_CODE(Adc::sAdcValue = ADC; );
 }

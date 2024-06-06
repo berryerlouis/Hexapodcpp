@@ -6,18 +6,21 @@
 
 class ClusterImu : public Cluster {
 public:
-	ClusterImu(Mpu9150&mpu9150)
+	ClusterImu(Mpu9150 &mpu9150)
 		: Cluster(IMU)
-		, mMpu9150(mpu9150) {
+		, mMpu9150(mpu9150)
+	{
 	}
 
 	~ClusterImu() = default;
 
 
-	bool Execute (Frame&request, Frame&response) final override {
+	bool Execute (Frame &request, Frame &response) final override
+	{
 		bool success = false;
 
-		switch ((EImuCommands)request.commandId) {
+		switch ( (EImuCommands) request.commandId)
+		{
 		case EImuCommands::ALL:
 			success = mMpu9150.BuildFrameAll(response);
 			break;
@@ -41,9 +44,9 @@ public:
 		default:
 			break;
 		}
-		return(success);
+		return (success);
 	}
 
 private:
-	Mpu9150&mMpu9150;
+	Mpu9150 &mMpu9150;
 };

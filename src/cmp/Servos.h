@@ -6,7 +6,7 @@
 static const uint8_t NB_SERVOS = 18U;
 class Servos {
 public:
-	Servos(Pca9685&pca9685_0, Pca9685&pca9685_1);
+	Servos(Pca9685 &pca9685_0, Pca9685 &pca9685_1);
 	~Servos() = default;
 
 	void Initialize(void);
@@ -15,13 +15,13 @@ public:
 	Servo&GetServo(const uint8_t servoId);
 	Pca9685&GetPca9685(const uint8_t pca9685Id);
 
-	bool BuildFrameAllAngle(Frame&response);
-	bool BuildFrameAngle(uint8_t servoId, Frame&response);
-	bool BuildFrameMinAngle(uint8_t servoId, Frame&response);
-	bool BuildFrameMaxAngle(uint8_t servoId, Frame&response);
-	bool BuildFrameOffset(uint8_t servoId, Frame&response);
-	bool BuildFrameState(uint8_t servoId, Frame&response);
-	bool BuildFrameReverse(uint8_t servoId, Frame&response);
+	bool BuildFrameAllAngle(Frame &response);
+	bool BuildFrameAngle(uint8_t servoId, Frame &response);
+	bool BuildFrameMinAngle(uint8_t servoId, Frame &response);
+	bool BuildFrameMaxAngle(uint8_t servoId, Frame &response);
+	bool BuildFrameOffset(uint8_t servoId, Frame &response);
+	bool BuildFrameState(uint8_t servoId, Frame &response);
+	bool BuildFrameReverse(uint8_t servoId, Frame &response);
 
 private:
 	Servo mServo0;
@@ -43,6 +43,6 @@ private:
 	Servo mServo16;
 	Servo mServo17;
 	Servo *mServos[NB_SERVOS];
-	Pca9685&mPca9685Left;
-	Pca9685&mPca9685Right;
+	Pca9685 &mPca9685Left;
+	Pca9685 &mPca9685Right;
 };

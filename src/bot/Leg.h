@@ -21,18 +21,21 @@ public:
 	static constexpr float TIBIA_LENGTH = 12.70;
 
 
-	struct Position3d {
+	struct Position3d
+	{
 		float x;
 		float y;
 		float z;
 	};
-	struct Rotation3d {
+	struct Rotation3d
+	{
 		float angleX;
 		float angleY;
 		float angleZ;
 	};
 
-	struct SLegIk {
+	struct SLegIk
+	{
 		Position3d newFootPos;
 		float      coxaFootDist;
 		float      iksw;
@@ -45,11 +48,11 @@ public:
 	};
 
 
-	Leg(ELeg legId, Servo&coxa, Servo&femur, Servo&tibia);
+	Leg(ELeg legId, Servo &coxa, Servo &femur, Servo &tibia);
 	~Leg() = default;
 
 
-	void SetLegIk(const Leg::Position3d&position, const Leg::Position3d&bodyIk, const uint16_t travelTime);
+	void SetLegIk(const Leg::Position3d &position, const Leg::Position3d &bodyIk, const uint16_t travelTime);
 
 public:
 	float mBodyCenterOffsetX;
@@ -59,7 +62,7 @@ public:
 
 private:
 	ELeg mLegId;
-	Servo&mCoxa;
-	Servo&mFemur;
-	Servo&mTibia;
+	Servo &mCoxa;
+	Servo &mFemur;
+	Servo &mTibia;
 };

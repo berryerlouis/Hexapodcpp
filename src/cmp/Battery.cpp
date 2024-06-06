@@ -5,31 +5,39 @@
 #define NOMINAL_LEVEL    80U
 #define WARNING_LEVEL    75U
 
-Battery::Battery(const uint8_t gpio)
+Battery::Battery(const SGpio &gpio)
 	: mVoltage(0)
 	, mState(BatteryState::UNKNOWN)
 	, mOldState(BatteryState::UNKNOWN)
-	, mAdc(gpio) {
+	, mAdc(gpio)
+{
 }
 
-void Battery::Initialize (void) {
+void Battery::Initialize (void)
+{
 	this->mAdc.Initialize();
 }
 
-void Battery::Update (const uint32_t currentTime) {
+void Battery::Update (const uint32_t currentTime)
+{
+	(void) currentTime;
 	this->mVoltage = this->mAdc.Read();
 
-	if (this->mVoltage >= NOMINAL_LEVEL) {
+	if (this->mVoltage >= NOMINAL_LEVEL)
+	{
 		this->mState = NOMINAL;
 	}
-	else if (this->mVoltage >= WARNING_LEVEL) {
+	else if (this->mVoltage >= WARNING_LEVEL)
+	{
 		this->mState = WARNING;
 	}
-	else{
+	else
+	{
 		this->mState = CRITICAL;
 	}
 
-	if (this->mOldState != this->mState) {
+	if (this->mOldState != this->mState)
+	{
 		Frame response;
 		BuildFrameState(response);
 		Communication::Send(response);
@@ -37,32 +45,36 @@ void Battery::Update (const uint32_t currentTime) {
 	this->mOldState = this->mState;
 }
 
-Battery::BatteryState Battery::GetState (void) {
-	return(this->mState);
+Battery::BatteryState Battery::GetState (void)
+{
+	return (this->mState);
 }
 
-uint16_t Battery::GetVoltage (void) {
-	return(this->mVoltage);
+uint16_t Battery::GetVoltage (void)
+{
+	return (this->mVoltage);
 }
 
-bool Battery::BuildFrameVoltage (Frame&response) {
+bool Battery::BuildFrameVoltage (Frame &response)
+{
 	uint16_t volt     = GetVoltage();
-	uint8_t  params[] = { (uint8_t)(volt >> 8U), (uint8_t)volt };
+	uint8_t  params[] = { (uint8_t) (volt >> 8U), (uint8_t) volt };
 
-	return(response.Build(
-				 EClusters::BATTERY,
-				 EBatteryCommands::GET_VOLTAGE,
-				 params,
-				 2U));
+	return (response.Build(
+				  EClusters::BATTERY,
+				  EBatteryCommands::GET_VOLTAGE,
+				  params,
+				  2U) );
 }
 
-bool Battery::BuildFrameState (Frame&response) {
+bool Battery::BuildFrameState (Frame &response)
+{
 	uint16_t volt     = GetVoltage();
-	uint8_t  params[] = { GetState(), (uint8_t)(volt >> 8U), (uint8_t)volt };
+	uint8_t  params[] = { GetState(), (uint8_t) (volt >> 8U), (uint8_t) volt };
 
-	return(response.Build(
-				 EClusters::BATTERY,
-				 EBatteryCommands::GET_BAT_STATUS,
-				 params,
-				 3U));
+	return (response.Build(
+				  EClusters::BATTERY,
+				  EBatteryCommands::GET_BAT_STATUS,
+				  params,
+				  3U) );
 }

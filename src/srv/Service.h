@@ -6,7 +6,8 @@ class Service : public ServiceInterface {
 public:
 	Service(uint32_t updateTime)
 		: mUpdateTime(updateTime)
-		, mPreviousTime(0UL) {
+		, mPreviousTime(0UL)
+	{
 	}
 
 	~Service() = default;
@@ -15,11 +16,13 @@ public:
 	virtual void Update(const uint32_t currentTime) = 0;
 
 
-	bool IsTimeToUpdate (const uint32_t currentTime) const {
-		return((currentTime - this->mPreviousTime) >= this->mUpdateTime);
+	bool IsTimeToUpdate (const uint32_t currentTime) const
+	{
+		return ( (currentTime - this->mPreviousTime) >= this->mUpdateTime);
 	}
 
-	void SetNewUpdateTime (const uint32_t currentTime) {
+	void SetNewUpdateTime (const uint32_t currentTime)
+	{
 		this->mPreviousTime = currentTime;
 	}
 
