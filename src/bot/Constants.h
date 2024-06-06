@@ -2,7 +2,8 @@
 
 #include <stdint.h>
 
-enum ELeg {
+enum ELeg
+{
 	FRONT_LEFT = 0x00,
 	MIDDLE_LEFT,
 	REAR_LEFT,

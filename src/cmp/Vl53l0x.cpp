@@ -1,27 +1,31 @@
 #include "Vl53l0x.h"
+#include "../drv/Tick.h"
 
-#define decodeVcselPeriod(reg_val)             (((reg_val) + 1) << 1)
-#define encodeVcselPeriod(period_pclks)        (((period_pclks) >> 1) - 1)
-#define calcMacroPeriod(vcsel_period_pclks)    ((((uint32_t)2304 * (vcsel_period_pclks) * 1655) + 500) / 1000)
+#define decodeVcselPeriod(reg_val)             ( ( (reg_val) + 1) << 1)
+#define encodeVcselPeriod(period_pclks)        ( ( (period_pclks) >> 1) - 1)
+#define calcMacroPeriod(vcsel_period_pclks)    ( ( ( (uint32_t) 2304 * (vcsel_period_pclks) * 1655) + 500) / 1000)
 
 
-Vl53l0x::Vl53l0x(Twi&i2c, const uint8_t address)
+Vl53l0x::Vl53l0x(Twi &i2c, const uint8_t address)
 	: mI2c(i2c)
 	, mAddress(address)
 	, mDistance(0)
 	, mThreshold(DISTANCE_THRESHOLD)
 	, mMeasurementTimingBudget(0U)
-	, mStop(0U) {
+	, mStop(0U)
+{
 }
 
-void Vl53l0x::Initialize (void) {
+void Vl53l0x::Initialize (void)
+{
 	uint8_t data = 0;
 
 	this->mI2c.ReadRegister(this->mAddress, VL53L0X_IDENTIFICATION_MODEL_ID, data);
 
-	if (data == 0xEE) {
+	if (data == 0xEE)
+	{
 		this->mI2c.ReadRegister(this->mAddress, VL53L0X_VHV_CONFIG_PAD_SCL_SDA_EXTSUP_HV, data);
-		this->mI2c.WriteRegister(this->mAddress, VL53L0X_VHV_CONFIG_PAD_SCL_SDA_EXTSUP_HV, data | 0x01);          // set bit 0
+		this->mI2c.WriteRegister(this->mAddress, VL53L0X_VHV_CONFIG_PAD_SCL_SDA_EXTSUP_HV, data | 0x01);
 
 		// "Set I2C standard mode"
 		this->mI2c.WriteRegister(this->mAddress, 0x88, 0x00);
@@ -47,7 +51,8 @@ void Vl53l0x::Initialize (void) {
 		uint8_t spad_count;
 		bool    spad_type_is_aperture;
 
-		if (this->GetSpadInfo(&spad_count, &spad_type_is_aperture)) {
+		if (this->GetSpadInfo(&spad_count, &spad_type_is_aperture) )
+		{
 			// The SPAD map (RefGoodSpadMap) is read by VL53L0X_get_info_from_device() in
 			// the API, but the same data seems to be more easily readable from
 			// GLOBAL_CONFIG_SPAD_ENABLES_REF_0 through _6, so read it from there
@@ -62,16 +67,19 @@ void Vl53l0x::Initialize (void) {
 			this->mI2c.WriteRegister(this->mAddress, 0xFF, 0x00);
 			this->mI2c.WriteRegister(this->mAddress, VL53L0X_GLOBAL_CONFIG_REF_EN_START_SELECT, 0xB4);
 
-			uint8_t first_spad_to_enable = spad_type_is_aperture ? 12 : 0;               // 12 is the first aperture spad
-			uint8_t spads_enabled        = 0;
+			uint8_t first_spad_to_enable = spad_type_is_aperture ? 12 : 0;
+			uint8_t spads_enabled        = 0U;
 
-			for (uint8_t i = 0; i < 48; i++) {
-				if (i < first_spad_to_enable || spads_enabled == spad_count) {
+			for ( size_t i = 0U; i < 48U; i++ )
+			{
+				if (i < first_spad_to_enable || spads_enabled == spad_count)
+				{
 					// This bit is lower than the first one that should be enabled, or
 					// (reference_spad_count) bits have already been enabled, so zero this bit
-					ref_spad_map[i / 8] &= ~(1 << (i % 8));
+					ref_spad_map[i / 8] &= ~(1 << (i % 8) );
 				}
-				else if ((ref_spad_map[i / 8] >> (i % 8)) & 0x1) {
+				else if ( (ref_spad_map[i / 8] >> (i % 8) ) & 0x1)
+				{
 					spads_enabled++;
 				}
 			}
@@ -83,7 +91,7 @@ void Vl53l0x::Initialize (void) {
 			// "Set interrupt config to new sample ready"
 			this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSTEM_INTERRUPT_CONFIG_GPIO, 0x04);
 			this->mI2c.ReadRegister(this->mAddress, VL53L0X_GPIO_HV_MUX_ACTIVE_HIGH, data);
-			this->mI2c.WriteRegister(this->mAddress, VL53L0X_GPIO_HV_MUX_ACTIVE_HIGH, data & ~0x10);               // active low
+			this->mI2c.WriteRegister(this->mAddress, VL53L0X_GPIO_HV_MUX_ACTIVE_HIGH, data & ~0x10);
 			this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSTEM_INTERRUPT_CLEAR, 0x01);
 
 
@@ -95,10 +103,12 @@ void Vl53l0x::Initialize (void) {
 			this->SetMeasurementTimingBudget(this->mMeasurementTimingBudget);
 			this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSTEM_SEQUENCE_CONFIG, 0x01);
 
-			if (this->PerformSingleRefCalibration(0x40) == true) {
+			if (this->PerformSingleRefCalibration(0x40) == true)
+			{
 				this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSTEM_SEQUENCE_CONFIG, 0x02);
 
-				if (this->PerformSingleRefCalibration(0x00) == true) {
+				if (this->PerformSingleRefCalibration(0x00) == true)
+				{
 					// "restore the previous Sequence Config"
 					this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSTEM_SEQUENCE_CONFIG, 0xE8);
 					this->SetVcselPulsePeriod(VcselPeriodPreRange, 18);
@@ -111,31 +121,38 @@ void Vl53l0x::Initialize (void) {
 	}
 } // Vl53l0x::Initialize
 
-void Vl53l0x::Update (const uint32_t currentTime) {
+void Vl53l0x::Update (const uint32_t currentTime)
+{
+	(void) currentTime;
 }
 
-bool Vl53l0x::IsDetecting (void) {
-	return(this->mDistance != 0U && this->mDistance <= this->mThreshold);
+bool Vl53l0x::IsDetecting (void)
+{
+	return (this->mDistance != 0U && this->mDistance <= this->mThreshold);
 }
 
-bool Vl53l0x::SetThreshold (uint16_t mThreshold) {
+bool Vl53l0x::SetThreshold (uint16_t mThreshold)
+{
 	this->mThreshold = mThreshold;
-	return(true);
+	return (true);
 }
 
-uint16_t Vl53l0x::GetDistance (void) {
+uint16_t Vl53l0x::GetDistance (void)
+{
 	uint8_t data = 0U;
 
 	this->mI2c.ReadRegister(this->mAddress, VL53L0X_RESULT_INTERRUPT_STATUS, data);
 
-	if ((data & 0x07) != 0U) {
+	if ( (data & 0x07) != 0U)
+	{
 		this->mI2c.ReadRegister16Bits(this->mAddress, VL53L0X_RESULT_RANGE_STATUS + 10, this->mDistance);
 		this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSTEM_INTERRUPT_CLEAR, 0x01);
 	}
-	return(this->mDistance);
+	return (this->mDistance);
 }
 
-void Vl53l0x::StartContinuous (uint32_t period_ms) {
+void Vl53l0x::StartContinuous (uint32_t period_ms)
+{
 	this->mI2c.WriteRegister(this->mAddress, 0x80, 0x01);
 	this->mI2c.WriteRegister(this->mAddress, 0xFF, 0x01);
 	this->mI2c.WriteRegister(this->mAddress, 0x00, 0x00);
@@ -144,27 +161,31 @@ void Vl53l0x::StartContinuous (uint32_t period_ms) {
 	this->mI2c.WriteRegister(this->mAddress, 0xFF, 0x00);
 	this->mI2c.WriteRegister(this->mAddress, 0x80, 0x00);
 
-	if (period_ms == 0) {
+	if (period_ms == 0)
+	{
 		// continuous timed mode
 
 		uint16_t osc_calibrate_val = 0U;
 		this->mI2c.ReadRegister16Bits(this->mAddress, VL53L0X_OSC_CALIBRATE_VAL, osc_calibrate_val);
 
-		if (osc_calibrate_val != 0) {
+		if (osc_calibrate_val != 0)
+		{
 			period_ms *= osc_calibrate_val;
 		}
 		this->mI2c.WriteRegister32Bits(this->mAddress, VL53L0X_SYSTEM_INTERMEASUREMENT_PERIOD, period_ms);
 
 
-		this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSRANGE_START, 0x04);          // VL53L0X_REG_SYSRANGE_MODE_TIMED
+		this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSRANGE_START, 0x04);
 	}
-	else{
+	else
+	{
 		// continuous back-to-back mode
-		this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSRANGE_START, 0x02);          // VL53L0X_REG_SYSRANGE_MODE_BACKTOBACK
+		this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSRANGE_START, 0x02);
 	}
 }
 
-bool Vl53l0x::SetMeasurementTimingBudget (uint32_t budget_us) {
+bool Vl53l0x::SetMeasurementTimingBudget (uint32_t budget_us)
+{
 	SequenceStepEnables  enables;
 	SequenceStepTimeouts timeouts;
 
@@ -178,52 +199,61 @@ bool Vl53l0x::SetMeasurementTimingBudget (uint32_t budget_us) {
 
 	uint32_t const MinTimingBudget = 20000;
 
-	if (budget_us < MinTimingBudget) {
-		return(false);
+	if (budget_us < MinTimingBudget)
+	{
+		return (false);
 	}
 	uint32_t used_budget_us = StartOverhead + EndOverhead;
 
 	this->GetSequenceStepEnables(&enables);
 	this->GetSequenceStepTimeouts(&enables, &timeouts);
 
-	if (enables.tcc) {
+	if (enables.tcc)
+	{
 		used_budget_us += (timeouts.msrc_dss_tcc_us + TccOverhead);
 	}
 
-	if (enables.dss) {
+	if (enables.dss)
+	{
 		used_budget_us += 2 * (timeouts.msrc_dss_tcc_us + DssOverhead);
 	}
-	else if (enables.msrc) {
+	else if (enables.msrc)
+	{
 		used_budget_us += (timeouts.msrc_dss_tcc_us + MsrcOverhead);
 	}
 
-	if (enables.pre_range) {
+	if (enables.pre_range)
+	{
 		used_budget_us += (timeouts.pre_range_us + PreRangeOverhead);
 	}
 
-	if (enables.final_range) {
+	if (enables.final_range)
+	{
 		used_budget_us += FinalRangeOverhead;
 
-		if (used_budget_us > budget_us) {
+		if (used_budget_us > budget_us)
+		{
 			// "Requested timeout too big."
-			return(false);
+			return (false);
 		}
 		uint32_t final_range_timeout_us    = budget_us - used_budget_us;
 		uint32_t final_range_timeout_mclks = this->TimeoutMicrosecondsToMclks(final_range_timeout_us,
 																									 timeouts.final_range_vcsel_period_pclks);
 
-		if (enables.pre_range) {
+		if (enables.pre_range)
+		{
 			final_range_timeout_mclks += timeouts.pre_range_mclks;
 		}
 		uint16_t data16 = this->EncodeTimeout(final_range_timeout_mclks);
 		this->mI2c.WriteRegister16Bits(this->mAddress, VL53L0X_FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI, data16);
 
-		this->mMeasurementTimingBudget = budget_us;          // store for internal reuse
+		this->mMeasurementTimingBudget = budget_us;
 	}
-	return(true);
+	return (true);
 } // Vl53l0x::SetMeasurementTimingBudget
 
-uint32_t Vl53l0x::GetMeasurementTimingBudget (void) {
+uint32_t Vl53l0x::GetMeasurementTimingBudget (void)
+{
 	SequenceStepEnables  enables;
 	SequenceStepTimeouts timeouts;
 
@@ -241,29 +271,35 @@ uint32_t Vl53l0x::GetMeasurementTimingBudget (void) {
 	this->GetSequenceStepEnables(&enables);
 	this->GetSequenceStepTimeouts(&enables, &timeouts);
 
-	if (enables.tcc) {
+	if (enables.tcc)
+	{
 		budget_us += (timeouts.msrc_dss_tcc_us + TccOverhead);
 	}
 
-	if (enables.dss) {
+	if (enables.dss)
+	{
 		budget_us += 2 * (timeouts.msrc_dss_tcc_us + DssOverhead);
 	}
-	else if (enables.msrc) {
+	else if (enables.msrc)
+	{
 		budget_us += (timeouts.msrc_dss_tcc_us + MsrcOverhead);
 	}
 
-	if (enables.pre_range) {
+	if (enables.pre_range)
+	{
 		budget_us += (timeouts.pre_range_us + PreRangeOverhead);
 	}
 
-	if (enables.final_range) {
+	if (enables.final_range)
+	{
 		budget_us += (timeouts.final_range_us + FinalRangeOverhead);
 	}
-	this->mMeasurementTimingBudget = budget_us;            // store for internal reuse
-	return(budget_us);
+	this->mMeasurementTimingBudget = budget_us;
+	return (budget_us);
 } // Vl53l0x::GetMeasurementTimingBudget
 
-bool Vl53l0x::GetSpadInfo (uint8_t *count, bool *type_is_aperture) {
+bool Vl53l0x::GetSpadInfo (uint8_t *count, bool *type_is_aperture)
+{
 	uint8_t data = 0U;
 
 	this->mI2c.WriteRegister(this->mAddress, 0x80, 0x01);
@@ -282,13 +318,15 @@ bool Vl53l0x::GetSpadInfo (uint8_t *count, bool *type_is_aperture) {
 	this->mI2c.WriteRegister(this->mAddress, 0x83, 0x00);
 
 	data = 0U;
-	uint32_t timeout = millis();
+	uint32_t timeout = MyTick.GetMs();
 
-	do{
+	do
+	{
 		this->mI2c.ReadRegister(this->mAddress, 0x83, data);
 
-		if (((uint32_t)(millis() - timeout) > 50)) {
-			return(false);
+		if ( ( (uint32_t) (MyTick.GetMs() - timeout) > 50) )
+		{
+			return (false);
 		}
 	} while (data == 0);
 
@@ -309,10 +347,11 @@ bool Vl53l0x::GetSpadInfo (uint8_t *count, bool *type_is_aperture) {
 	this->mI2c.WriteRegister(this->mAddress, 0xFF, 0x00);
 	this->mI2c.WriteRegister(this->mAddress, 0x80, 0x00);
 
-	return(true);
+	return (true);
 } // Vl53l0x::GetSpadInfo
 
-void Vl53l0x::GetSequenceStepEnables (SequenceStepEnables *enables) {
+void Vl53l0x::GetSequenceStepEnables (SequenceStepEnables *enables)
+{
 	uint8_t sequence_config = 0U;
 
 	this->mI2c.ReadRegister(this->mAddress, VL53L0X_SYSTEM_SEQUENCE_CONFIG, sequence_config);
@@ -324,7 +363,8 @@ void Vl53l0x::GetSequenceStepEnables (SequenceStepEnables *enables) {
 	enables->final_range = (sequence_config >> 7) & 0x1;
 }
 
-void Vl53l0x::GetSequenceStepTimeouts (SequenceStepEnables const *enables, SequenceStepTimeouts *timeouts) {
+void Vl53l0x::GetSequenceStepTimeouts (SequenceStepEnables const *enables, SequenceStepTimeouts *timeouts)
+{
 	timeouts->pre_range_vcsel_period_pclks = this->GetVcselPulsePeriod(VcselPeriodPreRange);
 
 	timeouts->msrc_dss_tcc_mclks = 0U;
@@ -346,7 +386,8 @@ void Vl53l0x::GetSequenceStepTimeouts (SequenceStepEnables const *enables, Seque
 
 	this->mI2c.ReadRegister16Bits(this->mAddress, VL53L0X_FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI, timeouts->final_range_mclks);
 
-	if (enables->pre_range) {
+	if (enables->pre_range)
+	{
 		timeouts->final_range_mclks -= timeouts->pre_range_mclks;
 	}
 	timeouts->final_range_us =
@@ -354,46 +395,55 @@ void Vl53l0x::GetSequenceStepTimeouts (SequenceStepEnables const *enables, Seque
 													timeouts->final_range_vcsel_period_pclks);
 }
 
-uint16_t Vl53l0x::DecodeTimeout (uint16_t reg_val) {
+uint16_t Vl53l0x::DecodeTimeout (uint16_t reg_val)
+{
 	// format: "(LSByte * 2^MSByte) + 1"
-	return((uint16_t)((reg_val & 0x00FF) << (uint16_t)((reg_val & 0xFF00) >> 8)) + 1);
+	return ( (uint16_t) ( (reg_val & 0x00FF) << (uint16_t) ( (reg_val & 0xFF00) >> 8) ) + 1);
 }
 
-uint16_t Vl53l0x::EncodeTimeout (uint32_t timeout_mclks) {
+uint16_t Vl53l0x::EncodeTimeout (uint32_t timeout_mclks)
+{
 	// format: "(LSByte * 2^MSByte) + 1"
 
 	uint32_t ls_byte = 0;
 	uint16_t ms_byte = 0;
 
-	if (timeout_mclks > 0) {
+	if (timeout_mclks > 0)
+	{
 		ls_byte = timeout_mclks - 1;
 
-		while ((ls_byte & 0xFFFFFF00) > 0) {
+		while ( (ls_byte & 0xFFFFFF00) > 0)
+		{
 			ls_byte >>= 1;
 			ms_byte++;
 		}
-		return((ms_byte << 8) | (ls_byte & 0xFF));
+		return ( (ms_byte << 8) | (ls_byte & 0xFF) );
 	}
-	else{
-		return(0);
+	else
+	{
+		return (0);
 	}
 }
 
-uint8_t Vl53l0x::GetVcselPulsePeriod (VcselPeriodType type) {
+uint8_t Vl53l0x::GetVcselPulsePeriod (VcselPeriodType type)
+{
 	uint8_t data = 255;
 
-	if (type == VcselPeriodPreRange) {
+	if (type == VcselPeriodPreRange)
+	{
 		this->mI2c.ReadRegister(this->mAddress, VL53L0X_PRE_RANGE_CONFIG_VCSEL_PERIOD, data);
-		return(decodeVcselPeriod(data));
+		return (decodeVcselPeriod(data) );
 	}
-	else if (type == VcselPeriodFinalRange) {
+	else if (type == VcselPeriodFinalRange)
+	{
 		this->mI2c.ReadRegister(this->mAddress, VL53L0X_FINAL_RANGE_CONFIG_VCSEL_PERIOD, data);
-		return(decodeVcselPeriod(data));
+		return (decodeVcselPeriod(data) );
 	}
-	return(255);
+	return (255);
 }
 
-bool Vl53l0x::SetVcselPulsePeriod (VcselPeriodType type, uint8_t period_pclks) {
+bool Vl53l0x::SetVcselPulsePeriod (VcselPeriodType type, uint8_t period_pclks)
+{
 	uint8_t vcsel_period_reg = encodeVcselPeriod(period_pclks);
 
 	SequenceStepEnables  enables;
@@ -402,9 +452,11 @@ bool Vl53l0x::SetVcselPulsePeriod (VcselPeriodType type, uint8_t period_pclks) {
 	this->GetSequenceStepEnables(&enables);
 	this->GetSequenceStepTimeouts(&enables, &timeouts);
 
-	if (type == VcselPeriodPreRange) {
+	if (type == VcselPeriodPreRange)
+	{
 		// "Set phase check limits"
-		switch (period_pclks) {
+		switch (period_pclks)
+		{
 		case 12:
 			this->mI2c.WriteRegister(this->mAddress, VL53L0X_PRE_RANGE_CONFIG_VALID_PHASE_HIGH, 0x18);
 			break;
@@ -423,7 +475,7 @@ bool Vl53l0x::SetVcselPulsePeriod (VcselPeriodType type, uint8_t period_pclks) {
 
 		default:
 			// invalid period
-			return(false);
+			return (false);
 		}
 		this->mI2c.WriteRegister(this->mAddress, VL53L0X_PRE_RANGE_CONFIG_VALID_PHASE_LOW, 0x08);
 
@@ -442,10 +494,12 @@ bool Vl53l0x::SetVcselPulsePeriod (VcselPeriodType type, uint8_t period_pclks) {
 			this->TimeoutMicrosecondsToMclks(timeouts.msrc_dss_tcc_us, period_pclks);
 
 		this->mI2c.WriteRegister(this->mAddress, VL53L0X_MSRC_CONFIG_TIMEOUT_MACROP,
-										 (new_msrc_timeout_mclks > 256) ? 255 : (new_msrc_timeout_mclks - 1));
+										 (new_msrc_timeout_mclks > 256) ? 255 : (new_msrc_timeout_mclks - 1) );
 	}
-	else if (type == VcselPeriodFinalRange) {
-		switch (period_pclks) {
+	else if (type == VcselPeriodFinalRange)
+	{
+		switch (period_pclks)
+		{
 		case 8:
 			this->mI2c.WriteRegister(this->mAddress, VL53L0X_FINAL_RANGE_CONFIG_VALID_PHASE_HIGH, 0x10);
 			this->mI2c.WriteRegister(this->mAddress, VL53L0X_FINAL_RANGE_CONFIG_VALID_PHASE_LOW, 0x08);
@@ -488,8 +542,8 @@ bool Vl53l0x::SetVcselPulsePeriod (VcselPeriodType type, uint8_t period_pclks) {
 
 		default:
 			// invalid period
-			return(false);
-		}          // switch
+			return (false);
+		}
 		// apply new VCSEL period
 		this->mI2c.WriteRegister(this->mAddress, VL53L0X_FINAL_RANGE_CONFIG_VCSEL_PERIOD, vcsel_period_reg);
 
@@ -497,7 +551,8 @@ bool Vl53l0x::SetVcselPulsePeriod (VcselPeriodType type, uint8_t period_pclks) {
 		uint16_t new_final_range_timeout_mclks =
 			this->TimeoutMicrosecondsToMclks(timeouts.final_range_us, period_pclks);
 
-		if (enables.pre_range) {
+		if (enables.pre_range)
+		{
 			new_final_range_timeout_mclks += timeouts.pre_range_mclks;
 		}
 		uint16_t data16 = this->EncodeTimeout(new_final_range_timeout_mclks);
@@ -516,60 +571,69 @@ bool Vl53l0x::SetVcselPulsePeriod (VcselPeriodType type, uint8_t period_pclks) {
 
 	// VL53L0X_perform_phase_calibration() end
 
-	return(true);
+	return (true);
 } // Vl53l0x::SetVcselPulsePeriod
 
-uint32_t Vl53l0x::TimeoutMclksToMicroseconds (uint16_t timeout_period_mclks, uint8_t vcsel_period_pclks) {
+uint32_t Vl53l0x::TimeoutMclksToMicroseconds (uint16_t timeout_period_mclks, uint8_t vcsel_period_pclks)
+{
 	uint32_t macro_period_ns = calcMacroPeriod(vcsel_period_pclks);
 
-	return(((timeout_period_mclks * macro_period_ns) + 500) / 1000);
+	return ( ( (timeout_period_mclks * macro_period_ns) + 500) / 1000);
 }
 
-uint32_t Vl53l0x::TimeoutMicrosecondsToMclks (uint32_t timeout_period_us, uint8_t vcsel_period_pclks) {
+uint32_t Vl53l0x::TimeoutMicrosecondsToMclks (uint32_t timeout_period_us, uint8_t vcsel_period_pclks)
+{
 	uint32_t macro_period_ns = calcMacroPeriod(vcsel_period_pclks);
 
-	return(((timeout_period_us * 1000) + (macro_period_ns / 2)) / macro_period_ns);
+	return ( ( (timeout_period_us * 1000) + (macro_period_ns / 2) ) / macro_period_ns);
 }
 
-bool Vl53l0x::SetSignalRateLimit (float limit_Mcps) {
-	if (limit_Mcps < 0 || limit_Mcps > 511.99) {
-		return(false);
+bool Vl53l0x::SetSignalRateLimit (float limit_Mcps)
+{
+	if (limit_Mcps < 0 || limit_Mcps > 511.99)
+	{
+		return (false);
 	}
 	// Q9.7 fixed point format (9 integer bits, 7 fractional bits)
 	uint16_t data16 = limit_Mcps * (1 << 7);
 	this->mI2c.WriteRegister16Bits(this->mAddress, VL53L0X_FINAL_RANGE_CONFIG_MIN_COUNT_RATE_RTN_LIMIT, data16);
-	return(true);
+	return (true);
 }
 
-float Vl53l0x::GetSignalRateLimit (void) {
+float Vl53l0x::GetSignalRateLimit (void)
+{
 	uint16_t data16 = 0;
 
 	this->mI2c.ReadRegister16Bits(this->mAddress, VL53L0X_FINAL_RANGE_CONFIG_MIN_COUNT_RATE_RTN_LIMIT, data16);
-	return((float)(data16 / (1 << 7)));
+	return ( (float) (data16 / (1 << 7) ) );
 }
 
-bool Vl53l0x::PerformSingleRefCalibration (uint8_t vhv_init_byte) {
-	this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSRANGE_START, 0x01 | vhv_init_byte);            // VL53L0X_REG_SYSRANGE_MODE_START_STOP
+bool Vl53l0x::PerformSingleRefCalibration (uint8_t vhv_init_byte)
+{
+	this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSRANGE_START, 0x01 | vhv_init_byte);
 
-	uint32_t timeout = millis();
+	uint32_t timeout = MyTick.GetMs();
 	uint8_t  data    = 0;
 
-	do{
+	do
+	{
 		this->mI2c.ReadRegister(this->mAddress, VL53L0X_RESULT_INTERRUPT_STATUS, data);
 
-		if (((uint32_t)(millis() - timeout) > 50)) {
-			return(false);
+		if ( ( (uint32_t) (MyTick.GetMs() - timeout) > 50) )
+		{
+			return (false);
 		}
-	} while ((data & 0x07) == 0);
+	} while ( (data & 0x07) == 0);
 
 	this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSTEM_INTERRUPT_CLEAR, 0x01);
 
 	this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSRANGE_START, 0x00);
 
-	return(true);
+	return (true);
 }
 
-void Vl53l0x::Tune (void) {
+void Vl53l0x::Tune (void)
+{
 	this->mI2c.WriteRegister(this->mAddress, 0xFF, 0x01);
 	this->mI2c.WriteRegister(this->mAddress, 0x00, 0x00);
 

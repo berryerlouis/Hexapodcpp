@@ -3,26 +3,19 @@
  # Install 
   First install the following tools:
   - install uncrustify
-  - install arduino IDE
   - install VS-code
-  - install arduino extension
-  - install MightyCore (support atmega1284p) ![](https://github.com/MCUdude/MightyCore)
   - install serial-monitor extension
+  - install avr-gcc [(link windows)](https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/avr8-gnu-toolchain-3.7.0.1796-win32.any.x86_64.zip) [(link linux)](https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/avr8-gnu-toolchain-3.7.0.1796-linux.any.x86_64.tar.gz)
  
- # Config
-  - MightyCore:avr:1284,
-  - bootloader=uart0,
-  - pinout=standard,
-  - eeprom=keep,
-  - baudrate=default,
-  - variant=modelP,
-  - BOD=4v3,
-  - LTO=Os_flto,
-  - clock=20MHz_external
+ # Uncrustify
+  - parse all project files
+  - run `./bin/dev/uncrustify-all`
  
- # Compile (alt+crtl+i)
+ # Compile
+  - run `make -j16`
  
- # Upload (alt+crtl+u)
+ # Upload
+  - run `make flash`
 
  # Serial 
  Communication settings are :

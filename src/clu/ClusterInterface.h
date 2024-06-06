@@ -8,5 +8,5 @@ public:
 	ClusterInterface(void) = default;
 	~ClusterInterface()    = default;
 
-	virtual bool Execute(Frame&request, Frame&response) = 0;
+	virtual bool Execute(Frame &request, Frame &response) = 0;
 };

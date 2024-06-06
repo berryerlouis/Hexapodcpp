@@ -6,18 +6,21 @@
 
 class ClusterBattery : public Cluster {
 public:
-	ClusterBattery(Battery&battery)
+	ClusterBattery(Battery &battery)
 		: Cluster(BATTERY)
-		, mBattery(battery) {
+		, mBattery(battery)
+	{
 	}
 
 	~ClusterBattery() = default;
 
 
-	virtual bool Execute (Frame&request, Frame&response) final override {
+	virtual bool Execute (Frame &request, Frame &response) final override
+	{
 		bool success = false;
 
-		switch ((EBatteryCommands)request.commandId) {
+		switch ( (EBatteryCommands) request.commandId)
+		{
 		case EBatteryCommands::GET_VOLTAGE:
 			success = mBattery.BuildFrameVoltage(response);
 			break;
@@ -29,9 +32,9 @@ public:
 		default:
 			break;
 		}
-		return(success);
+		return (success);
 	}
 
 private:
-	Battery&mBattery;
+	Battery &mBattery;
 };

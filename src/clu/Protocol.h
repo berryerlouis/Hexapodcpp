@@ -5,7 +5,8 @@
 
 class Protocol {
 public:
-	enum ProtocolStatus {
+	enum ProtocolStatus
+	{
 		NO_ERROR,
 		ERROR_LENGHT,
 		ERROR_CHAR_INVALID,
@@ -15,9 +16,9 @@ public:
 	Protocol(void);
 	~Protocol() = default;
 
-	ProtocolStatus Decode(const char *frameBuffer, Frame&frame);
-	static uint8_t Encode(Frame&response, const uint8_t *buffer);
+	static ProtocolStatus Decode(const char *frameBuffer, Frame &frame);
+	static uint8_t Encode(Frame &response, const uint8_t *buffer);
 
 private:
-	uint8_t ConvertHexCharToInt(uint8_t byte);
+	static uint8_t ConvertHexCharToInt(uint8_t byte);
 };

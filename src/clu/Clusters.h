@@ -11,7 +11,7 @@
 
 class Clusters {
 public:
-	Clusters(Battery&battery, Mpu9150&mpu9150, SensorProximity&sensorProximity, Servos&servos, Body&body);
+	Clusters(Battery &battery, Mpu9150 &mpu9150, SensorProximity &sensorProximity, Servos &servos, Body &body);
 	~Clusters() = default;
 
 	Cluster *GetCluster(const uint8_t clusterId) const;

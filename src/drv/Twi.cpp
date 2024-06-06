@@ -1,235 +1,276 @@
 #include "Twi.h"
 #include <util/twi.h>
 
-Twi::Twi(const EI2cFreq&freq)
+Twi::Twi(const EI2cFreq &freq)
 	: mFreq(freq)
-	, mTimeout(0U) {
+	, mTimeout(0U)
+{
 }
 
-void Twi::Initialize (void) {
-	TWBR = ((F_CPU / this->mFreq) - 16) / 2;
+void Twi::Initialize (void)
+{
+	TWBR = ( (F_CPU / this->mFreq) - 16) / 2;
 	TWSR = 0;
 	TWCR = (1 << TWEN);
 }
 
-void Twi::Update (const uint32_t currentTime) {
+void Twi::Update (const uint32_t currentTime)
+{
+	(void) currentTime;
 }
 
-bool Twi::ReadRegister (const uint8_t address, const uint8_t reg, uint8_t&data) {
+bool Twi::ReadRegister (const uint8_t address, const uint8_t reg, uint8_t &data)
+{
 	Start(address);
 	Write(reg);
 	RepeatedStart(address);
 	data = ReadNack();
 	Stop();
-	return(true);
+	return (true);
 }
 
-bool Twi::ReadRegister16Bits (const uint8_t address, const uint8_t reg, uint16_t&data) {
+bool Twi::ReadRegister16Bits (const uint8_t address, const uint8_t reg, uint16_t &data)
+{
 	Start(address);
 	Write(reg);
 	RepeatedStart(address);
-	data  = (uint16_t)((uint16_t)ReadAck() << 8U);
+	data  = (uint16_t) ( (uint16_t) ReadAck() << 8U);
 	data |= ReadAck();
 	ReadNack();
 	Stop();
-	return(true);
+	return (true);
 }
 
-bool Twi::ReadRegister32Bits (const uint8_t address, const uint8_t reg, uint32_t&data) {
+bool Twi::ReadRegister32Bits (const uint8_t address, const uint8_t reg, uint32_t &data)
+{
 	Start(address);
 	Write(reg);
 	RepeatedStart(address);
-	data  = (uint32_t)((uint32_t)ReadAck() << 24U);
-	data |= (uint32_t)((uint32_t)ReadAck() << 16U);
-	data |= (uint32_t)((uint32_t)ReadAck() << 8U);
+	data  = (uint32_t) ( (uint32_t) ReadAck() << 24U);
+	data |= (uint32_t) ( (uint32_t) ReadAck() << 16U);
+	data |= (uint32_t) ( (uint32_t) ReadAck() << 8U);
 	data |= ReadAck();
 	ReadNack();
 	Stop();
-	return(true);
+	return (true);
 }
 
-bool Twi::ReadRegisters (const uint8_t address, const uint8_t reg, uint8_t *data, const uint8_t length) {
+bool Twi::ReadRegisters (const uint8_t address, const uint8_t reg, uint8_t *data, const uint8_t length)
+{
 	Start(address);
 	Write(reg);
 	RepeatedStart(address);
 
-	for (int i = 0; i < length; i++) {
+	for ( size_t i = 0U; i < length; i++ )
+	{
 		data[i] = ReadAck();
 	}
 
 	ReadNack();
 	Stop();
-	return(true);
+	return (true);
 }
 
-bool Twi::WriteRegister (const uint8_t address, const uint8_t reg, uint8_t data) {
+bool Twi::WriteRegister (const uint8_t address, const uint8_t reg, uint8_t data)
+{
 	Start(address);
 	Write(reg);
 	Write(data);
 	Stop();
-	return(true);
+	return (true);
 }
 
-bool Twi::WriteRegister16Bits (const uint8_t address, const uint8_t reg, uint16_t&data) {
+bool Twi::WriteRegister16Bits (const uint8_t address, const uint8_t reg, uint16_t &data)
+{
 	Start(address);
 	Write(reg);
-	Write((uint8_t)(data >> 8U));
+	Write( (uint8_t) (data >> 8U) );
 	Write(data);
 	Stop();
-	return(true);
+	return (true);
 }
 
-bool Twi::WriteRegister32Bits (const uint8_t address, const uint8_t reg, uint32_t&data) {
+bool Twi::WriteRegister32Bits (const uint8_t address, const uint8_t reg, uint32_t &data)
+{
 	Start(address);
 	Write(reg);
-	Write((uint8_t)(data >> 24U));
-	Write((uint8_t)(data >> 16U));
-	Write((uint8_t)(data >> 8U));
-	Write((uint8_t)(data));
+	Write( (uint8_t) (data >> 24U) );
+	Write( (uint8_t) (data >> 16U) );
+	Write( (uint8_t) (data >> 8U) );
+	Write( (uint8_t) (data) );
 	Stop();
-	return(true);
+	return (true);
 }
 
-bool Twi::WriteRegisters (const uint8_t address, const uint8_t reg, uint8_t *data, const uint8_t length) {
+bool Twi::WriteRegisters (const uint8_t address, const uint8_t reg, uint8_t *data, const uint8_t length)
+{
 	Start(address);
 	Write(reg);
 
-	for (int i = 0; i < length; i++) {
+	for ( size_t i = 0U; i < length; i++ )
+	{
 		Write(data[i]);
 	}
 
 	Stop();
-	return(true);
+	return (true);
 }
 
-Twi::EI2cStatus Twi::Start (const uint8_t slave) {
+Twi::EI2cStatus Twi::Start (const uint8_t slave)
+{
 	uint8_t status;
 
 	TWCR = (1 << TWSTA) | (1 << TWEN) | (1 << TWINT);
 
-	while (!(TWCR & (1 << TWINT)) && this->mTimeout < 0x1F) {
+	while (!(TWCR & (1 << TWINT) ) && this->mTimeout < 0x1F)
+	{
 		this->mTimeout++;
 	}
 	this->mTimeout = 0;
 	status         = TWSR & 0xF8;
 
-	if (status != 0x08) {
-		return(EI2cStatus::FAIL_START);
+	if (status != 0x08)
+	{
+		return (EI2cStatus::FAIL_START);
 	}
 	TWDR = slave << 1U;
 	TWCR = (1 << TWEN) | (1 << TWINT);
 
-	while (!(TWCR & (1 << TWINT)) && this->mTimeout < 0x1F) {
+	while (!(TWCR & (1 << TWINT) ) && this->mTimeout < 0x1F)
+	{
 		this->mTimeout++;
 	}
 	this->mTimeout = 0;
 	status         = TWSR & 0xF8;
 
-	if (status == 0x18) {
-		return(EI2cStatus::ACK);
+	if (status == 0x18)
+	{
+		return (EI2cStatus::ACK);
 	}
 
-	if (status == 0x20) {
-		return(EI2cStatus::NACK);
+	if (status == 0x20)
+	{
+		return (EI2cStatus::NACK);
 	}
-	else{
-		return(EI2cStatus::FAIL_ADDR);
+	else
+	{
+		return (EI2cStatus::FAIL_ADDR);
 	}
 }
 
-Twi::EI2cStatus Twi::RepeatedStart (const uint8_t slave) {
+Twi::EI2cStatus Twi::RepeatedStart (const uint8_t slave)
+{
 	uint8_t status;
 
 	TWCR = (1 << TWSTA) | (1 << TWEN) | (1 << TWINT);
 
-	while (!(TWCR & (1 << TWINT)) && this->mTimeout < 0x1F) {
+	while (!(TWCR & (1 << TWINT) ) && this->mTimeout < 0x1F)
+	{
 		this->mTimeout++;
 	}
 	this->mTimeout = 0;
 	status         = TWSR & 0xF8;
 
-	if (status != 0x10) {
-		return(EI2cStatus::FAIL_START);
+	if (status != 0x10)
+	{
+		return (EI2cStatus::FAIL_START);
 	}
 	TWDR = (slave << 1U) + 1U;
 	TWCR = (1 << TWEN) | (1 << TWINT);
 
-	while (!(TWCR & (1 << TWINT)) && this->mTimeout < 0x1F) {
+	while (!(TWCR & (1 << TWINT) ) && this->mTimeout < 0x1F)
+	{
 		this->mTimeout++;
 	}
 	this->mTimeout = 0;
 	status         = TWSR & 0xF8;
 
-	if (status == 0x40) {
-		return(EI2cStatus::ACK);
+	if (status == 0x40)
+	{
+		return (EI2cStatus::ACK);
 	}
 
-	if (status == 0x48) {
-		return(EI2cStatus::NACK);
+	if (status == 0x48)
+	{
+		return (EI2cStatus::NACK);
 	}
-	else{
-		return(EI2cStatus::FAIL_ADDR);
+	else
+	{
+		return (EI2cStatus::FAIL_ADDR);
 	}
 }
 
-Twi::EI2cStatus Twi::Write (const uint8_t data) {
+Twi::EI2cStatus Twi::Write (const uint8_t data)
+{
 	uint8_t status;
 
 	TWDR = data;
 	TWCR = (1 << TWEN) | (1 << TWINT);
 
-	while (!(TWCR & (1 << TWINT)) && this->mTimeout < 0x1F) {
+	while (!(TWCR & (1 << TWINT) ) && this->mTimeout < 0x1F)
+	{
 		this->mTimeout++;
 	}
 	this->mTimeout = 0;
 	status         = TWSR & 0xF8;
 
-	if (status == 0x28) {
-		return(EI2cStatus::ACK);
+	if (status == 0x28)
+	{
+		return (EI2cStatus::ACK);
 	}
 
-	if (status == 0x30) {
-		return(EI2cStatus::NACK);
+	if (status == 0x30)
+	{
+		return (EI2cStatus::NACK);
 	}
-	else{
-		return(EI2cStatus::FAIL_WRITE);
+	else
+	{
+		return (EI2cStatus::FAIL_WRITE);
 	}
 }
 
-uint8_t Twi::ReadAck (void) {
+uint8_t Twi::ReadAck (void)
+{
 	TWCR = (1 << TWEN) | (1 << TWINT) | (1 << TWEA);
 
-	while (!(TWCR & (1 << TWINT)) && this->mTimeout < 0x1F) {
+	while (!(TWCR & (1 << TWINT) ) && this->mTimeout < 0x1F)
+	{
 		this->mTimeout++;
 	}
 
-	if (this->mTimeout >= 0x1F) {
+	if (this->mTimeout >= 0x1F)
+	{
 		this->mTimeout++;
 	}
 	this->mTimeout = 0;
-	return(TWDR);
+	return (TWDR);
 }
 
-uint8_t Twi::ReadNack (void) {
+uint8_t Twi::ReadNack (void)
+{
 	TWCR = (1 << TWEN) | (1 << TWINT);
 
-	while (!(TWCR & (1 << TWINT)) && this->mTimeout < 0x1F) {
+	while (!(TWCR & (1 << TWINT) ) && this->mTimeout < 0x1F)
+	{
 		this->mTimeout++;
 	}
 
-	if (this->mTimeout >= 0x1F) {
+	if (this->mTimeout >= 0x1F)
+	{
 		this->mTimeout++;
 	}
 	this->mTimeout = 0;
-	return(TWDR);
+	return (TWDR);
 }
 
-Twi::EI2cStatus Twi::Stop (void) {
+Twi::EI2cStatus Twi::Stop (void)
+{
 	TWCR = (1 << TWSTO) | (1 << TWINT) | (1 << TWEN);
 
-	while (TWCR & (1 << TWSTO) && this->mTimeout < 0x1F) {
+	while (TWCR & (1 << TWSTO) && this->mTimeout < 0x1F)
+	{
 		this->mTimeout++;
 	}
 	this->mTimeout = 0;
-	return(EI2cStatus::ACK);
+	return (EI2cStatus::ACK);
 }

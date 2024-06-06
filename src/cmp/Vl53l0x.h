@@ -69,7 +69,7 @@ public:
 #define VL53L0X_ALGO_PHASECAL_CONFIG_TIMEOUT                   0x30U
 
 	static const uint16_t DISTANCE_THRESHOLD = 300U;
-	Vl53l0x(Twi&i2c, const uint8_t address = 0x29U);
+	Vl53l0x(Twi &i2c, const uint8_t address = 0x29U);
 	~Vl53l0x() = default;
 
 	void Initialize(void);
@@ -80,26 +80,29 @@ public:
 	virtual bool IsDetecting(void) final override;
 
 private:
-	Twi&mI2c;
+	Twi &mI2c;
 	uint8_t mAddress;
 	uint16_t mDistance;
 	uint16_t mThreshold;
 	uint32_t mMeasurementTimingBudget = 0U;
 	uint8_t mStop;
 
-	struct SequenceStepEnables {
+	struct SequenceStepEnables
+	{
 		bool tcc;
 		bool msrc;
 		bool dss;
 		bool pre_range;
 		bool final_range;
 	};
-	struct SequenceStepTimeouts {
+	struct SequenceStepTimeouts
+	{
 		uint16_t pre_range_vcsel_period_pclks, final_range_vcsel_period_pclks;
 		uint16_t msrc_dss_tcc_mclks, pre_range_mclks, final_range_mclks;
 		uint32_t msrc_dss_tcc_us, pre_range_us, final_range_us;
 	};
-	enum VcselPeriodType {
+	enum VcselPeriodType
+	{
 		VcselPeriodPreRange,
 		VcselPeriodFinalRange
 	};

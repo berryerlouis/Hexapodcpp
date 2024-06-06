@@ -1,24 +1,29 @@
 #include "../drv/Communication.h"
 #include "ServiceProximity.h"
 
-ServiceProximity::ServiceProximity(SensorProximity&sensorProximity)
+ServiceProximity::ServiceProximity(SensorProximity &sensorProximity)
 	: Service(50)
-	, mSensorProximity(sensorProximity) {
+	, mSensorProximity(sensorProximity)
+{
 }
 
-void ServiceProximity::Initialize (void) {
+void ServiceProximity::Initialize (void)
+{
 	this->mSensorProximity.Initialize();
 }
 
-void ServiceProximity::Update (const uint32_t currentTime) {
+void ServiceProximity::Update (const uint32_t currentTime)
+{
 	this->mSensorProximity.Update(currentTime);
 
-	for (uint8_t sensorId = 0; sensorId < SensorProximity::NB_SENSORS; sensorId++) {
-		this->mSensorProximity.GetDistance((SensorProximity::SensorsId)sensorId);
+	for ( size_t sensorId = 0U; sensorId < SensorProximity::NB_SENSORS; sensorId++ )
+	{
+		this->mSensorProximity.GetDistance( (SensorProximity::SensorsId) sensorId);
 
-		if (this->mSensorProximity.IsDetecting((SensorProximity::SensorsId)sensorId)) {
+		if (this->mSensorProximity.IsDetecting( (SensorProximity::SensorsId) sensorId) )
+		{
 			Frame response;
-			this->mSensorProximity.BuildFrameDistance((EProximityCommands)sensorId, response);
+			this->mSensorProximity.BuildFrameDistance( (EProximityCommands) sensorId, response);
 			Communication::Send(response);
 		}
 	}

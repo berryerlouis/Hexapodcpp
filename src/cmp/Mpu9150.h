@@ -6,7 +6,8 @@
 
 class Mpu9150 {
 public:
-	struct Vector3 {
+	struct Vector3
+	{
 		int16_t x;
 		int16_t y;
 		int16_t z;
@@ -14,17 +15,17 @@ public:
 	static const uint8_t MPU9150_I2C_ADDRESS = 0x69U;
 	static const uint8_t AK8963_I2C_ADDRESS  = 0x0CU;
 
-	Mpu9150(Twi&i2c, const uint8_t address = MPU9150_I2C_ADDRESS);
+	Mpu9150(Twi &i2c, const uint8_t address = MPU9150_I2C_ADDRESS);
 	~Mpu9150() = default;
 
 	void Initialize(void);
 	void Update(const uint32_t currentTime);
 
-	bool BuildFrameAll(Frame&response);
-	bool BuildFrameAcc(Frame&response);
-	bool BuildFrameGyr(Frame&response);
-	bool BuildFrameMag(Frame&response);
-	bool BuildFrameTmp(Frame&response);
+	bool BuildFrameAll(Frame &response);
+	bool BuildFrameAcc(Frame &response);
+	bool BuildFrameGyr(Frame &response);
+	bool BuildFrameMag(Frame &response);
+	bool BuildFrameTmp(Frame &response);
 
 private:
 	Vector3 ReadAcc(void);
@@ -33,12 +34,9 @@ private:
 	int16_t ReadTemp(void);
 
 
-	Vector3 mAcc;
-	Vector3 mGyr;
-	Vector3 mMag;
-	uint8_t mTmp;
 
-	struct ERegister {
+	struct ERegister
+	{
 		static const uint8_t SELF_TEST_X        = 0x0D;
 		static const uint8_t SELF_TEST_Y        = 0x0E;
 		static const uint8_t SELF_TEST_Z        = 0x0F;
@@ -133,7 +131,8 @@ private:
 		static const uint8_t PWR1_SLEEP_BIT     = 6;
 	};
 
-	struct ERegisterAccel {
+	struct ERegisterAccel
+	{
 		static const uint8_t  ACCEL_FS_2  = 0x00;
 		static const uint8_t  ACCEL_FS_4  = 0x01;
 		static const uint8_t  ACCEL_FS_8  = 0x02;
@@ -153,7 +152,8 @@ private:
 		static const uint16_t ACCEL_1G_16G = 0x07FF;
 	};
 
-	struct ERegisterMag {
+	struct ERegisterMag
+	{
 		static const uint8_t WHO_AM_I = 0x00;
 		static const uint8_t INFO     = 0x01;
 		static const uint8_t ST1      = 0x02;
@@ -172,7 +172,8 @@ private:
 		static const uint8_t ASAZ     = 0x12;
 	};
 
-	struct ERegisterGyro {
+	struct ERegisterGyro
+	{
 		static const uint8_t CLOCK_PLL_XGYRO = 0x01;
 		static const uint8_t GYRO_FS_250     = 0x00;
 		static const uint8_t GYRO_FS_500     = 0x01;
@@ -184,9 +185,9 @@ private:
 		static const uint8_t SELF_TEST_Z_GYRO = 0x02;
 	};
 
+	Twi &mI2c;
 	const uint8_t mAddress;
 	const uint8_t mAddressMag;
-	Twi&mI2c;
 	Vector3 mAccOffset;
 	Vector3 mGyrOffset;
 	Vector3 mMagOffset;
@@ -196,5 +197,8 @@ private:
 	Vector3 mAccOffsetMoy;
 	Vector3 mGyrOffsetMoy;
 	Vector3 mMagOffsetMoy;
-	int16_t mTemp;
+	Vector3 mAcc;
+	Vector3 mGyr;
+	Vector3 mMag;
+	uint8_t mTmp;
 };

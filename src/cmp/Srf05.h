@@ -3,14 +3,14 @@
 #include "../clu/Constants.h"
 #include "../cmp/ProximityInterface.h"
 #include "../drv/InputCapture.h"
-#include <Arduino.h>
+#include "../drv/Gpio.h"
 
 class Srf05 : public ProximityInterface {
 public:
 	static const uint64_t ECHO_TIMEOUT       = 30000U;
 	static const uint16_t DISTANCE_THRESHOLD = 30U;
 
-	Srf05(const EProximityCommands side, const uint8_t gpioTrigger, const uint8_t gpioEcho);
+	Srf05(const EProximityCommands side, const SGpio &gpioTrigger, const SGpio &gpioEcho);
 	~Srf05() = default;
 
 	void Initialize(void);
@@ -24,7 +24,7 @@ public:
 
 private:
 	EProximityCommands mSide;
-	uint8_t mGpioTrigger;
+	Gpio mGpioTrigger;
 	InputCapture mGpioEcho;
 	uint16_t mThreshold;
 };

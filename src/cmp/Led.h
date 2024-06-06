@@ -1,15 +1,16 @@
 #pragma once
 
-#include <Arduino.h>
+#include "../drv/Gpio.h"
 
 class Led {
 public:
-	enum LedState {
+	enum LedState
+	{
 		ON = 0,
 		OFF
 	};
 
-	Led(const uint8_t gpio);
+	Led(const SGpio &gpio);
 	~Led() = default;
 
 
@@ -19,6 +20,6 @@ public:
 	LedState Get() const;
 
 private:
-	const uint8_t mIo;
+	Gpio mGpio;
 	LedState mState;
 };

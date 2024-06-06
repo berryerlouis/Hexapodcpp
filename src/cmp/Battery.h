@@ -3,10 +3,11 @@
 #include "../clu/Constants.h"
 #include "../clu/Frame.h"
 #include "../drv/Adc.h"
-#include <Arduino.h>
+#include "../drv/Gpio.h"
 
 class Battery {
-	enum BatteryState {
+	enum BatteryState
+	{
 		NOMINAL = 0x00U,
 		WARNING,
 		CRITICAL,
@@ -14,7 +15,7 @@ class Battery {
 	};
 
 public:
-	Battery(const uint8_t gpio);
+	Battery(const SGpio &gpio);
 	~Battery() = default;
 
 	BatteryState GetState(void);
@@ -23,8 +24,8 @@ public:
 	void Initialize(void);
 	void Update(const uint32_t currentTime);
 
-	bool BuildFrameVoltage(Frame&response);
-	bool BuildFrameState(Frame&response);
+	bool BuildFrameVoltage(Frame &response);
+	bool BuildFrameState(Frame &response);
 
 private:
 	uint16_t mVoltage;

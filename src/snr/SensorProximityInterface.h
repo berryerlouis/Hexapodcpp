@@ -6,7 +6,8 @@
 
 class SensorProximityInterface : public SensorInterface {
 public:
-	enum SensorsId {
+	enum SensorsId
+	{
 		SRF_LEFT = 0x00U,
 		SRF_RIGHT,
 		VLX

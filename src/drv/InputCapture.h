@@ -1,11 +1,11 @@
 #pragma once
 
 #include "DriverInterface.h"
-#include <Arduino.h>
+#include "Gpio.h"
 
 class InputCapture : public DriverInterface {
 public:
-	InputCapture(const uint8_t gpio);
+	InputCapture(const SGpio &gpio);
 	~InputCapture() = default;
 
 	virtual void Initialize(void) final override;
@@ -15,7 +15,7 @@ public:
 	uint64_t GetInputCaptureTime(void);
 
 private:
-	const uint8_t mIo;
+	Gpio mGpio;
 	bool mState;
 	uint64_t mStartTime;
 	uint64_t mDelay;
