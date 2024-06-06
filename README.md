@@ -1,4 +1,4 @@
- [![build](https://github.com/berryerlouis/Hexapodcpp/actions/workflows/test.yaml/badge.svg)](https://github.com/berryerlouis/Hexapodcpp/actions/workflows/Build.yaml)
+[![Make](https://github.com/berryerlouis/Hexapodcpp/actions/workflows/build.yaml/badge.svg)](https://github.com/berryerlouis/Hexapodcpp/actions/workflows/build.yaml)
  
  # Install 
   First install the following tools:
