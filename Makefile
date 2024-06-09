@@ -8,7 +8,6 @@ CXXFLAGS = -O1 -Wall -Wextra -std=gnu++17 -fno-exceptions -ffunction-sections -f
 SRC_DIR = src
 BUILD_DIR = build
 TARGET = $(BUILD_DIR)/main
-
 # Source files
 SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
 SRC_FILES += $(wildcard $(SRC_DIR)/*/*.cpp)
@@ -30,7 +29,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 flash: $(HEXFILE)
-	bin/stack/avrdude -c arduino -P COM4 -b 115200 -p m1284p -U flash:w:$(TARGET).elf
+	bin/stack/avrdude -c arduino -P COM7 -b 500000 -p m1284p -U flash:w:$(TARGET).elf
 
 clean:
 	rm -rf $(BUILD_DIR)/*

@@ -2,8 +2,17 @@
     "configurations": [
         {
             "name": "Avr",
+            "compilerPath": "C:/Users/Louis/AppData/Local/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/bin/avr-gcc.exe",
             "includePath": [
                 "${workspaceFolder}/**",
+                "${workspaceFolder}/src/**",
+                "${workspaceFolder}/src/app/**",
+                "${workspaceFolder}/src/bot/**",
+                "${workspaceFolder}/src/clu/**",
+                "${workspaceFolder}/src/cmp/**",
+                "${workspaceFolder}/src/drv/**",
+                "${workspaceFolder}/src/snr/**",
+                "${workspaceFolder}/src/srv/**"
             ],
             "defines": [
                 "__AVR_ATmega1284P__",

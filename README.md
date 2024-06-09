@@ -1,5 +1,9 @@
 [![Make](https://github.com/berryerlouis/Hexapodcpp/actions/workflows/build.yaml/badge.svg)](https://github.com/berryerlouis/Hexapodcpp/actions/workflows/build.yaml)
  
+ # Hexapod
+
+ ![Hmi](images\HMI.png)
+
  # Install 
   First install the following tools:
   - install uncrustify
@@ -18,7 +22,13 @@
   - run `make flash`
 
  # Serial 
- Communication settings are :
- 115200 8 N 1
+ ## attach to wsl
+ usbipd.exe wsl attach --hardware-id=10c4:ea60
+
+ ## Communication settings
+ - baud: 115200
+ - bytes: 8
+ - parity: N
+ - stopbit: 1
 
  
