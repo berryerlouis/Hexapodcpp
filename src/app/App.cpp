@@ -33,7 +33,8 @@ void App::Initialize (void)
 	MySerial.Initialize();
 	mTwi.Initialize();
 	mServices.Initialize();
-	MySerial.Send("<hello>\n", strlen("<hello>\n") );
+	
+	MySerial.Send("<hello>", strlen("<hello>") );
 }
 
 void App::Update (void)

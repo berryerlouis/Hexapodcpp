@@ -39,10 +39,11 @@ void Communication::Update ()
 {
 	if (true == this->ReceivedStringFrame() )
 	{
-		char frameBuffer[100U];
-		memcpy(frameBuffer, bufferRx, indexBufferRx);
 		Frame request;
 		Frame response;
+		char  frameBuffer[100U];
+		
+		memcpy(frameBuffer, bufferRx, indexBufferRx);
 		Protocol::ProtocolStatus parsedStatus = Protocol::Decode(frameBuffer, request);
 		if (parsedStatus == Protocol::ProtocolStatus::NO_ERROR)
 		{

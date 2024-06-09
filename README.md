@@ -2,7 +2,7 @@
  
  # Hexapod
 
- ![Hmi](images\HMI.png)
+ ![Hmi](images/HMI.png)
 
  # Install 
   First install the following tools:

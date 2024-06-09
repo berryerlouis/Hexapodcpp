@@ -2,7 +2,7 @@
 #include "ServiceProximity.h"
 
 ServiceProximity::ServiceProximity(SensorProximity &sensorProximity)
-	: Service(50)
+	: Service(25)
 	, mSensorProximity(sensorProximity)
 {
 }

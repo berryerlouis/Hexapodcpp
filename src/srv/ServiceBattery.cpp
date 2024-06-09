@@ -1,7 +1,7 @@
 #include "ServiceBattery.h"
 
 ServiceBattery::ServiceBattery(Battery &battery)
-	: Service(20)
+	: Service(100)
 	, mBattery(battery)
 {
 }

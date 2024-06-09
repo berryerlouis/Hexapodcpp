@@ -2,7 +2,7 @@
 
 #include <avr/io.h>
 
-const uint8_t BUFFER_MAX_SIZE = 250U;
+const uint8_t BUFFER_MAX_SIZE = 100U;
 
 class Buffer
 {

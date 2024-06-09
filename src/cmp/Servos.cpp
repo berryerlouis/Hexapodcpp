@@ -1,7 +1,4 @@
 #include "Servos.h"
-#include <stddef.h>
-
-#define UPDATE_TIME    20U
 
 Servos::Servos(Pca9685 &pca9685_0, Pca9685 &pca9685_1)
 	: mServo0(pca9685_0, 0, 90, 15, 60, 120, false)

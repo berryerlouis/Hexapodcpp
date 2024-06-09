@@ -1,0 +1,70 @@
+body {
+    background-color: #555;
+    color: #eee;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+#console {
+    overflow-y: scroll;
+    font-size: 14px;
+    max-height: 33vh;
+}
+#console .list-group-item:hover {
+    background-color: #a4cce7;
+}
+
+.console-date { 
+    background-color: #18415c;
+}
+.console-direction {
+    background-color: #18415c;
+}
+.console-direction-rx {
+    background-color: #32ac32;
+}
+.console-number-rx {
+    color: #32ac32;
+}
+.console-direction-rx-nack {
+    background-color: #eb0e0e;
+}
+.console-direction-rx-async {
+    background-color: #cf8e38;
+}
+.console-direction-rx-timeout {
+    background-color: #f701ff;
+}
+.console-number-rx-timeout {
+    color: #f701ff;
+}
+.console-direction-rx-reset {
+    background-color: #5a01ff;
+}
+.console-raw {
+    background-color: #2175ad;
+}
+.console-cluster {
+    background-color: #454ea3;
+}
+.console-command {
+    background-color: #2d777c;
+}
+.console-param {
+    background-color: #86804b;
+}
+
+/*
+background-color: #2c6729;
+.main-container .console .console-item.tx {
+    background-color: #18415c;
+}
+
+.main-container .console .console-item:not(.tx):not(.response) {
+    background-color: #5a1d1d;
+}
+
+.main-container .console .console-item.nack {
+    background-color: #c73d3d;
+}*/
