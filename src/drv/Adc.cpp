@@ -14,6 +14,7 @@ bool Adc::Initialize (void)
 	ADCSRA = (1 << ADEN) | (1 << ADPS0) | (1 << ADPS1) | (1 << ADIE);
 	ADMUX  = ( (ADMUX & 0xE0U) | (uint8_t) this->mGpio.GetPin() );
 
+	this->StartConversion();
 	return (true);
 }
 
@@ -29,6 +30,7 @@ void Adc::StartConversion (void)
 
 uint16_t Adc::Read ()
 {
+	this->StartConversion();
 	return ( (uint16_t) (100.0 * ADC_VOLT(Adc::sAdcValue / BRIDGE_DIVIDER) ) );
 }
 
