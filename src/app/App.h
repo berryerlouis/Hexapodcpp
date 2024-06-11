@@ -26,7 +26,7 @@ public:
 	App(void);
 	~App(void) = default;
 
-	void Initialize(void);
+	bool Initialize(void);
 	void Update(void);
 
 private:

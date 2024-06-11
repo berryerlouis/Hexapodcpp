@@ -1,15 +1,16 @@
 #include "math.h"
 #include "Servo.h"
+#include "../drv/Tick.h"
 
 #define REVERSE_ANGLE(angle)    ( ( (angle - 90) * -1) + 90)
 
 Servo::Servo(Pca9685 &pca9685, const uint8_t servoId)
 	: mPca9685(pca9685)
 	, mServoId(servoId)
-	, mAngle(90)
-	, mTargetAngle(0)
-	, mStartTime(0)
-	, mSpeed(1)
+	, mAngle(90U)
+	, mTargetAngle(0U)
+	, mStartTime(0UL)
+	, mSpeed(1U)
 	, mOffset(0)
 	, mMin(SERVO_ANGLE_MIN)
 	, mMax(SERVO_ANGLE_MAX)
@@ -23,9 +24,9 @@ Servo::Servo(Pca9685 &pca9685, const uint8_t servoId, const uint8_t angle)
 	: mPca9685(pca9685)
 	, mServoId(servoId)
 	, mAngle(angle)
-	, mTargetAngle(0)
-	, mStartTime(0)
-	, mSpeed(1)
+	, mTargetAngle(0U)
+	, mStartTime(0UL)
+	, mSpeed(1U)
 	, mOffset(0)
 	, mMin(SERVO_ANGLE_MIN)
 	, mMax(SERVO_ANGLE_MAX)
@@ -39,9 +40,9 @@ Servo::Servo(Pca9685 &pca9685, const uint8_t servoId, const uint8_t angle, const
 	: mPca9685(pca9685)
 	, mServoId(servoId)
 	, mAngle(angle)
-	, mTargetAngle(0)
-	, mStartTime(0)
-	, mSpeed(1)
+	, mTargetAngle(0U)
+	, mStartTime(0UL)
+	, mSpeed(1U)
 	, mOffset(offset)
 	, mMin(SERVO_ANGLE_MIN)
 	, mMax(SERVO_ANGLE_MAX)
@@ -55,9 +56,9 @@ Servo::Servo(Pca9685 &pca9685, const uint8_t servoId, const uint8_t angle, const
 	: mPca9685(pca9685)
 	, mServoId(servoId)
 	, mAngle(angle)
-	, mTargetAngle(0)
-	, mStartTime(0)
-	, mSpeed(1)
+	, mTargetAngle(0U)
+	, mStartTime(0UL)
+	, mSpeed(1U)
 	, mOffset(offset)
 	, mMin(min)
 	, mMax(max)
@@ -71,9 +72,9 @@ Servo::Servo(Pca9685 &pca9685, const uint8_t servoId, const uint8_t angle, const
 	: mPca9685(pca9685)
 	, mServoId(servoId)
 	, mAngle(angle)
-	, mTargetAngle(0)
-	, mStartTime(0)
-	, mSpeed(1)
+	, mTargetAngle(0U)
+	, mStartTime(0UL)
+	, mSpeed(1U)
 	, mOffset(offset)
 	, mMin(min)
 	, mMax(max)
@@ -83,14 +84,14 @@ Servo::Servo(Pca9685 &pca9685, const uint8_t servoId, const uint8_t angle, const
 {
 }
 
-void Servo::Initialize (void)
+bool Servo::Initialize (void)
 {
 	if (true == this->mReverse)
 	{
 		this->mMax = REVERSE_ANGLE(this->mMin);
 		this->mMin = REVERSE_ANGLE(this->mMax);
 	}
-	this->SetAngle(this->mAngle);
+	return (this->SetAngle(this->mAngle) );
 }
 
 void Servo::Update (const uint64_t currentTime)
@@ -136,7 +137,7 @@ bool Servo::SetAngle (const uint8_t angle, const uint16_t travelTime)
 		this->mIsMoving    = false;
 		this->mSpeed       = travelTime;
 		this->mTargetAngle = angle;
-		//this->mStartTime   = millis();
+		this->mStartTime   = MyTick.GetMs();
 
 		if (true == this->mReverse)
 		{

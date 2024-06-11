@@ -9,11 +9,11 @@ public:
 	Servos(Pca9685 &pca9685_0, Pca9685 &pca9685_1);
 	~Servos() = default;
 
-	void Initialize(void);
+	bool Initialize(void);
 	void Update(const uint32_t currentTime);
 
-	Servo&GetServo(const uint8_t servoId);
-	Pca9685&GetPca9685(const uint8_t pca9685Id);
+	Servo &GetServo(const uint8_t servoId);
+	Pca9685 &GetPca9685(const uint8_t pca9685Id);
 
 	bool BuildFrameAllAngle(Frame &response);
 	bool BuildFrameAngle(uint8_t servoId, Frame &response);

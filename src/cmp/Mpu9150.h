@@ -18,7 +18,7 @@ public:
 	Mpu9150(Twi &i2c, const uint8_t address = MPU9150_I2C_ADDRESS);
 	~Mpu9150() = default;
 
-	void Initialize(void);
+	bool Initialize(void);
 	void Update(const uint32_t currentTime);
 
 	bool BuildFrameAll(Frame &response);
@@ -32,8 +32,6 @@ private:
 	Vector3 ReadGyr(void);
 	Vector3 ReadMag(void);
 	int16_t ReadTemp(void);
-
-
 
 	struct ERegister
 	{

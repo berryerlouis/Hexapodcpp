@@ -16,7 +16,7 @@ public:
 	Servo(Pca9685 &pca9685, const uint8_t servoId, const uint8_t angle, const int8_t offset, const uint8_t min, const uint8_t max, const bool reverse);
 	~Servo() = default;
 
-	void Initialize(void);
+	bool Initialize(void);
 
 	bool SetAngle(const uint8_t angle, const uint16_t travelTime = 0);
 	uint8_t GetAngle(void) const;

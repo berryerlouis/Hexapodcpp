@@ -16,9 +16,10 @@ Vl53l0x::Vl53l0x(Twi &i2c, const uint8_t address)
 {
 }
 
-void Vl53l0x::Initialize (void)
+bool Vl53l0x::Initialize (void)
 {
-	uint8_t data = 0;
+	bool    success = false;
+	uint8_t data    = 0;
 
 	this->mI2c.ReadRegister(this->mAddress, VL53L0X_IDENTIFICATION_MODEL_ID, data);
 
@@ -70,7 +71,7 @@ void Vl53l0x::Initialize (void)
 			uint8_t first_spad_to_enable = spad_type_is_aperture ? 12 : 0;
 			uint8_t spads_enabled        = 0U;
 
-			for ( size_t i = 0U; i < 48U; i++ )
+			for (size_t i = 0U; i < 48U; i++)
 			{
 				if (i < first_spad_to_enable || spads_enabled == spad_count)
 				{
@@ -115,11 +116,13 @@ void Vl53l0x::Initialize (void)
 					this->SetVcselPulsePeriod(VcselPeriodFinalRange, 14);
 
 					this->StartContinuous();
+					success = true;
 				}
 			}
 		}
 	}
-} // Vl53l0x::Initialize
+	return (success);
+}
 
 void Vl53l0x::Update (const uint32_t currentTime)
 {

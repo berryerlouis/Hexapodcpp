@@ -13,12 +13,14 @@ InputCapture::InputCapture(const SGpio &gpio)
 {
 }
 
-void InputCapture::Initialize (void)
+bool InputCapture::Initialize (void)
 {
 	PCICR  |= (1U << PCIE0);
 	PCMSK0 |= (1U << (this->mGpio.GetPin() ) );
 	inputCapture[inputCaptureIndex] = this;
 	inputCaptureIndex++;
+
+	return (true);
 }
 
 void InputCapture::Update (const uint32_t currentTime)
@@ -49,7 +51,7 @@ void InputCapture::EdgeChange (void)
 ISR(PCINT0_vect)
 {
 	ISR_EMBEDDED_CODE(
-		for ( size_t i = 0U; i < inputCaptureIndex; i++ )
+		for (size_t i = 0U; i < inputCaptureIndex; i++)
 	{
 		inputCapture[i]->EdgeChange();
 	}

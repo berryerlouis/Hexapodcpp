@@ -13,7 +13,6 @@ public:
 
 	~ClusterGeneral() = default;
 
-
 	virtual bool Execute (Frame &request, Frame &response) final override
 	{
 		bool success = false;

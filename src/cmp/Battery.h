@@ -21,7 +21,7 @@ public:
 	BatteryState GetState(void);
 	uint16_t GetVoltage(void);
 
-	void Initialize(void);
+	bool Initialize(void);
 	void Update(const uint32_t currentTime);
 
 	bool BuildFrameVoltage(Frame &response);

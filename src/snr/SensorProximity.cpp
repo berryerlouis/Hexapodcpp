@@ -5,18 +5,21 @@ SensorProximity::SensorProximity(Srf05 &srf05Left, Srf05 &srf05Right, Vl53l0x &V
 	: mSrf05Left(srf05Left)
 	, mSrf05Right(srf05Right)
 	, mVl53l0x(Vl53l0x)
-	, mStepSrf(0)
-	, mStepVlx(0)
+	, mStepSrf(0U)
+	, mStepVlx(0U)
 {
 }
 
-void SensorProximity::Initialize (void)
+bool SensorProximity::Initialize (void)
 {
-	this->mSrf05Left.Initialize();
-	this->mSrf05Right.Initialize();
-	this->mVl53l0x.Initialize();
-	this->mStepSrf = 0;
-	this->mStepVlx = 0;
+	uint8_t success = 0U;
+	success       |= this->mSrf05Left.Initialize() << 0U;
+	success       |= this->mSrf05Right.Initialize() << 1U;
+	success       |= this->mVl53l0x.Initialize() << 2U;
+	this->mStepSrf = 0U;
+	this->mStepVlx = 0U;
+
+	return (success == 7U);
 }
 
 void SensorProximity::Update (const uint32_t currentTime)
@@ -24,15 +27,15 @@ void SensorProximity::Update (const uint32_t currentTime)
 	if (this->mStepSrf == 0)
 	{
 		this->mSrf05Left.Update(currentTime);
-		this->mStepSrf = SensorProximity::UPDATE_STEP_SRF;
+		this->mStepSrf = SensorProximity::UPDATE_STEP_SRF_MS;
 	}
-	else if (this->mStepSrf == SensorProximity::UPDATE_STEP_SRF)
+	else if (this->mStepSrf == SensorProximity::UPDATE_STEP_SRF_MS)
 	{
 		this->mSrf05Right.Update(currentTime);
 		this->mStepSrf = 0;
 	}
 
-	if (++this->mStepVlx == SensorProximity::UPDATE_STEP_VLX)
+	if (++this->mStepVlx == SensorProximity::UPDATE_STEP_VLX_MS)
 	{
 		this->mVl53l0x.Update(currentTime);
 		this->mStepVlx = 0;

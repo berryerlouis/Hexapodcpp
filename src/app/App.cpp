@@ -28,13 +28,27 @@ App::App(void)
 {
 }
 
-void App::Initialize (void)
+bool App::Initialize (void)
 {
-	MySerial.Initialize();
-	mTwi.Initialize();
-	mServices.Initialize();
-	
-	MySerial.Send("<hello>", strlen("<hello>") );
+	bool success = false;
+	success = MySerial.Initialize();
+	if (success == true)
+	{
+		success = mTwi.Initialize();
+	}
+	if (success == true)
+	{
+		success = mServices.Initialize();
+	}
+	if (success == true)
+	{
+		MySerial.Send("<hello>", strlen("<hello>") );
+	}
+	else
+	{
+		MySerial.Send("<error>", strlen("<error>") );
+	}
+	return (success);
 }
 
 void App::Update (void)

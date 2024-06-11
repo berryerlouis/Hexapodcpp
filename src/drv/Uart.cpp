@@ -7,7 +7,7 @@ Uart::Uart(const EBaudRate & baud) : mBaudRate(baud)
 {
 }
 
-void Uart::Initialize (void)
+bool Uart::Initialize (void)
 {
 	const uint16_t ubrr = (F_CPU / (this->mBaudRate * 8.0) ) - 1;
 
@@ -15,6 +15,8 @@ void Uart::Initialize (void)
 	UCSR0A = (1 << U2X0);
 	UCSR0B = (1 << TXEN0) | (1 << RXEN0) | (1 << RXCIE0);
 	UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);
+
+	return (true);
 }
 
 void Uart::Update (const uint32_t currentTime)
@@ -29,7 +31,7 @@ void Uart::Send (const char *data, const size_t len)
 
 void Uart::Send (const uint8_t *data, const size_t len)
 {
-	for ( size_t i = 0; i < len; ++i )
+	for (size_t i = 0; i < len; ++i)
 	{
 		Send(data[i]);
 	}

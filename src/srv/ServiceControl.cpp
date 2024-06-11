@@ -7,9 +7,9 @@ ServiceControl::ServiceControl(Servos &servos)
 {
 }
 
-void ServiceControl::Initialize (void)
+bool ServiceControl::Initialize (void)
 {
-	this->mServos.Initialize();
+	return (this->mServos.Initialize() );
 }
 
 void ServiceControl::Update (const uint32_t currentTime)
