@@ -7,11 +7,13 @@ Twi::Twi(const EI2cFreq &freq)
 {
 }
 
-void Twi::Initialize (void)
+bool Twi::Initialize (void)
 {
 	TWBR = ( (F_CPU / this->mFreq) - 16) / 2;
 	TWSR = 0;
 	TWCR = (1 << TWEN);
+
+	return (true);
 }
 
 void Twi::Update (const uint32_t currentTime)
@@ -61,7 +63,7 @@ bool Twi::ReadRegisters (const uint8_t address, const uint8_t reg, uint8_t *data
 	Write(reg);
 	RepeatedStart(address);
 
-	for ( size_t i = 0U; i < length; i++ )
+	for (size_t i = 0U; i < length; i++)
 	{
 		data[i] = ReadAck();
 	}
@@ -107,7 +109,7 @@ bool Twi::WriteRegisters (const uint8_t address, const uint8_t reg, uint8_t *dat
 	Start(address);
 	Write(reg);
 
-	for ( size_t i = 0U; i < length; i++ )
+	for (size_t i = 0U; i < length; i++)
 	{
 		Write(data[i]);
 	}

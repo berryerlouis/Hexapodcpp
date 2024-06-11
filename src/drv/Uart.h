@@ -14,7 +14,7 @@ public:
 	Uart(const EBaudRate & baud = BAUDRATE_115200);
 	~Uart() = default;
 
-	virtual void Initialize(void) final override;
+	virtual bool Initialize(void) final override;
 	virtual void Update(const uint32_t currentTime) final override;
 
 	virtual void Send(const char *data, const size_t len) final override;

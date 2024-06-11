@@ -7,16 +7,16 @@ ServiceProximity::ServiceProximity(SensorProximity &sensorProximity)
 {
 }
 
-void ServiceProximity::Initialize (void)
+bool ServiceProximity::Initialize (void)
 {
-	this->mSensorProximity.Initialize();
+	return (this->mSensorProximity.Initialize() );
 }
 
 void ServiceProximity::Update (const uint32_t currentTime)
 {
 	this->mSensorProximity.Update(currentTime);
 
-	for ( size_t sensorId = 0U; sensorId < SensorProximity::NB_SENSORS; sensorId++ )
+	for (size_t sensorId = 0U; sensorId < SensorProximity::NB_SENSORS; sensorId++)
 	{
 		this->mSensorProximity.GetDistance( (SensorProximity::SensorsId) sensorId);
 

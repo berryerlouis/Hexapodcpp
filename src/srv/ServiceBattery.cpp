@@ -6,9 +6,9 @@ ServiceBattery::ServiceBattery(Battery &battery)
 {
 }
 
-void ServiceBattery::Initialize (void)
+bool ServiceBattery::Initialize (void)
 {
-	this->mBattery.Initialize();
+	return (this->mBattery.Initialize() );
 }
 
 void ServiceBattery::Update (const uint32_t currentTime)

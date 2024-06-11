@@ -72,7 +72,7 @@ public:
 	void SetFrequency(const uint32_t frequency);
 	void SetPwm(uint8_t num, uint16_t off);
 
-	void Initialize(void);
+	bool Initialize(void);
 	void Update(const uint32_t currentTime);
 
 private:

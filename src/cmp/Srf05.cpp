@@ -9,9 +9,10 @@ Srf05::Srf05(const EProximityCommands side, const SGpio &gpioTrigger, const SGpi
 {
 }
 
-void Srf05::Initialize (void)
+bool Srf05::Initialize (void)
 {
 	this->mGpioEcho.Initialize();
+	return (true);
 }
 
 void Srf05::Update (const uint32_t currentTime)

@@ -72,7 +72,7 @@ public:
 	Vl53l0x(Twi &i2c, const uint8_t address = 0x29U);
 	~Vl53l0x() = default;
 
-	void Initialize(void);
+	bool Initialize(void);
 	void Update(const uint32_t currentTime);
 
 	virtual uint16_t GetDistance(void) final override;

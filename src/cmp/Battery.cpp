@@ -13,9 +13,9 @@ Battery::Battery(const SGpio &gpio)
 {
 }
 
-void Battery::Initialize (void)
+bool Battery::Initialize (void)
 {
-	this->mAdc.Initialize();
+	return (this->mAdc.Initialize() );
 }
 
 void Battery::Update (const uint32_t currentTime)

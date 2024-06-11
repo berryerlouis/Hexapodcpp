@@ -6,9 +6,9 @@ ServiceOrientation::ServiceOrientation(Mpu9150 &mpu9150)
 {
 }
 
-void ServiceOrientation::Initialize (void)
+bool ServiceOrientation::Initialize (void)
 {
-	this->mMpu9150.Initialize();
+	return (this->mMpu9150.Initialize() );
 }
 
 void ServiceOrientation::Update (const uint32_t currentTime)

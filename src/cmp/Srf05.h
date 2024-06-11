@@ -13,7 +13,7 @@ public:
 	Srf05(const EProximityCommands side, const SGpio &gpioTrigger, const SGpio &gpioEcho);
 	~Srf05() = default;
 
-	void Initialize(void);
+	bool Initialize(void);
 	void Update(const uint32_t currentTime);
 
 	void SendPulse(void);

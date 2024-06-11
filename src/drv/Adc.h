@@ -12,7 +12,7 @@ public:
 	Adc(const SGpio & gpio);
 	~Adc() = default;
 
-	virtual void Initialize(void) final override;
+	virtual bool Initialize(void) final override;
 	virtual void Update(const uint32_t currentTime) final override;
 
 	void StartConversion(void);

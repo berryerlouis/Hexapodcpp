@@ -15,6 +15,9 @@
   - parse all project files
   - run `./bin/dev/uncrustify-all`
  
+ # Clean
+  - run `make clean`
+
  # Compile
   - run `make -j16`
  
