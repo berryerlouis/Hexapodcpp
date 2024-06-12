@@ -1,12 +1,13 @@
 #pragma once
 #include <stdint.h>
 
+namespace Driver {
 class Tick
 {
 public:
 	Tick();
 	~Tick() = default;
-	static Tick&GetInstance(void);
+	static Tick &GetInstance(void);
 
 	uint64_t GetUs(void);
 	uint32_t GetMs(void);
@@ -19,3 +20,4 @@ private:
 };
 
 extern Tick MyTick;
+}

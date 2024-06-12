@@ -1,14 +1,12 @@
-#include "../drv/Communication.h"
 #include "Battery.h"
 
-
+namespace Component {
 #define NOMINAL_LEVEL    80U
 #define WARNING_LEVEL    75U
 
 Battery::Battery(const SGpio &gpio)
-	: mVoltage(0)
+	: mVoltage(0U)
 	, mState(BatteryState::UNKNOWN)
-	, mOldState(BatteryState::UNKNOWN)
 	, mAdc(gpio)
 {
 }
@@ -35,14 +33,6 @@ void Battery::Update (const uint32_t currentTime)
 	{
 		this->mState = CRITICAL;
 	}
-
-	if (this->mOldState != this->mState)
-	{
-		Frame response;
-		BuildFrameState(response);
-		Communication::Send(response);
-	}
-	this->mOldState = this->mState;
 }
 
 Battery::BatteryState Battery::GetState (void)
@@ -77,4 +67,5 @@ bool Battery::BuildFrameState (Frame &response)
 				  EBatteryCommands::GET_BAT_STATUS,
 				  params,
 				  3U) );
+}
 }

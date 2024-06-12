@@ -1,8 +1,10 @@
 #pragma once
 
+#include "ComponentInterface.h"
 #include "../drv/Gpio.h"
-
-class Led {
+namespace Component {
+using namespace Driver;
+class Led : public ComponentInterface {
 public:
 	enum LedState
 	{
@@ -13,6 +15,8 @@ public:
 	Led(const SGpio &gpio);
 	~Led() = default;
 
+	virtual bool Initialize(void) final override;
+	virtual void Update(const uint32_t currentTime) final override;
 
 	bool On();
 	bool Off();
@@ -23,3 +27,4 @@ private:
 	Gpio mGpio;
 	LedState mState;
 };
+}

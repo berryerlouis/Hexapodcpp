@@ -2,6 +2,7 @@
 #include "InputCapture.h"
 #include "Tick.h"
 
+namespace Driver {
 static InputCapture *inputCapture[2U]  = {};
 static uint8_t       inputCaptureIndex = 0U;
 
@@ -51,9 +52,10 @@ void InputCapture::EdgeChange (void)
 ISR(PCINT0_vect)
 {
 	ISR_EMBEDDED_CODE(
-		for (size_t i = 0U; i < inputCaptureIndex; i++)
-	{
-		inputCapture[i]->EdgeChange();
-	}
+		for ( size_t i = 0U; i < inputCaptureIndex; i++ )
+		{
+			inputCapture[i]->EdgeChange();
+		}
 		);
+}
 }

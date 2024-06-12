@@ -1,54 +1,36 @@
 #include "Communication.h"
-#include "Uart.h"
-#include "../clu/Protocol.h"
 
+namespace Component {
 char    bufferRx[100U];
 uint8_t indexBufferRx = 0U;
 
-Communication::Communication(const Clusters &clusters, Led &ledStatus)
-	: mClusters(clusters)
+Communication::Communication(UartInterface &uart, const Clusters &clusters, Led &ledStatus)
+	: mUart(uart)
+	, mClusters(clusters)
 	, mLedStatus(ledStatus)
 {
 }
 
-bool Communication::ReceivedStringFrame (void)
+bool Communication::Initialize (void)
 {
-	if (MySerial.DataAvailable() > 0)
-	{
-		const char rc = MySerial.Read();
-		if (rc == '<')
-		{
-			indexBufferRx = 0U;
-		}
-		else if (rc != '>')
-		{
-			bufferRx[indexBufferRx] = rc;
-			indexBufferRx++;
-		}
-		else
-		{
-			bufferRx[indexBufferRx] = '\0';
-			indexBufferRx++;
-			return (true);
-		}
-	}
-	return (false);
+	return (this->mLedStatus.Initialize() );
 }
 
-void Communication::Update ()
+void Communication::Update (const uint32_t currentTime)
 {
+	(void) currentTime;
 	if (true == this->ReceivedStringFrame() )
 	{
 		Frame request;
 		Frame response;
 		char  frameBuffer[100U];
-		
+
 		memcpy(frameBuffer, bufferRx, indexBufferRx);
 		Protocol::ProtocolStatus parsedStatus = Protocol::Decode(frameBuffer, request);
 		if (parsedStatus == Protocol::ProtocolStatus::NO_ERROR)
 		{
-			uint8_t  frameClusterID = request.clusterId;
-			Cluster *cluster        = this->mClusters.GetCluster(frameClusterID);
+			uint8_t           frameClusterID = request.clusterId;
+			Cluster::Cluster *cluster        = this->mClusters.GetCluster(frameClusterID);
 
 			if (cluster != nullptr)
 			{
@@ -88,8 +70,33 @@ bool Communication::Send (Frame &message)
 
 	if (size != 0)
 	{
-		MySerial.Send(buffer, size);
+		this->mUart.Send(buffer, size);
 		return (true);
 	}
 	return (false);
+}
+
+bool Communication::ReceivedStringFrame (void)
+{
+	if (this->mUart.DataAvailable() > 0)
+	{
+		const char rc = this->mUart.Read();
+		if (rc == '<')
+		{
+			indexBufferRx = 0U;
+		}
+		else if (rc != '>')
+		{
+			bufferRx[indexBufferRx] = rc;
+			indexBufferRx++;
+		}
+		else
+		{
+			bufferRx[indexBufferRx] = '\0';
+			indexBufferRx++;
+			return (true);
+		}
+	}
+	return (false);
+}
 }

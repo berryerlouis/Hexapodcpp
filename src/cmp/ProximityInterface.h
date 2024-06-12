@@ -1,10 +1,9 @@
 #pragma once
 
-#include "../clu/Constants.h"
-#include "../clu/Frame.h"
-#include "../drv/DriverInterface.h"
+#include "ComponentInterface.h"
 
-class ProximityInterface : public DriverInterface {
+namespace Component {
+class ProximityInterface : public ComponentInterface {
 public:
 	ProximityInterface(void) = default;
 	~ProximityInterface()    = default;
@@ -15,3 +14,4 @@ public:
 
 private:
 };
+}

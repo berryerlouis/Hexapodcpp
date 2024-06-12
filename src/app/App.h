@@ -3,7 +3,6 @@
 #include "../drv/Gpio.h"
 #include "../drv/Twi.h"
 #include "../drv/Uart.h"
-#include "../drv/Communication.h"
 #include "../clu/Clusters.h"
 #include "../cmp/Battery.h"
 #include "../cmp/Led.h"
@@ -12,6 +11,7 @@
 #include "../cmp/Servos.h"
 #include "../cmp/Srf05.h"
 #include "../cmp/Vl53l0x.h"
+#include "../cmp/Communication.h"
 #include "../snr/SensorProximity.h"
 #include "../srv/ServiceBattery.h"
 #include "../srv/ServiceControl.h"
@@ -21,6 +21,11 @@
 #include "../bot/Body.h"
 #include "../bot/Legs.h"
 
+
+using namespace Cluster;
+using namespace Component;
+using namespace Driver;
+namespace app {
 class App {
 public:
 	App(void);
@@ -30,6 +35,7 @@ public:
 	void Update(void);
 
 private:
+	Uart mUart;
 	Twi mTwi;
 	Led mLedBoot;
 	Led mLedStatus;
@@ -56,3 +62,4 @@ private:
 	ServiceBattery mServiceBattery;
 	Services mServices;
 };
+}

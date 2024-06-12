@@ -1,10 +1,20 @@
 #include "Led.h"
 
+namespace Component {
 Led::Led(const SGpio &gpio)
 	: mGpio(Gpio(gpio, EPortDirection::OUT) )
 	, mState(Led::LedState::OFF)
 {
-	this->Off();
+}
+
+bool Led::Initialize (void)
+{
+	return (this->Off() );
+}
+
+void Led::Update (const uint32_t currentTime)
+{
+	(void) currentTime;
 }
 
 bool Led::On ()
@@ -37,4 +47,5 @@ bool Led::Toggle ()
 Led::LedState Led::Get () const
 {
 	return (this->mState);
+}
 }

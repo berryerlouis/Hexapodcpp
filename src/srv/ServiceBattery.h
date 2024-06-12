@@ -3,6 +3,8 @@
 #include "../cmp/Battery.h"
 #include "Service.h"
 
+
+using namespace Component;
 class ServiceBattery : public Service {
 public:
 	ServiceBattery(Battery &battery);

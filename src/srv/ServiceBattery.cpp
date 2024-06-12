@@ -13,5 +13,13 @@ bool ServiceBattery::Initialize (void)
 
 void ServiceBattery::Update (const uint32_t currentTime)
 {
+	auto state = this->mBattery.GetState();
+
 	this->mBattery.Update(currentTime);
+	if (state != this->mBattery.GetState() )
+	{
+		Frame response;
+		this->mBattery.BuildFrameState(response);
+		this->mServiceMediator->SendFrame(response);
+	}
 }

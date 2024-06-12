@@ -5,6 +5,7 @@
 #include <math.h>
 #include <stddef.h>
 
+using namespace Component;
 class Leg {
 public:
 	static constexpr float BODY_SIDE_X_LENGTH        = 80.0;

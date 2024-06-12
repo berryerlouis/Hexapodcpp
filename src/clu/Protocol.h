@@ -3,6 +3,7 @@
 #include "Frame.h"
 #include <string.h>
 
+namespace Cluster {
 class Protocol {
 public:
 	enum ProtocolStatus
@@ -22,3 +23,4 @@ public:
 private:
 	static uint8_t ConvertHexCharToInt(uint8_t byte);
 };
+}

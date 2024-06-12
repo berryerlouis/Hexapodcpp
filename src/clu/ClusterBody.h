@@ -4,6 +4,8 @@
 #include "Cluster.h"
 #include "Constants.h"
 
+namespace Cluster {
+using namespace Component;
 class ClusterBody : public Cluster {
 public:
 	ClusterBody(Body &body)
@@ -27,16 +29,16 @@ public:
 			{
 				Leg::Position3d position =
 				{
-					position.x = this->GetSignedParam( ( (uint16_t) (request.params[1U] << 8U) + request.params[0U]) ) / 10.0,
-					position.y = this->GetSignedParam( ( (uint16_t) (request.params[3U] << 8U) + request.params[2U]) ) / 10.0,
-					position.z = this->GetSignedParam( ( (uint16_t) (request.params[5U] << 8U) + request.params[4U]) ) / 10.0
+					position.x = this->GetSignedParam( ( (uint16_t) (request.params[1U] << 8U) + request.params[0U]) ) / 10.0f,
+					position.y = this->GetSignedParam( ( (uint16_t) (request.params[3U] << 8U) + request.params[2U]) ) / 10.0f,
+					position.z = this->GetSignedParam( ( (uint16_t) (request.params[5U] << 8U) + request.params[4U]) ) / 10.0f
 				};
 
 				Leg::Rotation3d rotation =
 				{
-					.angleX = this->GetSignedParam( (uint16_t) (request.params[7U] << 8U) + request.params[6U]) / 10.0,
-					.angleY = this->GetSignedParam( (uint16_t) (request.params[9U] << 8U) + request.params[8U]) / 10.0,
-					.angleZ = this->GetSignedParam( (uint16_t) (request.params[11U] << 8U) + request.params[10U]) / 10.0
+					.angleX = this->GetSignedParam( (uint16_t) (request.params[7U] << 8U) + request.params[6U]) / 10.0f,
+					.angleY = this->GetSignedParam( (uint16_t) (request.params[9U] << 8U) + request.params[8U]) / 10.0f,
+					.angleZ = this->GetSignedParam( (uint16_t) (request.params[11U] << 8U) + request.params[10U]) / 10.0f
 				};
 
 				uint16_t travelTime = (uint16_t) (request.params[13U] << 8U) + request.params[12U];
@@ -66,3 +68,4 @@ private:
 		return (value);
 	}
 };
+}

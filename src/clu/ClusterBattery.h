@@ -4,6 +4,9 @@
 #include "Cluster.h"
 #include "Constants.h"
 
+namespace Cluster {
+using namespace Component;
+
 class ClusterBattery : public Cluster {
 public:
 	ClusterBattery(Battery &battery)
@@ -38,3 +41,4 @@ public:
 private:
 	Battery &mBattery;
 };
+}

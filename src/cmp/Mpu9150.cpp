@@ -1,5 +1,6 @@
 #include "Mpu9150.h"
 
+namespace Component {
 #define NB_SAMPLES    20
 
 Mpu9150::Mpu9150(Twi &i2c, const uint8_t address)
@@ -27,6 +28,7 @@ bool Mpu9150::Initialize (void)
 	uint8_t whoAmI  = 0x00U;
 	uint8_t reg     = 0x00U;
 	bool    success = false;
+
 	// check device
 	this->mI2c.ReadRegister(this->mAddress, (uint8_t) ERegister::WHO_AM_I, whoAmI);
 
@@ -222,4 +224,5 @@ bool Mpu9150::BuildFrameTmp (Frame &response)
 
 	response.Build(EClusters::IMU, EImuCommands::TMP, (uint8_t *) &params, 2U);
 	return (true);
+}
 }

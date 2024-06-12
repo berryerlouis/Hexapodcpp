@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
+namespace Driver {
 class DriverInterface {
 public:
 	DriverInterface(void) = default;
@@ -10,3 +11,4 @@ public:
 	virtual bool Initialize(void) = 0;
 	virtual void Update(const uint32_t currentTime) = 0;
 };
+}

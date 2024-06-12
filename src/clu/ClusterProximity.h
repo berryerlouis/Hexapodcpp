@@ -4,6 +4,8 @@
 #include "Cluster.h"
 #include "Constants.h"
 
+namespace Cluster {
+using namespace Component;
 class ClusterProximity : public Cluster {
 public:
 	ClusterProximity(SensorProximity &sensorProximity)
@@ -52,3 +54,4 @@ public:
 private:
 	SensorProximity &mSensorProximity;
 };
+}

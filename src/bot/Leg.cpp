@@ -26,7 +26,7 @@ Leg::Leg(ELeg legId, Servo &coxa, Servo &femur, Servo &tibia)
 		this->mBodyCenterOffsetY = BODY_LEG_MIDDLE_FROM_CENTER_Y_LENGTH;
 
 		this->mFootPosition.x = -(COXA_LENGTH + FEMUR_LENGTH);
-		this->mFootPosition.y = 0;
+		this->mFootPosition.y = 0U;
 		this->mFootPosition.z = TIBIA_LENGTH;
 		break;
 
@@ -53,7 +53,7 @@ Leg::Leg(ELeg legId, Servo &coxa, Servo &femur, Servo &tibia)
 		this->mBodyCenterOffsetY = BODY_LEG_MIDDLE_FROM_CENTER_Y_LENGTH;
 
 		this->mFootPosition.x = (COXA_LENGTH + FEMUR_LENGTH);
-		this->mFootPosition.y = 0;
+		this->mFootPosition.y = 0U;
 		this->mFootPosition.z = TIBIA_LENGTH;
 		break;
 

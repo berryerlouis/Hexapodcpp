@@ -5,6 +5,9 @@
 #include "../drv/InputCapture.h"
 #include "../drv/Gpio.h"
 
+namespace Component {
+using namespace Driver;
+using namespace Cluster;
 class Srf05 : public ProximityInterface {
 public:
 	static const uint64_t ECHO_TIMEOUT       = 30000U;
@@ -13,8 +16,8 @@ public:
 	Srf05(const EProximityCommands side, const SGpio &gpioTrigger, const SGpio &gpioEcho);
 	~Srf05() = default;
 
-	bool Initialize(void);
-	void Update(const uint32_t currentTime);
+	bool Initialize(void) final override;
+	void Update(const uint32_t currentTime) final override;
 
 	void SendPulse(void);
 
@@ -28,3 +31,4 @@ private:
 	InputCapture mGpioEcho;
 	uint16_t mThreshold;
 };
+}

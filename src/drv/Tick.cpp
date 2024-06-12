@@ -1,7 +1,7 @@
 #include "Tick.h"
 #include "Isr.h"
 
-
+namespace Driver {
 volatile uint64_t Tick::tick = 0U;
 
 #define TICK_TIMER    (64.0 / (F_CPU / 1000000.0) )
@@ -48,3 +48,4 @@ ISR(TIMER0_OVF_vect)
 }
 
 Tick MyTick;
+}

@@ -1,7 +1,7 @@
 #include <math.h>
 #include "Buffer.h"
 
-
+namespace Driver {
 Buffer::Buffer() :  mBuffer{0}, mHead(0), mTail(0), mIsEmpty(true)
 {
 }
@@ -49,4 +49,5 @@ uint8_t Buffer::Pop ()
 		}
 	}
 	return (datum);
+}
 }

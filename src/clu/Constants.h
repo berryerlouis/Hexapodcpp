@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdint.h>
-
+namespace Cluster {
 enum EClusters
 {
 	GENERAL   = 0U,
@@ -71,3 +71,4 @@ enum EProximityCommands
 	LASER,
 	SET_THRESHOLD,
 };
+}

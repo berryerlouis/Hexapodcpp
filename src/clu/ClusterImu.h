@@ -4,6 +4,8 @@
 #include "Cluster.h"
 #include "Constants.h"
 
+namespace Cluster {
+using namespace Component;
 class ClusterImu : public Cluster {
 public:
 	ClusterImu(Mpu9150 &mpu9150)
@@ -50,3 +52,4 @@ public:
 private:
 	Mpu9150 &mMpu9150;
 };
+}

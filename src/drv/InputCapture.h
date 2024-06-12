@@ -3,6 +3,7 @@
 #include "DriverInterface.h"
 #include "Gpio.h"
 
+namespace Driver {
 class InputCapture : public DriverInterface {
 public:
 	InputCapture(const SGpio &gpio);
@@ -20,3 +21,4 @@ private:
 	uint64_t mStartTime;
 	uint64_t mDelay;
 };
+}

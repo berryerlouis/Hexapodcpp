@@ -1,6 +1,7 @@
 #include "Adc.h"
 #include "Isr.h"
 
+namespace Driver {
 volatile uint16_t Adc::sAdcValue = 0U;
 
 Adc::Adc(const SGpio & gpio)
@@ -37,4 +38,5 @@ uint16_t Adc::Read ()
 ISR(ADC_vect)
 {
 	ISR_EMBEDDED_CODE(Adc::sAdcValue = ADC; );
+}
 }

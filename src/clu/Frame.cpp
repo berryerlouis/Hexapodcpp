@@ -1,5 +1,6 @@
 #include "Frame.h"
 
+namespace Cluster {
 Frame::Frame(void)
 {
 	Reset();
@@ -27,4 +28,5 @@ void Frame::Reset (void)
 	this->commandId = 0U;
 	this->nbParams  = 0U;
 	memset( (void *) this->params, 0U, FRAME_MAX_PARAMS);
+}
 }

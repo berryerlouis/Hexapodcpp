@@ -1,6 +1,6 @@
 #include "Twi.h"
 #include <util/twi.h>
-
+namespace Driver {
 Twi::Twi(const EI2cFreq &freq)
 	: mFreq(freq)
 	, mTimeout(0U)
@@ -10,7 +10,7 @@ Twi::Twi(const EI2cFreq &freq)
 bool Twi::Initialize (void)
 {
 	TWBR = ( (F_CPU / this->mFreq) - 16) / 2;
-	TWSR = 0;
+	TWSR = 0U;
 	TWCR = (1 << TWEN);
 
 	return (true);
@@ -63,7 +63,7 @@ bool Twi::ReadRegisters (const uint8_t address, const uint8_t reg, uint8_t *data
 	Write(reg);
 	RepeatedStart(address);
 
-	for (size_t i = 0U; i < length; i++)
+	for ( size_t i = 0U; i < length; i++ )
 	{
 		data[i] = ReadAck();
 	}
@@ -109,7 +109,7 @@ bool Twi::WriteRegisters (const uint8_t address, const uint8_t reg, uint8_t *dat
 	Start(address);
 	Write(reg);
 
-	for (size_t i = 0U; i < length; i++)
+	for ( size_t i = 0U; i < length; i++ )
 	{
 		Write(data[i]);
 	}
@@ -128,7 +128,7 @@ Twi::EI2cStatus Twi::Start (const uint8_t slave)
 	{
 		this->mTimeout++;
 	}
-	this->mTimeout = 0;
+	this->mTimeout = 0U;
 	status         = TWSR & 0xF8;
 
 	if (status != 0x08)
@@ -142,7 +142,7 @@ Twi::EI2cStatus Twi::Start (const uint8_t slave)
 	{
 		this->mTimeout++;
 	}
-	this->mTimeout = 0;
+	this->mTimeout = 0U;
 	status         = TWSR & 0xF8;
 
 	if (status == 0x18)
@@ -170,7 +170,7 @@ Twi::EI2cStatus Twi::RepeatedStart (const uint8_t slave)
 	{
 		this->mTimeout++;
 	}
-	this->mTimeout = 0;
+	this->mTimeout = 0U;
 	status         = TWSR & 0xF8;
 
 	if (status != 0x10)
@@ -184,7 +184,7 @@ Twi::EI2cStatus Twi::RepeatedStart (const uint8_t slave)
 	{
 		this->mTimeout++;
 	}
-	this->mTimeout = 0;
+	this->mTimeout = 0U;
 	status         = TWSR & 0xF8;
 
 	if (status == 0x40)
@@ -213,7 +213,7 @@ Twi::EI2cStatus Twi::Write (const uint8_t data)
 	{
 		this->mTimeout++;
 	}
-	this->mTimeout = 0;
+	this->mTimeout = 0U;
 	status         = TWSR & 0xF8;
 
 	if (status == 0x28)
@@ -244,7 +244,7 @@ uint8_t Twi::ReadAck (void)
 	{
 		this->mTimeout++;
 	}
-	this->mTimeout = 0;
+	this->mTimeout = 0U;
 	return (TWDR);
 }
 
@@ -261,7 +261,7 @@ uint8_t Twi::ReadNack (void)
 	{
 		this->mTimeout++;
 	}
-	this->mTimeout = 0;
+	this->mTimeout = 0U;
 	return (TWDR);
 }
 
@@ -273,6 +273,7 @@ Twi::EI2cStatus Twi::Stop (void)
 	{
 		this->mTimeout++;
 	}
-	this->mTimeout = 0;
+	this->mTimeout = 0U;
 	return (EI2cStatus::ACK);
+}
 }

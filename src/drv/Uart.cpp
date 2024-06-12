@@ -1,6 +1,7 @@
 #include "Uart.h"
 #include "Isr.h"
 
+namespace Driver {
 Buffer Uart::bufferRx;
 
 Uart::Uart(const EBaudRate & baud) : mBaudRate(baud)
@@ -31,7 +32,7 @@ void Uart::Send (const char *data, const size_t len)
 
 void Uart::Send (const uint8_t *data, const size_t len)
 {
-	for (size_t i = 0; i < len; ++i)
+	for ( size_t i = 0U; i < len; ++i )
 	{
 		Send(data[i]);
 	}
@@ -62,17 +63,15 @@ ISR(USART0_RX_vect)
 		volatile uint8_t receivedData = UDR0;
 
 		if ( (UCSR0A & ( (1 << FE0) | (1 << DOR0) | (1 << UPE0) ) ) == 0)
-	{
-		if ( (receivedData == 60 || receivedData == 62) ||
-			  (receivedData >= 48 && receivedData <= 57) ||
-			  (receivedData >= 65 && receivedData <= 70) ||
-			  (receivedData >= 97 && receivedData <= 102) )
 		{
-			Uart::bufferRx.Push(receivedData);
+			if ( (receivedData == 60 || receivedData == 62) ||
+				  (receivedData >= 48 && receivedData <= 57) ||
+				  (receivedData >= 65 && receivedData <= 70) ||
+				  (receivedData >= 97 && receivedData <= 102) )
+			{
+				Uart::bufferRx.Push(receivedData);
+			}
 		}
-	}
 		);
 }
-
-
-Uart MySerial;
+}

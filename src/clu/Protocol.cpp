@@ -1,7 +1,7 @@
 #include "../clu/Frame.h"
 #include "Protocol.h"
-//#include <Arduino.h>
 
+namespace Cluster {
 Protocol::Protocol()
 {
 }
@@ -90,4 +90,5 @@ uint8_t Protocol::ConvertHexCharToInt (uint8_t byte)
 		return (byte + 10U - 'a');
 	}
 	return (0xFFU);
+}
 }

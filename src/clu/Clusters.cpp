@@ -1,5 +1,7 @@
 #include "Clusters.h"
 
+namespace Cluster {
+using namespace Component;
 Clusters::Clusters(Battery &battery, Mpu9150 &mpu9150, SensorProximity &sensorProximity, Servos &servos, Body &body)
 	: mClusterGeneral()
 	, mClusterBattery(battery)
@@ -18,4 +20,5 @@ Cluster *Clusters::GetCluster (const uint8_t clusterId) const
 		return (this->mClusters[clusterId]);
 	}
 	return (nullptr);
+}
 }

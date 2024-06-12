@@ -1,10 +1,13 @@
 #include "../srv/Services.h"
 
-Services::Services(ServiceControl &serviceControl,
-						 ServiceProximity &serviceProximity,
-						 ServiceOrientation &serviceOrientation,
-						 ServiceBattery &serviceBattery)
-	: mServices{
+Services::Services(
+	Communication &communication,
+	ServiceControl &serviceControl,
+	ServiceProximity &serviceProximity,
+	ServiceOrientation &serviceOrientation,
+	ServiceBattery &serviceBattery)
+	: mCommunication(communication)
+	, mServices{
 					&serviceControl,
 					&serviceProximity,
 					&serviceOrientation,
@@ -16,8 +19,10 @@ Services::Services(ServiceControl &serviceControl,
 bool Services::Initialize (void)
 {
 	bool success = false;
-	for (size_t i = 0U; i < NB_SERVICES; i++)
+
+	for ( size_t i = 0U; i < NB_SERVICES; i++ )
 	{
+		mServices[i]->set_ServiceMediator(this);
 		success = mServices[i]->Initialize();
 		if (success == false)
 		{
@@ -29,7 +34,7 @@ bool Services::Initialize (void)
 
 void Services::Update (const uint32_t currentTime)
 {
-	for (size_t i = 0U; i < NB_SERVICES; i++)
+	for ( size_t i = 0U; i < NB_SERVICES; i++ )
 	{
 		if (mServices[i]->IsTimeToUpdate(currentTime) )
 		{
@@ -42,4 +47,9 @@ void Services::Update (const uint32_t currentTime)
 Service *Services::GetService (const uint8_t serviceId) const
 {
 	return (mServices[serviceId]);
+}
+
+void Services::SendFrame (Frame &message) const
+{
+	this->mCommunication.Send(message);
 }

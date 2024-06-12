@@ -3,6 +3,8 @@
 #include "../cmp/Servos.h"
 #include "Service.h"
 
+
+using namespace Component;
 class ServiceControl : public Service {
 public:
 	ServiceControl(Servos &servos);

@@ -9,6 +9,8 @@
 #include "ClusterServo.h"
 #include "Constants.h"
 
+namespace Cluster {
+using namespace Component;
 class Clusters {
 public:
 	Clusters(Battery &battery, Mpu9150 &mpu9150, SensorProximity &sensorProximity, Servos &servos, Body &body);
@@ -26,3 +28,4 @@ private:
 
 	Cluster *mClusters[NB_CLUSTERS];
 };
+}

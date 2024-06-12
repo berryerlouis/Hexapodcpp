@@ -1,5 +1,6 @@
 #include "Servos.h"
 
+namespace Component {
 Servos::Servos(Pca9685 &pca9685_0, Pca9685 &pca9685_1)
 	: mServo0(pca9685_0, 0, 90U, 15, 60U, 120U, false)
 	, mServo1(pca9685_0, 1, 90U, -4, 60U, 120U, false)
@@ -31,7 +32,7 @@ bool Servos::Initialize (void)
 	this->mPca9685Left.Initialize();
 	this->mPca9685Right.Initialize();
 
-	for (size_t servoId = 0U; servoId < NB_SERVOS; servoId++)
+	for ( size_t servoId = 0U; servoId < NB_SERVOS; servoId++ )
 	{
 		this->mServos[servoId]->Initialize();
 	}
@@ -41,7 +42,7 @@ bool Servos::Initialize (void)
 
 void Servos::Update (const uint32_t currentTime)
 {
-	for (size_t servoId = 0U; servoId < NB_SERVOS; servoId++)
+	for ( size_t servoId = 0U; servoId < NB_SERVOS; servoId++ )
 	{
 		this->mServos[servoId]->Update(currentTime);
 	}
@@ -65,7 +66,7 @@ bool Servos::BuildFrameAllAngle (Frame &response)
 {
 	uint8_t params[NB_SERVOS] = { 0U };
 
-	for (size_t servoId = 0U; servoId < NB_SERVOS; servoId++)
+	for ( size_t servoId = 0U; servoId < NB_SERVOS; servoId++ )
 	{
 		params[servoId] = GetServo(servoId).GetAngle();
 	}
@@ -147,4 +148,5 @@ bool Servos::BuildFrameReverse (uint8_t servoId, Frame &response)
 				  EServoCommands::GET_REVERSE,
 				  params,
 				  2U) );
+}
 }

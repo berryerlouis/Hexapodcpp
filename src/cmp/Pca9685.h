@@ -1,6 +1,8 @@
 #pragma once
 #include "../drv/Twi.h"
 
+namespace Component {
+using namespace Driver;
 class Pca9685 {
 public:
 	static const uint8_t PCA9685_I2C_ADDRESS = 0x40U;
@@ -81,3 +83,4 @@ private:
 	uint32_t mInternalOscillatorFrequency;
 	SPwm mPwm[EConstant::NB_LEDS];
 };
+}

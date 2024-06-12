@@ -1,4 +1,3 @@
-#include "../drv/Communication.h"
 #include "SensorProximity.h"
 
 SensorProximity::SensorProximity(Srf05 &srf05Left, Srf05 &srf05Right, Vl53l0x &Vl53l0x)
@@ -13,6 +12,7 @@ SensorProximity::SensorProximity(Srf05 &srf05Left, Srf05 &srf05Right, Vl53l0x &V
 bool SensorProximity::Initialize (void)
 {
 	uint8_t success = 0U;
+
 	success       |= this->mSrf05Left.Initialize() << 0U;
 	success       |= this->mSrf05Right.Initialize() << 1U;
 	success       |= this->mVl53l0x.Initialize() << 2U;
@@ -32,13 +32,13 @@ void SensorProximity::Update (const uint32_t currentTime)
 	else if (this->mStepSrf == SensorProximity::UPDATE_STEP_SRF_MS)
 	{
 		this->mSrf05Right.Update(currentTime);
-		this->mStepSrf = 0;
+		this->mStepSrf = 0U;
 	}
 
 	if (++this->mStepVlx == SensorProximity::UPDATE_STEP_VLX_MS)
 	{
 		this->mVl53l0x.Update(currentTime);
-		this->mStepVlx = 0;
+		this->mStepVlx = 0U;
 	}
 }
 

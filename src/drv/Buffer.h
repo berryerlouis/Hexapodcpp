@@ -1,7 +1,8 @@
 #pragma once
 
-#include <avr/io.h>
+#include <stdint.h>
 
+namespace Driver {
 const uint8_t BUFFER_MAX_SIZE = 100U;
 
 class Buffer
@@ -19,3 +20,4 @@ private:
 	volatile uint8_t mTail;
 	volatile bool mIsEmpty;
 };
+}

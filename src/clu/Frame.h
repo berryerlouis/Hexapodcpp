@@ -4,8 +4,10 @@
 #include <stdio.h>
 #include <string.h>
 
+namespace Cluster {
 #define FRAME_MAX_PARAMS    20U
-class Frame {
+struct Frame
+{
 public:
 	Frame(void);
 	~Frame(void) = default;
@@ -20,3 +22,4 @@ public:
 
 private:
 };
+}
