@@ -2,15 +2,21 @@
 #include "../drv/Tick.h"
 #include <avr/wdt.h>
 
+Gpio ledBoot   = Gpio({ EPort::PORT_B, EPin::PIN_0 }, EPortDirection::OUT);
+Gpio ledStatus = Gpio({ EPort::PORT_B, EPin::PIN_1 }, EPortDirection::OUT);
+Gpio ledLeft   = Gpio({ EPort::PORT_B, EPin::PIN_2 }, EPortDirection::OUT);
+Gpio ledRight  = Gpio({ EPort::PORT_B, EPin::PIN_3 }, EPortDirection::OUT);
+Gpio adcPin    = Gpio({ EPort::PORT_A, EPin::PIN_0 }, EPortDirection::IN);
+Adc  adcBattery(adcPin);
 namespace app {
 App::App(void)
 	: mUart()
 	, mTwi(Twi::EI2cFreq::FREQ_400_KHZ)
-	, mLedBoot({ EPort::PORT_B, EPin::PIN_0 })
-	, mLedStatus({ EPort::PORT_B, EPin::PIN_1 })
-	, mLedLeft({ EPort::PORT_B, EPin::PIN_2 })
-	, mLedRight({ EPort::PORT_B, EPin::PIN_3 })
-	, mBattery({ EPort::PORT_A, EPin::PIN_0 })
+	, mLedBoot(ledStatus)
+	, mLedStatus(ledStatus)
+	, mLedLeft(ledLeft)
+	, mLedRight(ledRight)
+	, mBattery(adcBattery)
 	, mMpu9150(mTwi)
 	, mSrf05Left(EProximityCommands::US_LEFT, { EPort::PORT_A, EPin::PIN_1 }, { EPort::PORT_A, EPin::PIN_2 })
 	, mSrf05Right(EProximityCommands::US_RIGHT, { EPort::PORT_A, EPin::PIN_3 }, { EPort::PORT_A, EPin::PIN_4 })
@@ -34,7 +40,6 @@ App::App(void)
 bool App::Initialize (void)
 {
 	bool success = false;
-	wdt_enable(WDTO_15MS);
 	success = mUart.Initialize();
 	if (success == true)
 	{
@@ -52,6 +57,7 @@ bool App::Initialize (void)
 	{
 		mUart.Send("<error>", strlen("<error>") );
 	}
+	wdt_enable(WDTO_15MS);
 	return (success);
 }
 

@@ -12,7 +12,7 @@ public:
 		OFF
 	};
 
-	Led(const SGpio &gpio);
+	Led(GpioInterface &gpio);
 	~Led() = default;
 
 	virtual bool Initialize(void) final override;
@@ -24,7 +24,7 @@ public:
 	LedState Get() const;
 
 private:
-	Gpio mGpio;
+	GpioInterface &mGpio;
 	LedState mState;
 };
 }

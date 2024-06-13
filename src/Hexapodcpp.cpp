@@ -8,15 +8,20 @@ App robot;
 int main (void)
 {
 	//hexapod initialization
-	robot.Initialize();
+	if (robot.Initialize() )
+	{
+		//enable ITs
+		sei();
 
-	//enable ITs
-	sei();
+		while (true)
+		{
+			//hexapod loop update
+			robot.Update();
+		}
+	}
 
 	while (true)
 	{
-		//hexapod loop update
-		robot.Update();
 	}
 
 	return (-1);

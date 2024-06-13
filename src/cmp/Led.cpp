@@ -1,8 +1,8 @@
 #include "Led.h"
 
 namespace Component {
-Led::Led(const SGpio &gpio)
-	: mGpio(Gpio(gpio, EPortDirection::OUT) )
+Led::Led(GpioInterface &gpio)
+	: mGpio(gpio)
 	, mState(Led::LedState::OFF)
 {
 }

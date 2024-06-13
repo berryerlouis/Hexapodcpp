@@ -28,5 +28,7 @@ private:
 	UartInterface &mUart;
 	const Clusters &mClusters;
 	Led &mLedStatus;
+	char mBufferRx[100U];
+	uint8_t mIndexBufferRx;
 };
 }

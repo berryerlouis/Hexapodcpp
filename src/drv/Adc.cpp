@@ -4,8 +4,8 @@
 namespace Driver {
 volatile uint16_t Adc::sAdcValue = 0U;
 
-Adc::Adc(const SGpio & gpio)
-	: mGpio(Gpio(gpio, EPortDirection::IN) )
+Adc::Adc(GpioInterface & gpio)
+	: mGpio(gpio)
 {
 }
 

@@ -3,6 +3,7 @@
 #include "../drv/Gpio.h"
 #include "../drv/Twi.h"
 #include "../drv/Uart.h"
+#include "../drv/Adc.h"
 #include "../clu/Clusters.h"
 #include "../cmp/Battery.h"
 #include "../cmp/Led.h"

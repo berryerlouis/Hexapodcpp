@@ -13,11 +13,11 @@ bool SensorProximity::Initialize (void)
 {
 	uint8_t success = 0U;
 
-	success       |= this->mSrf05Left.Initialize() << 0U;
-	success       |= this->mSrf05Right.Initialize() << 1U;
-	success       |= this->mVl53l0x.Initialize() << 2U;
 	this->mStepSrf = 0U;
 	this->mStepVlx = 0U;
+	success        = this->mSrf05Left.Initialize() << 0U;
+	success       |= this->mSrf05Right.Initialize() << 1U;
+	success       |= this->mVl53l0x.Initialize() << 2U;
 
 	return (success == 7U);
 }

@@ -1,13 +1,12 @@
 #include "Communication.h"
 
 namespace Component {
-char    bufferRx[100U];
-uint8_t indexBufferRx = 0U;
-
 Communication::Communication(UartInterface &uart, const Clusters &clusters, Led &ledStatus)
 	: mUart(uart)
 	, mClusters(clusters)
 	, mLedStatus(ledStatus)
+	, mBufferRx{0U}
+	, mIndexBufferRx(0U)
 {
 }
 
@@ -23,10 +22,7 @@ void Communication::Update (const uint32_t currentTime)
 	{
 		Frame request;
 		Frame response;
-		char  frameBuffer[100U];
-
-		memcpy(frameBuffer, bufferRx, indexBufferRx);
-		Protocol::ProtocolStatus parsedStatus = Protocol::Decode(frameBuffer, request);
+		Protocol::ProtocolStatus parsedStatus = Protocol::Decode(this->mBufferRx, request);
 		if (parsedStatus == Protocol::ProtocolStatus::NO_ERROR)
 		{
 			uint8_t           frameClusterID = request.clusterId;
@@ -83,17 +79,17 @@ bool Communication::ReceivedStringFrame (void)
 		const char rc = this->mUart.Read();
 		if (rc == '<')
 		{
-			indexBufferRx = 0U;
+			this->mIndexBufferRx = 0U;
 		}
 		else if (rc != '>')
 		{
-			bufferRx[indexBufferRx] = rc;
-			indexBufferRx++;
+			this->mBufferRx[this->mIndexBufferRx] = rc;
+			this->mIndexBufferRx++;
 		}
 		else
 		{
-			bufferRx[indexBufferRx] = '\0';
-			indexBufferRx++;
+			this->mBufferRx[this->mIndexBufferRx] = '\0';
+			this->mIndexBufferRx++;
 			return (true);
 		}
 	}

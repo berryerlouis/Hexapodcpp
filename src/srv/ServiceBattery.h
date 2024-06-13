@@ -15,4 +15,5 @@ public:
 
 private:
 	Battery &mBattery;
+	bool BuildFrameState(Frame &response);
 };

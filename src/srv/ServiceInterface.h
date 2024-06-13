@@ -19,7 +19,7 @@ public:
 	{
 	}
 
-	void set_ServiceMediator (ServiceMediator *ServiceMediator)
+	void SetComComponent (ServiceMediator *ServiceMediator)
 	{
 		this->mServiceMediator = ServiceMediator;
 	}

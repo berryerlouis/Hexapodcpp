@@ -20,9 +20,9 @@ bool Services::Initialize (void)
 {
 	bool success = false;
 
-	for ( size_t i = 0U; i < NB_SERVICES; i++ )
+	for (size_t i = 0U; i < NB_SERVICES; i++)
 	{
-		mServices[i]->set_ServiceMediator(this);
+		mServices[i]->SetComComponent(this);
 		success = mServices[i]->Initialize();
 		if (success == false)
 		{
@@ -34,7 +34,7 @@ bool Services::Initialize (void)
 
 void Services::Update (const uint32_t currentTime)
 {
-	for ( size_t i = 0U; i < NB_SERVICES; i++ )
+	for (size_t i = 0U; i < NB_SERVICES; i++)
 	{
 		if (mServices[i]->IsTimeToUpdate(currentTime) )
 		{

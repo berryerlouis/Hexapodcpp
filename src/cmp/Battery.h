@@ -3,13 +3,14 @@
 #include "ComponentInterface.h"
 #include "../clu/Constants.h"
 #include "../clu/Frame.h"
-#include "../drv/Adc.h"
+#include "../drv/AdcInterface.h"
 
 namespace Component {
 using namespace Driver;
 using namespace Cluster;
 
 class Battery : public ComponentInterface {
+public:
 	enum BatteryState
 	{
 		NOMINAL = 0x00U,
@@ -17,9 +18,8 @@ class Battery : public ComponentInterface {
 		CRITICAL,
 		UNKNOWN = 0xFFU
 	};
-
 public:
-	Battery(const SGpio &gpio);
+	Battery(AdcInterface &adc);
 	~Battery() = default;
 
 	BatteryState GetState(void);
@@ -28,12 +28,9 @@ public:
 	virtual bool Initialize(void) final override;
 	virtual void Update(const uint32_t currentTime) final override;
 
-	bool BuildFrameVoltage(Frame & response);
-	bool BuildFrameState(Frame & response);
-
 private:
 	uint16_t mVoltage;
 	BatteryState mState;
-	Adc mAdc;
+	AdcInterface &mAdc;
 };
 }
