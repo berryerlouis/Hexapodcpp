@@ -1,6 +1,7 @@
 #include "Srf05.h"
 #include "../drv/Tick.h"
 
+namespace Component {
 Srf05::Srf05(const EProximityCommands side, const SGpio &gpioTrigger, const SGpio &gpioEcho)
 	: mSide(side)
 	, mGpioTrigger(Gpio(gpioTrigger, EPortDirection::OUT) )
@@ -44,4 +45,5 @@ void Srf05::SendPulse (void)
 uint16_t Srf05::GetDistance (void)
 {
 	return ( (uint16_t) ( (this->mGpioEcho.GetInputCaptureTime() / 58.0F) ) );
+}
 }

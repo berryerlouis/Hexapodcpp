@@ -2,6 +2,7 @@
 
 #include "ClusterInterface.h"
 
+namespace Cluster {
 class Cluster : public ClusterInterface {
 public:
 	Cluster(EClusters clusterId)
@@ -19,3 +20,4 @@ public:
 private:
 	const EClusters mClusterId;
 };
+}

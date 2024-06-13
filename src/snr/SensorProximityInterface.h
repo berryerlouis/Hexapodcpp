@@ -15,9 +15,9 @@ public:
 	SensorProximityInterface(void) = default;
 	~SensorProximityInterface()    = default;
 
-	virtual uint16_t GetDistance(const SensorsId sensorId) = 0;
-	virtual bool SetThreshold(const SensorsId sensorId, const uint16_t threshold) = 0;
-	virtual bool IsDetecting(const SensorsId sensorId) = 0;
+	virtual uint16_t GetDistance(const SensorsId sensorId) = 0U;
+	virtual bool SetThreshold(const SensorsId sensorId, const uint16_t threshold) = 0U;
+	virtual bool IsDetecting(const SensorsId sensorId) = 0U;
 
 private:
 };

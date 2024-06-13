@@ -4,6 +4,10 @@
 #include "../clu/Frame.h"
 #include "../drv/Twi.h"
 
+namespace Component {
+using namespace Driver;
+using namespace Cluster;
+
 class Mpu9150 {
 public:
 	struct Vector3
@@ -200,3 +204,4 @@ private:
 	Vector3 mMag;
 	uint8_t mTmp;
 };
+}

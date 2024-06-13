@@ -2,7 +2,7 @@
 
 #include "UartInterface.h"
 #include "Buffer.h"
-
+namespace Driver {
 class Uart : public UartInterface {
 public:
 	enum EBaudRate
@@ -28,5 +28,4 @@ public:
 private:
 	EBaudRate mBaudRate;
 };
-
-extern Uart MySerial;
+}

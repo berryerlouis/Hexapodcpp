@@ -2,6 +2,7 @@
 
 #include "DriverInterface.h"
 
+namespace Driver {
 class Twi : public DriverInterface {
 public:
 	enum EI2cFreq
@@ -44,3 +45,4 @@ private:
 	EI2cFreq mFreq;
 	uint16_t mTimeout;
 };
+}

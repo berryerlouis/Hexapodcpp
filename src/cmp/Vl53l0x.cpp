@@ -1,6 +1,7 @@
 #include "Vl53l0x.h"
 #include "../drv/Tick.h"
 
+namespace Component {
 #define decodeVcselPeriod(reg_val)             ( ( (reg_val) + 1) << 1)
 #define encodeVcselPeriod(period_pclks)        ( ( (period_pclks) >> 1) - 1)
 #define calcMacroPeriod(vcsel_period_pclks)    ( ( ( (uint32_t) 2304 * (vcsel_period_pclks) * 1655) + 500) / 1000)
@@ -19,7 +20,7 @@ Vl53l0x::Vl53l0x(Twi &i2c, const uint8_t address)
 bool Vl53l0x::Initialize (void)
 {
 	bool    success = false;
-	uint8_t data    = 0;
+	uint8_t data    = 0U;
 
 	this->mI2c.ReadRegister(this->mAddress, VL53L0X_IDENTIFICATION_MODEL_ID, data);
 
@@ -71,7 +72,7 @@ bool Vl53l0x::Initialize (void)
 			uint8_t first_spad_to_enable = spad_type_is_aperture ? 12 : 0;
 			uint8_t spads_enabled        = 0U;
 
-			for (size_t i = 0U; i < 48U; i++)
+			for ( size_t i = 0U; i < 48U; i++ )
 			{
 				if (i < first_spad_to_enable || spads_enabled == spad_count)
 				{
@@ -408,8 +409,8 @@ uint16_t Vl53l0x::EncodeTimeout (uint32_t timeout_mclks)
 {
 	// format: "(LSByte * 2^MSByte) + 1"
 
-	uint32_t ls_byte = 0;
-	uint16_t ms_byte = 0;
+	uint32_t ls_byte = 0U;
+	uint16_t ms_byte = 0U;
 
 	if (timeout_mclks > 0)
 	{
@@ -566,7 +567,7 @@ bool Vl53l0x::SetVcselPulsePeriod (VcselPeriodType type, uint8_t period_pclks)
 	// "Perform the phase calibration. This is needed after changing on vcsel period."
 	// VL53L0X_perform_phase_calibration() begin
 
-	uint8_t sequence_config = 0;
+	uint8_t sequence_config = 0U;
 	this->mI2c.ReadRegister(this->mAddress, VL53L0X_SYSTEM_SEQUENCE_CONFIG, sequence_config);
 	this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSTEM_SEQUENCE_CONFIG, 0x02);
 	this->PerformSingleRefCalibration(0x0);
@@ -605,7 +606,7 @@ bool Vl53l0x::SetSignalRateLimit (float limit_Mcps)
 
 float Vl53l0x::GetSignalRateLimit (void)
 {
-	uint16_t data16 = 0;
+	uint16_t data16 = 0U;
 
 	this->mI2c.ReadRegister16Bits(this->mAddress, VL53L0X_FINAL_RANGE_CONFIG_MIN_COUNT_RATE_RTN_LIMIT, data16);
 	return ( (float) (data16 / (1 << 7) ) );
@@ -616,7 +617,7 @@ bool Vl53l0x::PerformSingleRefCalibration (uint8_t vhv_init_byte)
 	this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSRANGE_START, 0x01 | vhv_init_byte);
 
 	uint32_t timeout = MyTick.GetMs();
-	uint8_t  data    = 0;
+	uint8_t  data    = 0U;
 
 	do
 	{
@@ -731,3 +732,4 @@ void Vl53l0x::Tune (void)
 	this->mI2c.WriteRegister(this->mAddress, 0xFF, 0x00);
 	this->mI2c.WriteRegister(this->mAddress, 0x80, 0x00);
 } // Vl53l0x::Tune
+}

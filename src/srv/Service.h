@@ -2,7 +2,7 @@
 
 #include "ServiceInterface.h"
 
-class Service : public ServiceInterface {
+class Service : public ServiceInterface, public BaseComponent {
 public:
 	Service(uint32_t updateTime)
 		: mUpdateTime(updateTime)

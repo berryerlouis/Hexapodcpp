@@ -3,6 +3,8 @@
 #include "../snr/SensorProximity.h"
 #include "Service.h"
 
+
+using namespace Component;
 class ServiceProximity : public Service {
 public:
 	ServiceProximity(SensorProximity &SensorProximity);

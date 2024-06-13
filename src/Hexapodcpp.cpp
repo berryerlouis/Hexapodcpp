@@ -1,22 +1,27 @@
-#define _AVR_IOM1284P_H_
-#include <avr/io.h>
 #include <avr/interrupt.h>
 #include "app/App.h"
 
-App app;
+using namespace app;
+
+App robot;
 
 int main (void)
 {
 	//hexapod initialization
-	app.Initialize();
+	if (robot.Initialize() )
+	{
+		//enable ITs
+		sei();
 
-	//enable ITs
-	sei();
+		while (true)
+		{
+			//hexapod loop update
+			robot.Update();
+		}
+	}
 
 	while (true)
 	{
-		//hexapod loop update
-		app.Update();
 	}
 
 	return (-1);

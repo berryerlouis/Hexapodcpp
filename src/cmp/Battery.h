@@ -1,11 +1,16 @@
 #pragma once
 
+#include "ComponentInterface.h"
 #include "../clu/Constants.h"
 #include "../clu/Frame.h"
-#include "../drv/Adc.h"
-#include "../drv/Gpio.h"
+#include "../drv/AdcInterface.h"
 
-class Battery {
+namespace Component {
+using namespace Driver;
+using namespace Cluster;
+
+class Battery : public ComponentInterface {
+public:
 	enum BatteryState
 	{
 		NOMINAL = 0x00U,
@@ -13,23 +18,19 @@ class Battery {
 		CRITICAL,
 		UNKNOWN = 0xFFU
 	};
-
 public:
-	Battery(const SGpio &gpio);
+	Battery(AdcInterface &adc);
 	~Battery() = default;
 
 	BatteryState GetState(void);
-	uint16_t GetVoltage(void);
+	uint16_t     GetVoltage(void);
 
-	bool Initialize(void);
-	void Update(const uint32_t currentTime);
-
-	bool BuildFrameVoltage(Frame &response);
-	bool BuildFrameState(Frame &response);
+	virtual bool Initialize(void) final override;
+	virtual void Update(const uint32_t currentTime) final override;
 
 private:
 	uint16_t mVoltage;
 	BatteryState mState;
-	BatteryState mOldState;
-	Adc mAdc;
+	AdcInterface &mAdc;
 };
+}

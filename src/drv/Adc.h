@@ -1,24 +1,26 @@
 #pragma once
 
 #include "DriverInterface.h"
-#include "Gpio.h"
+#include "AdcInterface.h"
 
-class Adc : public DriverInterface {
+namespace Driver {
+class Adc : public AdcInterface {
 public:
 #define BRIDGE_DIVIDER    (float) (0.2F)
 #define ADC_STEP          (float) (5.0 / 1024)
 #define ADC_VOLT(ADC_VALUE)    (float) (ADC_STEP * ADC_VALUE)
 
-	Adc(const SGpio & gpio);
+	Adc(GpioInterface & gpio);
 	~Adc() = default;
 
 	virtual bool Initialize(void) final override;
 	virtual void Update(const uint32_t currentTime) final override;
 
-	void StartConversion(void);
-	uint16_t Read(void);
+	virtual void StartConversion(void) final override;
+	virtual uint16_t Read(void) final override;
 
 	static volatile uint16_t sAdcValue;
 private:
-	Gpio mGpio;
+	GpioInterface &mGpio;
 };
+}

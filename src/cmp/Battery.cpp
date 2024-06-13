@@ -1,15 +1,13 @@
-#include "../drv/Communication.h"
 #include "Battery.h"
 
-
+namespace Component {
 #define NOMINAL_LEVEL    80U
 #define WARNING_LEVEL    75U
 
-Battery::Battery(const SGpio &gpio)
-	: mVoltage(0)
+Battery::Battery(AdcInterface &adc)
+	: mVoltage(0U)
 	, mState(BatteryState::UNKNOWN)
-	, mOldState(BatteryState::UNKNOWN)
-	, mAdc(gpio)
+	, mAdc(adc)
 {
 }
 
@@ -35,14 +33,6 @@ void Battery::Update (const uint32_t currentTime)
 	{
 		this->mState = CRITICAL;
 	}
-
-	if (this->mOldState != this->mState)
-	{
-		Frame response;
-		BuildFrameState(response);
-		Communication::Send(response);
-	}
-	this->mOldState = this->mState;
 }
 
 Battery::BatteryState Battery::GetState (void)
@@ -54,27 +44,4 @@ uint16_t Battery::GetVoltage (void)
 {
 	return (this->mVoltage);
 }
-
-bool Battery::BuildFrameVoltage (Frame &response)
-{
-	uint16_t volt     = GetVoltage();
-	uint8_t  params[] = { (uint8_t) (volt >> 8U), (uint8_t) volt };
-
-	return (response.Build(
-				  EClusters::BATTERY,
-				  EBatteryCommands::GET_VOLTAGE,
-				  params,
-				  2U) );
-}
-
-bool Battery::BuildFrameState (Frame &response)
-{
-	uint16_t volt     = GetVoltage();
-	uint8_t  params[] = { GetState(), (uint8_t) (volt >> 8U), (uint8_t) volt };
-
-	return (response.Build(
-				  EClusters::BATTERY,
-				  EBatteryCommands::GET_BAT_STATUS,
-				  params,
-				  3U) );
 }

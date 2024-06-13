@@ -1,8 +1,8 @@
 #pragma once
 
 #include <stdint.h>
-#include <avr/io.h>
 
+namespace Driver {
 enum EPortDirection
 {
 	IN  = 0U,
@@ -43,10 +43,11 @@ public:
 
 	virtual bool Set(void)               = 0;
 	virtual bool Reset(void)             = 0;
-	virtual EPin&GetPin(void)            = 0;
+	virtual EPin &GetPin(void)           = 0;
 	virtual bool Get(void)               = 0;
 	virtual void SetInterruptPin(void)   = 0;
 	virtual void ResetInterruptPin(void) = 0;
 
 private:
 };
+}

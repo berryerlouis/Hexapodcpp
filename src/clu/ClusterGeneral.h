@@ -3,7 +3,8 @@
 #include "Cluster.h"
 #include "Constants.h"
 
-
+namespace Cluster {
+using namespace Component;
 class ClusterGeneral : public Cluster {
 public:
 	ClusterGeneral()
@@ -36,7 +37,7 @@ public:
 			break;
 
 		case EGeneralCommands::RESET_EXECUTION_TIME:
-			/*App::GetInstance().mMaxTime = 0;
+			/*App::GetInstance().mMaxTime = 0U;
 			 * uint32_t params = App::App::GetInstance().mMaxTime;
 			 * response = Response{GENERAL, INSTANT_EXECUTION_TIME, (uint8_t *)&params, 8U};*/
 			success = true;
@@ -57,3 +58,4 @@ private:
 		return (true);
 	}
 };
+}

@@ -1,0 +1,10 @@
+#! /bin/sh
+
+cd unittests/build
+make -j16 -Wno-dev
+ctest -j16 --rerun-failed --output-on-failure --gtest_color=yes
+if command; then
+    echo "Command succeeded"
+else
+    echo "Command failed"
+fi

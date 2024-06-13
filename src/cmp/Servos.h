@@ -3,6 +3,9 @@
 #include "../clu/Frame.h"
 #include "Servo.h"
 
+namespace Component {
+using namespace Cluster;
+
 static const uint8_t NB_SERVOS = 18U;
 class Servos {
 public:
@@ -46,3 +49,4 @@ private:
 	Pca9685 &mPca9685Left;
 	Pca9685 &mPca9685Right;
 };
+}

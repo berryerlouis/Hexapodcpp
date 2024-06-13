@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GpioInterface.h"
-
+namespace Driver {
 class Gpio : public GpioInterface
 {
 public:
@@ -11,7 +11,7 @@ public:
 	virtual bool Set(void) final override;
 	virtual bool Reset(void) final override;
 	virtual bool Get(void) final override;
-	virtual EPin&GetPin(void) final override;
+	virtual EPin &GetPin(void) final override;
 	virtual void SetInterruptPin(void) final override;
 	virtual void ResetInterruptPin(void) final override;
 
@@ -32,3 +32,4 @@ private:
 
 	static GpioRegister sGpioRegisters[NB_PORT];
 };
+}

@@ -2,6 +2,7 @@
 
 #include "DriverInterface.h"
 
+namespace Driver {
 class Driver : public DriverInterface {
 public:
 	Driver(uint32_t updateTime)
@@ -15,3 +16,4 @@ public:
 	volatile uint32_t mUpdateTime;
 	volatile uint32_t mPreviousTime;
 };
+}

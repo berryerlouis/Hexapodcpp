@@ -2,7 +2,7 @@
 
 #include "Constants.h"
 #include "Frame.h"
-
+namespace Cluster {
 class ClusterInterface {
 public:
 	ClusterInterface(void) = default;
@@ -10,3 +10,4 @@ public:
 
 	virtual bool Execute(Frame &request, Frame &response) = 0;
 };
+}

@@ -2,7 +2,9 @@
 #include "Servo.h"
 #include "../drv/Tick.h"
 
+namespace Component {
 #define REVERSE_ANGLE(angle)    ( ( (angle - 90) * -1) + 90)
+
 
 Servo::Servo(Pca9685 &pca9685, const uint8_t servoId)
 	: mPca9685(pca9685)
@@ -219,4 +221,5 @@ void Servo::SetEnable (const bool enable)
 bool Servo::IsEnable (void)
 {
 	return (this->mEnable);
+}
 }

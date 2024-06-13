@@ -1,4 +1,7 @@
-#!/bin/bash
+#!/bin/sh
+set -eu
+
+echo $(dirname -- "$0")
 
 list_c_file=$(find ./ -type f -name "*.cpp")
 list_h_file=$(find ./ -type f -name "*.h")

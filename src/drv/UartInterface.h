@@ -1,7 +1,7 @@
 #pragma once
 
 #include "DriverInterface.h"
-
+namespace Driver {
 class UartInterface : public DriverInterface
 {
 public:
@@ -16,3 +16,4 @@ public:
 
 private:
 };
+}

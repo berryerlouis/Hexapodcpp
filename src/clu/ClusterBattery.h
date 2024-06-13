@@ -4,6 +4,9 @@
 #include "Cluster.h"
 #include "Constants.h"
 
+namespace Cluster {
+using namespace Component;
+
 class ClusterBattery : public Cluster {
 public:
 	ClusterBattery(Battery &battery)
@@ -22,11 +25,11 @@ public:
 		switch ( (EBatteryCommands) request.commandId)
 		{
 		case EBatteryCommands::GET_VOLTAGE:
-			success = mBattery.BuildFrameVoltage(response);
+			success = this->BuildFrameVoltage(response);
 			break;
 
 		case EBatteryCommands::GET_BAT_STATUS:
-			success = mBattery.BuildFrameState(response);
+			success = this->BuildFrameState(response);
 			break;
 
 		default:
@@ -37,4 +40,29 @@ public:
 
 private:
 	Battery &mBattery;
+
+	bool BuildFrameVoltage (Frame &response)
+	{
+		uint16_t volt     = this->mBattery.GetVoltage();
+		uint8_t  params[] = { (uint8_t) (volt >> 8U), (uint8_t) volt };
+
+		return (response.Build(
+					  EClusters::BATTERY,
+					  EBatteryCommands::GET_VOLTAGE,
+					  params,
+					  2U) );
+	}
+
+	bool BuildFrameState (Frame &response)
+	{
+		uint16_t volt     = this->mBattery.GetVoltage();
+		uint8_t  params[] = { this->mBattery.GetState(), (uint8_t) (volt >> 8U), (uint8_t) volt };
+
+		return (response.Build(
+					  EClusters::BATTERY,
+					  EBatteryCommands::GET_BAT_STATUS,
+					  params,
+					  3U) );
+	}
 };
+}

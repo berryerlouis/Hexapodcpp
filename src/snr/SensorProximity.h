@@ -6,6 +6,7 @@
 #include "../cmp/Vl53l0x.h"
 #include "SensorInterface.h"
 
+using namespace Component;
 class SensorProximity : public SensorInterface {
 public:
 	enum SensorsId

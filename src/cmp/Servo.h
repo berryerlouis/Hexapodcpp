@@ -1,10 +1,12 @@
 #pragma once
 #include "Pca9685.h"
 
+namespace Component {
+using namespace Driver;
 class Servo {
 	static const uint16_t SERVO_PWM_MIN     = 168U;
 	static const uint16_t SERVO_PWM_MAX     = 413U;
-	static const uint16_t SERVO_ANGLE_MIN   = 0;
+	static const uint16_t SERVO_ANGLE_MIN   = 0U;
 	static const uint16_t SERVO_ANGLE_MAX   = 180;
 	static const uint16_t SERVO_ANGLE_RANGE = 180;
 
@@ -56,3 +58,4 @@ private:
 	bool mEnable;
 	bool mIsMoving;
 };
+}

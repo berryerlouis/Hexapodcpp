@@ -3,6 +3,9 @@
 #include "../cmp/Mpu9150.h"
 #include "Service.h"
 
+
+using namespace Component;
+
 class ServiceOrientation : public Service {
 public:
 	ServiceOrientation(Mpu9150 &mMpu9150);

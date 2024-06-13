@@ -1,4 +1,4 @@
-#include "../drv/Communication.h"
+#include "../cmp/Communication.h"
 #include "ServiceProximity.h"
 
 ServiceProximity::ServiceProximity(SensorProximity &sensorProximity)
@@ -24,7 +24,7 @@ void ServiceProximity::Update (const uint32_t currentTime)
 		{
 			Frame response;
 			this->mSensorProximity.BuildFrameDistance( (EProximityCommands) sensorId, response);
-			Communication::Send(response);
+			this->mServiceMediator->SendFrame(response);
 		}
 	}
 }

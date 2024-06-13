@@ -1,13 +1,17 @@
 #include "../clu/Frame.h"
 #include "Protocol.h"
-//#include <Arduino.h>
 
+namespace Cluster {
 Protocol::Protocol()
 {
 }
 
 Protocol::ProtocolStatus Protocol::Decode (const char *frameBuffer, Frame &frame)
 {
+	if (frameBuffer == nullptr)
+	{
+		return (Protocol::ProtocolStatus::ERROR_NULL_BUFFER);
+	}
 	uint8_t frameLenght = strlen(frameBuffer);
 
 	if (frameLenght >= 6U && frameLenght % 2U == 0U)
@@ -90,4 +94,5 @@ uint8_t Protocol::ConvertHexCharToInt (uint8_t byte)
 		return (byte + 10U - 'a');
 	}
 	return (0xFFU);
+}
 }

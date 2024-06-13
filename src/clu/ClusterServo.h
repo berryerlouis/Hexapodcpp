@@ -4,6 +4,8 @@
 #include "Cluster.h"
 #include "Constants.h"
 
+namespace Cluster {
+using namespace Component;
 class ClusterServo : public Cluster {
 public:
 	ClusterServo(Servos &servos)
@@ -166,3 +168,4 @@ public:
 private:
 	Servos &mServos;
 };
+}

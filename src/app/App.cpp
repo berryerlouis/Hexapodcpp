@@ -1,13 +1,22 @@
 #include "App.h"
 #include "../drv/Tick.h"
+#include <avr/wdt.h>
 
+Gpio ledBoot   = Gpio({ EPort::PORT_B, EPin::PIN_0 }, EPortDirection::OUT);
+Gpio ledStatus = Gpio({ EPort::PORT_B, EPin::PIN_1 }, EPortDirection::OUT);
+Gpio ledLeft   = Gpio({ EPort::PORT_B, EPin::PIN_2 }, EPortDirection::OUT);
+Gpio ledRight  = Gpio({ EPort::PORT_B, EPin::PIN_3 }, EPortDirection::OUT);
+Gpio adcPin    = Gpio({ EPort::PORT_A, EPin::PIN_0 }, EPortDirection::IN);
+Adc  adcBattery(adcPin);
+namespace app {
 App::App(void)
-	: mTwi(Twi::EI2cFreq::FREQ_400_KHZ)
-	, mLedBoot({ EPort::PORT_B, EPin::PIN_0 })
-	, mLedStatus({ EPort::PORT_B, EPin::PIN_1 })
-	, mLedLeft({ EPort::PORT_B, EPin::PIN_2 })
-	, mLedRight({ EPort::PORT_B, EPin::PIN_3 })
-	, mBattery({ EPort::PORT_A, EPin::PIN_0 })
+	: mUart()
+	, mTwi(Twi::EI2cFreq::FREQ_400_KHZ)
+	, mLedBoot(ledStatus)
+	, mLedStatus(ledStatus)
+	, mLedLeft(ledLeft)
+	, mLedRight(ledRight)
+	, mBattery(adcBattery)
 	, mMpu9150(mTwi)
 	, mSrf05Left(EProximityCommands::US_LEFT, { EPort::PORT_A, EPin::PIN_1 }, { EPort::PORT_A, EPin::PIN_2 })
 	, mSrf05Right(EProximityCommands::US_RIGHT, { EPort::PORT_A, EPin::PIN_3 }, { EPort::PORT_A, EPin::PIN_4 })
@@ -19,19 +28,19 @@ App::App(void)
 	, mLegs(mServos)
 	, mBody(mLegs)
 	, mClusters(mBattery, mMpu9150, mSensorProximity, mServos, mBody)
-	, mCommunication(mClusters, mLedStatus)
+	, mCommunication(mUart, mClusters, mLedStatus)
 	, mServiceControl(mServos)
 	, mServiceProximity(mSensorProximity)
 	, mServiceOrientation(mMpu9150)
 	, mServiceBattery(mBattery)
-	, mServices(mServiceControl, mServiceProximity, mServiceOrientation, mServiceBattery)
+	, mServices(mCommunication, mServiceControl, mServiceProximity, mServiceOrientation, mServiceBattery)
 {
 }
 
 bool App::Initialize (void)
 {
 	bool success = false;
-	success = MySerial.Initialize();
+	success = mUart.Initialize();
 	if (success == true)
 	{
 		success = mTwi.Initialize();
@@ -42,20 +51,23 @@ bool App::Initialize (void)
 	}
 	if (success == true)
 	{
-		MySerial.Send("<hello>", strlen("<hello>") );
+		mUart.Send("<hello>", strlen("<hello>") );
 	}
 	else
 	{
-		MySerial.Send("<error>", strlen("<error>") );
+		mUart.Send("<error>", strlen("<error>") );
 	}
+	wdt_enable(WDTO_15MS);
 	return (success);
 }
 
 void App::Update (void)
 {
-	unsigned long currentMillis = MyTick.GetMs();
+	wdt_reset();
 
+	unsigned long currentMillis = MyTick.GetMs();
 	mLedBoot.Toggle();
-	mCommunication.Update();
+	mCommunication.Update(currentMillis);
 	mServices.Update(currentMillis);
+}
 }

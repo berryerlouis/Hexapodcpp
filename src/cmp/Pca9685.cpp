@@ -1,5 +1,5 @@
 #include "Pca9685.h"
-
+namespace Component {
 Pca9685::Pca9685(Twi &i2c, const uint8_t address)
 	: mI2c(i2c)
 	, mAddress(address)
@@ -24,7 +24,7 @@ void Pca9685::Reset (void)
 {
 	this->mI2c.WriteRegister(this->mAddress, (uint8_t) ERegister::MODE1, (uint8_t) ERegisterMode1::RESTART);
 
-	for (size_t idPwm = 0U; idPwm < EConstant::NB_LEDS; idPwm++)
+	for ( size_t idPwm = 0U; idPwm < EConstant::NB_LEDS; idPwm++ )
 	{
 		this->SetPwm(idPwm, EConstant::LED_OFF);
 	}
@@ -34,7 +34,7 @@ void Pca9685::Reset (void)
 
 void Pca9685::Sleep (void)
 {
-	uint8_t awake = 0;
+	uint8_t awake = 0U;
 
 	this->mI2c.ReadRegister(this->mAddress, (uint8_t) ERegister::MODE1, awake);
 	awake |= ERegisterMode1::SLEEP;
@@ -43,7 +43,7 @@ void Pca9685::Sleep (void)
 
 void Pca9685::WakeUp (void)
 {
-	uint8_t wakeUp = 0;
+	uint8_t wakeUp = 0U;
 
 	this->mI2c.ReadRegister(this->mAddress, (uint8_t) ERegister::MODE1, wakeUp);
 	wakeUp &= ~ERegisterMode1::SLEEP;
@@ -70,7 +70,7 @@ void Pca9685::SetFrequency (const uint32_t frequency)
 	}
 	uint8_t prescale = (uint8_t) prescaleval;
 
-	uint8_t oldmode = 0;
+	uint8_t oldmode = 0U;
 	this->mI2c.ReadRegister(this->mAddress, (uint8_t) ERegister::MODE1, oldmode);
 	uint8_t newmode = (oldmode & ~ERegisterMode1::RESTART) | ERegisterMode1::SLEEP;
 	this->mI2c.WriteRegister(this->mAddress, (uint8_t) ERegister::MODE1, newmode);
@@ -81,7 +81,7 @@ void Pca9685::SetFrequency (const uint32_t frequency)
 
 void Pca9685::SetPwm (uint8_t num, uint16_t off)
 {
-	this->mPwm[num].on = 0;
+	this->mPwm[num].on = 0U;
 
 	if (off > 100 && off < 500)
 	{
@@ -90,4 +90,5 @@ void Pca9685::SetPwm (uint8_t num, uint16_t off)
 	}
 	this->mPwm[num].off = EConstant::LED_OFF;
 	return;
+}
 }

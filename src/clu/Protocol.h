@@ -3,6 +3,7 @@
 #include "Frame.h"
 #include <string.h>
 
+namespace Cluster {
 class Protocol {
 public:
 	enum ProtocolStatus
@@ -10,7 +11,8 @@ public:
 		NO_ERROR,
 		ERROR_LENGHT,
 		ERROR_CHAR_INVALID,
-		ERROR_SIZE_PARAMS
+		ERROR_SIZE_PARAMS,
+		ERROR_NULL_BUFFER,
 	};
 
 	Protocol(void);
@@ -22,3 +24,4 @@ public:
 private:
 	static uint8_t ConvertHexCharToInt(uint8_t byte);
 };
+}

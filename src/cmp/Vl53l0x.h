@@ -5,6 +5,9 @@
 #include "../drv/Twi.h"
 #include "ProximityInterface.h"
 
+namespace Component {
+using namespace Driver;
+
 class Vl53l0x : public ProximityInterface {
 public:
 #define VL53L0X_ADDRESS                                        0x29U ///< I2C address of the VL53L0X module
@@ -126,3 +129,4 @@ private:
 	bool PerformSingleRefCalibration(uint8_t vhv_init_byte);
 	bool SetVcselPulsePeriod(VcselPeriodType type, uint8_t period_pclks);
 };
+}

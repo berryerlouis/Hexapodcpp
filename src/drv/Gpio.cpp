@@ -1,5 +1,7 @@
+#include <avr/io.h>
 #include "Gpio.h"
 
+namespace Driver {
 Gpio::GpioRegister Gpio::sGpioRegisters[] = {
 	{ &PINA, &PORTA, &DDRA, &PCICR, &PCMSK0, PCIE0 },
 	{ &PINB, &PORTB, &DDRB, &PCICR, &PCMSK1, PCIE1 },
@@ -23,7 +25,7 @@ Gpio::Gpio(const SGpio &gpio, const EPortDirection &portDirection) :
 	}
 }
 
-EPin&Gpio::GetPin (void)
+EPin &Gpio::GetPin (void)
 {
 	return (this->mGpio.pin);
 }
@@ -42,7 +44,7 @@ bool Gpio::Reset (void)
 
 bool Gpio::Get (void)
 {
-	uint8_t pin_value = 0;
+	uint8_t pin_value = 0U;
 
 	pin_value  = *(this->mGpioRegister.pinPtr);
 	pin_value  = pin_value >> this->mGpio.pin;
@@ -61,4 +63,5 @@ void Gpio::ResetInterruptPin (void)
 {
 	*(this->mGpioRegister.pcicr) &= ~(1U << this->mGpioRegister.pcie);
 	*(this->mGpioRegister.pcmsk) &= ~(1U << this->mGpio.pin);
+}
 }

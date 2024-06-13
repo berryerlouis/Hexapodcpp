@@ -23,6 +23,12 @@
  
  # Upload
   - run `make flash`
+ 
+ # Compile Goole Test
+  - run bin/dev/startTU 
+
+ # Test
+  - run bin/dev/launchTU 
 
  # Serial 
  ## attach to wsl

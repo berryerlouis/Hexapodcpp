@@ -1,0 +1,5 @@
+#! /bin/sh
+
+#make clean
+cd unittests
+cmake -S . -B build
