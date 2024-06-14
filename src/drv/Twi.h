@@ -1,9 +1,9 @@
 #pragma once
 
-#include "DriverInterface.h"
+#include "TwiInterface.h"
 
 namespace Driver {
-class Twi : public DriverInterface {
+class Twi : public TwiInterface {
 public:
 	enum EI2cFreq
 	{
@@ -17,14 +17,14 @@ public:
 	virtual bool Initialize(void) final override;
 	virtual void Update(const uint32_t currentTime) final override;
 
-	bool ReadRegister(const uint8_t address, const uint8_t reg, uint8_t &data);
-	bool ReadRegister16Bits(const uint8_t address, const uint8_t reg, uint16_t &data);
-	bool ReadRegister32Bits(const uint8_t address, const uint8_t reg, uint32_t &data);
-	bool ReadRegisters(const uint8_t address, const uint8_t reg, uint8_t *data, const uint8_t length);
-	bool WriteRegister(const uint8_t address, const uint8_t reg, uint8_t data);
-	bool WriteRegister16Bits(const uint8_t address, const uint8_t reg, uint16_t &data);
-	bool WriteRegister32Bits(const uint8_t address, const uint8_t reg, uint32_t &data);
-	bool WriteRegisters(const uint8_t address, const uint8_t reg, uint8_t *data, const uint8_t length);
+	virtual bool ReadRegister(const uint8_t address, const uint8_t reg, uint8_t &data) final override;
+	virtual bool ReadRegister16Bits(const uint8_t address, const uint8_t reg, uint16_t &data) final override;
+	virtual bool ReadRegister32Bits(const uint8_t address, const uint8_t reg, uint32_t &data) final override;
+	virtual bool ReadRegisters(const uint8_t address, const uint8_t reg, uint8_t *data, const uint8_t length) final override;
+	virtual bool WriteRegister(const uint8_t address, const uint8_t reg, uint8_t data) final override;
+	virtual bool WriteRegister16Bits(const uint8_t address, const uint8_t reg, uint16_t &data) final override;
+	virtual bool WriteRegister32Bits(const uint8_t address, const uint8_t reg, uint32_t &data) final override;
+	virtual bool WriteRegisters(const uint8_t address, const uint8_t reg, uint8_t *data, const uint8_t length) final override;
 
 private:
 	enum EI2cStatus

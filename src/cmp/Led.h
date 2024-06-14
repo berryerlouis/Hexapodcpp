@@ -1,16 +1,11 @@
 #pragma once
 
-#include "ComponentInterface.h"
+#include "LedInterface.h"
 #include "../drv/Gpio.h"
 namespace Component {
 using namespace Driver;
-class Led : public ComponentInterface {
+class Led : public LedInterface {
 public:
-	enum LedState
-	{
-		ON = 0,
-		OFF
-	};
 
 	Led(GpioInterface &gpio);
 	~Led() = default;
@@ -18,10 +13,10 @@ public:
 	virtual bool Initialize(void) final override;
 	virtual void Update(const uint32_t currentTime) final override;
 
-	bool On();
-	bool Off();
-	bool Toggle();
-	LedState Get() const;
+	virtual bool On() final override;
+	virtual bool Off() final override;
+	virtual bool Toggle() final override;
+	virtual LedState Get() const final override;
 
 private:
 	GpioInterface &mGpio;

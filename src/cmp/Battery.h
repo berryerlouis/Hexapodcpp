@@ -1,32 +1,21 @@
 #pragma once
 
-#include "ComponentInterface.h"
-#include "../clu/Constants.h"
-#include "../clu/Frame.h"
+#include "BatteryInterface.h"
 #include "../drv/AdcInterface.h"
 
 namespace Component {
 using namespace Driver;
-using namespace Cluster;
 
-class Battery : public ComponentInterface {
-public:
-	enum BatteryState
-	{
-		NOMINAL = 0x00U,
-		WARNING,
-		CRITICAL,
-		UNKNOWN = 0xFFU
-	};
+class Battery : public BatteryInterface {
 public:
 	Battery(AdcInterface &adc);
 	~Battery() = default;
 
-	BatteryState GetState(void);
-	uint16_t     GetVoltage(void);
-
 	virtual bool Initialize(void) final override;
 	virtual void Update(const uint32_t currentTime) final override;
+
+	virtual BatteryState GetState(void) final override;
+	virtual uint16_t     GetVoltage(void) final override;
 
 private:
 	uint16_t mVoltage;

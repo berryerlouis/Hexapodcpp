@@ -1,7 +1,7 @@
 #include "Communication.h"
 
 namespace Component {
-Communication::Communication(UartInterface &uart, const Clusters &clusters, Led &ledStatus)
+Communication::Communication(UartInterface &uart, const ClustersInterface &clusters, LedInterface &ledStatus)
 	: mUart(uart)
 	, mClusters(clusters)
 	, mLedStatus(ledStatus)
@@ -20,6 +20,7 @@ void Communication::Update (const uint32_t currentTime)
 	(void) currentTime;
 	if (true == this->ReceivedStringFrame() )
 	{
+		this->mLedStatus.On();
 		Frame request;
 		Frame response;
 		Protocol::ProtocolStatus parsedStatus = Protocol::Decode(this->mBufferRx, request);

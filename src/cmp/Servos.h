@@ -9,14 +9,14 @@ using namespace Cluster;
 static const uint8_t NB_SERVOS = 18U;
 class Servos {
 public:
-	Servos(Pca9685 &pca9685_0, Pca9685 &pca9685_1);
+	Servos(Pca9685Interface &pca9685_0, Pca9685Interface &pca9685_1, TickInterface &tick);
 	~Servos() = default;
 
 	bool Initialize(void);
 	void Update(const uint32_t currentTime);
 
 	Servo &GetServo(const uint8_t servoId);
-	Pca9685 &GetPca9685(const uint8_t pca9685Id);
+	Pca9685Interface &GetPca9685(const uint8_t pca9685Id);
 
 	bool BuildFrameAllAngle(Frame &response);
 	bool BuildFrameAngle(uint8_t servoId, Frame &response);
@@ -46,7 +46,7 @@ private:
 	Servo mServo16;
 	Servo mServo17;
 	Servo *mServos[NB_SERVOS];
-	Pca9685 &mPca9685Left;
-	Pca9685 &mPca9685Right;
+	Pca9685Interface &mPca9685Left;
+	Pca9685Interface &mPca9685Right;
 };
 }

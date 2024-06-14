@@ -29,7 +29,7 @@ Legs::Legs(Servos &servos)
 {
 }
 
-Leg&Legs::GetLeg (const uint8_t legId)
+Leg &Legs::GetLeg (const uint8_t legId)
 {
 	return (*this->mLegs[legId]);
 }

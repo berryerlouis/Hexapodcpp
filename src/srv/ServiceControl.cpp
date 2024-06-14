@@ -1,9 +1,9 @@
 #include "ServiceControl.h"
 
 ServiceControl::ServiceControl(Servos &servos)
-	: Service(10)
+	: Service(10U)
 	, mServos(servos)
-	, mStepPca9685(0)
+	, mStepPca9685(0U)
 {
 }
 

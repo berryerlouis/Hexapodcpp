@@ -1,16 +1,16 @@
 #pragma once
 
-#include <stdint.h>
-#include "GpioInterface.h"
+#include "DriverInterface.h"
 
 namespace Driver {
-class AdcInterface {
+class AdcInterface : public DriverInterface  {
 public:
-	AdcInterface(void) = default;
-	~AdcInterface()    = default;
+	AdcInterface()  = default;
+	~AdcInterface() = default;
 
 	virtual bool Initialize(void) = 0;
 	virtual void Update(const uint32_t currentTime) = 0;
+
 	virtual void StartConversion(void) = 0;
 	virtual uint16_t Read(void)        = 0;
 };

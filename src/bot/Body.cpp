@@ -17,7 +17,7 @@ void Body::SetPositionRotation (const Leg::Position3d &position, const Leg::Rota
 
 void Body::SetBodyIk (const Leg::Position3d &position, const Leg::Rotation3d &rotation, const uint16_t travelTime)
 {
-	for ( size_t legId = 0U; legId < NB_LEGS; legId++ )
+	for (size_t legId = 0U; legId < NB_LEGS; legId++)
 	{
 		this->mBodyIk.totalX             = mLegs.GetLeg(legId).mFootPosition.x + mLegs.GetLeg(legId).mBodyCenterOffsetX + position.x;
 		this->mBodyIk.totalY             = mLegs.GetLeg(legId).mFootPosition.y + mLegs.GetLeg(legId).mBodyCenterOffsetY + position.y;

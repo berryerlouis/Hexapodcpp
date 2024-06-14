@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../cmp/CommunicationInterface.h"
 #include "../srv/Service.h"
 #include "../srv/ServiceBattery.h"
 #include "../srv/ServiceControl.h"
@@ -11,11 +12,11 @@ using namespace Cluster;
 using namespace Component;
 using namespace Driver;
 
-class Services : public ServiceInterface, public ServiceMediator {
+class Services : public ServiceInterface, public ServiceMediatorInterface {
 public:
 	static const uint8_t NB_SERVICES = 4U;
 	Services(
-		Communication &communication,
+		CommunicationInterface &communication,
 		ServiceControl &serviceControl,
 		ServiceProximity &serviceProximity,
 		ServiceOrientation &serviceOrientation,
@@ -30,6 +31,6 @@ public:
 	virtual void SendFrame(Frame &message) const override;
 
 private:
-	Communication &mCommunication;
+	CommunicationInterface &mCommunication;
 	Service *mServices[NB_SERVICES];
 };

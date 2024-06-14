@@ -38,8 +38,8 @@ struct SGpio
 class GpioInterface
 {
 public:
-	GpioInterface(void) = default;
-	~GpioInterface()    = default;
+	GpioInterface()  = default;
+	~GpioInterface() = default;
 
 	virtual bool Set(void)               = 0;
 	virtual bool Reset(void)             = 0;
@@ -47,7 +47,5 @@ public:
 	virtual bool Get(void)               = 0;
 	virtual void SetInterruptPin(void)   = 0;
 	virtual void ResetInterruptPin(void) = 0;
-
-private:
 };
 }

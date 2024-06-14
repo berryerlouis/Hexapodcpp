@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DriverInterface.h"
+#include "GpioInterface.h"
 #include "AdcInterface.h"
 
 namespace Driver {
@@ -10,7 +10,7 @@ public:
 #define ADC_STEP          (float) (5.0 / 1024)
 #define ADC_VOLT(ADC_VALUE)    (float) (ADC_STEP * ADC_VALUE)
 
-	Adc(GpioInterface & gpio);
+	Adc(GpioInterface &gpio);
 	~Adc() = default;
 
 	virtual bool Initialize(void) final override;

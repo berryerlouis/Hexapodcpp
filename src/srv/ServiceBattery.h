@@ -1,19 +1,22 @@
 #pragma once
 
-#include "../cmp/Battery.h"
+#include "../cmp/BatteryInterface.h"
 #include "Service.h"
 
 
 using namespace Component;
 class ServiceBattery : public Service {
 public:
-	ServiceBattery(Battery &battery);
+	ServiceBattery(BatteryInterface &battery);
 	~ServiceBattery() = default;
 
 	virtual bool Initialize(void) final override;
 	virtual void Update(const uint32_t currentTime) final override;
 
-private:
-	Battery &mBattery;
+
 	bool BuildFrameState(Frame &response);
+
+private:
+	BatteryInterface &mBattery;
+	BatteryInterface::BatteryState mCurrentState;
 };

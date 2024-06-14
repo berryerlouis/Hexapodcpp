@@ -2,34 +2,33 @@
 
 #include <stdint.h>
 #include "../cmp/Communication.h"
+#include "../clu/Frame.h"
 
 
-class BaseComponent;
-class ServiceMediator {
+class ServiceMediatorInterface {
 public:
-	virtual void SendFrame(Frame &message) const = 0;
+	virtual void SendFrame(Cluster::Frame &message) const = 0;
 };
 
 class BaseComponent {
 protected:
-	ServiceMediator *mServiceMediator;
+	ServiceMediatorInterface *mServiceMediator;
 
 public:
-	BaseComponent(ServiceMediator *ServiceMediator = nullptr) : mServiceMediator(ServiceMediator)
+	BaseComponent(ServiceMediatorInterface *ServiceMediatorInterface = nullptr) : mServiceMediator(ServiceMediatorInterface)
 	{
 	}
 
-	void SetComComponent (ServiceMediator *ServiceMediator)
+	void SetComComponent (ServiceMediatorInterface *ServiceMediatorInterface)
 	{
-		this->mServiceMediator = ServiceMediator;
+		this->mServiceMediator = ServiceMediatorInterface;
 	}
 };
 
-
 class ServiceInterface {
 public:
-	ServiceInterface(void) = default;
-	~ServiceInterface()    = default;
+	ServiceInterface()  = default;
+	~ServiceInterface() = default;
 
 	virtual bool Initialize(void) = 0;
 	virtual void Update(const uint32_t currentTime) = 0;

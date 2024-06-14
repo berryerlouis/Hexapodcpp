@@ -1,9 +1,10 @@
 #pragma once
-#include "../drv/Twi.h"
+#include "../drv/TwiInterface.h"
+#include "Pca9685Interface.h"
 
 namespace Component {
 using namespace Driver;
-class Pca9685 {
+class Pca9685 : public Pca9685Interface {
 public:
 	static const uint8_t PCA9685_I2C_ADDRESS = 0x40U;
 	static const uint8_t SERVO_FREQUENCY     = 50U;
@@ -64,21 +65,21 @@ public:
 		uint16_t off;
 	};
 
-	Pca9685(Twi &i2c, const uint8_t address = PCA9685_I2C_ADDRESS);
+	Pca9685(TwiInterface &i2c, const uint8_t address = PCA9685_I2C_ADDRESS);
 	~Pca9685() = default;
 
-	void Reset(void);
-	void Sleep(void);
-	void WakeUp(void);
-	void setOscillatorFrequency(const uint32_t frequency = EConstant::FREQUENCY_OSCILLATOR);
-	void SetFrequency(const uint32_t frequency);
-	void SetPwm(uint8_t num, uint16_t off);
+	virtual void Reset(void) final override;
+	virtual void Sleep(void) final override;
+	virtual void WakeUp(void) final override;
+	virtual void setOscillatorFrequency(const uint32_t frequency = EConstant::FREQUENCY_OSCILLATOR) final override;
+	virtual void SetFrequency(const uint32_t frequency) final override;
+	virtual void SetPwm(uint8_t num, uint16_t off) final override;
 
 	bool Initialize(void);
 	void Update(const uint32_t currentTime);
 
 private:
-	Twi &mI2c;
+	TwiInterface &mI2c;
 	const uint8_t mAddress;
 	uint32_t mInternalOscillatorFrequency;
 	SPwm mPwm[EConstant::NB_LEDS];

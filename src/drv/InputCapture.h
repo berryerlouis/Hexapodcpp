@@ -1,22 +1,24 @@
 #pragma once
 
-#include "DriverInterface.h"
-#include "Gpio.h"
+#include "InputCaptureInterface.h"
+#include "TickInterface.h"
+#include "GpioInterface.h"
 
 namespace Driver {
-class InputCapture : public DriverInterface {
+class InputCapture : public InputCaptureInterface {
 public:
-	InputCapture(const SGpio &gpio);
+	InputCapture(GpioInterface &gpio, TickInterface &tick);
 	~InputCapture() = default;
 
 	virtual bool Initialize(void) final override;
 	virtual void Update(const uint32_t currentTime) final override;
 
-	void EdgeChange(void);
-	uint64_t GetInputCaptureTime(void);
+	virtual void EdgeChange(void) final override;
+	virtual uint64_t GetInputCaptureTime(void) final override;
 
 private:
-	Gpio mGpio;
+	GpioInterface &mGpio;
+	TickInterface &mTick;
 	bool mState;
 	uint64_t mStartTime;
 	uint64_t mDelay;

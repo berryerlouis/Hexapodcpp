@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 
-#include "../../../mock/gpio.h"
+#include "../../../mock/drv/MockGpio.h"
 #include "../../../../src/cmp/Led.h"
 
 using ::testing::_;

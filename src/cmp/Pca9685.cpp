@@ -1,6 +1,6 @@
 #include "Pca9685.h"
 namespace Component {
-Pca9685::Pca9685(Twi &i2c, const uint8_t address)
+Pca9685::Pca9685(TwiInterface &i2c, const uint8_t address)
 	: mI2c(i2c)
 	, mAddress(address)
 	, mInternalOscillatorFrequency(EConstant::FREQUENCY_OSCILLATOR)
@@ -24,7 +24,7 @@ void Pca9685::Reset (void)
 {
 	this->mI2c.WriteRegister(this->mAddress, (uint8_t) ERegister::MODE1, (uint8_t) ERegisterMode1::RESTART);
 
-	for ( size_t idPwm = 0U; idPwm < EConstant::NB_LEDS; idPwm++ )
+	for (size_t idPwm = 0U; idPwm < EConstant::NB_LEDS; idPwm++)
 	{
 		this->SetPwm(idPwm, EConstant::LED_OFF);
 	}

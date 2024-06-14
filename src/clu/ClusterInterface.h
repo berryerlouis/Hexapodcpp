@@ -5,8 +5,8 @@
 namespace Cluster {
 class ClusterInterface {
 public:
-	ClusterInterface(void) = default;
-	~ClusterInterface()    = default;
+	ClusterInterface()  = default;
+	~ClusterInterface() = default;
 
 	virtual bool Execute(Frame &request, Frame &response) = 0;
 };
