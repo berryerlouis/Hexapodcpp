@@ -1,5 +1,6 @@
 #pragma once
-#include "Pca9685.h"
+#include "Pca9685Interface.h"
+#include "../drv/TickInterface.h"
 
 namespace Component {
 using namespace Driver;
@@ -11,11 +12,11 @@ class Servo {
 	static const uint16_t SERVO_ANGLE_RANGE = 180;
 
 public:
-	Servo(Pca9685 &pca9685, const uint8_t servoId);
-	Servo(Pca9685 &pca9685, const uint8_t servoId, const uint8_t angle);
-	Servo(Pca9685 &pca9685, const uint8_t servoId, const uint8_t angle, const int8_t offset);
-	Servo(Pca9685 &pca9685, const uint8_t servoId, const uint8_t angle, const int8_t offset, const uint8_t min, const uint8_t max);
-	Servo(Pca9685 &pca9685, const uint8_t servoId, const uint8_t angle, const int8_t offset, const uint8_t min, const uint8_t max, const bool reverse);
+	Servo(Pca9685Interface &pca9685, TickInterface &tick, const uint8_t servoId);
+	Servo(Pca9685Interface &pca9685, TickInterface &tick, const uint8_t servoId, const uint8_t angle);
+	Servo(Pca9685Interface &pca9685, TickInterface &tick, const uint8_t servoId, const uint8_t angle, const int8_t offset);
+	Servo(Pca9685Interface &pca9685, TickInterface &tick, const uint8_t servoId, const uint8_t angle, const int8_t offset, const uint8_t min, const uint8_t max);
+	Servo(Pca9685Interface &pca9685, TickInterface &tick, const uint8_t servoId, const uint8_t angle, const int8_t offset, const uint8_t min, const uint8_t max, const bool reverse);
 	~Servo() = default;
 
 	bool Initialize(void);
@@ -45,7 +46,8 @@ private:
 		return ( (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
 	}
 
-	Pca9685 &mPca9685;
+	Pca9685Interface &mPca9685;
+	TickInterface &mtick;
 	uint8_t mServoId;
 	uint8_t mAngle;
 	uint8_t mTargetAngle;

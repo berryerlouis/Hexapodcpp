@@ -1,9 +1,11 @@
 #pragma once
 
 #include "../drv/Gpio.h"
+#include "../drv/Tick.h"
 #include "../drv/Twi.h"
 #include "../drv/Uart.h"
 #include "../drv/Adc.h"
+#include "../drv/InputCapture.h"
 #include "../clu/Clusters.h"
 #include "../cmp/Battery.h"
 #include "../cmp/Led.h"
@@ -36,12 +38,16 @@ public:
 	void Update(void);
 
 private:
+	Tick mTick;
 	Uart mUart;
 	Twi mTwi;
+	Adc mAdc;
 	Led mLedBoot;
 	Led mLedStatus;
 	Led mLedLeft;
 	Led mLedRight;
+	InputCapture mICLeft;
+	InputCapture mICRight;
 	Battery mBattery;
 	Mpu9150 mMpu9150;
 	Srf05 mSrf05Left;

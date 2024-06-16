@@ -1,5 +1,4 @@
 #include "Vl53l0x.h"
-#include "../drv/Tick.h"
 
 namespace Component {
 #define decodeVcselPeriod(reg_val)             ( ( (reg_val) + 1) << 1)
@@ -7,8 +6,9 @@ namespace Component {
 #define calcMacroPeriod(vcsel_period_pclks)    ( ( ( (uint32_t) 2304 * (vcsel_period_pclks) * 1655) + 500) / 1000)
 
 
-Vl53l0x::Vl53l0x(Twi &i2c, const uint8_t address)
+Vl53l0x::Vl53l0x(TwiInterface &i2c, TickInterface &tick, const uint8_t address)
 	: mI2c(i2c)
+	, mTick(tick)
 	, mAddress(address)
 	, mDistance(0)
 	, mThreshold(DISTANCE_THRESHOLD)
@@ -23,7 +23,6 @@ bool Vl53l0x::Initialize (void)
 	uint8_t data    = 0U;
 
 	this->mI2c.ReadRegister(this->mAddress, VL53L0X_IDENTIFICATION_MODEL_ID, data);
-
 	if (data == 0xEE)
 	{
 		this->mI2c.ReadRegister(this->mAddress, VL53L0X_VHV_CONFIG_PAD_SCL_SDA_EXTSUP_HV, data);
@@ -55,9 +54,9 @@ bool Vl53l0x::Initialize (void)
 
 		if (this->GetSpadInfo(&spad_count, &spad_type_is_aperture) )
 		{
-			// The SPAD map (RefGoodSpadMap) is read by VL53L0X_get_info_from_device() in
-			// the API, but the same data seems to be more easily readable from
-			// GLOBAL_CONFIG_SPAD_ENABLES_REF_0 through _6, so read it from there
+			//The SPAD map (RefGoodSpadMap) is read by VL53L0X_get_info_from_device() in
+			//the API, but the same data seems to be more easily readable from
+			//GLOBAL_CONFIG_SPAD_ENABLES_REF_0 through _6, so read it from there
 			uint8_t ref_spad_map[6];
 			this->mI2c.ReadRegisters(this->mAddress, VL53L0X_GLOBAL_CONFIG_SPAD_ENABLES_REF_0, ref_spad_map, 6U);
 
@@ -72,7 +71,7 @@ bool Vl53l0x::Initialize (void)
 			uint8_t first_spad_to_enable = spad_type_is_aperture ? 12 : 0;
 			uint8_t spads_enabled        = 0U;
 
-			for ( size_t i = 0U; i < 48U; i++ )
+			for (size_t i = 0U; i < 48U; i++)
 			{
 				if (i < first_spad_to_enable || spads_enabled == spad_count)
 				{
@@ -139,6 +138,11 @@ bool Vl53l0x::SetThreshold (uint16_t mThreshold)
 {
 	this->mThreshold = mThreshold;
 	return (true);
+}
+
+uint16_t Vl53l0x::GetThreshold (void)
+{
+	return (this->mThreshold);
 }
 
 uint16_t Vl53l0x::GetDistance (void)
@@ -322,13 +326,12 @@ bool Vl53l0x::GetSpadInfo (uint8_t *count, bool *type_is_aperture)
 	this->mI2c.WriteRegister(this->mAddress, 0x83, 0x00);
 
 	data = 0U;
-	uint32_t timeout = MyTick.GetMs();
+	uint32_t timeout = this->mTick.GetMs();
 
 	do
 	{
 		this->mI2c.ReadRegister(this->mAddress, 0x83, data);
-
-		if ( ( (uint32_t) (MyTick.GetMs() - timeout) > 50) )
+		if ( ( (uint32_t) (this->mTick.GetMs() - timeout) > 50) )
 		{
 			return (false);
 		}
@@ -352,7 +355,7 @@ bool Vl53l0x::GetSpadInfo (uint8_t *count, bool *type_is_aperture)
 	this->mI2c.WriteRegister(this->mAddress, 0x80, 0x00);
 
 	return (true);
-} // Vl53l0x::GetSpadInfo
+}
 
 void Vl53l0x::GetSequenceStepEnables (SequenceStepEnables *enables)
 {
@@ -576,7 +579,7 @@ bool Vl53l0x::SetVcselPulsePeriod (VcselPeriodType type, uint8_t period_pclks)
 	// VL53L0X_perform_phase_calibration() end
 
 	return (true);
-} // Vl53l0x::SetVcselPulsePeriod
+}         // Vl53l0x::SetVcselPulsePeriod
 
 uint32_t Vl53l0x::TimeoutMclksToMicroseconds (uint16_t timeout_period_mclks, uint8_t vcsel_period_pclks)
 {
@@ -616,14 +619,14 @@ bool Vl53l0x::PerformSingleRefCalibration (uint8_t vhv_init_byte)
 {
 	this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSRANGE_START, 0x01 | vhv_init_byte);
 
-	uint32_t timeout = MyTick.GetMs();
+	uint32_t timeout = this->mTick.GetMs();
 	uint8_t  data    = 0U;
 
 	do
 	{
 		this->mI2c.ReadRegister(this->mAddress, VL53L0X_RESULT_INTERRUPT_STATUS, data);
 
-		if ( ( (uint32_t) (MyTick.GetMs() - timeout) > 50) )
+		if ( ( (uint32_t) (this->mTick.GetMs() - timeout) > 50) )
 		{
 			return (false);
 		}
@@ -731,5 +734,5 @@ void Vl53l0x::Tune (void)
 	this->mI2c.WriteRegister(this->mAddress, 0x00, 0x01);
 	this->mI2c.WriteRegister(this->mAddress, 0xFF, 0x00);
 	this->mI2c.WriteRegister(this->mAddress, 0x80, 0x00);
-} // Vl53l0x::Tune
+}         // Vl53l0x::Tune
 }

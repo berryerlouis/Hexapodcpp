@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 
-#include "../../../mock/adc.h"
+#include "../../../mock/drv/MockAdc.h"
 #include "../../../../src/cmp/Battery.h"
 
 using ::testing::_;

@@ -1,13 +1,13 @@
 #include "Isr.h"
 #include "InputCapture.h"
-#include "Tick.h"
 
 namespace Driver {
 static InputCapture *inputCapture[2U]  = {};
 static uint8_t       inputCaptureIndex = 0U;
 
-InputCapture::InputCapture(const SGpio &gpio)
-	: mGpio(Gpio(gpio, EPortDirection::IN) )
+InputCapture::InputCapture(GpioInterface &gpio, TickInterface &tick)
+	: mGpio(gpio)
+	, mTick(tick)
 	, mState(false)
 	, mStartTime(0UL)
 	, mDelay(0UL)
@@ -40,11 +40,11 @@ void InputCapture::EdgeChange (void)
 
 	if (state != this->mState && state == true)
 	{
-		this->mStartTime = MyTick.GetUs();
+		this->mStartTime = this->mTick.GetUs();
 	}
 	else if (state != this->mState && state == false)
 	{
-		this->mDelay = MyTick.GetUs() - this->mStartTime;
+		this->mDelay = this->mTick.GetUs() - this->mStartTime;
 	}
 	this->mState = state;
 }
@@ -52,7 +52,7 @@ void InputCapture::EdgeChange (void)
 ISR(PCINT0_vect)
 {
 	ISR_EMBEDDED_CODE(
-		for ( size_t i = 0U; i < inputCaptureIndex; i++ )
+		for (size_t i = 0U; i < inputCaptureIndex; i++)
 		{
 			inputCapture[i]->EdgeChange();
 		}

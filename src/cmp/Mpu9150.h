@@ -1,41 +1,15 @@
 #pragma once
 
-#include "../clu/Constants.h"
-#include "../clu/Frame.h"
-#include "../drv/Twi.h"
+#include "../drv/TwiInterface.h"
+#include "Mpu9150Interface.h"
 
 namespace Component {
 using namespace Driver;
-using namespace Cluster;
 
-class Mpu9150 {
+class Mpu9150 : public Mpu9150Interface {
 public:
-	struct Vector3
-	{
-		int16_t x;
-		int16_t y;
-		int16_t z;
-	};
 	static const uint8_t MPU9150_I2C_ADDRESS = 0x69U;
 	static const uint8_t AK8963_I2C_ADDRESS  = 0x0CU;
-
-	Mpu9150(Twi &i2c, const uint8_t address = MPU9150_I2C_ADDRESS);
-	~Mpu9150() = default;
-
-	bool Initialize(void);
-	void Update(const uint32_t currentTime);
-
-	bool BuildFrameAll(Frame &response);
-	bool BuildFrameAcc(Frame &response);
-	bool BuildFrameGyr(Frame &response);
-	bool BuildFrameMag(Frame &response);
-	bool BuildFrameTmp(Frame &response);
-
-private:
-	Vector3 ReadAcc(void);
-	Vector3 ReadGyr(void);
-	Vector3 ReadMag(void);
-	int16_t ReadTemp(void);
 
 	struct ERegister
 	{
@@ -133,6 +107,39 @@ private:
 		static const uint8_t PWR1_SLEEP_BIT     = 6;
 	};
 
+
+	Mpu9150(TwiInterface &i2c, const uint8_t address = MPU9150_I2C_ADDRESS);
+	~Mpu9150() = default;
+
+	bool Initialize(void);
+	void Update(const uint32_t currentTime);
+
+	inline virtual Vector3 ReadAcc (void)  final override
+	{
+		return (this->mAcc);
+	}
+
+	inline virtual Vector3 ReadGyr (void)  final override
+	{
+		return (this->mGyr);
+	}
+
+	inline virtual Vector3 ReadMag (void)  final override
+	{
+		return (this->mMag);
+	}
+
+	inline virtual int16_t ReadTemp (void) final override
+	{
+		return (this->mTmp);
+	}
+
+private:
+	Vector3 UpdateAcc(void);
+	Vector3 UpdateGyr(void);
+	Vector3 UpdateMag(void);
+	int16_t UpdateTemp(void);
+
 	struct ERegisterAccel
 	{
 		static const uint8_t  ACCEL_FS_2  = 0x00;
@@ -187,7 +194,7 @@ private:
 		static const uint8_t SELF_TEST_Z_GYRO = 0x02;
 	};
 
-	Twi &mI2c;
+	TwiInterface &mI2c;
 	const uint8_t mAddress;
 	const uint8_t mAddressMag;
 	Vector3 mAccOffset;

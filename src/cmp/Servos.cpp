@@ -1,25 +1,25 @@
 #include "Servos.h"
 
 namespace Component {
-Servos::Servos(Pca9685 &pca9685_0, Pca9685 &pca9685_1)
-	: mServo0(pca9685_0, 0, 90U, 15, 60U, 120U, false)
-	, mServo1(pca9685_0, 1, 90U, -4, 60U, 120U, false)
-	, mServo2(pca9685_0, 2, 90U, 12, 60U, 120U, false)
-	, mServo3(pca9685_0, 3, 90U, 2, 60U, 120U, false)
-	, mServo4(pca9685_0, 4, 90U, 0, 60U, 120U, false)
-	, mServo5(pca9685_0, 5, 90U, 18, 60U, 120U, false)
-	, mServo6(pca9685_0, 6, 90U, 2, 60U, 120U, false)
-	, mServo7(pca9685_0, 7, 90U, 0, 60U, 120U, false)
-	, mServo8(pca9685_0, 8, 90U, 10, 60U, 120U, false)
-	, mServo9(pca9685_1, 0, 90U, -20, 60U, 120U, true)
-	, mServo10(pca9685_1, 1, 90U, -2, 60U, 120U, true)
-	, mServo11(pca9685_1, 2, 90U, -15, 60U, 120U, true)
-	, mServo12(pca9685_1, 3, 90U, 0, 60U, 120U, true)
-	, mServo13(pca9685_1, 4, 90U, 0, 60U, 120U, true)
-	, mServo14(pca9685_1, 5, 90U, -20, 60U, 120U, true)
-	, mServo15(pca9685_1, 6, 90U, 10, 60U, 120U, true)
-	, mServo16(pca9685_1, 7, 90U, 0, 60U, 120U, true)
-	, mServo17(pca9685_1, 8, 90U, -18, 60U, 120U, true)
+Servos::Servos(Pca9685Interface &pca9685_0, Pca9685Interface &pca9685_1, TickInterface &tick)
+	: mServo0(pca9685_0, tick, 0, 90U, 15, 60U, 120U, false)
+	, mServo1(pca9685_0, tick, 1, 90U, -4, 60U, 120U, false)
+	, mServo2(pca9685_0, tick, 2, 90U, 12, 60U, 120U, false)
+	, mServo3(pca9685_0, tick, 3, 90U, 2, 60U, 120U, false)
+	, mServo4(pca9685_0, tick, 4, 90U, 0, 60U, 120U, false)
+	, mServo5(pca9685_0, tick, 5, 90U, 18, 60U, 120U, false)
+	, mServo6(pca9685_0, tick, 6, 90U, 2, 60U, 120U, false)
+	, mServo7(pca9685_0, tick, 7, 90U, 0, 60U, 120U, false)
+	, mServo8(pca9685_0, tick, 8, 90U, 10, 60U, 120U, false)
+	, mServo9(pca9685_1, tick, 0, 90U, -20, 60U, 120U, true)
+	, mServo10(pca9685_1, tick, 1, 90U, -2, 60U, 120U, true)
+	, mServo11(pca9685_1, tick, 2, 90U, -15, 60U, 120U, true)
+	, mServo12(pca9685_1, tick, 3, 90U, 0, 60U, 120U, true)
+	, mServo13(pca9685_1, tick, 4, 90U, 0, 60U, 120U, true)
+	, mServo14(pca9685_1, tick, 5, 90U, -20, 60U, 120U, true)
+	, mServo15(pca9685_1, tick, 6, 90U, 10, 60U, 120U, true)
+	, mServo16(pca9685_1, tick, 7, 90U, 0, 60U, 120U, true)
+	, mServo17(pca9685_1, tick, 8, 90U, -18, 60U, 120U, true)
 	, mServos{&mServo0, &mServo1, &mServo2, &mServo3, &mServo4, &mServo5, &mServo6, &mServo7, &mServo8,
 				 &mServo9, &mServo10, &mServo11, &mServo12, &mServo13, &mServo14, &mServo15, &mServo16, &mServo17}
 	, mPca9685Left(pca9685_0)
@@ -32,7 +32,7 @@ bool Servos::Initialize (void)
 	this->mPca9685Left.Initialize();
 	this->mPca9685Right.Initialize();
 
-	for ( size_t servoId = 0U; servoId < NB_SERVOS; servoId++ )
+	for (size_t servoId = 0U; servoId < NB_SERVOS; servoId++)
 	{
 		this->mServos[servoId]->Initialize();
 	}
@@ -42,7 +42,7 @@ bool Servos::Initialize (void)
 
 void Servos::Update (const uint32_t currentTime)
 {
-	for ( size_t servoId = 0U; servoId < NB_SERVOS; servoId++ )
+	for (size_t servoId = 0U; servoId < NB_SERVOS; servoId++)
 	{
 		this->mServos[servoId]->Update(currentTime);
 	}
@@ -53,7 +53,7 @@ Servo &Servos::GetServo (const uint8_t servoId)
 	return (*this->mServos[servoId]);
 }
 
-Pca9685 &Servos::GetPca9685 (const uint8_t pca9685Id)
+Pca9685Interface &Servos::GetPca9685 (const uint8_t pca9685Id)
 {
 	if (pca9685Id == 0U)
 	{
@@ -66,7 +66,7 @@ bool Servos::BuildFrameAllAngle (Frame &response)
 {
 	uint8_t params[NB_SERVOS] = { 0U };
 
-	for ( size_t servoId = 0U; servoId < NB_SERVOS; servoId++ )
+	for (size_t servoId = 0U; servoId < NB_SERVOS; servoId++)
 	{
 		params[servoId] = GetServo(servoId).GetAngle();
 	}

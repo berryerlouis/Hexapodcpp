@@ -46,6 +46,4 @@ ISR(TIMER0_OVF_vect)
 {
 	ISR_EMBEDDED_CODE(Tick::tick += 1UL; );
 }
-
-Tick MyTick;
 }

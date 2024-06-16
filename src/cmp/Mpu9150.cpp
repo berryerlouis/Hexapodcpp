@@ -3,7 +3,7 @@
 namespace Component {
 #define NB_SAMPLES    20
 
-Mpu9150::Mpu9150(Twi &i2c, const uint8_t address)
+Mpu9150::Mpu9150(TwiInterface &i2c, const uint8_t address)
 	: mI2c(i2c)
 	, mAddress(address)
 	, mAddressMag(AK8963_I2C_ADDRESS)
@@ -90,13 +90,13 @@ bool Mpu9150::Initialize (void)
 void Mpu9150::Update (const uint32_t currentTime)
 {
 	(void) currentTime;
-	ReadAcc();
-	ReadGyr();
-	ReadMag();
-	ReadTemp();
+	UpdateAcc();
+	UpdateGyr();
+	UpdateMag();
+	UpdateTemp();
 }
 
-Mpu9150::Vector3 Mpu9150::ReadAcc (void)
+Mpu9150::Vector3 Mpu9150::UpdateAcc (void)
 {
 	if (this->mI2c.ReadRegisters(this->mAddress, (uint8_t) ERegister::ACCEL_XOUT_H, (uint8_t *) &this->mAcc, 6U) )
 	{
@@ -122,7 +122,7 @@ Mpu9150::Vector3 Mpu9150::ReadAcc (void)
 	return (this->mAcc);
 }
 
-Mpu9150::Vector3 Mpu9150::ReadGyr (void)
+Mpu9150::Vector3 Mpu9150::UpdateGyr (void)
 {
 	if (this->mI2c.ReadRegisters(this->mAddress, (uint8_t) ERegister::GYRO_XOUT_H, (uint8_t *) &this->mGyr, 6U) )
 	{
@@ -148,7 +148,7 @@ Mpu9150::Vector3 Mpu9150::ReadGyr (void)
 	return (this->mGyr);
 }
 
-Mpu9150::Vector3 Mpu9150::ReadMag (void)
+Mpu9150::Vector3 Mpu9150::UpdateMag (void)
 {
 	if (this->mI2c.ReadRegisters(this->mAddress, (uint8_t) ERegisterMag::XOUT_L, (uint8_t *) &this->mMag, 6U) )
 	{
@@ -174,7 +174,7 @@ Mpu9150::Vector3 Mpu9150::ReadMag (void)
 	return (this->mMag);
 }
 
-int16_t Mpu9150::ReadTemp (void)
+int16_t Mpu9150::UpdateTemp (void)
 {
 	uint8_t tmpL = 0U;
 	uint8_t tmpH = 0U;
@@ -184,45 +184,5 @@ int16_t Mpu9150::ReadTemp (void)
 	this->mTmp = (int16_t) ( (tmpH << 8) | ( (tmpL >> 8) & 0xFF) );
 	this->mTmp = (this->mTmp / 340.0) + 35U;
 	return (this->mTmp);
-}
-
-bool Mpu9150::BuildFrameAll (Frame &response)
-{
-	uint8_t params[] = { 0, 0, 0 };
-
-	response.Build(EClusters::IMU, EImuCommands::ALL, (uint8_t *) &params, 3U);
-	return (true);
-}
-
-bool Mpu9150::BuildFrameAcc (Frame &response)
-{
-	Vector3 params = this->mAcc;
-
-	response.Build(EClusters::IMU, EImuCommands::ACC, (uint8_t *) &params, 6U);
-	return (true);
-}
-
-bool Mpu9150::BuildFrameGyr (Frame &response)
-{
-	Vector3 params = this->mGyr;
-
-	response.Build(EClusters::IMU, EImuCommands::GYR, (uint8_t *) &params, 6U);
-	return (true);
-}
-
-bool Mpu9150::BuildFrameMag (Frame &response)
-{
-	Vector3 params = this->mMag;
-
-	response.Build(EClusters::IMU, EImuCommands::MAG, (uint8_t *) &params, 6U);
-	return (true);
-}
-
-bool Mpu9150::BuildFrameTmp (Frame &response)
-{
-	int16_t params = this->mTmp;
-
-	response.Build(EClusters::IMU, EImuCommands::TMP, (uint8_t *) &params, 2U);
-	return (true);
 }
 }

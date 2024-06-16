@@ -1,7 +1,7 @@
 #include "../srv/Services.h"
 
 Services::Services(
-	Communication &communication,
+	CommunicationInterface &communication,
 	ServiceControl &serviceControl,
 	ServiceProximity &serviceProximity,
 	ServiceOrientation &serviceOrientation,

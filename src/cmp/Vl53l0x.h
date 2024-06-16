@@ -2,8 +2,9 @@
 
 #include "../clu/Constants.h"
 #include "../clu/Frame.h"
-#include "../drv/Twi.h"
-#include "ProximityInterface.h"
+#include "../drv/TwiInterface.h"
+#include "../drv/TickInterface.h"
+#include "../cmp/ProximityInterface.h"
 
 namespace Component {
 using namespace Driver;
@@ -72,7 +73,7 @@ public:
 #define VL53L0X_ALGO_PHASECAL_CONFIG_TIMEOUT                   0x30U
 
 	static const uint16_t DISTANCE_THRESHOLD = 300U;
-	Vl53l0x(Twi &i2c, const uint8_t address = 0x29U);
+	Vl53l0x(TwiInterface &i2c, TickInterface &tick, const uint8_t address = 0x29U);
 	~Vl53l0x() = default;
 
 	bool Initialize(void);
@@ -80,10 +81,12 @@ public:
 
 	virtual uint16_t GetDistance(void) final override;
 	virtual bool SetThreshold(const uint16_t threshold) final override;
+	virtual uint16_t GetThreshold(void) final override;
 	virtual bool IsDetecting(void) final override;
 
 private:
-	Twi &mI2c;
+	TwiInterface &mI2c;
+	TickInterface &mTick;
 	uint8_t mAddress;
 	uint16_t mDistance;
 	uint16_t mThreshold;

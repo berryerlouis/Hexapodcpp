@@ -1,6 +1,6 @@
 #include "SensorProximity.h"
 
-SensorProximity::SensorProximity(Srf05 &srf05Left, Srf05 &srf05Right, Vl53l0x &Vl53l0x)
+SensorProximity::SensorProximity(ProximityInterface &srf05Left, ProximityInterface &srf05Right, ProximityInterface &Vl53l0x)
 	: mSrf05Left(srf05Left)
 	, mSrf05Right(srf05Right)
 	, mVl53l0x(Vl53l0x)
@@ -105,11 +105,11 @@ bool SensorProximity::SetThreshold (const SensorsId sensorId, const uint16_t thr
 	return (success);
 }
 
-bool SensorProximity::BuildFrameDistance (EProximityCommands side, Frame &response)
+bool SensorProximity::BuildFrameDistance (Cluster::EProximityCommands side, Cluster::Frame &response)
 {
 	uint16_t distance = this->GetDistance( (SensorsId) side);
 	uint8_t  params[] = { (uint8_t) (distance >> 8U), (uint8_t) (distance & 0xFFU) };
 
-	response.Build(EClusters::PROXIMITY, side, params, 2U);
+	response.Build(Cluster::EClusters::PROXIMITY, side, params, 2U);
 	return (true);
 }

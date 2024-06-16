@@ -1,23 +1,19 @@
 #pragma once
-#include <stdint.h>
+
+#include "TickInterface.h"
 
 namespace Driver {
-class Tick
+class Tick : public TickInterface
 {
 public:
 	Tick();
 	~Tick() = default;
-	static Tick &GetInstance(void);
 
-	uint64_t GetUs(void);
-	uint32_t GetMs(void);
-	void DelayMs(uint16_t delayMs);
-	void DelayUs(uint32_t delayUs);
+	virtual uint64_t GetUs(void) final override;
+	virtual uint32_t GetMs(void) final override;
+	virtual void DelayMs(uint16_t delayMs) final override;
+	virtual void DelayUs(uint32_t delayUs) final override;
 
 	static volatile uint64_t tick;
-	static Tick mInstance;
-private:
 };
-
-extern Tick MyTick;
 }

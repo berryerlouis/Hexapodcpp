@@ -1,13 +1,13 @@
 #include "math.h"
 #include "Servo.h"
-#include "../drv/Tick.h"
 
 namespace Component {
 #define REVERSE_ANGLE(angle)    ( ( (angle - 90) * -1) + 90)
 
 
-Servo::Servo(Pca9685 &pca9685, const uint8_t servoId)
+Servo::Servo(Pca9685Interface &pca9685, TickInterface &tick, const uint8_t servoId)
 	: mPca9685(pca9685)
+	, mtick(tick)
 	, mServoId(servoId)
 	, mAngle(90U)
 	, mTargetAngle(0U)
@@ -22,8 +22,9 @@ Servo::Servo(Pca9685 &pca9685, const uint8_t servoId)
 {
 }
 
-Servo::Servo(Pca9685 &pca9685, const uint8_t servoId, const uint8_t angle)
+Servo::Servo(Pca9685Interface &pca9685, TickInterface &tick, const uint8_t servoId, const uint8_t angle)
 	: mPca9685(pca9685)
+	, mtick(tick)
 	, mServoId(servoId)
 	, mAngle(angle)
 	, mTargetAngle(0U)
@@ -38,8 +39,9 @@ Servo::Servo(Pca9685 &pca9685, const uint8_t servoId, const uint8_t angle)
 {
 }
 
-Servo::Servo(Pca9685 &pca9685, const uint8_t servoId, const uint8_t angle, const int8_t offset)
+Servo::Servo(Pca9685Interface &pca9685, TickInterface &tick, const uint8_t servoId, const uint8_t angle, const int8_t offset)
 	: mPca9685(pca9685)
+	, mtick(tick)
 	, mServoId(servoId)
 	, mAngle(angle)
 	, mTargetAngle(0U)
@@ -54,8 +56,9 @@ Servo::Servo(Pca9685 &pca9685, const uint8_t servoId, const uint8_t angle, const
 {
 }
 
-Servo::Servo(Pca9685 &pca9685, const uint8_t servoId, const uint8_t angle, const int8_t offset, const uint8_t min, const uint8_t max)
+Servo::Servo(Pca9685Interface &pca9685, TickInterface &tick, const uint8_t servoId, const uint8_t angle, const int8_t offset, const uint8_t min, const uint8_t max)
 	: mPca9685(pca9685)
+	, mtick(tick)
 	, mServoId(servoId)
 	, mAngle(angle)
 	, mTargetAngle(0U)
@@ -70,8 +73,9 @@ Servo::Servo(Pca9685 &pca9685, const uint8_t servoId, const uint8_t angle, const
 {
 }
 
-Servo::Servo(Pca9685 &pca9685, const uint8_t servoId, const uint8_t angle, const int8_t offset, const uint8_t min, const uint8_t max, const bool reverse)
+Servo::Servo(Pca9685Interface &pca9685, TickInterface &tick, const uint8_t servoId, const uint8_t angle, const int8_t offset, const uint8_t min, const uint8_t max, const bool reverse)
 	: mPca9685(pca9685)
+	, mtick(tick)
 	, mServoId(servoId)
 	, mAngle(angle)
 	, mTargetAngle(0U)
@@ -139,7 +143,7 @@ bool Servo::SetAngle (const uint8_t angle, const uint16_t travelTime)
 		this->mIsMoving    = false;
 		this->mSpeed       = travelTime;
 		this->mTargetAngle = angle;
-		this->mStartTime   = MyTick.GetMs();
+		this->mStartTime   = this->mtick.GetMs();
 
 		if (true == this->mReverse)
 		{

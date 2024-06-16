@@ -24,17 +24,17 @@ public:
 		switch ( (EProximityCommands) request.commandId)
 		{
 		case EProximityCommands::US_LEFT: {
-			success = this->mSensorProximity.BuildFrameDistance( (EProximityCommands) request.commandId, response);
+			success = this->BuildFrameDistance( (EProximityCommands) request.commandId, response);
 		}
 		break;
 
 		case EProximityCommands::US_RIGHT: {
-			success = this->mSensorProximity.BuildFrameDistance( (EProximityCommands) request.commandId, response);
+			success = this->BuildFrameDistance( (EProximityCommands) request.commandId, response);
 		}
 		break;
 
 		case EProximityCommands::LASER: {
-			success = this->mSensorProximity.BuildFrameDistance( (EProximityCommands) request.commandId, response);
+			success = this->BuildFrameDistance( (EProximityCommands) request.commandId, response);
 		}
 		break;
 
@@ -53,5 +53,15 @@ public:
 
 private:
 	SensorProximity &mSensorProximity;
+
+
+	bool BuildFrameDistance (EProximityCommands side, Frame &response)
+	{
+		uint16_t distance = this->mSensorProximity.GetDistance( (SensorProximity::SensorsId) side);
+		uint8_t  params[] = { (uint8_t) (distance >> 8U), (uint8_t) (distance & 0xFFU) };
+
+		response.Build(EClusters::PROXIMITY, side, params, 2U);
+		return (true);
+	}
 };
 }

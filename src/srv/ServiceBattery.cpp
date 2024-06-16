@@ -1,8 +1,9 @@
 #include "ServiceBattery.h"
 
-ServiceBattery::ServiceBattery(Battery &battery)
+ServiceBattery::ServiceBattery(BatteryInterface &battery)
 	: Service(100)
 	, mBattery(battery)
+	, mCurrentState(BatteryInterface::BatteryState::UNKNOWN)
 {
 }
 
@@ -13,11 +14,11 @@ bool ServiceBattery::Initialize (void)
 
 void ServiceBattery::Update (const uint32_t currentTime)
 {
-	auto state = this->mBattery.GetState();
-
 	this->mBattery.Update(currentTime);
-	if (state != this->mBattery.GetState() )
+	auto state = this->mBattery.GetState();
+	if (this->mCurrentState != state)
 	{
+		this->mCurrentState = state;
 		Frame response;
 		this->BuildFrameState(response);
 		this->mServiceMediator->SendFrame(response);
@@ -27,7 +28,7 @@ void ServiceBattery::Update (const uint32_t currentTime)
 bool ServiceBattery::BuildFrameState (Frame &response)
 {
 	uint16_t volt     = this->mBattery.GetVoltage();
-	uint8_t  params[] = { this->mBattery.GetState(), (uint8_t) (volt >> 8U), (uint8_t) volt };
+	uint8_t  params[] = { this->mCurrentState, (uint8_t) (volt >> 8U), (uint8_t) volt };
 
 	return (response.Build(
 				  EClusters::BATTERY,

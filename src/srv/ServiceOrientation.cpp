@@ -1,6 +1,6 @@
 #include "ServiceOrientation.h"
 
-ServiceOrientation::ServiceOrientation(Mpu9150 &mpu9150)
+ServiceOrientation::ServiceOrientation(Mpu9150Interface &mpu9150)
 	: Service(20)
 	, mMpu9150(mpu9150)
 {

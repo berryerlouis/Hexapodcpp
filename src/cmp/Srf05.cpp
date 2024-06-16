@@ -1,11 +1,11 @@
 #include "Srf05.h"
-#include "../drv/Tick.h"
 
 namespace Component {
-Srf05::Srf05(const EProximityCommands side, const SGpio &gpioTrigger, const SGpio &gpioEcho)
+Srf05::Srf05(const EProximityCommands side, GpioInterface &gpioTrigger, InputCaptureInterface &gpioEcho, TickInterface &tick)
 	: mSide(side)
-	, mGpioTrigger(Gpio(gpioTrigger, EPortDirection::OUT) )
+	, mGpioTrigger(gpioTrigger)
 	, mGpioEcho(gpioEcho)
+	, mTick(tick)
 	, mThreshold(DISTANCE_THRESHOLD)
 {
 }
@@ -20,6 +20,11 @@ void Srf05::Update (const uint32_t currentTime)
 {
 	(void) currentTime;
 	this->SendPulse();
+}
+
+uint16_t Srf05::GetThreshold (void)
+{
+	return (this->mThreshold);
 }
 
 bool Srf05::SetThreshold (uint16_t mThreshold)
@@ -38,7 +43,7 @@ bool Srf05::IsDetecting (void)
 void Srf05::SendPulse (void)
 {
 	this->mGpioTrigger.Set();
-	MyTick.DelayUs(10);
+	this->mTick.DelayUs(10U);
 	this->mGpioTrigger.Reset();
 }
 

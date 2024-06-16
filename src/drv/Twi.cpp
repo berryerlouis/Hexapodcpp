@@ -63,7 +63,7 @@ bool Twi::ReadRegisters (const uint8_t address, const uint8_t reg, uint8_t *data
 	Write(reg);
 	RepeatedStart(address);
 
-	for ( size_t i = 0U; i < length; i++ )
+	for (size_t i = 0U; i < length; i++)
 	{
 		data[i] = ReadAck();
 	}
@@ -109,7 +109,7 @@ bool Twi::WriteRegisters (const uint8_t address, const uint8_t reg, uint8_t *dat
 	Start(address);
 	Write(reg);
 
-	for ( size_t i = 0U; i < length; i++ )
+	for (size_t i = 0U; i < length; i++)
 	{
 		Write(data[i]);
 	}
