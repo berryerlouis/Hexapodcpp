@@ -9,14 +9,14 @@ Adc::Adc(GpioInterface & gpio)
 {
 }
 
-bool Adc::Initialize (void)
+Core::CoreStatus Adc::Initialize (void)
 {
 	ADMUX  = (1 << REFS0) | (1 << REFS1);
 	ADCSRA = (1 << ADEN) | (1 << ADPS0) | (1 << ADPS1) | (1 << ADIE);
 	ADMUX  = ( (ADMUX & 0xE0U) | (uint8_t) this->mGpio.GetPin() );
 
 	this->StartConversion();
-	return (true);
+	return (Core::CoreStatus::CORE_OK);
 }
 
 void Adc::Update (const uint32_t currentTime)

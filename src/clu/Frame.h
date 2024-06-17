@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include "../cor/Status.h"
 
 namespace Cluster {
 #define FRAME_MAX_PARAMS    20U
@@ -13,7 +14,7 @@ public:
 	~Frame(void) = default;
 
 	void Reset(void);
-	bool Build(uint8_t clusterId, uint8_t commandId, uint8_t *params, uint8_t nbParams);
+	Core::CoreStatus Build(uint8_t clusterId, uint8_t commandId, uint8_t *params, uint8_t nbParams);
 
 	uint8_t clusterId;
 	uint8_t commandId;

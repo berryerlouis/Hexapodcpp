@@ -25,7 +25,7 @@ public:
 
 	void SetPositionRotation(const Leg::Position3d &position, const Leg::Rotation3d &rotation, const uint16_t travelTime);
 
-	bool BuildFrameSetPosition(Frame &response);
+	Core::CoreStatus BuildFrameSetPosition(Frame &response);
 
 private:
 	SBodyIk mBodyIk;

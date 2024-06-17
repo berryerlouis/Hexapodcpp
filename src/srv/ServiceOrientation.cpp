@@ -6,7 +6,7 @@ ServiceOrientation::ServiceOrientation(Mpu9150Interface &mpu9150)
 {
 }
 
-bool ServiceOrientation::Initialize (void)
+Core::CoreStatus ServiceOrientation::Initialize (void)
 {
 	return (this->mMpu9150.Initialize() );
 }

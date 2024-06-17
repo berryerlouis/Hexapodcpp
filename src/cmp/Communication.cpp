@@ -10,7 +10,7 @@ Communication::Communication(UartInterface &uart, const ClustersInterface &clust
 {
 }
 
-bool Communication::Initialize (void)
+Core::CoreStatus Communication::Initialize (void)
 {
 	return (this->mLedStatus.Initialize() );
 }
@@ -58,7 +58,7 @@ void Communication::Update (const uint32_t currentTime)
 	}
 }
 
-bool Communication::Send (Frame &message)
+Core::CoreStatus Communication::Send (Frame &message)
 {
 	uint8_t buffer[100U];
 
@@ -68,9 +68,9 @@ bool Communication::Send (Frame &message)
 	if (size != 0)
 	{
 		this->mUart.Send(buffer, size);
-		return (true);
+		return (Core::CoreStatus::CORE_OK);
 	}
-	return (false);
+	return (Core::CoreStatus::CORE_ERROR);
 }
 
 bool Communication::ReceivedStringFrame (void)

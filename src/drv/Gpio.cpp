@@ -30,16 +30,16 @@ EPin &Gpio::GetPin (void)
 	return (this->mGpio.pin);
 }
 
-bool Gpio::Set (void)
+Core::CoreStatus Gpio::Set (void)
 {
 	*(this->mGpioRegister.portPtr) |= (1U << this->mGpio.pin);
-	return (true);
+	return (Core::CoreStatus::CORE_OK);
 }
 
-bool Gpio::Reset (void)
+Core::CoreStatus Gpio::Reset (void)
 {
 	*(this->mGpioRegister.portPtr) &= ~(1U << this->mGpio.pin);
-	return (true);
+	return (Core::CoreStatus::CORE_OK);
 }
 
 bool Gpio::Get (void)

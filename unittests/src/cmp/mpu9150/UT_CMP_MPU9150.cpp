@@ -16,7 +16,7 @@ using namespace Component;
 
 TEST(ComponentMpu9150, Initialize_Ok)
 {
-	bool success = false;
+	Core::CoreStatus     success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockTwi> twi;
 
 	Mpu9150 mpu9150(twi);
@@ -28,12 +28,12 @@ TEST(ComponentMpu9150, Initialize_Ok)
 
 	success = mpu9150.Initialize();
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }
 
 TEST(ComponentMpu9150, Update_Ok)
 {
-	bool success = false;
+	Core::CoreStatus     success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockTwi> twi;
 
 	Mpu9150 mpu9150(twi);
@@ -47,5 +47,5 @@ TEST(ComponentMpu9150, Update_Ok)
 	success = mpu9150.Initialize();
 	mpu9150.Update(0UL);
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }

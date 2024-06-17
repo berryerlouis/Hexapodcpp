@@ -90,7 +90,7 @@ Servo::Servo(Pca9685Interface &pca9685, TickInterface &tick, const uint8_t servo
 {
 }
 
-bool Servo::Initialize (void)
+Core::CoreStatus Servo::Initialize (void)
 {
 	if (true == this->mReverse)
 	{
@@ -100,7 +100,7 @@ bool Servo::Initialize (void)
 	return (this->SetAngle(this->mAngle) );
 }
 
-void Servo::Update (const uint64_t currentTime)
+void Servo::Update (const uint32_t currentTime)
 {
 	if (this->IsMoving() )
 	{
@@ -110,7 +110,7 @@ void Servo::Update (const uint64_t currentTime)
 	}
 }
 
-uint8_t Servo::GetAngleFromDeltaTime (const uint64_t currentTime)
+uint8_t Servo::GetAngleFromDeltaTime (const uint32_t currentTime)
 {
 	const uint64_t endTime   = this->mStartTime + this->mSpeed;
 	float          deltaTime = 1.0f;
@@ -134,7 +134,7 @@ bool Servo::IsMoving (void)
 	return (this->mIsMoving);
 }
 
-bool Servo::SetAngle (const uint8_t angle, const uint16_t travelTime)
+Core::CoreStatus Servo::SetAngle (const uint8_t angle, const uint16_t travelTime)
 {
 	if ( (true == this->mEnable) &&
 		  (angle >= this->mMin) &&
@@ -155,9 +155,9 @@ bool Servo::SetAngle (const uint8_t angle, const uint16_t travelTime)
 			this->mAngle = this->mTargetAngle + this->mOffset;
 		}
 		this->mIsMoving = true;
-		return (true);
+		return (Core::CoreStatus::CORE_OK);
 	}
-	return (false);
+	return (Core::CoreStatus::CORE_ERROR);
 }
 
 uint8_t Servo::GetAngle (void) const

@@ -7,7 +7,7 @@ Led::Led(GpioInterface &gpio)
 {
 }
 
-bool Led::Initialize (void)
+Core::CoreStatus Led::Initialize (void)
 {
 	return (this->Off() );
 }
@@ -17,21 +17,19 @@ void Led::Update (const uint32_t currentTime)
 	(void) currentTime;
 }
 
-bool Led::On ()
+Core::CoreStatus Led::On ()
 {
-	this->mGpio.Reset();
 	this->mState = ON;
-	return (true);
+	return (this->mGpio.Reset() );
 }
 
-bool Led::Off ()
+Core::CoreStatus Led::Off ()
 {
-	this->mGpio.Set();
 	this->mState = OFF;
-	return (true);
+	return (this->mGpio.Set() );
 }
 
-bool Led::Toggle ()
+Core::CoreStatus Led::Toggle ()
 {
 	if (ON == this->Get() )
 	{
@@ -41,7 +39,7 @@ bool Led::Toggle ()
 	{
 		this->On();
 	}
-	return (true);
+	return (Core::CoreStatus::CORE_OK);
 }
 
 Led::LedState Led::Get () const

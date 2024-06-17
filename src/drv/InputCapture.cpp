@@ -14,14 +14,14 @@ InputCapture::InputCapture(GpioInterface &gpio, TickInterface &tick)
 {
 }
 
-bool InputCapture::Initialize (void)
+Core::CoreStatus InputCapture::Initialize (void)
 {
 	PCICR  |= (1U << PCIE0);
 	PCMSK0 |= (1U << (this->mGpio.GetPin() ) );
 	inputCapture[inputCaptureIndex] = this;
 	inputCaptureIndex++;
 
-	return (true);
+	return (Core::CoreStatus::CORE_OK);
 }
 
 void InputCapture::Update (const uint32_t currentTime)

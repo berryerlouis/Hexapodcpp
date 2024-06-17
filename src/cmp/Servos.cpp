@@ -27,7 +27,7 @@ Servos::Servos(Pca9685Interface &pca9685_0, Pca9685Interface &pca9685_1, TickInt
 {
 }
 
-bool Servos::Initialize (void)
+Core::CoreStatus Servos::Initialize (void)
 {
 	this->mPca9685Left.Initialize();
 	this->mPca9685Right.Initialize();
@@ -37,7 +37,7 @@ bool Servos::Initialize (void)
 		this->mServos[servoId]->Initialize();
 	}
 
-	return (true);
+	return (Core::CoreStatus::CORE_OK);
 }
 
 void Servos::Update (const uint32_t currentTime)
@@ -60,93 +60,5 @@ Pca9685Interface &Servos::GetPca9685 (const uint8_t pca9685Id)
 		return (this->mPca9685Left);
 	}
 	return (this->mPca9685Right);
-}
-
-bool Servos::BuildFrameAllAngle (Frame &response)
-{
-	uint8_t params[NB_SERVOS] = { 0U };
-
-	for (size_t servoId = 0U; servoId < NB_SERVOS; servoId++)
-	{
-		params[servoId] = GetServo(servoId).GetAngle();
-	}
-
-	return (response.Build(
-				  EClusters::SERVO,
-				  EServoCommands::GET_ALL,
-				  params,
-				  NB_SERVOS) );
-}
-
-bool Servos::BuildFrameAngle (uint8_t servoId, Frame &response)
-{
-	uint8_t angle    = GetServo(servoId).GetAngle();
-	uint8_t params[] = { servoId, angle };
-
-	return (response.Build(
-				  EClusters::SERVO,
-				  EServoCommands::GET_ANGLE,
-				  params,
-				  2U) );
-}
-
-bool Servos::BuildFrameMinAngle (uint8_t servoId, Frame &response)
-{
-	uint8_t angle    = GetServo(servoId).GetMin();
-	uint8_t params[] = { servoId, angle };
-
-	return (response.Build(
-				  EClusters::SERVO,
-				  EServoCommands::GET_MIN,
-				  params,
-				  2U) );
-}
-
-bool Servos::BuildFrameMaxAngle (uint8_t servoId, Frame &response)
-{
-	uint8_t angle    = GetServo(servoId).GetMax();
-	uint8_t params[] = { servoId, angle };
-
-	return (response.Build(
-				  EClusters::SERVO,
-				  EServoCommands::GET_MAX,
-				  params,
-				  2U) );
-}
-
-bool Servos::BuildFrameOffset (uint8_t servoId, Frame &response)
-{
-	uint8_t angle    = GetServo(servoId).GetOffset();
-	uint8_t params[] = { servoId, angle };
-
-	return (response.Build(
-				  EClusters::SERVO,
-				  EServoCommands::GET_OFFSET,
-				  params,
-				  2U) );
-}
-
-bool Servos::BuildFrameState (uint8_t servoId, Frame &response)
-{
-	bool    state    = GetServo(servoId).IsEnable();
-	uint8_t params[] = { servoId, state };
-
-	return (response.Build(
-				  EClusters::SERVO,
-				  EServoCommands::GET_STATE,
-				  params,
-				  2U) );
-}
-
-bool Servos::BuildFrameReverse (uint8_t servoId, Frame &response)
-{
-	bool    reverse  = GetServo(servoId).GetReverse();
-	uint8_t params[] = { servoId, reverse };
-
-	return (response.Build(
-				  EClusters::SERVO,
-				  EServoCommands::GET_REVERSE,
-				  params,
-				  2U) );
 }
 }

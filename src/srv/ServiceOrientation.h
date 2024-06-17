@@ -11,7 +11,7 @@ public:
 	ServiceOrientation(Mpu9150Interface &mMpu9150);
 	~ServiceOrientation() = default;
 
-	virtual bool Initialize(void) final override;
+	virtual Core::CoreStatus Initialize(void) final override;
 	virtual void Update(const uint32_t currentTime) final override;
 
 private:

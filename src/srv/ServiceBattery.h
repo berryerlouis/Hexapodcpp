@@ -10,11 +10,11 @@ public:
 	ServiceBattery(BatteryInterface &battery);
 	~ServiceBattery() = default;
 
-	virtual bool Initialize(void) final override;
+	virtual Core::CoreStatus Initialize(void) final override;
 	virtual void Update(const uint32_t currentTime) final override;
 
 
-	bool BuildFrameState(Frame &response);
+	Core::CoreStatus BuildFrameState(Frame &response);
 
 private:
 	BatteryInterface &mBattery;

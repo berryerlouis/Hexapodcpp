@@ -20,3 +20,15 @@ jobs:
       - name: Run Test
         run: |
           ./bin/dev/launchTU 
+
+      - name: Create Archive Directory
+        run: |
+          mkdir archive
+          cp build/main.hex archive/
+          cp unittests/build/Testing/Temporary/LastTest.log archive/
+
+      - name: Archive Artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: hexapodcpp
+          path: archive/

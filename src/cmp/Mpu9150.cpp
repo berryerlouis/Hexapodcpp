@@ -23,11 +23,11 @@ Mpu9150::Mpu9150(TwiInterface &i2c, const uint8_t address)
 {
 }
 
-bool Mpu9150::Initialize (void)
+Core::CoreStatus Mpu9150::Initialize (void)
 {
-	uint8_t whoAmI  = 0x00U;
-	uint8_t reg     = 0x00U;
-	bool    success = false;
+	uint8_t          whoAmI  = 0x00U;
+	uint8_t          reg     = 0x00U;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
 	// check device
 	this->mI2c.ReadRegister(this->mAddress, (uint8_t) ERegister::WHO_AM_I, whoAmI);
@@ -82,7 +82,7 @@ bool Mpu9150::Initialize (void)
 		this->mI2c.ReadRegister(this->mAddress, (uint8_t) ERegister::CONFIG, reg);
 		reg |= ERegisterAccel::DLPF_BW_10;
 		this->mI2c.WriteRegister(this->mAddress, (uint8_t) ERegister::CONFIG, reg);
-		success = true;
+		success = Core::CoreStatus::CORE_OK;
 	}
 	return (success);
 }

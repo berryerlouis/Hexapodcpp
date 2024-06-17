@@ -17,9 +17,9 @@ public:
 	~ClusterBody() = default;
 
 
-	virtual bool Execute (Frame &request, Frame &response) final override
+	virtual Core::CoreStatus Execute (Frame &request, Frame &response) final override
 	{
-		bool success = false;
+		Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
 		switch ( (EBodyCommands) request.commandId)
 		{

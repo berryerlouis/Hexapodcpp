@@ -1,14 +1,13 @@
 #pragma once
-#include <stdint.h>
-#include <stddef.h>
+#include "../cor/CoreInterface.h"
 
 namespace Component {
-class ComponentInterface {
+class ComponentInterface : public Core::CoreInterface {
 public:
 	ComponentInterface(void) = default;
 	~ComponentInterface()    = default;
 
-	virtual bool Initialize(void) = 0;
+	virtual Core::CoreStatus Initialize(void) = 0;
 	virtual void Update(const uint32_t currentTime) = 0;
 };
 }

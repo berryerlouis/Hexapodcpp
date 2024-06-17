@@ -2,7 +2,7 @@
 
 namespace Cluster {
 using namespace Component;
-Clusters::Clusters(Battery &battery, Mpu9150 &mpu9150, SensorProximity &sensorProximity, Servos &servos, Body &body)
+Clusters::Clusters(BatteryInterface &battery, Mpu9150Interface &mpu9150, SensorProximity &sensorProximity, ServosInterface &servos, Body &body)
 	: mClusterGeneral()
 	, mClusterBattery(battery)
 	, mClusterImu(mpu9150)

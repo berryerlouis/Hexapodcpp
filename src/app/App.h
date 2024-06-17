@@ -34,7 +34,7 @@ public:
 	App(void);
 	~App(void) = default;
 
-	bool Initialize(void);
+	Core::CoreStatus Initialize(void);
 	void Update(void);
 
 private:

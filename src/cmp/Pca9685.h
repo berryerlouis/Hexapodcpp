@@ -75,7 +75,7 @@ public:
 	virtual void SetFrequency(const uint32_t frequency) final override;
 	virtual void SetPwm(uint8_t num, uint16_t off) final override;
 
-	bool Initialize(void);
+	Core::CoreStatus Initialize(void);
 	void Update(const uint32_t currentTime);
 
 private:

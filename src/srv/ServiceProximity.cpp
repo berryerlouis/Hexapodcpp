@@ -7,7 +7,7 @@ ServiceProximity::ServiceProximity(SensorProximity &sensorProximity)
 {
 }
 
-bool ServiceProximity::Initialize (void)
+Core::CoreStatus ServiceProximity::Initialize (void)
 {
 	return (this->mSensorProximity.Initialize() );
 }

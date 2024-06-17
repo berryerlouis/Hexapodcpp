@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../cmp/Servos.h"
+#include "../cmp/ServosInterface.h"
 #include "Cluster.h"
 #include "Constants.h"
 
@@ -8,7 +8,7 @@ namespace Cluster {
 using namespace Component;
 class ClusterServo : public Cluster {
 public:
-	ClusterServo(Servos &servos)
+	ClusterServo(ServosInterface &servos)
 		: Cluster(SERVO)
 		, mServos(servos)
 	{
@@ -17,23 +17,23 @@ public:
 	~ClusterServo() = default;
 
 
-	bool Execute (Frame &request, Frame &response) final override
+	Core::CoreStatus Execute (Frame &request, Frame &response) final override
 	{
-		bool           success = false;
-		uint8_t        servoId = 0xFFU;
-		EServoCommands command = (EServoCommands) request.commandId;
+		Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+		uint8_t          servoId = 0xFFU;
+		EServoCommands   command = (EServoCommands) request.commandId;
 
 		if (command != EServoCommands::GET_ALL)
 		{
 			if (request.nbParams == 0U)
 			{
-				return (false);
+				return (Core::CoreStatus::CORE_ERROR);
 			}
 			servoId = request.params[0U];
 
 			if (servoId > NB_SERVOS)
 			{
-				return (false);
+				return (Core::CoreStatus::CORE_ERROR);
 			}
 		}
 
@@ -43,7 +43,7 @@ public:
 
 			if (request.nbParams == 0U)
 			{
-				return (mServos.BuildFrameAllAngle(response) );
+				return (this->BuildFrameAllAngle(response) );
 			}
 			break;
 
@@ -51,7 +51,7 @@ public:
 
 			if (request.nbParams == 1U)
 			{
-				return (mServos.BuildFrameAngle(servoId, response) );
+				return (this->BuildFrameAngle(servoId, response) );
 			}
 			break;
 
@@ -61,7 +61,7 @@ public:
 			{
 				uint8_t angle = request.params[1U];
 				this->mServos.GetServo(servoId).SetAngle(angle);
-				return (mServos.BuildFrameAngle(servoId, response) );
+				return (this->BuildFrameAngle(servoId, response) );
 			}
 			break;
 
@@ -69,7 +69,7 @@ public:
 
 			if (request.nbParams == 1U)
 			{
-				return (mServos.BuildFrameMinAngle(servoId, response) );
+				return (this->BuildFrameMinAngle(servoId, response) );
 			}
 			break;
 
@@ -79,7 +79,7 @@ public:
 			{
 				uint8_t angle = request.params[1U];
 				this->mServos.GetServo(servoId).SetMin(angle);
-				return (mServos.BuildFrameMinAngle(servoId, response) );
+				return (this->BuildFrameMinAngle(servoId, response) );
 			}
 			break;
 
@@ -87,7 +87,7 @@ public:
 
 			if (request.nbParams == 1U)
 			{
-				return (mServos.BuildFrameMaxAngle(servoId, response) );
+				return (this->BuildFrameMaxAngle(servoId, response) );
 			}
 			break;
 
@@ -97,7 +97,7 @@ public:
 			{
 				uint8_t angle = request.params[1U];
 				this->mServos.GetServo(servoId).SetMax(angle);
-				return (mServos.BuildFrameMaxAngle(servoId, response) );
+				return (this->BuildFrameMaxAngle(servoId, response) );
 			}
 			break;
 
@@ -105,7 +105,7 @@ public:
 
 			if (request.nbParams == 1U)
 			{
-				return (mServos.BuildFrameOffset(servoId, response) );
+				return (this->BuildFrameOffset(servoId, response) );
 			}
 			break;
 
@@ -115,7 +115,7 @@ public:
 			{
 				int8_t angle = (int8_t) request.params[1U];
 				this->mServos.GetServo(servoId).SetOffset(angle);
-				return (mServos.BuildFrameOffset(servoId, response) );
+				return (this->BuildFrameOffset(servoId, response) );
 			}
 			break;
 
@@ -123,7 +123,7 @@ public:
 
 			if (request.nbParams == 1U)
 			{
-				return (mServos.BuildFrameState(servoId, response) );
+				return (this->BuildFrameState(servoId, response) );
 			}
 			break;
 
@@ -134,7 +134,7 @@ public:
 				if (request.params[1U] == 0x00U || request.params[1U] == 0x01U)
 				{
 					this->mServos.GetServo(servoId).SetEnable(request.params[1U]);
-					return (mServos.BuildFrameState(servoId, response) );
+					return (this->BuildFrameState(servoId, response) );
 				}
 			}
 			break;
@@ -143,7 +143,7 @@ public:
 
 			if (request.nbParams == 1U)
 			{
-				return (mServos.BuildFrameReverse(servoId, response) );
+				return (this->BuildFrameReverse(servoId, response) );
 			}
 			break;
 
@@ -154,7 +154,7 @@ public:
 				if (request.params[1U] == 0x00U || request.params[1U] == 0x01U)
 				{
 					this->mServos.GetServo(servoId).SetReverse( (bool) request.params[1U]);
-					return (mServos.BuildFrameReverse(servoId, response) );
+					return (this->BuildFrameReverse(servoId, response) );
 				}
 			}
 			break;
@@ -166,6 +166,94 @@ public:
 	}
 
 private:
-	Servos &mServos;
+	ServosInterface &mServos;
+
+	Core::CoreStatus BuildFrameAllAngle (Frame &response)
+	{
+		uint8_t params[NB_SERVOS] = { 0U };
+
+		for (size_t servoId = 0U; servoId < NB_SERVOS; servoId++)
+		{
+			params[servoId] = this->mServos.GetServo(servoId).GetAngle();
+		}
+
+		return (response.Build(
+					  EClusters::SERVO,
+					  EServoCommands::GET_ALL,
+					  params,
+					  NB_SERVOS) );
+	}
+
+	Core::CoreStatus BuildFrameAngle (uint8_t servoId, Frame &response)
+	{
+		uint8_t angle    = this->mServos.GetServo(servoId).GetAngle();
+		uint8_t params[] = { servoId, angle };
+
+		return (response.Build(
+					  EClusters::SERVO,
+					  EServoCommands::GET_ANGLE,
+					  params,
+					  2U) );
+	}
+
+	Core::CoreStatus BuildFrameMinAngle (uint8_t servoId, Frame &response)
+	{
+		uint8_t angle    = this->mServos.GetServo(servoId).GetMin();
+		uint8_t params[] = { servoId, angle };
+
+		return (response.Build(
+					  EClusters::SERVO,
+					  EServoCommands::GET_MIN,
+					  params,
+					  2U) );
+	}
+
+	Core::CoreStatus BuildFrameMaxAngle (uint8_t servoId, Frame &response)
+	{
+		uint8_t angle    = this->mServos.GetServo(servoId).GetMax();
+		uint8_t params[] = { servoId, angle };
+
+		return (response.Build(
+					  EClusters::SERVO,
+					  EServoCommands::GET_MAX,
+					  params,
+					  2U) );
+	}
+
+	Core::CoreStatus BuildFrameOffset (uint8_t servoId, Frame &response)
+	{
+		uint8_t angle    = this->mServos.GetServo(servoId).GetOffset();
+		uint8_t params[] = { servoId, angle };
+
+		return (response.Build(
+					  EClusters::SERVO,
+					  EServoCommands::GET_OFFSET,
+					  params,
+					  2U) );
+	}
+
+	Core::CoreStatus BuildFrameState (uint8_t servoId, Frame &response)
+	{
+		bool    state    = this->mServos.GetServo(servoId).IsEnable();
+		uint8_t params[] = { servoId, state };
+
+		return (response.Build(
+					  EClusters::SERVO,
+					  EServoCommands::GET_STATE,
+					  params,
+					  2U) );
+	}
+
+	Core::CoreStatus BuildFrameReverse (uint8_t servoId, Frame &response)
+	{
+		bool    reverse  = this->mServos.GetServo(servoId).GetReverse();
+		uint8_t params[] = { servoId, reverse };
+
+		return (response.Build(
+					  EClusters::SERVO,
+					  EServoCommands::GET_REVERSE,
+					  params,
+					  2U) );
+	}
 };
 }

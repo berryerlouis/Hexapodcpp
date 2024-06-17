@@ -17,10 +17,10 @@ Vl53l0x::Vl53l0x(TwiInterface &i2c, TickInterface &tick, const uint8_t address)
 {
 }
 
-bool Vl53l0x::Initialize (void)
+Core::CoreStatus Vl53l0x::Initialize (void)
 {
-	bool    success = false;
-	uint8_t data    = 0U;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	uint8_t          data    = 0U;
 
 	this->mI2c.ReadRegister(this->mAddress, VL53L0X_IDENTIFICATION_MODEL_ID, data);
 	if (data == 0xEE)
@@ -52,7 +52,7 @@ bool Vl53l0x::Initialize (void)
 		uint8_t spad_count;
 		bool    spad_type_is_aperture;
 
-		if (this->GetSpadInfo(&spad_count, &spad_type_is_aperture) )
+		if (this->GetSpadInfo(&spad_count, &spad_type_is_aperture))
 		{
 			//The SPAD map (RefGoodSpadMap) is read by VL53L0X_get_info_from_device() in
 			//the API, but the same data seems to be more easily readable from
@@ -110,13 +110,13 @@ bool Vl53l0x::Initialize (void)
 
 				if (this->PerformSingleRefCalibration(0x00) == true)
 				{
-					// "restore the previous Sequence Config"
+					// "restore the previous Sequence Config"UT_CMP_COMMUNICATION.cpp:70
 					this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSTEM_SEQUENCE_CONFIG, 0xE8);
 					this->SetVcselPulsePeriod(VcselPeriodPreRange, 18);
 					this->SetVcselPulsePeriod(VcselPeriodFinalRange, 14);
 
 					this->StartContinuous();
-					success = true;
+					success = Core::CoreStatus::CORE_OK;
 				}
 			}
 		}
@@ -134,10 +134,10 @@ bool Vl53l0x::IsDetecting (void)
 	return (this->mDistance != 0U && this->mDistance <= this->mThreshold);
 }
 
-bool Vl53l0x::SetThreshold (uint16_t mThreshold)
+Core::CoreStatus Vl53l0x::SetThreshold (uint16_t mThreshold)
 {
 	this->mThreshold = mThreshold;
-	return (true);
+	return (Core::CoreStatus::CORE_OK);
 }
 
 uint16_t Vl53l0x::GetThreshold (void)
@@ -482,7 +482,7 @@ bool Vl53l0x::SetVcselPulsePeriod (VcselPeriodType type, uint8_t period_pclks)
 
 		default:
 			// invalid period
-			return (false);
+			return false;
 		}
 		this->mI2c.WriteRegister(this->mAddress, VL53L0X_PRE_RANGE_CONFIG_VALID_PHASE_LOW, 0x08);
 
@@ -567,16 +567,12 @@ bool Vl53l0x::SetVcselPulsePeriod (VcselPeriodType type, uint8_t period_pclks)
 	}
 	this->SetMeasurementTimingBudget(this->mMeasurementTimingBudget);
 
-	// "Perform the phase calibration. This is needed after changing on vcsel period."
-	// VL53L0X_perform_phase_calibration() begin
-
 	uint8_t sequence_config = 0U;
 	this->mI2c.ReadRegister(this->mAddress, VL53L0X_SYSTEM_SEQUENCE_CONFIG, sequence_config);
 	this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSTEM_SEQUENCE_CONFIG, 0x02);
 	this->PerformSingleRefCalibration(0x0);
 	this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSTEM_SEQUENCE_CONFIG, sequence_config);
 
-	// VL53L0X_perform_phase_calibration() end
 
 	return (true);
 }         // Vl53l0x::SetVcselPulsePeriod

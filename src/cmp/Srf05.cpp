@@ -10,10 +10,10 @@ Srf05::Srf05(const EProximityCommands side, GpioInterface &gpioTrigger, InputCap
 {
 }
 
-bool Srf05::Initialize (void)
+Core::CoreStatus Srf05::Initialize (void)
 {
 	this->mGpioEcho.Initialize();
-	return (true);
+	return (Core::CoreStatus::CORE_OK);
 }
 
 void Srf05::Update (const uint32_t currentTime)
@@ -27,10 +27,10 @@ uint16_t Srf05::GetThreshold (void)
 	return (this->mThreshold);
 }
 
-bool Srf05::SetThreshold (uint16_t mThreshold)
+Core::CoreStatus Srf05::SetThreshold (uint16_t mThreshold)
 {
 	this->mThreshold = mThreshold;
-	return (true);
+	return (Core::CoreStatus::CORE_OK);
 }
 
 bool Srf05::IsDetecting (void)

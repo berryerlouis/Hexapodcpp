@@ -14,7 +14,7 @@ public:
 	Twi(const EI2cFreq &freq);
 	~Twi() = default;
 
-	virtual bool Initialize(void) final override;
+	virtual Core::CoreStatus Initialize(void) final override;
 	virtual void Update(const uint32_t currentTime) final override;
 
 	virtual bool ReadRegister(const uint8_t address, const uint8_t reg, uint8_t &data) final override;

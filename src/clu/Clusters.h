@@ -14,7 +14,7 @@ namespace Cluster {
 using namespace Component;
 class Clusters : public ClustersInterface {
 public:
-	Clusters(Battery &battery, Mpu9150 &mpu9150, SensorProximity &sensorProximity, Servos &servos, Body &body);
+	Clusters(BatteryInterface &battery, Mpu9150Interface &mpu9150, SensorProximity &sensorProximity, ServosInterface &servos, Body &body);
 	~Clusters() = default;
 
 	virtual Cluster *GetCluster(const uint8_t clusterId) const final override;

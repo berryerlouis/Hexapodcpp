@@ -8,10 +8,10 @@ Pca9685::Pca9685(TwiInterface &i2c, const uint8_t address)
 {
 }
 
-bool Pca9685::Initialize (void)
+Core::CoreStatus Pca9685::Initialize (void)
 {
 	this->Reset();
-	return (true);
+	return (Core::CoreStatus::CORE_OK);
 }
 
 void Pca9685::Update (const uint32_t currentTime)

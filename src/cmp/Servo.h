@@ -1,10 +1,11 @@
 #pragma once
 #include "Pca9685Interface.h"
+#include "ServoInterface.h"
 #include "../drv/TickInterface.h"
 
 namespace Component {
 using namespace Driver;
-class Servo {
+class Servo : public ServoInterface {
 	static const uint16_t SERVO_PWM_MIN     = 168U;
 	static const uint16_t SERVO_PWM_MAX     = 413U;
 	static const uint16_t SERVO_ANGLE_MIN   = 0U;
@@ -19,26 +20,25 @@ public:
 	Servo(Pca9685Interface &pca9685, TickInterface &tick, const uint8_t servoId, const uint8_t angle, const int8_t offset, const uint8_t min, const uint8_t max, const bool reverse);
 	~Servo() = default;
 
-	bool Initialize(void);
+	virtual Core::CoreStatus Initialize(void) final override;
+	virtual void Update(const uint32_t currentTime) final override;
 
-	bool SetAngle(const uint8_t angle, const uint16_t travelTime = 0);
-	uint8_t GetAngle(void) const;
-	bool SetMin(const uint8_t angle);
-	uint8_t GetMin(void) const;
-	bool SetMax(const uint8_t angle);
-	uint8_t GetMax(void) const;
-	bool SetOffset(const int8_t angle);
-	int8_t GetOffset(void) const;
-	void SetReverse(const bool reverse);
-	bool GetReverse(void);
-	void SetEnable(const bool enable);
-	bool IsEnable(void);
-	bool IsMoving(void);
-
-	void Update(const uint64_t currentTime);
+	virtual Core::CoreStatus SetAngle(const uint8_t angle, const uint16_t travelTime = 0) final override;
+	virtual uint8_t GetAngle(void) const final override;
+	virtual bool SetMin(const uint8_t angle) final override;
+	virtual uint8_t GetMin(void) const final override;
+	virtual bool SetMax(const uint8_t angle) final override;
+	virtual uint8_t GetMax(void) const final override;
+	virtual bool SetOffset(const int8_t angle) final override;
+	virtual int8_t GetOffset(void) const final override;
+	virtual void SetReverse(const bool reverse) final override;
+	virtual bool GetReverse(void) final override;
+	virtual void SetEnable(const bool enable) final override;
+	virtual bool IsEnable(void) final override;
+	virtual bool IsMoving(void) final override;
 
 private:
-	uint8_t GetAngleFromDeltaTime(const uint64_t currentTime);
+	uint8_t GetAngleFromDeltaTime(const uint32_t currentTime);
 	uint8_t Lerp(uint8_t a, uint8_t b, float t);
 
 	inline long map (long x, long in_min, long in_max, long out_min, long out_max)
@@ -51,7 +51,7 @@ private:
 	uint8_t mServoId;
 	uint8_t mAngle;
 	uint8_t mTargetAngle;
-	uint64_t mStartTime;
+	uint32_t mStartTime;
 	uint16_t mSpeed;
 	int8_t mOffset;
 	uint8_t mMin;

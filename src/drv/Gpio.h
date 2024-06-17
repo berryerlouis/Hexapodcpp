@@ -8,8 +8,8 @@ public:
 	Gpio(const SGpio &gpio, const EPortDirection &portDirection);
 	~Gpio() = default;
 
-	virtual bool Set(void) final override;
-	virtual bool Reset(void) final override;
+	virtual Core::CoreStatus Set(void) final override;
+	virtual Core::CoreStatus Reset(void) final override;
 	virtual bool Get(void) final override;
 	virtual EPin &GetPin(void) final override;
 	virtual void SetInterruptPin(void) final override;

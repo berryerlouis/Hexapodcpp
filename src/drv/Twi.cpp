@@ -7,13 +7,13 @@ Twi::Twi(const EI2cFreq &freq)
 {
 }
 
-bool Twi::Initialize (void)
+Core::CoreStatus Twi::Initialize (void)
 {
 	TWBR = ( (F_CPU / this->mFreq) - 16) / 2;
 	TWSR = 0U;
 	TWCR = (1 << TWEN);
 
-	return (true);
+	return (Core::CoreStatus::CORE_OK);
 }
 
 void Twi::Update (const uint32_t currentTime)

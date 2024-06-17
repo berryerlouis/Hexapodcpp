@@ -8,7 +8,7 @@ public:
 	AdcInterface()  = default;
 	~AdcInterface() = default;
 
-	virtual bool Initialize(void) = 0;
+	virtual Core::CoreStatus Initialize(void) = 0;
 	virtual void Update(const uint32_t currentTime) = 0;
 
 	virtual void StartConversion(void) = 0;

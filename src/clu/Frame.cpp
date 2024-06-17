@@ -6,11 +6,11 @@ Frame::Frame(void)
 	Reset();
 }
 
-bool Frame::Build (uint8_t clusterId, uint8_t commandId, uint8_t *params, uint8_t nbParams)
+Core::CoreStatus Frame::Build (uint8_t clusterId, uint8_t commandId, uint8_t *params, uint8_t nbParams)
 {
 	if (nbParams > FRAME_MAX_PARAMS)
 	{
-		return (false);
+		return (Core::CoreStatus::CORE_ERROR);
 	}
 	this->clusterId = clusterId;
 	this->commandId = commandId;
@@ -19,7 +19,7 @@ bool Frame::Build (uint8_t clusterId, uint8_t commandId, uint8_t *params, uint8_
 	memset( (void *) this->params, 0U, FRAME_MAX_PARAMS);
 	memcpy( (void *) this->params, params, nbParams);
 
-	return (true);
+	return (Core::CoreStatus::CORE_OK);
 }
 
 void Frame::Reset (void)

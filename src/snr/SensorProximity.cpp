@@ -9,17 +9,17 @@ SensorProximity::SensorProximity(ProximityInterface &srf05Left, ProximityInterfa
 {
 }
 
-bool SensorProximity::Initialize (void)
+Core::CoreStatus SensorProximity::Initialize (void)
 {
 	uint8_t success = 0U;
 
 	this->mStepSrf = 0U;
 	this->mStepVlx = 0U;
-	success        = this->mSrf05Left.Initialize() << 0U;
-	success       |= this->mSrf05Right.Initialize() << 1U;
-	success       |= this->mVl53l0x.Initialize() << 2U;
+	success        = Core::Utils::CoreStatusToBool(this->mSrf05Left.Initialize()) << 0U;
+	success       |= Core::Utils::CoreStatusToBool(this->mSrf05Right.Initialize()) << 1U;
+	success       |= Core::Utils::CoreStatusToBool(this->mVl53l0x.Initialize()) << 2U;
 
-	return (success == 7U);
+	return ( (success == 7U) ? Core::CoreStatus::CORE_OK : Core::CoreStatus::CORE_ERROR);
 }
 
 void SensorProximity::Update (const uint32_t currentTime)
@@ -42,22 +42,22 @@ void SensorProximity::Update (const uint32_t currentTime)
 	}
 }
 
-bool SensorProximity::IsDetecting (const SensorsId sensorId)
+Core::CoreStatus SensorProximity::IsDetecting (const SensorsId sensorId)
 {
-	bool success = false;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
 	switch (sensorId)
 	{
 	case SensorsId::SRF_LEFT:
-		success = this->mSrf05Left.IsDetecting();
+		success = Core::Utils::BoolToCoreStatus(this->mSrf05Left.IsDetecting() );
 		break;
 
 	case SensorsId::SRF_RIGHT:
-		success = this->mSrf05Right.IsDetecting();
+		success = Core::Utils::BoolToCoreStatus(this->mSrf05Right.IsDetecting() );
 		break;
 
 	case SensorsId::VLX:
-		success = this->mVl53l0x.IsDetecting();
+		success = Core::Utils::BoolToCoreStatus(this->mVl53l0x.IsDetecting() );
 		break;
 	}
 	return (success);
@@ -84,9 +84,9 @@ uint16_t SensorProximity::GetDistance (const SensorsId sensorId)
 	return (distance);
 }
 
-bool SensorProximity::SetThreshold (const SensorsId sensorId, const uint16_t threshold)
+Core::CoreStatus SensorProximity::SetThreshold (const SensorsId sensorId, const uint16_t threshold)
 {
-	bool success = false;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
 	switch (sensorId)
 	{
@@ -105,11 +105,10 @@ bool SensorProximity::SetThreshold (const SensorsId sensorId, const uint16_t thr
 	return (success);
 }
 
-bool SensorProximity::BuildFrameDistance (Cluster::EProximityCommands side, Cluster::Frame &response)
+Core::CoreStatus SensorProximity::BuildFrameDistance (Cluster::EProximityCommands side, Cluster::Frame &response)
 {
 	uint16_t distance = this->GetDistance( (SensorsId) side);
 	uint8_t  params[] = { (uint8_t) (distance >> 8U), (uint8_t) (distance & 0xFFU) };
 
-	response.Build(Cluster::EClusters::PROXIMITY, side, params, 2U);
-	return (true);
+	return (response.Build(Cluster::EClusters::PROXIMITY, side, params, 2U) );
 }

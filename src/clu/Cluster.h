@@ -15,7 +15,7 @@ public:
 		return (mClusterId);
 	}
 
-	virtual bool Execute(Frame &request, Frame &response) = 0;
+	virtual Core::CoreStatus Execute(Frame &request, Frame &response) = 0;
 
 private:
 	const EClusters mClusterId;

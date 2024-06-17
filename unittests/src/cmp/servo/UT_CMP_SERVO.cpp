@@ -14,7 +14,7 @@ using namespace Component;
 
 TEST(ComponentServo, Initialize_Ok)
 {
-	bool success = false;
+	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockTick>    tick;
 	StrictMock <MockPca9685> pca9685;
 
@@ -23,12 +23,12 @@ TEST(ComponentServo, Initialize_Ok)
 
 	success = servo.Initialize();
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }
 
 TEST(ComponentServo, Update_Ok)
 {
-	bool success = false;
+	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockTick>    tick;
 	StrictMock <MockPca9685> pca9685;
 
@@ -39,13 +39,13 @@ TEST(ComponentServo, Update_Ok)
 	success = servo.Initialize();
 	servo.Update(0UL);
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }
 
 
 TEST(ComponentServo, SetAngle_Ok)
 {
-	bool success = false;
+	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockTick>    tick;
 	StrictMock <MockPca9685> pca9685;
 
@@ -54,13 +54,13 @@ TEST(ComponentServo, SetAngle_Ok)
 
 	success = servo.Initialize();
 
-	EXPECT_TRUE(servo.SetAngle(0UL) );
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(servo.SetAngle(0UL) ) );
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }
 
 TEST(ComponentServo, SetMin_Ok)
 {
-	bool success = false;
+	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockTick>    tick;
 	StrictMock <MockPca9685> pca9685;
 
@@ -70,12 +70,12 @@ TEST(ComponentServo, SetMin_Ok)
 	success = servo.Initialize();
 
 	EXPECT_TRUE(servo.SetMin(0UL) );
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }
 
 TEST(ComponentServo, SetMax_Ok)
 {
-	bool success = false;
+	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockTick>    tick;
 	StrictMock <MockPca9685> pca9685;
 
@@ -85,5 +85,5 @@ TEST(ComponentServo, SetMax_Ok)
 	success = servo.Initialize();
 
 	EXPECT_TRUE(servo.SetMax(90UL) );
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }

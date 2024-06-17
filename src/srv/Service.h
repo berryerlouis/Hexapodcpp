@@ -12,9 +12,9 @@ public:
 
 	~Service() = default;
 
-	bool IsTimeToUpdate (const uint32_t currentTime) const
+	Core::CoreStatus IsTimeToUpdate (const uint32_t currentTime) const
 	{
-		return ( (currentTime - this->mPreviousTime) >= this->mUpdateTime);
+		return ( (currentTime - this->mPreviousTime) >= this->mUpdateTime) ? Core::CoreStatus::CORE_OK : Core::CoreStatus::CORE_ERROR;
 	}
 
 	void SetNewUpdateTime (const uint32_t currentTime)

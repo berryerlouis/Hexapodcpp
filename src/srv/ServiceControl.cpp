@@ -1,13 +1,13 @@
 #include "ServiceControl.h"
 
-ServiceControl::ServiceControl(Servos &servos)
+ServiceControl::ServiceControl(ServosInterface &servos)
 	: Service(10U)
 	, mServos(servos)
 	, mStepPca9685(0U)
 {
 }
 
-bool ServiceControl::Initialize (void)
+Core::CoreStatus ServiceControl::Initialize (void)
 {
 	return (this->mServos.Initialize() );
 }

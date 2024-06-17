@@ -1,2 +1,3 @@
 add_subdirectory(battery)
+add_subdirectory(control)
 add_subdirectory(orientation)

@@ -44,9 +44,9 @@ App::App(void)
 {
 }
 
-bool App::Initialize (void)
+Core::CoreStatus App::Initialize (void)
 {
-	bool success = false;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 	success = mUart.Initialize();
 	if (success == true)
 	{

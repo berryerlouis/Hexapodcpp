@@ -13,13 +13,13 @@ public:
 	SensorProximity(ProximityInterface &srf05Left, ProximityInterface &srf05Right, ProximityInterface &Vl53l0x);
 	~SensorProximity() = default;
 
-	virtual bool Initialize(void) final override;
+	virtual Core::CoreStatus Initialize(void) final override;
 	virtual void Update(const uint32_t currentTime) final override;
 	virtual uint16_t GetDistance(const SensorsId sensorId) final override;
-	virtual bool SetThreshold(const SensorsId sensorId, const uint16_t threshold) final override;
-	virtual bool IsDetecting(const SensorsId sensorId) final override;
+	virtual Core::CoreStatus SetThreshold(const SensorsId sensorId, const uint16_t threshold) final override;
+	virtual Core::CoreStatus IsDetecting(const SensorsId sensorId) final override;
 
-	bool BuildFrameDistance(Cluster::EProximityCommands side, Cluster::Frame &response);
+	Core::CoreStatus BuildFrameDistance(Cluster::EProximityCommands side, Cluster::Frame &response);
 
 private:
 	static const uint16_t UPDATE_STEP_SRF_MS = 1U;

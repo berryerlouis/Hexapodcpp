@@ -8,7 +8,7 @@ Uart::Uart(const EBaudRate & baud) : mBaudRate(baud)
 {
 }
 
-bool Uart::Initialize (void)
+Core::CoreStatus Uart::Initialize (void)
 {
 	const uint16_t ubrr = (F_CPU / (this->mBaudRate * 8.0) ) - 1;
 
@@ -17,7 +17,7 @@ bool Uart::Initialize (void)
 	UCSR0B = (1 << TXEN0) | (1 << RXEN0) | (1 << RXCIE0);
 	UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);
 
-	return (true);
+	return (Core::CoreStatus::CORE_OK);
 }
 
 void Uart::Update (const uint32_t currentTime)

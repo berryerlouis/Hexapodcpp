@@ -16,27 +16,27 @@ using namespace Component;
 
 TEST(ServiceOrientation, Initialize_Ok)
 {
-	bool success = false;
+	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockMpu9150> mpu9150;
 
 	ServiceOrientation serviceOrientation(mpu9150);
 
-	EXPECT_CALL(mpu9150, Initialize() ).WillOnce(Return(true) );
+	EXPECT_CALL(mpu9150, Initialize() ).WillOnce(Return(Core::CoreStatus::CORE_OK) );
 
 	success = serviceOrientation.Initialize();
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }
 
 
 TEST(ServiceOrientation, Update_Ok)
 {
-	bool success = false;
+	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockMpu9150> mpu9150;
 
 	ServiceOrientation serviceOrientation(mpu9150);
 
-	EXPECT_CALL(mpu9150, Initialize() ).WillOnce(Return(true) );
+	EXPECT_CALL(mpu9150, Initialize() ).WillOnce(Return(Core::CoreStatus::CORE_OK) );
 
 	success = serviceOrientation.Initialize();
 
@@ -44,5 +44,5 @@ TEST(ServiceOrientation, Update_Ok)
 
 	serviceOrientation.Update(0UL);
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }

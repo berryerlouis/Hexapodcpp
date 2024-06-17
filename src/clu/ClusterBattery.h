@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../cmp/Battery.h"
+#include "../cmp/BatteryInterface.h"
 #include "Cluster.h"
 #include "Constants.h"
 
@@ -9,7 +9,7 @@ using namespace Component;
 
 class ClusterBattery : public Cluster {
 public:
-	ClusterBattery(Battery &battery)
+	ClusterBattery(BatteryInterface &battery)
 		: Cluster(BATTERY)
 		, mBattery(battery)
 	{
@@ -18,9 +18,9 @@ public:
 	~ClusterBattery() = default;
 
 
-	virtual bool Execute (Frame &request, Frame &response) final override
+	virtual Core::CoreStatus Execute (Frame &request, Frame &response) final override
 	{
-		bool success = false;
+		Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
 		switch ( (EBatteryCommands) request.commandId)
 		{
@@ -39,9 +39,9 @@ public:
 	}
 
 private:
-	Battery &mBattery;
+	BatteryInterface &mBattery;
 
-	bool BuildFrameVoltage (Frame &response)
+	Core::CoreStatus BuildFrameVoltage (Frame &response)
 	{
 		uint16_t volt     = this->mBattery.GetVoltage();
 		uint8_t  params[] = { (uint8_t) (volt >> 8U), (uint8_t) volt };
@@ -53,7 +53,7 @@ private:
 					  2U) );
 	}
 
-	bool BuildFrameState (Frame &response)
+	Core::CoreStatus BuildFrameState (Frame &response)
 	{
 		uint16_t volt     = this->mBattery.GetVoltage();
 		uint8_t  params[] = { this->mBattery.GetState(), (uint8_t) (volt >> 8U), (uint8_t) volt };

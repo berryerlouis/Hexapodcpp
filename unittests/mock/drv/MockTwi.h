@@ -5,7 +5,7 @@
 namespace Driver {
 class MockTwi : public Driver::TwiInterface {
 public:
-	MOCK_METHOD0(Initialize, bool( void ) );
+	MOCK_METHOD0(Initialize, Core::CoreStatus( void ) );
 	MOCK_METHOD1(Update, void( const uint32_t ) );
 
 	MOCK_METHOD3(ReadRegister, bool(const uint8_t address, const uint8_t reg, uint8_t & data) );

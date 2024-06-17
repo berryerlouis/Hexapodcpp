@@ -76,11 +76,11 @@ public:
 	Vl53l0x(TwiInterface &i2c, TickInterface &tick, const uint8_t address = 0x29U);
 	~Vl53l0x() = default;
 
-	bool Initialize(void);
+	Core::CoreStatus Initialize(void);
 	void Update(const uint32_t currentTime);
 
 	virtual uint16_t GetDistance(void) final override;
-	virtual bool SetThreshold(const uint16_t threshold) final override;
+	virtual Core::CoreStatus SetThreshold(const uint16_t threshold) final override;
 	virtual uint16_t GetThreshold(void) final override;
 	virtual bool IsDetecting(void) final override;
 

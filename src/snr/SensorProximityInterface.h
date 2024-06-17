@@ -16,8 +16,8 @@ public:
 	~SensorProximityInterface()    = default;
 
 	virtual uint16_t GetDistance(const SensorsId sensorId) = 0U;
-	virtual bool SetThreshold(const SensorsId sensorId, const uint16_t threshold) = 0U;
-	virtual bool IsDetecting(const SensorsId sensorId) = 0U;
+	virtual Core::CoreStatus SetThreshold(const SensorsId sensorId, const uint16_t threshold) = 0U;
+	virtual Core::CoreStatus IsDetecting(const SensorsId sensorId) = 0U;
 
 private:
 };

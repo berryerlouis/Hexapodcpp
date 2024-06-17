@@ -9,7 +9,7 @@ public:
 	UartInterface()  = default;
 	~UartInterface() = default;
 
-	virtual bool Initialize(void) = 0;
+	virtual Core::CoreStatus Initialize(void) = 0;
 	virtual void Update(const uint32_t currentTime) = 0;
 
 	virtual void Send(const char *data, const size_t len)    = 0;

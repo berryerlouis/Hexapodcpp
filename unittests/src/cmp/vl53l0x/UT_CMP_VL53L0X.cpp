@@ -18,8 +18,8 @@ using namespace Component;
 
 TEST(ComponentVl53l0x, Initialize_Ok)
 {
-	bool    success = false;
-	uint8_t data;
+	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
+	uint8_t               data;
 	StrictMock <MockTick> tick;
 	StrictMock <MockTwi>  twi;
 
@@ -39,12 +39,12 @@ TEST(ComponentVl53l0x, Initialize_Ok)
 
 	success = vl53l0x.Initialize();
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }
 
 TEST(ComponentVl53l0x, Update_Ok)
 {
-	bool success = false;
+	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockTick> tick;
 	StrictMock <MockTwi>  twi;
 
@@ -65,12 +65,12 @@ TEST(ComponentVl53l0x, Update_Ok)
 	success = vl53l0x.Initialize();
 	vl53l0x.Update(0U);
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }
 
 TEST(ComponentVl53l0x, IsDetecting_SetThreshold)
 {
-	bool success = false;
+	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockTick> tick;
 	StrictMock <MockTwi>  twi;
 
@@ -90,14 +90,14 @@ TEST(ComponentVl53l0x, IsDetecting_SetThreshold)
 
 	success = vl53l0x.Initialize();
 
-	EXPECT_TRUE(vl53l0x.SetThreshold(350U) );
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(vl53l0x.SetThreshold(350U) ) );
 	EXPECT_EQ(350U, vl53l0x.GetThreshold() );
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }
 
 TEST(ComponentVl53l0x, IsDetecting_UnderThreshold)
 {
-	bool success = false;
+	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockTick> tick;
 	StrictMock <MockTwi>  twi;
 
@@ -121,12 +121,12 @@ TEST(ComponentVl53l0x, IsDetecting_UnderThreshold)
 
 	EXPECT_EQ(250U, vl53l0x.GetDistance() );
 	EXPECT_TRUE(vl53l0x.IsDetecting() );
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }
 
 TEST(ComponentVl53l0x, IsDetecting_AboveThreshold)
 {
-	bool success = false;
+	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockTick> tick;
 	StrictMock <MockTwi>  twi;
 
@@ -150,5 +150,5 @@ TEST(ComponentVl53l0x, IsDetecting_AboveThreshold)
 
 	EXPECT_EQ(350U, vl53l0x.GetDistance() );
 	EXPECT_FALSE(vl53l0x.IsDetecting() );
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }

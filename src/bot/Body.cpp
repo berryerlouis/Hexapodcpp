@@ -32,10 +32,10 @@ void Body::SetBodyIk (const Leg::Position3d &position, const Leg::Rotation3d &ro
 	}
 }
 
-bool Body::BuildFrameSetPosition (Frame &response)
+Core::CoreStatus Body::BuildFrameSetPosition (Frame &response)
 {
 	uint8_t params[] = { true };
 
 	response.Build(EClusters::BODY, EBodyCommands::SET_LEG_X_Y_Z, params, 1U);
-	return (true);
+	return (Core::CoreStatus::CORE_OK);
 }

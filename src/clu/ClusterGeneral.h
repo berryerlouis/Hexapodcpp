@@ -14,9 +14,9 @@ public:
 
 	~ClusterGeneral() = default;
 
-	virtual bool Execute (Frame &request, Frame &response) final override
+	virtual Core::CoreStatus Execute (Frame &request, Frame &response) final override
 	{
-		bool success = false;
+		Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
 		switch ( (EGeneralCommands) request.commandId)
 		{
@@ -27,20 +27,20 @@ public:
 		case EGeneralCommands::INSTANT_EXECUTION_TIME:
 			/*uint32_t params = App::App::GetInstance().mUpdateTime - App::GetInstance().mPreviousTime;
 			 * response = Response{GENERAL, INSTANT_EXECUTION_TIME, (uint8_t *)&params, 8U};*/
-			success = true;
+			success = Core::CoreStatus::CORE_OK;
 			break;
 
 		case EGeneralCommands::MAX_EXECUTION_TIME:
 			/*uint32_t params = App::App::GetInstance().mMaxTime;
 			 * response = Response{GENERAL, INSTANT_EXECUTION_TIME, (uint8_t *)&params, 8U};*/
-			success = true;
+			success = Core::CoreStatus::CORE_OK;
 			break;
 
 		case EGeneralCommands::RESET_EXECUTION_TIME:
 			/*App::GetInstance().mMaxTime = 0U;
 			 * uint32_t params = App::App::GetInstance().mMaxTime;
 			 * response = Response{GENERAL, INSTANT_EXECUTION_TIME, (uint8_t *)&params, 8U};*/
-			success = true;
+			success = Core::CoreStatus::CORE_OK;
 			break;
 
 		default:
@@ -50,12 +50,12 @@ public:
 	}
 
 private:
-	bool ResponseGetVersion (Frame &response)
+	Core::CoreStatus ResponseGetVersion (Frame &response)
 	{
 		uint8_t params[] = { 1, 0 };
 
 		response.Build(GENERAL, VERSION, params, 2U);
-		return (true);
+		return (Core::CoreStatus::CORE_OK);
 	}
 };
 }

@@ -11,7 +11,7 @@ Battery::Battery(AdcInterface &adc)
 {
 }
 
-bool Battery::Initialize (void)
+Core::CoreStatus Battery::Initialize (void)
 {
 	return (this->mAdc.Initialize() );
 }

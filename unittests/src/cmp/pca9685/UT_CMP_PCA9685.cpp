@@ -15,7 +15,7 @@ using namespace Component;
 
 TEST(ComponentPca9685, Initialize_Ok)
 {
-	bool success = false;
+	Core::CoreStatus     success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockTwi> twi;
 
 	Pca9685 pca9685(twi);
@@ -26,12 +26,12 @@ TEST(ComponentPca9685, Initialize_Ok)
 
 	success = pca9685.Initialize();
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }
 
 TEST(ComponentPca9685, Update_Ok)
 {
-	bool success = false;
+	Core::CoreStatus     success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockTwi> twi;
 
 	Pca9685 pca9685(twi);
@@ -46,5 +46,5 @@ TEST(ComponentPca9685, Update_Ok)
 	success = pca9685.Initialize();
 	pca9685.Update(0U);
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }

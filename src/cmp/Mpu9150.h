@@ -111,7 +111,7 @@ public:
 	Mpu9150(TwiInterface &i2c, const uint8_t address = MPU9150_I2C_ADDRESS);
 	~Mpu9150() = default;
 
-	bool Initialize(void);
+	Core::CoreStatus Initialize(void);
 	void Update(const uint32_t currentTime);
 
 	inline virtual Vector3 ReadAcc (void)  final override

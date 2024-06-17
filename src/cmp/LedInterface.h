@@ -11,12 +11,15 @@ public:
 		OFF
 	};
 
-	LedInterface(void) = default;
-	~LedInterface()    = default;
+	LedInterface()  = default;
+	~LedInterface() = default;
+	
+	virtual Core::CoreStatus Initialize(void) = 0;
+	virtual void Update(const uint32_t currentTime) = 0;
 
-	virtual bool On()            = 0;
-	virtual bool Off()           = 0;
-	virtual bool Toggle()        = 0;
+	virtual Core::CoreStatus On()            = 0;
+	virtual Core::CoreStatus Off()           = 0;
+	virtual Core::CoreStatus Toggle()        = 0;
 	virtual LedState Get() const = 0;
 };
 }

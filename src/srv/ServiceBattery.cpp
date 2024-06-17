@@ -7,7 +7,7 @@ ServiceBattery::ServiceBattery(BatteryInterface &battery)
 {
 }
 
-bool ServiceBattery::Initialize (void)
+Core::CoreStatus ServiceBattery::Initialize (void)
 {
 	return (this->mBattery.Initialize() );
 }
@@ -25,7 +25,7 @@ void ServiceBattery::Update (const uint32_t currentTime)
 	}
 }
 
-bool ServiceBattery::BuildFrameState (Frame &response)
+Core::CoreStatus ServiceBattery::BuildFrameState (Frame &response)
 {
 	uint16_t volt     = this->mBattery.GetVoltage();
 	uint8_t  params[] = { this->mCurrentState, (uint8_t) (volt >> 8U), (uint8_t) volt };

@@ -16,9 +16,9 @@ Services::Services(
 {
 }
 
-bool Services::Initialize (void)
+Core::CoreStatus Services::Initialize (void)
 {
-	bool success = false;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
 	for (size_t i = 0U; i < NB_SERVICES; i++)
 	{

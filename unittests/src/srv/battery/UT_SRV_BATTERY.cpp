@@ -16,28 +16,28 @@ using namespace Component;
 
 TEST(ServiceBattery, Initialize_Ok)
 {
-	bool success = false;
+	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockBattery> battery;
 
 	ServiceBattery serviceBattery(battery);
 
-	EXPECT_CALL(battery, Initialize() ).WillOnce(Return(true) );
+	EXPECT_CALL(battery, Initialize() ).WillOnce(Return(Core::CoreStatus::CORE_OK) );
 
 	success = serviceBattery.Initialize();
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }
 
 TEST(ServiceBattery, Update_Ok)
 {
-	bool success = false;
+	Core::CoreStatus                 success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockBattery>         battery;
 	StrictMock <MockServiceMediator> mediator;
 
 	ServiceBattery serviceBattery(battery);
 	serviceBattery.SetComComponent(&mediator);
 
-	EXPECT_CALL(battery, Initialize() ).WillOnce(Return(true) );
+	EXPECT_CALL(battery, Initialize() ).WillOnce(Return(Core::CoreStatus::CORE_OK) );
 	success = serviceBattery.Initialize();
 
 	EXPECT_CALL(battery, Update(_) ).Times(1U);
@@ -46,12 +46,12 @@ TEST(ServiceBattery, Update_Ok)
 	EXPECT_CALL(mediator, SendFrame(_) ).Times(1U);
 
 	serviceBattery.Update(0UL);
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }
 
 TEST(ServiceBattery, BuildFrameDistance_Ok)
 {
-	bool                             success = false;
+	Core::CoreStatus                 success = Core::CoreStatus::CORE_ERROR;
 	Cluster::Frame                   response;
 	StrictMock <MockBattery>         battery;
 	StrictMock <MockServiceMediator> mediator;
@@ -59,7 +59,7 @@ TEST(ServiceBattery, BuildFrameDistance_Ok)
 	ServiceBattery serviceBattery(battery);
 	serviceBattery.SetComComponent(&mediator);
 
-	EXPECT_CALL(battery, Initialize() ).WillOnce(Return(true) );
+	EXPECT_CALL(battery, Initialize() ).WillOnce(Return(Core::CoreStatus::CORE_OK) );
 	success = serviceBattery.Initialize();
 
 	EXPECT_CALL(battery, GetVoltage() ).WillOnce(Return(10U) );
@@ -71,5 +71,5 @@ TEST(ServiceBattery, BuildFrameDistance_Ok)
 	EXPECT_EQ(response.params[0U], 0xFFU);
 	EXPECT_EQ(response.params[1U], 0U);
 	EXPECT_EQ(response.params[2U], 10U);
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }

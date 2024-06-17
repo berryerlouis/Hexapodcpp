@@ -17,9 +17,9 @@ public:
 	~ClusterProximity() = default;
 
 
-	bool Execute (Frame &request, Frame &response) final override
+	Core::CoreStatus Execute (Frame &request, Frame &response) final override
 	{
-		bool success = false;
+		Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
 		switch ( (EProximityCommands) request.commandId)
 		{
@@ -55,13 +55,13 @@ private:
 	SensorProximity &mSensorProximity;
 
 
-	bool BuildFrameDistance (EProximityCommands side, Frame &response)
+	Core::CoreStatus BuildFrameDistance (EProximityCommands side, Frame &response)
 	{
 		uint16_t distance = this->mSensorProximity.GetDistance( (SensorProximity::SensorsId) side);
 		uint8_t  params[] = { (uint8_t) (distance >> 8U), (uint8_t) (distance & 0xFFU) };
 
 		response.Build(EClusters::PROXIMITY, side, params, 2U);
-		return (true);
+		return (Core::CoreStatus::CORE_OK);
 	}
 };
 }

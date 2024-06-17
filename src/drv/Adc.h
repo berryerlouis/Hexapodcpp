@@ -13,7 +13,7 @@ public:
 	Adc(GpioInterface &gpio);
 	~Adc() = default;
 
-	virtual bool Initialize(void) final override;
+	virtual Core::CoreStatus Initialize(void) final override;
 	virtual void Update(const uint32_t currentTime) final override;
 
 	virtual void StartConversion(void) final override;

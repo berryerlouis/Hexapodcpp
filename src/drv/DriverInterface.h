@@ -1,14 +1,13 @@
 #pragma once
-#include <stdint.h>
-#include <stddef.h>
+#include "../cor/CoreInterface.h"
 
 namespace Driver {
-class DriverInterface {
+class DriverInterface : public Core::CoreInterface {
 public:
 	DriverInterface()  = default;
 	~DriverInterface() = default;
 
-	virtual bool Initialize(void) = 0;
+	virtual Core::CoreStatus Initialize(void) = 0;
 	virtual void Update(const uint32_t currentTime) = 0;
 };
 }

@@ -18,56 +18,56 @@ using namespace Component;
 
 TEST(ComponentCommunication, Initialize_Ok)
 {
-	bool success = false;
+	Core::CoreStatus          success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockLed>      led;
 	StrictMock <MockUart>     uart;
 	StrictMock <MockClusters> clusters;
 
 	Communication comm(uart, clusters, led);
 
-	EXPECT_CALL(led, Initialize() ).WillOnce(Return(true) );
+	EXPECT_CALL(led, Initialize() ).WillOnce(Return(Core::CoreStatus::CORE_OK) );
 
 	success = comm.Initialize();
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }
 
 TEST(ComponentCommunication, Update_Ok_Noframe)
 {
-	bool success = false;
+	Core::CoreStatus          success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockLed>      led;
 	StrictMock <MockUart>     uart;
 	StrictMock <MockClusters> clusters;
 
 	Communication comm(uart, clusters, led);
 
-	EXPECT_CALL(led, Initialize() ).WillOnce(Return(true) );
+	EXPECT_CALL(led, Initialize() ).WillOnce(Return(Core::CoreStatus::CORE_OK) );
 
 	EXPECT_CALL(uart, DataAvailable() ).WillOnce(Return(0U) );
 
 	success = comm.Initialize();
 	comm.Update(0UL);
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }
 
 TEST(ComponentCommunication, Update_Ok_1frame)
 {
-	bool success = false;
+	Core::CoreStatus          success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockLed>      led;
 	StrictMock <MockUart>     uart;
 	StrictMock <MockClusters> clusters;
 	const char *  bufferRx = "<000000>";
 	Communication comm(uart, clusters, led);
 
-	EXPECT_CALL(led, Initialize() ).WillOnce(Return(true) );
-
-	EXPECT_CALL(led, On() ).WillOnce(Return(true) );
-	EXPECT_CALL(led, Off() ).WillOnce(Return(true) );
-	EXPECT_CALL(uart, Send(Matcher <const uint8_t *>(_), _) ).Times(1U);
-	EXPECT_CALL(clusters, GetCluster(0) ).Times(1U);
+	EXPECT_CALL(led, Initialize() ).WillOnce(Return(Core::CoreStatus::CORE_OK) );
 
 	success = comm.Initialize();
+
+	EXPECT_CALL(led, On() ).WillOnce(Return(Core::CoreStatus::CORE_OK) );
+	EXPECT_CALL(led, Off() ).WillOnce(Return(Core::CoreStatus::CORE_OK) );
+	EXPECT_CALL(uart, Send(Matcher <const uint8_t *>(_), _) ).Times(1U);
+	EXPECT_CALL(clusters, GetCluster(0) ).Times(1U);
 
 	for (size_t i = 0; i < strlen(bufferRx); i++)
 	{
@@ -76,25 +76,26 @@ TEST(ComponentCommunication, Update_Ok_1frame)
 		comm.Update(0UL);
 	}
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }
 
 TEST(ComponentCommunication, Update_Ko_1frame)
 {
-	bool success = false;
+	Core::CoreStatus          success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockLed>      led;
 	StrictMock <MockUart>     uart;
 	StrictMock <MockClusters> clusters;
 	const char *  bufferRx = "<0<0000>";
 	Communication comm(uart, clusters, led);
 
-	EXPECT_CALL(led, Initialize() ).WillOnce(Return(true) );
+	EXPECT_CALL(led, Initialize() ).WillOnce(Return(Core::CoreStatus::CORE_OK) );
+	
+	success = comm.Initialize();
 
-	EXPECT_CALL(led, On() ).WillOnce(Return(true) );
-	EXPECT_CALL(led, Off() ).WillOnce(Return(true) );
+	EXPECT_CALL(led, On() ).WillOnce(Return(Core::CoreStatus::CORE_OK) );
+	EXPECT_CALL(led, Off() ).WillOnce(Return(Core::CoreStatus::CORE_OK) );
 	EXPECT_CALL(uart, Send(Matcher <const uint8_t *>(_), _) ).Times(1U);
 
-	success = comm.Initialize();
 
 	for (size_t i = 0; i < strlen(bufferRx); i++)
 	{
@@ -103,5 +104,5 @@ TEST(ComponentCommunication, Update_Ko_1frame)
 		comm.Update(0UL);
 	}
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE(Core::Utils::CoreStatusToBool(success) );
 }

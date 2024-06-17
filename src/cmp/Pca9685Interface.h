@@ -7,14 +7,11 @@
 namespace Component {
 class Pca9685Interface : public ComponentInterface {
 public:
-	enum LedState
-	{
-		ON = 0,
-		OFF
-	};
-
 	Pca9685Interface(void) = default;
 	~Pca9685Interface()    = default;
+	
+	virtual Core::CoreStatus Initialize(void) = 0;
+	virtual void Update(const uint32_t currentTime) = 0;
 
 	virtual void Reset(void)  = 0;
 	virtual void Sleep(void)  = 0;

@@ -10,7 +10,7 @@ public:
 	InputCapture(GpioInterface &gpio, TickInterface &tick);
 	~InputCapture() = default;
 
-	virtual bool Initialize(void) final override;
+	virtual Core::CoreStatus Initialize(void) final override;
 	virtual void Update(const uint32_t currentTime) final override;
 
 	virtual void EdgeChange(void) final override;
