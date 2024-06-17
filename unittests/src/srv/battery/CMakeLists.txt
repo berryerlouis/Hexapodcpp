@@ -1,7 +1,6 @@
 add_executable(
   UT_SRV_BATTERY
   ../../../../src/clu/Frame.cpp
-  ../../../../src/srv/Services.cpp
   ../../../../src/srv/ServiceBattery.cpp
   UT_SRV_BATTERY.cpp
 )

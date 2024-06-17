@@ -1,19 +1,19 @@
 #pragma once
 
-#include "../cmp/Servos.h"
+#include "../clu/ClusterServo.h"
 #include "Service.h"
 
 
 using namespace Component;
 class ServiceControl : public Service {
 public:
-	ServiceControl(Servos &servos);
+	ServiceControl( ClusterServo &clusterServo );
 	~ServiceControl() = default;
 
-	virtual bool Initialize(void) final override;
-	virtual void Update(const uint32_t currentTime) final override;
+	virtual Core::CoreStatus Initialize( void ) final override;
+	virtual void Update( const uint32_t currentTime ) final override;
 
-private:
-	Servos &mServos;
+protected:
+	ClusterServo &mClusterServo;
 	uint8_t mStepPca9685;
 };

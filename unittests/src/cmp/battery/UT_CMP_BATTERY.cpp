@@ -12,82 +12,82 @@ using ::testing::StrictMock;
 using namespace Component;
 
 
-TEST(ComponentBattery, Initialize_Ok)
+TEST( ComponentBattery, Initialize_Ok )
 {
-	bool success = false;
+	Core::CoreStatus     success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockAdc> adc;
-	Battery battery(adc);
+	Battery battery( adc );
 
-	EXPECT_CALL(adc, Initialize() ).WillOnce(Return(true) );
+	EXPECT_CALL( adc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
 	success = battery.Initialize();
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE( success );
 }
 
-TEST(ComponentBattery, GetStateAfterInit)
+TEST( ComponentBattery, GetStateAfterInit )
 {
-	bool success = false;
+	Core::CoreStatus     success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockAdc> adc;
-	Battery battery(adc);
+	Battery battery( adc );
 
-	EXPECT_CALL(adc, Initialize() ).WillOnce(Return(true) );
+	EXPECT_CALL( adc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
 	success = battery.Initialize();
 	Battery::BatteryState state = battery.GetState();
 
-	EXPECT_TRUE(success);
-	EXPECT_EQ(state, Battery::BatteryState::UNKNOWN);
+	EXPECT_TRUE( success );
+	EXPECT_EQ( state, Battery::BatteryState::UNKNOWN );
 }
 
 
-TEST(ComponentBattery, GetStateAfterUpdateCritical)
+TEST( ComponentBattery, GetStateAfterUpdateCritical )
 {
-	bool success = false;
+	Core::CoreStatus     success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockAdc> adc;
-	Battery battery(adc);
+	Battery battery( adc );
 
-	EXPECT_CALL(adc, Initialize() ).WillOnce(Return(true) );
-	EXPECT_CALL(adc, Read() ).WillOnce(Return(74U) );
+	EXPECT_CALL( adc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( adc, Read() ).WillOnce( Return( 74U ) );
 
 	success = battery.Initialize();
-	battery.Update(0UL);
+	battery.Update( 0UL );
 	Battery::BatteryState state = battery.GetState();
 
-	EXPECT_TRUE(success);
-	EXPECT_EQ(state, Battery::BatteryState::CRITICAL);
+	EXPECT_TRUE( success );
+	EXPECT_EQ( state, Battery::BatteryState::CRITICAL );
 }
 
-TEST(ComponentBattery, GetStateAfterUpdateWarning)
+TEST( ComponentBattery, GetStateAfterUpdateWarning )
 {
-	bool success = false;
+	Core::CoreStatus     success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockAdc> adc;
-	Battery battery(adc);
+	Battery battery( adc );
 
-	EXPECT_CALL(adc, Initialize() ).WillOnce(Return(true) );
-	EXPECT_CALL(adc, Read() ).WillOnce(Return(79U) );
+	EXPECT_CALL( adc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( adc, Read() ).WillOnce( Return( 79U ) );
 
 	success = battery.Initialize();
-	battery.Update(0UL);
+	battery.Update( 0UL );
 	Battery::BatteryState state = battery.GetState();
 
-	EXPECT_TRUE(success);
-	EXPECT_EQ(state, Battery::BatteryState::WARNING);
+	EXPECT_TRUE( success );
+	EXPECT_EQ( state, Battery::BatteryState::WARNING );
 }
 
-TEST(ComponentBattery, GetStateAfterUpdateNominal)
+TEST( ComponentBattery, GetStateAfterUpdateNominal )
 {
-	bool success = false;
+	Core::CoreStatus     success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockAdc> adc;
-	Battery battery(adc);
+	Battery battery( adc );
 
-	EXPECT_CALL(adc, Initialize() ).WillOnce(Return(true) );
-	EXPECT_CALL(adc, Read() ).WillOnce(Return(90U) );
+	EXPECT_CALL( adc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( adc, Read() ).WillOnce( Return( 90U ) );
 
 	success = battery.Initialize();
-	battery.Update(0UL);
+	battery.Update( 0UL );
 	Battery::BatteryState state = battery.GetState();
 
-	EXPECT_TRUE(success);
-	EXPECT_EQ(state, Battery::BatteryState::NOMINAL);
+	EXPECT_TRUE( success );
+	EXPECT_EQ( state, Battery::BatteryState::NOMINAL );
 }

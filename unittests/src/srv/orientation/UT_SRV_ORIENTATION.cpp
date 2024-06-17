@@ -6,6 +6,8 @@
 #include "../../../mock/srv/MockServiceMediator.h"
 #include "../../../mock/cmp/MockMpu9150.h"
 
+
+#include "../../../../src/clu/ClusterImu.h"
 #include "../../../../src/srv/ServiceOrientation.h"
 
 using ::testing::_;
@@ -14,35 +16,35 @@ using ::testing::StrictMock;
 
 using namespace Component;
 
-TEST(ServiceOrientation, Initialize_Ok)
+TEST( ServiceOrientation, Initialize_Ok )
 {
-	bool success = false;
+	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockMpu9150> mpu9150;
+	ClusterImu         clusterImu( mpu9150 );
+	ServiceOrientation serviceOrientation( clusterImu );
 
-	ServiceOrientation serviceOrientation(mpu9150);
-
-	EXPECT_CALL(mpu9150, Initialize() ).WillOnce(Return(true) );
+	EXPECT_CALL( mpu9150, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
 	success = serviceOrientation.Initialize();
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE( success );
 }
 
 
-TEST(ServiceOrientation, Update_Ok)
+TEST( ServiceOrientation, Update_Ok )
 {
-	bool success = false;
+	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
 	StrictMock <MockMpu9150> mpu9150;
+	ClusterImu         clusterImu( mpu9150 );
+	ServiceOrientation serviceOrientation( clusterImu );
 
-	ServiceOrientation serviceOrientation(mpu9150);
-
-	EXPECT_CALL(mpu9150, Initialize() ).WillOnce(Return(true) );
+	EXPECT_CALL( mpu9150, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
 	success = serviceOrientation.Initialize();
 
-	EXPECT_CALL(mpu9150, Update(_) ).Times(1U);
+	EXPECT_CALL( mpu9150, Update( _ ) ).Times( 1U );
 
-	serviceOrientation.Update(0UL);
+	serviceOrientation.Update( 0UL );
 
-	EXPECT_TRUE(success);
+	EXPECT_TRUE( success );
 }

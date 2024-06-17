@@ -1,23 +1,42 @@
 #pragma once
 
 #include "ClusterInterface.h"
+#include "../cmp/ComponentInterface.h"
 
-namespace Cluster {
+namespace Clusters {
+template <class T>
 class Cluster : public ClusterInterface {
 public:
-	Cluster(EClusters clusterId)
-		: mClusterId(clusterId)
+	Cluster( EClusters clusterId, T &componentInterface )
+		: mClusterId( clusterId )
+		, mComponentInterface( componentInterface )
 	{
 	}
 
-	EClusters GetId (void)
+	inline virtual Core::CoreStatus Initialize ( void ) override
 	{
-		return (mClusterId);
+		return ( mComponentInterface.Initialize() );
 	}
 
-	virtual bool Execute(Frame &request, Frame &response) = 0;
+	inline virtual void Update ( const uint32_t currentTime ) override
+	{
+		mComponentInterface.Update( currentTime );
+	}
 
-private:
+	virtual Core::CoreStatus Execute( Frame &request, Frame &response ) = 0;
+
+	inline T & GetComponent ( void )
+	{
+		return ( mComponentInterface );
+	}
+
+	virtual EClusters GetId ( void )
+	{
+		return ( mClusterId );
+	}
+
+protected:
 	const EClusters mClusterId;
+	T &mComponentInterface;
 };
 }

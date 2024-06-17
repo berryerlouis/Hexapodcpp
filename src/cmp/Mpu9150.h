@@ -108,37 +108,37 @@ public:
 	};
 
 
-	Mpu9150(TwiInterface &i2c, const uint8_t address = MPU9150_I2C_ADDRESS);
+	Mpu9150( TwiInterface &i2c, const uint8_t address = MPU9150_I2C_ADDRESS );
 	~Mpu9150() = default;
 
-	bool Initialize(void);
-	void Update(const uint32_t currentTime);
+	Core::CoreStatus Initialize( void );
+	void Update( const uint32_t currentTime );
 
-	inline virtual Vector3 ReadAcc (void)  final override
+	inline virtual Vector3 ReadAcc ( void )  final override
 	{
-		return (this->mAcc);
+		return ( this->mAcc );
 	}
 
-	inline virtual Vector3 ReadGyr (void)  final override
+	inline virtual Vector3 ReadGyr ( void )  final override
 	{
-		return (this->mGyr);
+		return ( this->mGyr );
 	}
 
-	inline virtual Vector3 ReadMag (void)  final override
+	inline virtual Vector3 ReadMag ( void )  final override
 	{
-		return (this->mMag);
+		return ( this->mMag );
 	}
 
-	inline virtual int16_t ReadTemp (void) final override
+	inline virtual int16_t ReadTemp ( void ) final override
 	{
-		return (this->mTmp);
+		return ( this->mTmp );
 	}
 
 private:
-	Vector3 UpdateAcc(void);
-	Vector3 UpdateGyr(void);
-	Vector3 UpdateMag(void);
-	int16_t UpdateTemp(void);
+	Vector3 UpdateAcc( void );
+	Vector3 UpdateGyr( void );
+	Vector3 UpdateMag( void );
+	int16_t UpdateTemp( void );
 
 	struct ERegisterAccel
 	{

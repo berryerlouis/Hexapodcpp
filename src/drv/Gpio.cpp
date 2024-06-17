@@ -10,58 +10,58 @@ Gpio::GpioRegister Gpio::sGpioRegisters[] = {
 };
 
 
-Gpio::Gpio(const SGpio &gpio, const EPortDirection &portDirection) :
-	mGpio(gpio),
-	mPortDirection(portDirection),
-	mGpioRegister(Gpio::sGpioRegisters[gpio.port])
+Gpio::Gpio( const SGpio &gpio, const EPortDirection &portDirection ) :
+	mGpio( gpio ),
+	mPortDirection( portDirection ),
+	mGpioRegister( Gpio::sGpioRegisters[gpio.port] )
 {
-	if (this->mPortDirection == EPortDirection::OUT)
+	if ( this->mPortDirection == EPortDirection::OUT )
 	{
-		*(this->mGpioRegister.portDirPtr) |= (1U << this->mGpio.pin);
+		*( this->mGpioRegister.portDirPtr ) |= ( 1U << this->mGpio.pin );
 	}
 	else
 	{
-		*(this->mGpioRegister.portDirPtr) &= ~(1U << this->mGpio.pin);
+		*( this->mGpioRegister.portDirPtr ) &= ~( 1U << this->mGpio.pin );
 	}
 }
 
-EPin &Gpio::GetPin (void)
+EPin &Gpio::GetPin ( void )
 {
-	return (this->mGpio.pin);
+	return ( this->mGpio.pin );
 }
 
-bool Gpio::Set (void)
+Core::CoreStatus Gpio::Set ( void )
 {
-	*(this->mGpioRegister.portPtr) |= (1U << this->mGpio.pin);
-	return (true);
+	*( this->mGpioRegister.portPtr ) |= ( 1U << this->mGpio.pin );
+	return ( Core::CoreStatus::CORE_OK );
 }
 
-bool Gpio::Reset (void)
+Core::CoreStatus Gpio::Reset ( void )
 {
-	*(this->mGpioRegister.portPtr) &= ~(1U << this->mGpio.pin);
-	return (true);
+	*( this->mGpioRegister.portPtr ) &= ~( 1U << this->mGpio.pin );
+	return ( Core::CoreStatus::CORE_OK );
 }
 
-bool Gpio::Get (void)
+bool Gpio::Get ( void )
 {
 	uint8_t pin_value = 0U;
 
-	pin_value  = *(this->mGpioRegister.pinPtr);
+	pin_value  = *( this->mGpioRegister.pinPtr );
 	pin_value  = pin_value >> this->mGpio.pin;
 	pin_value &= 0x01U;
 
-	return (pin_value);
+	return ( pin_value );
 }
 
-void Gpio::SetInterruptPin (void)
+void Gpio::SetInterruptPin ( void )
 {
-	*(this->mGpioRegister.pcicr) |= (1U << this->mGpioRegister.pcie);
-	*(this->mGpioRegister.pcmsk) |= (1U << this->mGpio.pin);
+	*( this->mGpioRegister.pcicr ) |= ( 1U << this->mGpioRegister.pcie );
+	*( this->mGpioRegister.pcmsk ) |= ( 1U << this->mGpio.pin );
 }
 
-void Gpio::ResetInterruptPin (void)
+void Gpio::ResetInterruptPin ( void )
 {
-	*(this->mGpioRegister.pcicr) &= ~(1U << this->mGpioRegister.pcie);
-	*(this->mGpioRegister.pcmsk) &= ~(1U << this->mGpio.pin);
+	*( this->mGpioRegister.pcicr ) &= ~( 1U << this->mGpioRegister.pcie );
+	*( this->mGpioRegister.pcmsk ) &= ~( 1U << this->mGpio.pin );
 }
 }

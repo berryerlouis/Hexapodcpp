@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../cmp/Mpu9150Interface.h"
+#include "../clu/ClusterImu.h"
 #include "Service.h"
 
 
@@ -8,12 +8,12 @@ using namespace Component;
 
 class ServiceOrientation : public Service {
 public:
-	ServiceOrientation(Mpu9150Interface &mMpu9150);
+	ServiceOrientation( ClusterImu &clusterImu );
 	~ServiceOrientation() = default;
 
-	virtual bool Initialize(void) final override;
-	virtual void Update(const uint32_t currentTime) final override;
+	virtual Core::CoreStatus Initialize( void ) final override;
+	virtual void Update( const uint32_t currentTime ) final override;
 
-private:
-	Mpu9150Interface &mMpu9150;
+protected:
+	ClusterImu &mClusterImu;
 };

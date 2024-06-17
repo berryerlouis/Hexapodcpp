@@ -3,8 +3,8 @@
 #include "../../../src/clu/ClustersInterface.h"
 
 namespace Component {
-class MockClusters : public Cluster::ClustersInterface {
+class MockClusters : public Clusters::ClustersInterface {
 public:
-	MOCK_CONST_METHOD1(GetCluster, Cluster::Cluster *(const uint8_t) );
+	MOCK_CONST_METHOD1(GetCluster, Clusters::ClusterInterface *(const uint8_t) );
 };
 }

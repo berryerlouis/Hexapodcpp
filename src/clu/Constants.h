@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdint.h>
-namespace Cluster {
+namespace Clusters {
 enum EClusters
 {
 	GENERAL   = 0U,
@@ -22,8 +22,9 @@ enum EClusterCommandGeneric
 enum EGeneralCommands
 {
 	VERSION,
-	INSTANT_EXECUTION_TIME,
+	MIN_EXECUTION_TIME,
 	MAX_EXECUTION_TIME,
+	INSTANT_EXECUTION_TIME,
 	RESET_EXECUTION_TIME
 };
 

@@ -8,14 +8,14 @@ using namespace Driver;
 
 class Battery : public BatteryInterface {
 public:
-	Battery(AdcInterface &adc);
+	Battery( AdcInterface &adc );
 	~Battery() = default;
 
-	virtual bool Initialize(void) final override;
-	virtual void Update(const uint32_t currentTime) final override;
+	virtual Core::CoreStatus Initialize( void ) final override;
+	virtual void Update( const uint32_t currentTime ) final override;
 
-	virtual BatteryState GetState(void) final override;
-	virtual uint16_t     GetVoltage(void) final override;
+	virtual BatteryState GetState( void ) final override;
+	virtual uint16_t     GetVoltage( void ) final override;
 
 private:
 	uint16_t mVoltage;

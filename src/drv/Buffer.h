@@ -8,11 +8,11 @@ const uint8_t BUFFER_MAX_SIZE = 100U;
 class Buffer
 {
 public:
-	Buffer(void);
+	Buffer( void );
 	~Buffer() = default;
-	uint8_t GetLength(void) const;
-	void Push(const volatile uint8_t &item);
-	uint8_t Pop(void);
+	uint8_t GetLength( void ) const;
+	void Push( const volatile uint8_t &item );
+	uint8_t Pop( void );
 
 private:
 	volatile uint8_t mBuffer[BUFFER_MAX_SIZE];

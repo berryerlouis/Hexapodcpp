@@ -7,15 +7,15 @@ using namespace Driver;
 class Led : public LedInterface {
 public:
 
-	Led(GpioInterface &gpio);
+	Led( GpioInterface &gpio );
 	~Led() = default;
 
-	virtual bool Initialize(void) final override;
-	virtual void Update(const uint32_t currentTime) final override;
+	virtual Core::CoreStatus  Initialize( void ) final override;
+	virtual void Update( const uint32_t currentTime ) final override;
 
-	virtual bool On() final override;
-	virtual bool Off() final override;
-	virtual bool Toggle() final override;
+	virtual Core::CoreStatus On() final override;
+	virtual Core::CoreStatus Off() final override;
+	virtual Core::CoreStatus Toggle() final override;
 	virtual LedState Get() const final override;
 
 private:
