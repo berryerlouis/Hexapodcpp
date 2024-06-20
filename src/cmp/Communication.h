@@ -11,22 +11,22 @@
 
 namespace Component {
 using namespace Driver;
-using namespace Cluster;
+using namespace Clusters;
 class Communication : public CommunicationInterface {
 public:
-	Communication(UartInterface &uart, const ClustersInterface &clusters, LedInterface &ledStatus);
+	Communication( UartInterface &uart, ClustersInterface &clusters, LedInterface &ledStatus );
 	~Communication() = default;
 
-	virtual bool Initialize(void) final override;
-	virtual void Update(const uint32_t currentTime) final override;
+	virtual Core::CoreStatus Initialize( void ) final override;
+	virtual void Update( const uint32_t currentTime ) final override;
 
-	virtual bool Send(Frame &message) final override;
+	virtual Core::CoreStatus Send( Clusters::Frame &message ) final override;
 
 private:
-	bool ReceivedStringFrame(void);
+	bool ReceivedStringFrame( void );
 
 	UartInterface &mUart;
-	const ClustersInterface &mClusters;
+	ClustersInterface &mClusters;
 	LedInterface &mLedStatus;
 	char mBufferRx[100U];
 	uint8_t mIndexBufferRx;

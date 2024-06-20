@@ -4,31 +4,32 @@
 #include "../srv/Service.h"
 #include "../srv/ServiceBattery.h"
 #include "../srv/ServiceControl.h"
+#include "../srv/ServiceGeneral.h"
 #include "../srv/ServiceOrientation.h"
 #include "../srv/ServiceProximity.h"
 
 
-using namespace Cluster;
+using namespace Clusters;
 using namespace Component;
 using namespace Driver;
 
 class Services : public ServiceInterface, public ServiceMediatorInterface {
 public:
-	static const uint8_t NB_SERVICES = 4U;
+	static const uint8_t NB_SERVICES = 5U;
 	Services(
 		CommunicationInterface &communication,
+		ServiceGeneral &serviceGeneral,
 		ServiceControl &serviceControl,
 		ServiceProximity &serviceProximity,
 		ServiceOrientation &serviceOrientation,
-		ServiceBattery &serviceBattery);
+		ServiceBattery &serviceBattery );
 
 	~Services() = default;
 
-	virtual bool Initialize(void) final override;
-	virtual void Update(const uint32_t currentTime) final override;
+	virtual Core::CoreStatus Initialize( void ) final override;
+	virtual void Update( const uint32_t currentTime ) final override;
 
-	Service *GetService(const uint8_t serviceId) const;
-	virtual void SendFrame(Frame &message) const override;
+	virtual void SendFrame( Frame &message ) const override;
 
 private:
 	CommunicationInterface &mCommunication;

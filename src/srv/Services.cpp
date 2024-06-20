@@ -2,12 +2,14 @@
 
 Services::Services(
 	CommunicationInterface &communication,
+	ServiceGeneral &serviceGeneral,
 	ServiceControl &serviceControl,
 	ServiceProximity &serviceProximity,
 	ServiceOrientation &serviceOrientation,
-	ServiceBattery &serviceBattery)
-	: mCommunication(communication)
+	ServiceBattery &serviceBattery )
+	: mCommunication( communication )
 	, mServices{
+					&serviceGeneral,
 					&serviceControl,
 					&serviceProximity,
 					&serviceOrientation,
@@ -16,40 +18,36 @@ Services::Services(
 {
 }
 
-bool Services::Initialize (void)
+Core::CoreStatus Services::Initialize ( void )
 {
-	bool success = false;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	for (size_t i = 0U; i < NB_SERVICES; i++)
+	for ( Service *service : mServices )
 	{
-		mServices[i]->SetComComponent(this);
-		success = mServices[i]->Initialize();
-		if (success == false)
+		service->SetComComponent( this );
+		success = service->Initialize();
+
+		if ( success == Core::CoreStatus::CORE_ERROR )
 		{
 			break;
 		}
 	}
-	return (success);
+	return ( success );
 }
 
-void Services::Update (const uint32_t currentTime)
+void Services::Update ( const uint32_t currentTime )
 {
-	for (size_t i = 0U; i < NB_SERVICES; i++)
+	for ( Service *service : mServices )
 	{
-		if (mServices[i]->IsTimeToUpdate(currentTime) )
+		if ( service->NeedUpdate( currentTime ) )
 		{
-			mServices[i]->Update(currentTime);
-			mServices[i]->SetNewUpdateTime(currentTime);
+			service->Update( currentTime );
+			service->SetNewUpdateTime( currentTime );
 		}
 	}
 }
 
-Service *Services::GetService (const uint8_t serviceId) const
+void Services::SendFrame ( Frame &message ) const
 {
-	return (mServices[serviceId]);
-}
-
-void Services::SendFrame (Frame &message) const
-{
-	this->mCommunication.Send(message);
+	this->mCommunication.Send( message );
 }

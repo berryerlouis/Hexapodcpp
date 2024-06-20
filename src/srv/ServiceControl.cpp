@@ -1,24 +1,23 @@
 #include "ServiceControl.h"
 
-ServiceControl::ServiceControl(Servos &servos)
-	: Service(10U)
-	, mServos(servos)
-	, mStepPca9685(0U)
+ServiceControl::ServiceControl( ClusterServo &clusterServo )
+	: Service( 10U )
+	, mClusterServo( clusterServo )
+	, mStepPca9685( 0U )
 {
 }
 
-bool ServiceControl::Initialize (void)
+Core::CoreStatus ServiceControl::Initialize ( void )
 {
-	return (this->mServos.Initialize() );
+	return ( this->mClusterServo.Initialize() );
 }
 
-void ServiceControl::Update (const uint32_t currentTime)
+void ServiceControl::Update ( const uint32_t currentTime )
 {
-	this->mServos.Update(currentTime);
-	this->mServos.GetPca9685(this->mStepPca9685).Update(currentTime);
+	this->mClusterServo.Update( currentTime );
+	this->mClusterServo.GetComponent().GetPca9685( this->mStepPca9685 ).Update( currentTime );
 	this->mStepPca9685++;
-
-	if (this->mStepPca9685 == 2U)
+	if ( this->mStepPca9685 == 2U )
 	{
 		this->mStepPca9685 = 0U;
 	}

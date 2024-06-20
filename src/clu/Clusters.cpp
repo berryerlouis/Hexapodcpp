@@ -1,24 +1,28 @@
 #include "Clusters.h"
 
-namespace Cluster {
+namespace Clusters {
 using namespace Component;
-Clusters::Clusters(Battery &battery, Mpu9150 &mpu9150, SensorProximity &sensorProximity, Servos &servos, Body &body)
-	: mClusterGeneral()
-	, mClusterBattery(battery)
-	, mClusterImu(mpu9150)
-	, mClusterProximity(sensorProximity)
-	, mClusterServo(servos)
-	, mClusterBody(body)
-	, mClusters{&mClusterGeneral, &mClusterImu, &mClusterProximity, &mClusterServo, &mClusterBattery, &mClusterBody}
+Clusters::Clusters(
+	ClusterGeneral & general,
+	ClusterBattery & battery,
+	ClusterBody & body,
+	ClusterImu & imu,
+	ClusterProximity & proximity,
+	ClusterServo & servo )
+	: mClusters{ &general, &battery, &body, &imu, &proximity, &servo }
 {
 }
 
-Cluster *Clusters::GetCluster (const uint8_t clusterId) const
+ClusterInterface *Clusters::GetCluster ( const uint8_t clusterId ) const
 {
-	if (clusterId < NB_CLUSTERS)
+	ClusterInterface *foundCluster = nullptr;
+	for ( ClusterInterface *cluster : mClusters )
 	{
-		return (this->mClusters[clusterId]);
+		if ( cluster->GetId() == clusterId )
+		{
+			foundCluster = cluster;
+		}
 	}
-	return (nullptr);
+	return ( foundCluster );
 }
 }

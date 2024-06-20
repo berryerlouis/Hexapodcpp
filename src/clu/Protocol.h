@@ -3,7 +3,7 @@
 #include "Frame.h"
 #include <string.h>
 
-namespace Cluster {
+namespace Clusters {
 class Protocol {
 public:
 	enum ProtocolStatus
@@ -15,13 +15,13 @@ public:
 		ERROR_NULL_BUFFER,
 	};
 
-	Protocol(void);
+	Protocol( void );
 	~Protocol() = default;
 
-	static ProtocolStatus Decode(const char *frameBuffer, Frame &frame);
-	static uint8_t Encode(Frame &response, const uint8_t *buffer);
+	static ProtocolStatus Decode( const char *frameBuffer, Frame &frame );
+	static uint8_t Encode( Frame &response, const uint8_t *buffer );
 
 private:
-	static uint8_t ConvertHexCharToInt(uint8_t byte);
+	static uint8_t ConvertHexCharToInt( uint8_t byte );
 };
 }

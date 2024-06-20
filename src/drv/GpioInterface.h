@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 
+#include "../cor/Status.h"
+
 namespace Driver {
 enum EPortDirection
 {
@@ -41,11 +43,11 @@ public:
 	GpioInterface()  = default;
 	~GpioInterface() = default;
 
-	virtual bool Set(void)               = 0;
-	virtual bool Reset(void)             = 0;
-	virtual EPin &GetPin(void)           = 0;
-	virtual bool Get(void)               = 0;
-	virtual void SetInterruptPin(void)   = 0;
-	virtual void ResetInterruptPin(void) = 0;
+	virtual Core::CoreStatus Set( void )   = 0;
+	virtual Core::CoreStatus Reset( void ) = 0;
+	virtual EPin &GetPin( void )           = 0;
+	virtual bool Get( void )               = 0;
+	virtual void SetInterruptPin( void )   = 0;
+	virtual void ResetInterruptPin( void ) = 0;
 };
 }

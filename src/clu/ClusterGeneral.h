@@ -1,61 +1,76 @@
 #pragma once
 
 #include "Cluster.h"
-#include "Constants.h"
+#include "../cmp/SoftwareInterface.h"
 
-namespace Cluster {
+namespace Clusters {
 using namespace Component;
-class ClusterGeneral : public Cluster {
+
+class ClusterGeneral : public Cluster <SoftwareInterface> {
 public:
-	ClusterGeneral()
-		: Cluster(GENERAL)
+	ClusterGeneral( SoftwareInterface &software )
+		: Cluster <SoftwareInterface>( GENERAL, software )
 	{
 	}
 
 	~ClusterGeneral() = default;
 
-	virtual bool Execute (Frame &request, Frame &response) final override
+	inline virtual Core::CoreStatus  Execute ( Frame &request, Frame &response ) final override
 	{
-		bool success = false;
+		Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-		switch ( (EGeneralCommands) request.commandId)
+		if ( request.clusterId != this->GetId() )
+		{
+			return ( success );
+		}
+
+		switch ( (EGeneralCommands) request.commandId )
 		{
 		case EGeneralCommands::VERSION:
-			success = ResponseGetVersion(response);
+			success = this->BuildFrameGetVersion( response );
 			break;
 
-		case EGeneralCommands::INSTANT_EXECUTION_TIME:
-			/*uint32_t params = App::App::GetInstance().mUpdateTime - App::GetInstance().mPreviousTime;
-			 * response = Response{GENERAL, INSTANT_EXECUTION_TIME, (uint8_t *)&params, 8U};*/
-			success = true;
+		case EGeneralCommands::MIN_EXECUTION_TIME:
+			success = this->BuildFrameGetMinTime( response );
+			success = Core::CoreStatus::CORE_OK;
 			break;
 
 		case EGeneralCommands::MAX_EXECUTION_TIME:
-			/*uint32_t params = App::App::GetInstance().mMaxTime;
-			 * response = Response{GENERAL, INSTANT_EXECUTION_TIME, (uint8_t *)&params, 8U};*/
-			success = true;
+			success = this->BuildFrameGetMaxTime( response );
+			success = Core::CoreStatus::CORE_OK;
 			break;
 
 		case EGeneralCommands::RESET_EXECUTION_TIME:
-			/*App::GetInstance().mMaxTime = 0U;
-			 * uint32_t params = App::App::GetInstance().mMaxTime;
-			 * response = Response{GENERAL, INSTANT_EXECUTION_TIME, (uint8_t *)&params, 8U};*/
-			success = true;
+			this->GetComponent().ResetTiming();
+			return ( response.Build( GENERAL, RESET_EXECUTION_TIME ) );
+
 			break;
 
 		default:
 			break;
 		}
-		return (success);
+		return ( success );
 	}
 
-private:
-	bool ResponseGetVersion (Frame &response)
+	inline Core::CoreStatus BuildFrameGetVersion ( Frame &response )
 	{
-		uint8_t params[] = { 1, 0 };
+		SoftwareInterface::Version version = this->GetComponent().GetVersion();
+		uint8_t params[] = { version.major, version.minor };
+		return ( response.Build( GENERAL, VERSION, params, 2U ) );
+	}
 
-		response.Build(GENERAL, VERSION, params, 2U);
-		return (true);
+	inline Core::CoreStatus BuildFrameGetMinTime ( Frame &response )
+	{
+		uint32_t time     = this->GetComponent().GetMinTime();
+		uint8_t  params[] = { (uint8_t) ( time >> 24U ), (uint8_t) ( time >> 16U ), (uint8_t) ( time >> 8U ), (uint8_t) time };
+		return ( response.Build( GENERAL, MIN_EXECUTION_TIME, params, 4U ) );
+	}
+
+	inline Core::CoreStatus BuildFrameGetMaxTime ( Frame &response )
+	{
+		uint32_t time     = this->GetComponent().GetMaxTime();
+		uint8_t  params[] = { (uint8_t) ( time >> 24U ), (uint8_t) ( time >> 16U ), (uint8_t) ( time >> 8U ), (uint8_t) time };
+		return ( response.Build( GENERAL, MAX_EXECUTION_TIME, params, 4U ) );
 	}
 };
 }

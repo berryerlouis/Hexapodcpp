@@ -8,23 +8,23 @@
 
 namespace Component {
 using namespace Driver;
-using namespace Cluster;
+using namespace Clusters;
 class Srf05 : public ProximityInterface {
 public:
 	static const uint64_t ECHO_TIMEOUT       = 30000U;
 	static const uint16_t DISTANCE_THRESHOLD = 30U;
 
-	Srf05(const EProximityCommands side, GpioInterface &gpioTrigger, InputCaptureInterface &gpioEcho, TickInterface &tick);
+	Srf05( const EProximityCommands side, GpioInterface &gpioTrigger, InputCaptureInterface &gpioEcho, TickInterface &tick );
 	~Srf05() = default;
 
-	bool Initialize(void) final override;
-	void Update(const uint32_t currentTime) final override;
+	Core::CoreStatus Initialize( void ) final override;
+	void Update( const uint32_t currentTime ) final override;
 
-	void SendPulse(void);
-	virtual uint16_t GetDistance(void) final override;
-	virtual uint16_t GetThreshold(void) final override;
-	virtual bool SetThreshold(const uint16_t threshold) final override;
-	virtual bool IsDetecting(void) final override;
+	void SendPulse( void );
+	virtual uint16_t GetDistance( void ) final override;
+	virtual uint16_t GetThreshold( void ) final override;
+	virtual Core::CoreStatus SetThreshold( const uint16_t threshold ) final override;
+	virtual bool IsDetecting( void ) final override;
 
 private:
 	EProximityCommands mSide;

@@ -6,10 +6,10 @@
 
 class Legs {
 public:
-	Legs(Servos &servos);
+	Legs( Servos &servos );
 	~Legs() = default;
 
-	Leg &GetLeg(const uint8_t legId);
+	Leg &GetLeg( const uint8_t legId );
 
 private:
 	Leg mLegFL;

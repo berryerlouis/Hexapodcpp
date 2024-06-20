@@ -49,11 +49,11 @@ public:
 	};
 
 
-	Leg(ELeg legId, Servo &coxa, Servo &femur, Servo &tibia);
+	Leg( ELeg legId, Servo &coxa, Servo &femur, Servo &tibia );
 	~Leg() = default;
 
 
-	void SetLegIk(const Leg::Position3d &position, const Leg::Position3d &bodyIk, const uint16_t travelTime);
+	void SetLegIk( const Leg::Position3d &position, const Leg::Position3d &bodyIk, const uint16_t travelTime );
 
 public:
 	float mBodyCenterOffsetX;

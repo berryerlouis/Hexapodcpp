@@ -1,30 +1,27 @@
-#include "../cmp/Communication.h"
 #include "ServiceProximity.h"
 
-ServiceProximity::ServiceProximity(SensorProximity &sensorProximity)
-	: Service(25)
-	, mSensorProximity(sensorProximity)
+ServiceProximity::ServiceProximity( ClusterProximity &clusterProximity )
+	: Service( 100 )
+	, mClusterProximity( clusterProximity )
 {
 }
 
-bool ServiceProximity::Initialize (void)
+Core::CoreStatus ServiceProximity::Initialize ( void )
 {
-	return (this->mSensorProximity.Initialize() );
+	return ( this->mClusterProximity.Initialize() );
 }
 
-void ServiceProximity::Update (const uint32_t currentTime)
+void ServiceProximity::Update ( const uint32_t currentTime )
 {
-	this->mSensorProximity.Update(currentTime);
+	this->mClusterProximity.Update( currentTime );
 
-	for (size_t sensorId = 0U; sensorId < SensorProximity::NB_SENSORS; sensorId++)
+	for ( size_t sensorId = 0U; sensorId < SensorProximityInterface::NB_SENSORS; sensorId++ )
 	{
-		this->mSensorProximity.GetDistance( (SensorProximity::SensorsId) sensorId);
-
-		if (this->mSensorProximity.IsDetecting( (SensorProximity::SensorsId) sensorId) )
+		if ( this->mClusterProximity.GetComponent().IsDetecting( (SensorProximityInterface::SensorsId) sensorId ) )
 		{
 			Frame response;
-			this->mSensorProximity.BuildFrameDistance( (EProximityCommands) sensorId, response);
-			this->mServiceMediator->SendFrame(response);
+			this->mClusterProximity.BuildFrameDistance( (EProximityCommands) sensorId, response );
+			this->mServiceMediator->SendFrame( response );
 		}
 	}
 }

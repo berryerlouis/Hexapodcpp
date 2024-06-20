@@ -6,18 +6,26 @@
 #include "../drv/Uart.h"
 #include "../drv/Adc.h"
 #include "../drv/InputCapture.h"
+#include "../clu/ClusterGeneral.h"
+#include "../clu/ClusterBattery.h"
+#include "../clu/ClusterBody.h"
+#include "../clu/ClusterImu.h"
+#include "../clu/ClusterProximity.h"
+#include "../clu/ClusterServo.h"
 #include "../clu/Clusters.h"
 #include "../cmp/Battery.h"
 #include "../cmp/Led.h"
 #include "../cmp/Mpu9150.h"
 #include "../cmp/Pca9685.h"
 #include "../cmp/Servos.h"
+#include "../cmp/Software.h"
 #include "../cmp/Srf05.h"
 #include "../cmp/Vl53l0x.h"
 #include "../cmp/Communication.h"
-#include "../snr/SensorProximity.h"
+#include "../cmp/SensorProximity.h"
 #include "../srv/ServiceBattery.h"
 #include "../srv/ServiceControl.h"
+#include "../srv/ServiceGeneral.h"
 #include "../srv/ServiceOrientation.h"
 #include "../srv/ServiceProximity.h"
 #include "../srv/Services.h"
@@ -25,17 +33,17 @@
 #include "../bot/Legs.h"
 
 
-using namespace Cluster;
+using namespace Clusters;
 using namespace Component;
 using namespace Driver;
 namespace app {
-class App {
+class App : public Core::CoreInterface {
 public:
-	App(void);
-	~App(void) = default;
+	App( void );
+	~App( void ) = default;
 
-	bool Initialize(void);
-	void Update(void);
+	virtual Core::CoreStatus Initialize( void ) final override;
+	virtual void Update( const uint32_t currentTime ) final override;
 
 private:
 	Tick mTick;
@@ -57,16 +65,25 @@ private:
 	Pca9685 mPca9685Left;
 	Pca9685 mPca9685Right;
 	Servos mServos;
+	Software mSoftware;
 	Legs mLegs;
 	Body mBody;
-	Clusters mClusters;
-	Communication mCommunication;
 
+	ClusterGeneral mClusterGeneral;
+	ClusterBattery mClusterBattery;
+	ClusterBody mClusterBody;
+	ClusterImu mClusterImu;
+	ClusterProximity mClusterProximity;
+	ClusterServo mClusterServo;
+	Clusters::Clusters mClusters;
+
+	Communication mCommunication;
 
 	ServiceControl mServiceControl;
 	ServiceProximity mServiceProximity;
 	ServiceOrientation mServiceOrientation;
 	ServiceBattery mServiceBattery;
+	ServiceGeneral mServiceGeneral;
 	Services mServices;
 };
 }

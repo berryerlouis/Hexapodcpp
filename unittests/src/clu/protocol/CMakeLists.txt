@@ -1,7 +1,7 @@
 add_executable(
   UT_CLU_PROTOCOL
-  ../../../src/clu/Frame.cpp
-  ../../../src/clu/Protocol.cpp
+  ../../../../src/clu/Frame.cpp
+  ../../../../src/clu/Protocol.cpp
   UT_CLU_PROTOCOL.cpp
 )
 

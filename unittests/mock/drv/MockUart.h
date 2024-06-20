@@ -6,7 +6,7 @@ namespace Driver {
 class MockUart : public Driver::UartInterface {
 public:
 
-	MOCK_METHOD0(Initialize, bool( void ) );
+	MOCK_METHOD0(Initialize, Core::CoreStatus(void) );
 	MOCK_METHOD1(Update, void( const uint32_t ) );
 
 	MOCK_METHOD2(Send, void( const uint8_t *, const size_t ) );

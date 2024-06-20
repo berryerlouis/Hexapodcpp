@@ -1,22 +1,19 @@
 #pragma once
 
-#include "../cmp/BatteryInterface.h"
+#include "../clu/ClusterBattery.h"
 #include "Service.h"
 
 
 using namespace Component;
 class ServiceBattery : public Service {
 public:
-	ServiceBattery(BatteryInterface &battery);
+	ServiceBattery( ClusterBattery &clusterBattery );
 	~ServiceBattery() = default;
 
-	virtual bool Initialize(void) final override;
-	virtual void Update(const uint32_t currentTime) final override;
+	virtual Core::CoreStatus Initialize( void ) final override;
+	virtual void Update( const uint32_t currentTime ) final override;
 
-
-	bool BuildFrameState(Frame &response);
-
-private:
-	BatteryInterface &mBattery;
+protected:
+	ClusterBattery &mClusterBattery;
 	BatteryInterface::BatteryState mCurrentState;
 };

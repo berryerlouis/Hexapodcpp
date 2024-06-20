@@ -2,12 +2,16 @@
 
 #include "Constants.h"
 #include "Frame.h"
-namespace Cluster {
+namespace Clusters {
 class ClusterInterface {
 public:
 	ClusterInterface()  = default;
 	~ClusterInterface() = default;
 
-	virtual bool Execute(Frame &request, Frame &response) = 0;
+	virtual Core::CoreStatus Initialize( void )       = 0;
+	virtual void Update( const uint32_t currentTime ) = 0;
+
+	virtual Core::CoreStatus Execute( Frame &request, Frame &response ) = 0;
+	virtual EClusters GetId( void ) = 0;
 };
 }

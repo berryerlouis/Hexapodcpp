@@ -1,30 +1,33 @@
 #include <avr/interrupt.h>
+#include <avr/wdt.h>
 #include "app/App.h"
 
 using namespace app;
 
 App robot;
 
-int main (void)
+int main ( void )
 {
 	//hexapod initialization
-	if (robot.Initialize() )
+	if ( robot.Initialize() )
 	{
 		//enable ITs
 		sei();
 
-		while (true)
+		wdt_enable( WDTO_15MS );
+		while ( true )
 		{
+			wdt_reset();
 			//hexapod loop update
-			robot.Update();
+			robot.Update( 0UL );
 		}
 	}
 
-	while (true)
+	while ( true )
 	{
 	}
 
-	return (-1);
+	return ( -1 );
 }
 
 /*

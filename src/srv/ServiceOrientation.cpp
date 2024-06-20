@@ -1,17 +1,17 @@
 #include "ServiceOrientation.h"
 
-ServiceOrientation::ServiceOrientation(Mpu9150Interface &mpu9150)
-	: Service(20)
-	, mMpu9150(mpu9150)
+ServiceOrientation::ServiceOrientation( ClusterImu &clusterImu )
+	: Service( 50 )
+	, mClusterImu( clusterImu )
 {
 }
 
-bool ServiceOrientation::Initialize (void)
+Core::CoreStatus ServiceOrientation::Initialize ( void )
 {
-	return (this->mMpu9150.Initialize() );
+	return ( this->mClusterImu.Initialize() );
 }
 
-void ServiceOrientation::Update (const uint32_t currentTime)
+void ServiceOrientation::Update ( const uint32_t currentTime )
 {
-	this->mMpu9150.Update(currentTime);
+	this->mClusterImu.Update( currentTime );
 }

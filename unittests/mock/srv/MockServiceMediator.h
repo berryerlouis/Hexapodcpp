@@ -5,5 +5,5 @@
 
 class MockServiceMediator : public ServiceMediatorInterface {
 public:
-	MOCK_CONST_METHOD1(SendFrame, void( Cluster::Frame & ) );
+	MOCK_CONST_METHOD1(SendFrame, void( Clusters::Frame & ) );
 };

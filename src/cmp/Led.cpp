@@ -1,39 +1,37 @@
 #include "Led.h"
 
 namespace Component {
-Led::Led(GpioInterface &gpio)
-	: mGpio(gpio)
-	, mState(Led::LedState::OFF)
+Led::Led( GpioInterface &gpio )
+	: mGpio( gpio )
+	, mState( Led::LedState::OFF )
 {
 }
 
-bool Led::Initialize (void)
+Core::CoreStatus Led::Initialize ( void )
 {
-	return (this->Off() );
+	return ( this->Off() );
 }
 
-void Led::Update (const uint32_t currentTime)
+void Led::Update ( const uint32_t currentTime )
 {
 	(void) currentTime;
 }
 
-bool Led::On ()
+Core::CoreStatus Led::On ()
 {
-	this->mGpio.Reset();
 	this->mState = ON;
-	return (true);
+	return ( this->mGpio.Reset() );
 }
 
-bool Led::Off ()
+Core::CoreStatus Led::Off ()
 {
-	this->mGpio.Set();
 	this->mState = OFF;
-	return (true);
+	return ( this->mGpio.Set() );
 }
 
-bool Led::Toggle ()
+Core::CoreStatus Led::Toggle ()
 {
-	if (ON == this->Get() )
+	if ( ON == this->Get() )
 	{
 		this->Off();
 	}
@@ -41,11 +39,11 @@ bool Led::Toggle ()
 	{
 		this->On();
 	}
-	return (true);
+	return ( Core::CoreStatus::CORE_OK );
 }
 
 Led::LedState Led::Get () const
 {
-	return (this->mState);
+	return ( this->mState );
 }
 }
