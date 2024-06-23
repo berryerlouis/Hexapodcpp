@@ -1,7 +1,8 @@
 #include "Software.h"
 
 namespace Component {
-Software::Software() : mMinTime( 0UL )
+Software::Software() :
+	mMinTime( 0UL )
 	, mMaxTime( 0UL )
 {
 }
@@ -36,6 +37,8 @@ uint32_t Software::GetMaxTime ( void )
 
 void Software::ResetTiming ( void )
 {
+	this->mMinTime = 0U;
+	this->mMaxTime = 0U;
 }
 
 void Software::SetMinTime ( const uint32_t time )
@@ -45,18 +48,6 @@ void Software::SetMinTime ( const uint32_t time )
 
 void Software::SetMaxTime ( const uint32_t time )
 {
-	this->mMinTime = time;
-}
-
-void Software::CheckTimingLoop ( const uint32_t time )
-{
-	if ( time < this->mMinTime )
-	{
-		this->mMinTime = time;
-	}
-	else if ( time > this->mMaxTime )
-	{
-		this->mMaxTime = time;
-	}
+	this->mMaxTime = time;
 }
 }

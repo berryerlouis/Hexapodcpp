@@ -57,6 +57,7 @@ add_subdirectory(src/cmp/vl53l0x)
 
 add_subdirectory(src/srv/battery)
 add_subdirectory(src/srv/control)
+add_subdirectory(src/srv/general)
 add_subdirectory(src/srv/orientation)
 add_subdirectory(src/srv/proximity)
 
