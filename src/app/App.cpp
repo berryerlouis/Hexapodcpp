@@ -79,9 +79,6 @@ void App::Update ( const uint32_t currentTime )
 	(void) currentTime;
 	unsigned long currentMillis = this->mTick.GetMs();
 	mLedBoot.Toggle();
-	mCommunication.Update( currentMillis );
 	mServices.Update( currentMillis );
-
-	mSoftware.CheckTimingLoop( currentMillis );
 }
 }

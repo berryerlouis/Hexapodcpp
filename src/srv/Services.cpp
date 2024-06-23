@@ -22,21 +22,18 @@ Core::CoreStatus Services::Initialize ( void )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
+	mCommunication.Initialize();
 	for ( Service *service : mServices )
 	{
 		service->SetComComponent( this );
 		success = service->Initialize();
-
-		if ( success == Core::CoreStatus::CORE_ERROR )
-		{
-			break;
-		}
 	}
 	return ( success );
 }
 
 void Services::Update ( const uint32_t currentTime )
 {
+	mCommunication.Update( currentTime );
 	for ( Service *service : mServices )
 	{
 		if ( service->NeedUpdate( currentTime ) )

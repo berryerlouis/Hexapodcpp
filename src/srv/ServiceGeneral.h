@@ -1,14 +1,18 @@
 #pragma once
 
 #include "../clu/ClusterGeneral.h"
-#include "ServiceCommon.h"
+#include "Service.h"
 
-class ServiceGeneral : public ServiceCommon <ClusterGeneral> {
+
+using namespace Component;
+class ServiceGeneral : public Service {
 public:
-	ServiceGeneral( ClusterGeneral &clusterGeneral ) :
-		ServiceCommon <ClusterGeneral>( 1000U, clusterGeneral )
-	{
-	}
-
+	ServiceGeneral( ClusterGeneral &clusterGeneral );
 	~ServiceGeneral() = default;
+
+	virtual Core::CoreStatus Initialize( void ) final override;
+	virtual void Update( const uint32_t currentTime ) final override;
+
+protected:
+	ClusterGeneral &mClusterGeneral;
 };
