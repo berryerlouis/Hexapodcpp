@@ -21,7 +21,7 @@ public:
 	~Servo() = default;
 
 	virtual Core::CoreStatus Initialize( void ) final override;
-	virtual void Update( const uint32_t currentTime ) final override;
+	virtual void Update( const uint64_t currentTime ) final override;
 
 	virtual Core::CoreStatus SetAngle( const uint8_t angle, const uint16_t travelTime = 0U ) final override;
 	virtual uint8_t GetAngle( void ) const final override;
@@ -38,7 +38,7 @@ public:
 	virtual bool IsMoving( void ) final override;
 
 private:
-	uint8_t GetAngleFromDeltaTime( const uint32_t currentTime );
+	uint8_t GetAngleFromDeltaTime( const uint64_t currentTime );
 	uint8_t Lerp( uint8_t a, uint8_t b, float t );
 
 	inline long map ( long x, long in_min, long in_max, long out_min, long out_max )
@@ -51,7 +51,7 @@ private:
 	uint8_t mServoId;
 	uint8_t mAngle;
 	uint8_t mTargetAngle;
-	uint32_t mStartTime;
+	uint64_t mStartTime;
 	uint16_t mSpeed;
 	int8_t mOffset;
 	uint8_t mMin;

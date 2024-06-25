@@ -16,7 +16,7 @@ Core::CoreStatus Battery::Initialize ( void )
 	return ( this->mAdc.Initialize() );
 }
 
-void Battery::Update ( const uint32_t currentTime )
+void Battery::Update ( const uint64_t currentTime )
 {
 	(void) currentTime;
 	this->mVoltage = this->mAdc.Read();

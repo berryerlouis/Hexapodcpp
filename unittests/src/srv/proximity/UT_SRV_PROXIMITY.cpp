@@ -72,6 +72,7 @@ TEST( ServiceProximity, Update_Detection_Srf_Ok )
 	EXPECT_CALL( sensorProximity, GetDistance( SensorProximityInterface::SensorsId::SRF_LEFT ) ).WillOnce( Return( 10U ) );
 
 	EXPECT_CALL( mediator, SendFrame( _ ) ).Times( 1U );
+	EXPECT_CALL( mediator, DisplayProximitySensor( SensorProximityInterface::SensorsId::SRF_LEFT ) ).Times( 1U );
 
 	serviceProximity.Update( 0UL );
 
@@ -99,6 +100,7 @@ TEST( ServiceProximity, Update_Detection_Vlx_Ok )
 	EXPECT_CALL( sensorProximity, GetDistance( SensorProximityInterface::SensorsId::VLX ) ).WillOnce( Return( 10U ) );
 
 	EXPECT_CALL( mediator, SendFrame( _ ) ).Times( 1U );
+	EXPECT_CALL( mediator, DisplayProximitySensor( SensorProximityInterface::SensorsId::VLX ) ).Times( 1U );
 
 	serviceProximity.Update( 0UL );
 

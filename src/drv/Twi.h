@@ -15,7 +15,7 @@ public:
 	~Twi() = default;
 
 	virtual Core::CoreStatus Initialize( void ) final override;
-	virtual void Update( const uint32_t currentTime ) final override;
+	virtual void Update( const uint64_t currentTime ) final override;
 
 	virtual bool ReadRegister( const uint8_t address, const uint8_t reg, uint8_t &data ) final override;
 	virtual bool ReadRegister16Bits( const uint8_t address, const uint8_t reg, uint16_t &data ) final override;

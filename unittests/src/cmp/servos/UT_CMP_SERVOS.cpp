@@ -24,7 +24,6 @@ TEST( ComponentServos, Initialize_Ok )
 	EXPECT_CALL( pca9685_1, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
 	success = servos.Initialize();
-
 	EXPECT_TRUE( success );
 }
 

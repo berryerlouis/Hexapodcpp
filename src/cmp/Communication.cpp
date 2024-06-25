@@ -15,7 +15,7 @@ Core::CoreStatus Communication::Initialize ( void )
 	return ( this->mLedStatus.Initialize() );
 }
 
-void Communication::Update ( const uint32_t currentTime )
+void Communication::Update ( const uint64_t currentTime )
 {
 	(void) currentTime;
 	if ( true == this->ReceivedStringFrame() )
@@ -68,9 +68,9 @@ void Communication::Update ( const uint32_t currentTime )
 
 Core::CoreStatus Communication::Send ( Clusters::Frame &message )
 {
-	uint8_t buffer[100U];
+	uint8_t buffer[50U];
 
-	memset( buffer, 0U, 100U );
+	memset( buffer, 0U, 50U );
 	const size_t size = Protocol::Encode( message, buffer );
 
 	if ( size != 0 )

@@ -23,7 +23,7 @@ Core::CoreStatus SensorProximity::Initialize ( void )
 	return ( ( success == 7U ) ? Core::CoreStatus::CORE_OK : Core::CoreStatus::CORE_ERROR );
 }
 
-void SensorProximity::Update ( const uint32_t currentTime )
+void SensorProximity::Update ( const uint64_t currentTime )
 {
 	if ( this->mStepSrf == 0 )
 	{

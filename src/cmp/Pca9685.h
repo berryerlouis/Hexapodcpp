@@ -76,7 +76,7 @@ public:
 	virtual void SetPwm( uint8_t num, uint16_t off ) final override;
 
 	Core::CoreStatus Initialize( void );
-	void Update( const uint32_t currentTime );
+	void Update( const uint64_t currentTime );
 
 private:
 	TwiInterface &mI2c;

@@ -15,7 +15,7 @@ Core::CoreStatus Body::Initialize ( void )
 	return ( Core::CoreStatus::CORE_OK );
 }
 
-void Body::Update ( const uint32_t currentTime )
+void Body::Update ( const uint64_t currentTime )
 {
 	(void) currentTime;
 }

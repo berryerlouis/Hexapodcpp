@@ -11,7 +11,7 @@ Core::CoreStatus ServiceOrientation::Initialize ( void )
 	return ( this->mClusterImu.Initialize() );
 }
 
-void ServiceOrientation::Update ( const uint32_t currentTime )
+void ServiceOrientation::Update ( const uint64_t currentTime )
 {
 	this->mClusterImu.Update( currentTime );
 }

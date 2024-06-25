@@ -20,7 +20,7 @@ Core::CoreStatus Uart::Initialize ( void )
 	return ( Core::CoreStatus::CORE_OK );
 }
 
-void Uart::Update ( const uint32_t currentTime )
+void Uart::Update ( const uint64_t currentTime )
 {
 	(void) currentTime;
 }

@@ -14,7 +14,7 @@ public:
 	~SensorProximity() = default;
 
 	virtual Core::CoreStatus Initialize( void ) final override;
-	virtual void Update( const uint32_t currentTime ) final override;
+	virtual void Update( const uint64_t currentTime ) final override;
 	virtual uint16_t GetDistance( const SensorsId sensorId ) final override;
 	virtual Core::CoreStatus SetThreshold( const SensorsId sensorId, const uint16_t threshold ) final override;
 	virtual uint16_t GetThreshold( const SensorsId sensorId ) final override;

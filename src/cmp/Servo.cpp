@@ -100,7 +100,7 @@ Core::CoreStatus Servo::Initialize ( void )
 	return ( this->SetAngle( this->mAngle ) );
 }
 
-void Servo::Update ( const uint32_t currentTime )
+void Servo::Update ( const uint64_t currentTime )
 {
 	if ( this->IsMoving() )
 	{
@@ -110,7 +110,7 @@ void Servo::Update ( const uint32_t currentTime )
 	}
 }
 
-uint8_t Servo::GetAngleFromDeltaTime ( const uint32_t currentTime )
+uint8_t Servo::GetAngleFromDeltaTime ( const uint64_t currentTime )
 {
 	const uint64_t endTime   = this->mStartTime + this->mSpeed;
 	float          deltaTime = 1.0f;

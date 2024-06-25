@@ -10,18 +10,18 @@ public:
 	~Software() = default;
 
 	virtual Core::CoreStatus Initialize( void ) final override;
-	virtual void Update( const uint32_t currentTime ) final override;
+	virtual void Update( const uint64_t currentTime ) final override;
 
 	virtual Version GetVersion( void ) final override;
 
-	virtual uint32_t GetMinTime( void ) final override;
-	virtual uint32_t GetMaxTime( void ) final override;
+	virtual uint64_t GetMinTime( void ) final override;
+	virtual uint64_t GetMaxTime( void ) final override;
 	virtual void ResetTiming( void ) final override;
-	virtual void SetMinTime( const uint32_t time ) final override;
-	virtual void SetMaxTime( const uint32_t time ) final override;
+	virtual void SetMinTime( const uint64_t time ) final override;
+	virtual void SetMaxTime( const uint64_t time ) final override;
 
 private:
-	uint32_t mMinTime;
-	uint32_t mMaxTime;
+	uint64_t mMinTime;
+	uint64_t mMaxTime;
 };
 }

@@ -100,11 +100,15 @@ TEST( ClusterGeneral, BuildFrameGetMinTime_Ok )
 	clusterGeneral.BuildFrameGetMinTime( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::GENERAL );
 	EXPECT_EQ( response.commandId, Clusters::EGeneralCommands::MIN_EXECUTION_TIME );
-	EXPECT_EQ( response.nbParams, 4U );
-	EXPECT_EQ( response.params[0U], 0U );
+	EXPECT_EQ( response.nbParams, 8U );
+	EXPECT_EQ( response.params[0U], 50U );
 	EXPECT_EQ( response.params[1U], 0U );
 	EXPECT_EQ( response.params[2U], 0U );
-	EXPECT_EQ( response.params[3U], 50U );
+	EXPECT_EQ( response.params[3U], 0U );
+	EXPECT_EQ( response.params[4U], 0U );
+	EXPECT_EQ( response.params[5U], 0U );
+	EXPECT_EQ( response.params[6U], 0U );
+	EXPECT_EQ( response.params[7U], 0U );
 	EXPECT_TRUE( success );
 }
 
@@ -123,10 +127,14 @@ TEST( ClusterGeneral, BuildFrameGetMaxTime_Ok )
 	clusterGeneral.BuildFrameGetMaxTime( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::GENERAL );
 	EXPECT_EQ( response.commandId, Clusters::EGeneralCommands::MAX_EXECUTION_TIME );
-	EXPECT_EQ( response.nbParams, 4U );
-	EXPECT_EQ( response.params[0U], 0U );
+	EXPECT_EQ( response.nbParams, 8U );
+	EXPECT_EQ( response.params[0U], 50U );
 	EXPECT_EQ( response.params[1U], 0U );
 	EXPECT_EQ( response.params[2U], 0U );
-	EXPECT_EQ( response.params[3U], 50U );
+	EXPECT_EQ( response.params[3U], 0U );
+	EXPECT_EQ( response.params[4U], 0U );
+	EXPECT_EQ( response.params[5U], 0U );
+	EXPECT_EQ( response.params[6U], 0U );
+	EXPECT_EQ( response.params[7U], 0U );
 	EXPECT_TRUE( success );
 }

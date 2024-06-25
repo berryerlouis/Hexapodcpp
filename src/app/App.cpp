@@ -1,4 +1,5 @@
 #include "App.h"
+#include <stdlib.h>
 
 Gpio ledBoot         = Gpio( { EPort::PORT_B, EPin::PIN_0 }, EPortDirection::OUT );
 Gpio ledStatus       = Gpio( { EPort::PORT_B, EPin::PIN_1 }, EPortDirection::OUT );
@@ -20,12 +21,13 @@ App::App( void )
 	, mLedStatus( ledStatus )
 	, mLedLeft( ledLeft )
 	, mLedRight( ledRight )
-	, mICLeft( echoLeftPin, mTick )
-	, mICRight( echoRightPin, mTick )
+	, mInputCaptureLeft( echoLeftPin, mTick )
+	, mInputCaptureRight( echoRightPin, mTick )
 	, mBattery( mAdc )
 	, mMpu9150( mTwi )
-	, mSrf05Left( EProximityCommands::US_LEFT, triggerLeftPin, mICLeft, mTick )
-	, mSrf05Right( EProximityCommands::US_RIGHT, triggerRightPin, mICRight, mTick )
+	, mSrf05Left( EProximityCommands::US_LEFT, triggerLeftPin, mInputCaptureLeft, mTick )
+	, mSrf05Right( EProximityCommands::US_RIGHT, triggerRightPin, mInputCaptureRight, mTick )
+	, mSsd1306( mTwi )
 	, mVl53l0x( mTwi, mTick )
 	, mSensorProximity( mSrf05Left, mSrf05Right, mVl53l0x )
 	, mPca9685Left( mTwi, 0x41U )
@@ -46,9 +48,11 @@ App::App( void )
 	, mServiceProximity( mClusterProximity )
 	, mServiceOrientation( mClusterImu )
 	, mServiceBattery( mClusterBattery )
+	, mServiceDisplay( mSsd1306 )
 	, mServiceGeneral( mClusterGeneral )
-	, mServices( mCommunication, mServiceGeneral, mServiceControl, mServiceProximity, mServiceOrientation, mServiceBattery )
+	, mServices( mCommunication, mServiceGeneral, mServiceControl, mServiceProximity, mServiceOrientation, mServiceBattery, mServiceDisplay )
 {
+	INIT_LOG( mUart );
 }
 
 Core::CoreStatus App::Initialize ( void )
@@ -62,23 +66,32 @@ Core::CoreStatus App::Initialize ( void )
 	if ( success == true )
 	{
 		success = mServices.Initialize();
+		mSsd1306.Initialize();
 	}
 	if ( success == true )
 	{
-		mUart.Send( "<hello>", strlen( "<hello>" ) );
+		LOG( "<hello>" );
 	}
 	else
 	{
-		mUart.Send( "<error>", strlen( "<error>" ) );
+		LOG( "<error>" );
 	}
 	return ( success );
 }
 
-void App::Update ( const uint32_t currentTime )
+void App::Update ( const uint64_t currentTime )
 {
 	(void) currentTime;
-	unsigned long currentMillis = this->mTick.GetMs();
+	uint64_t currentMillis = this->mTick.GetMs();
 	mLedBoot.Toggle();
 	mServices.Update( currentMillis );
+
+
+#ifdef DEBUG
+	char tt[10U];
+	memset( tt, 0, 10 );
+	itoa( currentMillis, tt, 10 );
+	Logger->Write( tt );
+#endif
 }
 }

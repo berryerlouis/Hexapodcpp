@@ -9,7 +9,7 @@ public:
 	~ServoInterface() = default;
 
 	virtual Core::CoreStatus Initialize( void )       = 0;
-	virtual void Update( const uint32_t currentTime ) = 0;
+	virtual void Update( const uint64_t currentTime ) = 0;
 
 	virtual Core::CoreStatus SetAngle( const uint8_t angle, const uint16_t travelTime = 0U ) = 0;
 	virtual uint8_t GetAngle( void ) const        = 0;

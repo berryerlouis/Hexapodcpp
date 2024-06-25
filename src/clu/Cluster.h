@@ -18,7 +18,7 @@ public:
 		return ( mComponentInterface.Initialize() );
 	}
 
-	inline virtual void Update ( const uint32_t currentTime ) override
+	inline virtual void Update ( const uint64_t currentTime ) override
 	{
 		mComponentInterface.Update( currentTime );
 	}

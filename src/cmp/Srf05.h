@@ -18,7 +18,7 @@ public:
 	~Srf05() = default;
 
 	Core::CoreStatus Initialize( void ) final override;
-	void Update( const uint32_t currentTime ) final override;
+	void Update( const uint64_t currentTime ) final override;
 
 	void SendPulse( void );
 	virtual uint16_t GetDistance( void ) final override;

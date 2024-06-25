@@ -77,7 +77,7 @@ public:
 	~Vl53l0x() = default;
 
 	Core::CoreStatus Initialize( void );
-	void Update( const uint32_t currentTime );
+	void Update( const uint64_t currentTime );
 
 	virtual uint16_t GetDistance( void ) final override;
 	virtual Core::CoreStatus SetThreshold( const uint16_t threshold ) final override;

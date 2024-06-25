@@ -124,7 +124,7 @@ Core::CoreStatus Vl53l0x::Initialize ( void )
 	return ( success );
 }
 
-void Vl53l0x::Update ( const uint32_t currentTime )
+void Vl53l0x::Update ( const uint64_t currentTime )
 {
 	(void) currentTime;
 }
@@ -327,12 +327,12 @@ bool Vl53l0x::GetSpadInfo ( uint8_t *count, bool *type_is_aperture )
 	this->mI2c.WriteRegister( this->mAddress, 0x83, 0x00 );
 
 	data = 0U;
-	uint32_t timeout = this->mTick.GetMs();
+	uint64_t timeout = this->mTick.GetMs();
 
 	do
 	{
 		this->mI2c.ReadRegister( this->mAddress, 0x83, data );
-		if ( ( (uint32_t) ( this->mTick.GetMs() - timeout ) > 50 ) )
+		if ( ( (uint64_t) ( this->mTick.GetMs() - timeout ) > 50 ) )
 		{
 			return ( false );
 		}
@@ -616,14 +616,14 @@ bool Vl53l0x::PerformSingleRefCalibration ( uint8_t vhv_init_byte )
 {
 	this->mI2c.WriteRegister( this->mAddress, VL53L0X_SYSRANGE_START, 0x01 | vhv_init_byte );
 
-	uint32_t timeout = this->mTick.GetMs();
+	uint64_t timeout = this->mTick.GetMs();
 	uint8_t  data    = 0U;
 
 	do
 	{
 		this->mI2c.ReadRegister( this->mAddress, VL53L0X_RESULT_INTERRUPT_STATUS, data );
 
-		if ( ( (uint32_t) ( this->mTick.GetMs() - timeout ) > 50 ) )
+		if ( ( (uint64_t) ( this->mTick.GetMs() - timeout ) > 50 ) )
 		{
 			return ( false );
 		}

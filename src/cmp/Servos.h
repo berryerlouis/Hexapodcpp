@@ -9,7 +9,7 @@ public:
 	~Servos() = default;
 
 	virtual Core::CoreStatus Initialize( void ) final override;
-	virtual void Update( const uint32_t currentTime ) final override;
+	virtual void Update( const uint64_t currentTime ) final override;
 
 	virtual Servo &GetServo( const uint8_t servoId ) final override;
 	virtual Pca9685Interface &GetPca9685( const uint8_t pca9685Id ) final override;

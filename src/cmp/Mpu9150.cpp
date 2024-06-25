@@ -87,7 +87,7 @@ Core::CoreStatus Mpu9150::Initialize ( void )
 	return ( success );
 }
 
-void Mpu9150::Update ( const uint32_t currentTime )
+void Mpu9150::Update ( const uint64_t currentTime )
 {
 	(void) currentTime;
 	UpdateAcc();

@@ -112,7 +112,7 @@ public:
 	~Mpu9150() = default;
 
 	Core::CoreStatus Initialize( void );
-	void Update( const uint32_t currentTime );
+	void Update( const uint64_t currentTime );
 
 	inline virtual Vector3 ReadAcc ( void )  final override
 	{

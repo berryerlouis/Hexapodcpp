@@ -1,4 +1,8 @@
 #include "Servos.h"
+#include "../cor/Log.h"
+#include <stdlib.h>
+#include <string.h>
+
 
 namespace Component {
 Servos::Servos( Pca9685Interface &pca9685_0, Pca9685Interface &pca9685_1, TickInterface &tick )
@@ -29,19 +33,25 @@ Servos::Servos( Pca9685Interface &pca9685_0, Pca9685Interface &pca9685_1, TickIn
 
 Core::CoreStatus Servos::Initialize ( void )
 {
-	uint32_t success = 0UL;
+	uint8_t success = 0UL;
 	this->mPca9685Left.Initialize();
 	this->mPca9685Right.Initialize();
 
 	for ( size_t servoId = 0U; servoId < NB_SERVOS; servoId++ )
 	{
-		success |= this->mServos[servoId]->Initialize() << servoId;
+		if ( this->mServos[servoId]->Initialize() )
+		{
+			success++;
+		}
+		else
+		{
+			break;
+		}
 	}
-
-	return ( ( success == 0x3FFFFUL ) ? Core::CoreStatus::CORE_OK : Core::CoreStatus::CORE_ERROR );
+	return ( ( success == NB_SERVOS ) ? Core::CoreStatus::CORE_OK : Core::CoreStatus::CORE_ERROR );
 }
 
-void Servos::Update ( const uint32_t currentTime )
+void Servos::Update ( const uint64_t currentTime )
 {
 	for ( Servo *servo : this->mServos )
 	{
