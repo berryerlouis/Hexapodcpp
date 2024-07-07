@@ -17,6 +17,7 @@ void ServiceGeneral::Update ( const uint64_t currentTime )
 	{
 		SoftwareInterface & software = this->mClusterGeneral.GetComponent();
 		uint64_t            delta    = currentTime - this->GetPreviousTime();
+
 		if ( delta < software.GetMinTime() )
 		{
 			Frame response;
