@@ -61,16 +61,14 @@ public:
 
 	inline Core::CoreStatus BuildFrameGetMinTime ( Frame &response )
 	{
-		uint32_t time     = this->GetComponent().GetMinTime();
-		uint8_t  params[] = { (uint8_t) ( time >> 24U ), (uint8_t) ( time >> 16U ), (uint8_t) ( time >> 8U ), (uint8_t) time };
-		return ( response.Build( GENERAL, MIN_EXECUTION_TIME, params, 4U ) );
+		uint64_t time = this->GetComponent().GetMinTime();
+		return ( response.Build( GENERAL, MIN_EXECUTION_TIME, (uint8_t *) &time, 8U ) );
 	}
 
 	inline Core::CoreStatus BuildFrameGetMaxTime ( Frame &response )
 	{
-		uint32_t time     = this->GetComponent().GetMaxTime();
-		uint8_t  params[] = { (uint8_t) ( time >> 24U ), (uint8_t) ( time >> 16U ), (uint8_t) ( time >> 8U ), (uint8_t) time };
-		return ( response.Build( GENERAL, MAX_EXECUTION_TIME, params, 4U ) );
+		uint64_t time = this->GetComponent().GetMaxTime();
+		return ( response.Build( GENERAL, MAX_EXECUTION_TIME, (uint8_t *) &time, 8U ) );
 	}
 };
 }

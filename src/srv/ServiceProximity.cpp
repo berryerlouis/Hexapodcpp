@@ -11,7 +11,7 @@ Core::CoreStatus ServiceProximity::Initialize ( void )
 	return ( this->mClusterProximity.Initialize() );
 }
 
-void ServiceProximity::Update ( const uint32_t currentTime )
+void ServiceProximity::Update ( const uint64_t currentTime )
 {
 	this->mClusterProximity.Update( currentTime );
 
@@ -22,6 +22,7 @@ void ServiceProximity::Update ( const uint32_t currentTime )
 			Frame response;
 			this->mClusterProximity.BuildFrameDistance( (EProximityCommands) sensorId, response );
 			this->mServiceMediator->SendFrame( response );
+			this->mServiceMediator->DisplayProximitySensor( (SensorProximityInterface::SensorsId) sensorId );
 		}
 	}
 }

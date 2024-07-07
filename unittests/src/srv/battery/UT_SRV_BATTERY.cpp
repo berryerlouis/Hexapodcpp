@@ -61,6 +61,7 @@ TEST( ServiceBattery, Update_FirstTimeUpdate_Ok )
 	EXPECT_CALL( battery, GetState() ).Times( 2U ).WillRepeatedly( Return( BatteryInterface::BatteryState::NOMINAL ) );
 	EXPECT_CALL( battery, GetVoltage() ).WillOnce( Return( 10U ) );
 	EXPECT_CALL( mediator, SendFrame( _ ) ).Times( 1U );
+	EXPECT_CALL( mediator, DisplayBatteryLevel( BatteryInterface::BatteryState::NOMINAL ) ).Times( 1U );
 
 	serviceBattery.Update( 0UL );
 	EXPECT_TRUE( success );
@@ -84,6 +85,7 @@ TEST( ServiceBattery, Update_SentFrameOnceAtFirstUpdate_Ok )
 	EXPECT_CALL( battery, GetState() ).Times( nbUpdate + 1U ).WillRepeatedly( Return( BatteryInterface::BatteryState::NOMINAL ) );
 	EXPECT_CALL( battery, GetVoltage() ).WillOnce( Return( 10U ) );
 	EXPECT_CALL( mediator, SendFrame( _ ) ).Times( 1U );
+	EXPECT_CALL( mediator, DisplayBatteryLevel( BatteryInterface::BatteryState::NOMINAL ) ).Times( 1U );
 
 	for ( size_t i = 0; i < nbUpdate; i++ )
 	{
@@ -112,6 +114,7 @@ TEST( ServiceBattery, Update_SentFrameOnceAtFirstUpdateAndOnceAfterStateChanged_
 	EXPECT_CALL( battery, GetState() ).Times( 2U ).WillRepeatedly( Return( BatteryInterface::BatteryState::NOMINAL ) );
 	EXPECT_CALL( battery, GetVoltage() ).WillOnce( Return( 10U ) );
 	EXPECT_CALL( mediator, SendFrame( _ ) ).Times( 1U );
+	EXPECT_CALL( mediator, DisplayBatteryLevel( BatteryInterface::BatteryState::NOMINAL ) ).Times( 1U );
 	serviceBattery.Update( 0UL );
 
 	EXPECT_CALL( battery, Update( 1UL ) ).Times( 1U );
@@ -122,6 +125,7 @@ TEST( ServiceBattery, Update_SentFrameOnceAtFirstUpdateAndOnceAfterStateChanged_
 	EXPECT_CALL( battery, GetState() ).Times( 2U ).WillRepeatedly( Return( BatteryInterface::BatteryState::CRITICAL ) );
 	EXPECT_CALL( battery, GetVoltage() ).WillOnce( Return( 10U ) );
 	EXPECT_CALL( mediator, SendFrame( _ ) ).Times( 1U );
+	EXPECT_CALL( mediator, DisplayBatteryLevel( BatteryInterface::BatteryState::CRITICAL ) ).Times( 1U );
 	serviceBattery.Update( 2UL );
 
 	EXPECT_CALL( battery, Update( 3UL ) ).Times( 1U );

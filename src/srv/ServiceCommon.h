@@ -5,7 +5,7 @@
 template <class T>
 class ServiceCommon : public Service {
 public:
-	ServiceCommon( const uint32_t updateTime, T &cluster ) :
+	ServiceCommon( const uint64_t updateTime, T &cluster ) :
 		Service( updateTime ),
 		mCluster( cluster )
 	{
@@ -18,7 +18,7 @@ public:
 		return ( this->mCluster.Initialize() );
 	}
 
-	inline virtual void Update ( const uint32_t currentTime ) final override
+	inline virtual void Update ( const uint64_t currentTime ) final override
 	{
 		this->mCluster.Update( currentTime );
 	}

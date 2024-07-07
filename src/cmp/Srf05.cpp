@@ -16,7 +16,7 @@ Core::CoreStatus Srf05::Initialize ( void )
 	return ( Core::CoreStatus::CORE_OK );
 }
 
-void Srf05::Update ( const uint32_t currentTime )
+void Srf05::Update ( const uint64_t currentTime )
 {
 	(void) currentTime;
 	this->SendPulse();

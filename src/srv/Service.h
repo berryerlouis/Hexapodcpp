@@ -2,9 +2,9 @@
 
 #include "ServiceInterface.h"
 
-class Service : public ServiceInterface, public BaseComponent {
+class Service : public ServiceInterface {
 public:
-	Service( const uint32_t updateTime )
+	Service( const uint64_t updateTime )
 		: mUpdateTime( updateTime )
 		, mPreviousTime( 0UL )
 	{
@@ -12,17 +12,23 @@ public:
 
 	~Service() = default;
 
-	Core::CoreStatus NeedUpdate ( const uint32_t currentTime ) const
+	Core::CoreStatus NeedUpdate ( const uint64_t currentTime ) const
 	{
 		return ( ( ( currentTime - this->mPreviousTime ) >= this->mUpdateTime ) ? Core::CoreStatus::CORE_OK : Core::CoreStatus::CORE_ERROR );
 	}
 
-	void SetNewUpdateTime ( const uint32_t currentTime )
+	void SetNewUpdateTime ( const uint64_t currentTime )
 	{
 		this->mPreviousTime = currentTime;
 	}
 
+	uint64_t GetPreviousTime ( void ) const
+	{
+		return ( this->mPreviousTime );
+	}
+
+protected:
+	uint64_t mUpdateTime;
 private:
-	uint32_t mUpdateTime;
-	uint32_t mPreviousTime;
+	uint64_t mPreviousTime;
 };

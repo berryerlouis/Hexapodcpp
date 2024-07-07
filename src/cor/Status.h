@@ -5,10 +5,10 @@
 namespace Core {
 struct CoreStatus
 {
-	static const int CORE_ERROR = ( -1 );
-	static const int CORE_OK    = ( 0 );
+	static const int8_t CORE_ERROR = ( -1 );
+	static const int8_t CORE_OK    = ( 0 );
 
-	CoreStatus( int state ) : status( state )
+	CoreStatus( int8_t state ) : status( state )
 	{
 	}
 
@@ -16,7 +16,7 @@ struct CoreStatus
 		return ( status == CORE_OK );
 	}
 private:
-	int              status = CORE_ERROR;
+	int8_t              status = CORE_ERROR;
 };
 
 class Utils

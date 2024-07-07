@@ -1,7 +1,6 @@
 add_executable(
   UT_SRV_PROXIMITY
   ../../../../src/clu/Frame.cpp
-  ../../../../src/srv/Services.cpp
   ../../../../src/srv/ServiceProximity.cpp
   UT_SRV_PROXIMITY.cpp
 )

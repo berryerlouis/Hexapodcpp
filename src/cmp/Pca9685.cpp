@@ -14,7 +14,7 @@ Core::CoreStatus Pca9685::Initialize ( void )
 	return ( Core::CoreStatus::CORE_OK );
 }
 
-void Pca9685::Update ( const uint32_t currentTime )
+void Pca9685::Update ( const uint64_t currentTime )
 {
 	(void) currentTime;
 	this->mI2c.WriteRegisters( this->mAddress, (uint8_t) ERegister::LED0_ON_L, (uint8_t *) this->mPwm, 4 * EConstant::NB_LEDS );

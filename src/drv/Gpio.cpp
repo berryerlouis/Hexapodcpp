@@ -17,11 +17,11 @@ Gpio::Gpio( const SGpio &gpio, const EPortDirection &portDirection ) :
 {
 	if ( this->mPortDirection == EPortDirection::OUT )
 	{
-		*( this->mGpioRegister.portDirPtr ) |= ( 1U << this->mGpio.pin );
+		*( this->mGpioRegister.portDirPtr ) |= _BV( this->mGpio.pin );
 	}
 	else
 	{
-		*( this->mGpioRegister.portDirPtr ) &= ~( 1U << this->mGpio.pin );
+		*( this->mGpioRegister.portDirPtr ) &= ~_BV( this->mGpio.pin );
 	}
 }
 
@@ -32,13 +32,13 @@ EPin &Gpio::GetPin ( void )
 
 Core::CoreStatus Gpio::Set ( void )
 {
-	*( this->mGpioRegister.portPtr ) |= ( 1U << this->mGpio.pin );
+	*( this->mGpioRegister.portPtr ) |= _BV( this->mGpio.pin );
 	return ( Core::CoreStatus::CORE_OK );
 }
 
 Core::CoreStatus Gpio::Reset ( void )
 {
-	*( this->mGpioRegister.portPtr ) &= ~( 1U << this->mGpio.pin );
+	*( this->mGpioRegister.portPtr ) &= ~_BV( this->mGpio.pin );
 	return ( Core::CoreStatus::CORE_OK );
 }
 
@@ -55,13 +55,13 @@ bool Gpio::Get ( void )
 
 void Gpio::SetInterruptPin ( void )
 {
-	*( this->mGpioRegister.pcicr ) |= ( 1U << this->mGpioRegister.pcie );
-	*( this->mGpioRegister.pcmsk ) |= ( 1U << this->mGpio.pin );
+	*( this->mGpioRegister.pcicr ) |= _BV( this->mGpioRegister.pcie );
+	*( this->mGpioRegister.pcmsk ) |= _BV( this->mGpio.pin );
 }
 
 void Gpio::ResetInterruptPin ( void )
 {
-	*( this->mGpioRegister.pcicr ) &= ~( 1U << this->mGpioRegister.pcie );
-	*( this->mGpioRegister.pcmsk ) &= ~( 1U << this->mGpio.pin );
+	*( this->mGpioRegister.pcicr ) &= ~_BV( this->mGpioRegister.pcie );
+	*( this->mGpioRegister.pcmsk ) &= ~_BV( this->mGpio.pin );
 }
 }

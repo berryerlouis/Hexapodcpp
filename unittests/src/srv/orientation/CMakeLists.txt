@@ -1,7 +1,6 @@
 add_executable(
   UT_SRV_ORIENTATION
   ../../../../src/clu/Frame.cpp
-  ../../../../src/srv/Services.cpp
   ../../../../src/srv/ServiceOrientation.cpp
   UT_SRV_ORIENTATION.cpp
 )

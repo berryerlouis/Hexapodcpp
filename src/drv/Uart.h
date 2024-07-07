@@ -15,7 +15,7 @@ public:
 	~Uart() = default;
 
 	virtual Core::CoreStatus Initialize( void ) final override;
-	virtual void Update( const uint32_t currentTime ) final override;
+	virtual void Update( const uint64_t currentTime ) final override;
 
 	virtual void Send( const char *data, const size_t len ) final override;
 	virtual void Send( const uint8_t *data, const size_t len ) final override;

@@ -1,15 +1,12 @@
-# Works with 3.14 and tested through 3.29
 cmake_minimum_required(VERSION 3.14...3.29)
 
-# Project name and a few useful settings. Other commands can pick up the results
 project(
   Hexapodcpp
   VERSION 0.1
   DESCRIPTION "Hexapodcpp"
   LANGUAGES CXX)
 
-# GoogleTest requires at least C++14
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include(FetchContent)
 FetchContent_Declare(
@@ -31,6 +28,8 @@ macro(package_add_test TESTNAME FILES )
         $<TARGET_FILE:${TESTNAME}>
       )
 endmacro()
+
+add_compile_definitions(GTEST)
 
 enable_testing()
 
@@ -57,6 +56,7 @@ add_subdirectory(src/cmp/vl53l0x)
 
 add_subdirectory(src/srv/battery)
 add_subdirectory(src/srv/control)
+add_subdirectory(src/srv/display)
 add_subdirectory(src/srv/general)
 add_subdirectory(src/srv/orientation)
 add_subdirectory(src/srv/proximity)

@@ -19,7 +19,7 @@ public:
 	~Body() = default;
 
 	virtual Core::CoreStatus Initialize( void ) final override;
-	virtual void Update( const uint32_t currentTime ) final override;
+	virtual void Update( const uint64_t currentTime ) final override;
 
 	virtual void SetPositionRotation( const Leg::Position3d &position, const Leg::Rotation3d &rotation, const uint16_t travelTime ) final override;
 

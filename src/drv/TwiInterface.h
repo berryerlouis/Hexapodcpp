@@ -10,7 +10,7 @@ public:
 	~TwiInterface() = default;
 
 	virtual Core::CoreStatus Initialize( void )       = 0;
-	virtual void Update( const uint32_t currentTime ) = 0;
+	virtual void Update( const uint64_t currentTime ) = 0;
 
 	virtual bool ReadRegister( const uint8_t address, const uint8_t reg, uint8_t &data )        = 0;
 	virtual bool ReadRegister16Bits( const uint8_t address, const uint8_t reg, uint16_t &data ) = 0;

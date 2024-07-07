@@ -16,7 +16,7 @@ Core::CoreStatus Twi::Initialize ( void )
 	return ( Core::CoreStatus::CORE_OK );
 }
 
-void Twi::Update ( const uint32_t currentTime )
+void Twi::Update ( const uint64_t currentTime )
 {
 	(void) currentTime;
 }

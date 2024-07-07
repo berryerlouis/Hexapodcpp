@@ -6,7 +6,7 @@ namespace Component {
 class MockServo : public Component::ServoInterface {
 public:
 	MOCK_METHOD0(Initialize, Core::CoreStatus(void) );
-	MOCK_METHOD1(Update, void( const uint32_t ) );
+	MOCK_METHOD1(Update, void( const uint64_t ) );
 
 	MOCK_METHOD2(SetAngle, Core::CoreStatus(const uint8_t, const uint16_t) );
 	MOCK_CONST_METHOD0(GetAngle, uint8_t(void) );

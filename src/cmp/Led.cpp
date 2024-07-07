@@ -12,7 +12,7 @@ Core::CoreStatus Led::Initialize ( void )
 	return ( this->Off() );
 }
 
-void Led::Update ( const uint32_t currentTime )
+void Led::Update ( const uint64_t currentTime )
 {
 	(void) currentTime;
 }
