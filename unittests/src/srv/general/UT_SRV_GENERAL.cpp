@@ -107,16 +107,16 @@ TEST( ServiceGeneral, Update_MultipleUpdateSetMax_Ok )
 
 	serviceGeneral.SetNewUpdateTime( 1UL );
 
-	/*for ( uint64_t i = 2U; i < 5UL; i++ )
-	 * {
-	 *      EXPECT_CALL( software, GetMinTime() ).Times( 1UL ).WillOnce( Return( 0U ) );
-	 *      EXPECT_CALL( software, GetMaxTime() ).Times( 2UL ).WillRepeatedly( Return( i - 2U ) );
-	 *      EXPECT_CALL( software, SetMaxTime( _ ) ).Times( 1U );
-	 *      EXPECT_CALL( mediator, SendFrame( _ ) ).Times( 1U );
-	 *
-	 *      serviceGeneral.Update( i );
-	 *      serviceGeneral.SetNewUpdateTime( i );
-	 * }*/
+	for ( uint64_t i = 2U; i < 10UL; i++ )
+	{
+		EXPECT_CALL( software, GetMinTime() ).Times( 1UL ).WillOnce( Return( 0U ) );
+		EXPECT_CALL( software, GetMaxTime() ).Times( 2UL ).WillRepeatedly( Return( 0U ) );
+		EXPECT_CALL( software, SetMaxTime( 1U ) ).Times( 1U );
+		EXPECT_CALL( mediator, SendFrame( _ ) ).Times( 1U );
+
+		serviceGeneral.Update( i );
+		serviceGeneral.SetNewUpdateTime( i );
+	}
 
 	EXPECT_TRUE( success );
 }
