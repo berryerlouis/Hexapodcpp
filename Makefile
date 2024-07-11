@@ -4,7 +4,7 @@ CXX = avr-g++
 OBJCOPY = avr-objcopy
 MCU = atmega1284p
 F_CPU = 20000000
-CXXFLAGS = -Wall -Wextra -std=gnu++17 -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -mmcu=$(MCU) -DF_CPU=$(F_CPU)UL -O1 -g -ftest-coverage
+CXXFLAGS = -DDEBUG -Wall -Wextra -std=gnu++17 -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -mmcu=$(MCU) -DF_CPU=$(F_CPU)UL -O1 -g -ftest-coverage
 SRC_DIR = src
 BUILD_DIR = build
 TARGET = $(BUILD_DIR)/main

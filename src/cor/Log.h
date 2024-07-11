@@ -3,9 +3,13 @@
 #include "string.h"
 #include "../drv/UartInterface.h"
 
+#ifdef DEBUG
 #define INIT_LOG( uart )    Core::Logger = Core::Log::GetInstance( uart );
 #define LOG( value )        Core::Logger->Write( value )
-
+#else
+#define INIT_LOG( uart )
+#define LOG( value )
+#endif
 namespace Core {
 class Log {
 private:

@@ -10,6 +10,6 @@ public:
 	ClustersInterface()  = default;
 	~ClustersInterface() = default;
 
-	virtual ClusterInterface *GetCluster( const uint8_t clusterId ) const = 0;
+	virtual ClusterInterface *GetCluster( const EClusters clusterId ) const = 0;
 };
 }

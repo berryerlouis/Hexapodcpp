@@ -24,6 +24,7 @@ public:
 	virtual uint8_t DataAvailable( void ) const final override;
 
 	static Buffer bufferRx;
+	static Buffer bufferTx;
 
 private:
 	EBaudRate mBaudRate;

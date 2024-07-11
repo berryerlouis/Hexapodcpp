@@ -27,11 +27,11 @@ void Communication::Update ( const uint64_t currentTime )
 		if ( parsedStatus == Protocol::ProtocolStatus::NO_ERROR )
 		{
 			uint8_t frameClusterID = request.clusterId;
-			auto    cluster        = this->mClusters.GetCluster( frameClusterID );
+			auto    cluster        = this->mClusters.GetCluster( (EClusters) frameClusterID );
 
 			if ( cluster != nullptr )
 			{
-				if ( Core::CoreStatus::CORE_OK == cluster->Execute( request, response ) )
+				if ( true == cluster->Execute( request, response ) )
 				{
 					this->Send( response );
 				}

@@ -67,7 +67,7 @@ TEST( ComponentCommunication, Update_Ok_1frame )
 	EXPECT_CALL( led, On() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	EXPECT_CALL( led, Off() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	EXPECT_CALL( uart, Send( Matcher <const uint8_t *>( _ ), _ ) ).Times( 1U );
-	EXPECT_CALL( clusters, GetCluster( 0 ) ).Times( 1U );
+	EXPECT_CALL( clusters, GetCluster( Clusters::EClusters::GENERAL ) ).Times( 1U );
 
 	for ( size_t i = 0; i < strlen( bufferRx ); i++ )
 	{
@@ -78,6 +78,35 @@ TEST( ComponentCommunication, Update_Ok_1frame )
 
 	EXPECT_TRUE( success );
 }
+
+TEST( ComponentCommunication, Update_Ok_1frame_IMU )
+{
+	Core::CoreStatus          success = Core::CoreStatus::CORE_ERROR;
+	StrictMock <MockLed>      led;
+	StrictMock <MockUart>     uart;
+	StrictMock <MockClusters> clusters;
+	const char *  bufferRx = "<010000>";
+	Communication comm( uart, clusters, led );
+
+	EXPECT_CALL( led, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+
+	success = comm.Initialize();
+
+	EXPECT_CALL( led, On() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( led, Off() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( uart, Send( Matcher <const uint8_t *>( _ ), _ ) ).Times( 1U );
+	EXPECT_CALL( clusters, GetCluster( Clusters::EClusters::IMU ) ).Times( 1U );
+
+	for ( size_t i = 0; i < strlen( bufferRx ); i++ )
+	{
+		EXPECT_CALL( uart, DataAvailable() ).WillOnce( Return( 8U ) );
+		EXPECT_CALL( uart, Read() ).WillOnce( Return( bufferRx[i] ) );
+		comm.Update( 0UL );
+	}
+
+	EXPECT_TRUE( success );
+}
+
 
 TEST( ComponentCommunication, Update_Ko_1frame )
 {

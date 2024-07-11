@@ -4,11 +4,13 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 
+bin/dev/prebuild.sh test
+
 if [ $# -eq 0 ]; then
     cd unittests/build
     CFLAGS=-fdiagnostics-color CXXFLAGS=-fdiagnostics-color CLICOLOR_FORCE=1 make -j16 -Wno-dev
     if command; then
-        ctest -j16 --rerun-failed --output-on-failure --gtest_color=yes --gtest_output=xml:testoutput.xml
+        ctest -j16 --rerun-failed --output-on-failure
     else
         echo "${RED}Error${NC}: Make failed!"
     fi
@@ -28,7 +30,7 @@ else
             echo "${RED}Error${NC}: Unit test file ${RED}${1}${NC} not found!"
         else
             dir=$(dirname $file)
-            echo "${GREEN}Success${NC}: Launch Unit test file${GREEN}${1} ${NC}."
+            echo "${GREEN}Success${NC}: Launch Unit test file ${GREEN}${1} ${NC}."
             cd $dir
             make -j16
             cd -

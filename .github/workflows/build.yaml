@@ -10,22 +10,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Compile
+      - name: Build Source
         uses: bazhenov/action-avr-make@v1.0
 
-      - name: Build Test
+      - name: Build and Run Test
         run: |
-          ./bin/dev/startTU 
-
-      - name: Run Test
-        run: |
-          ./bin/dev/launchTU 
+          bin/dev/test.sh
 
       - name: Create Archive Directory
         run: |
-          mkdir archive
-          cp build/main.hex archive/
-          cp unittests/build/Testing/Temporary/LastTest.log archive/
+          bin/dev/archive.sh
 
       - name: Archive Artefacts
         uses: actions/upload-artifact@v4

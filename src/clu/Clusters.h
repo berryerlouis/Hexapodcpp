@@ -21,7 +21,7 @@ public:
 		ClusterServo &servo );
 	~Clusters() = default;
 
-	virtual ClusterInterface *GetCluster( const uint8_t clusterId ) const final override;
+	virtual ClusterInterface *GetCluster( const EClusters clusterId ) const final override;
 
 private:
 	ClusterInterface *mClusters[NB_CLUSTERS];
