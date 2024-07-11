@@ -13,16 +13,15 @@ Clusters::Clusters(
 {
 }
 
-ClusterInterface *Clusters::GetCluster ( const uint8_t clusterId ) const
+ClusterInterface *Clusters::GetCluster ( const EClusters clusterId ) const
 {
-	ClusterInterface *foundCluster = nullptr;
 	for ( ClusterInterface *cluster : mClusters )
 	{
 		if ( cluster->GetId() == clusterId )
 		{
-			foundCluster = cluster;
+			return ( cluster );
 		}
 	}
-	return ( foundCluster );
+	return ( nullptr );
 }
 }

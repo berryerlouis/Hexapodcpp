@@ -85,13 +85,5 @@ void App::Update ( const uint64_t currentTime )
 	uint64_t currentMillis = this->mTick.GetMs();
 	mLedBoot.Toggle();
 	mServices.Update( currentMillis );
-
-
-#ifdef DEBUG
-	char tt[10U];
-	memset( tt, 0, 10 );
-	itoa( currentMillis, tt, 10 );
-	Logger->Write( tt );
-#endif
 }
 }

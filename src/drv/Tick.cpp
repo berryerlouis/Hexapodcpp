@@ -14,7 +14,6 @@ Tick::Tick( void )
 	TCNT0      = 130U;
 	TCCR0B     = _BV( CS01 ) | _BV( CS00 );
 	TIMSK0     = _BV( TOIE0 );
-	
 }
 
 uint64_t Tick::GetUs ( void )
