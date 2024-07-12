@@ -12,4 +12,15 @@ namespace Driver {
 		SREG = oldSREG;				 \
 	}										 \
 	)
+
+#define ATOMIC_EMBEDDED_CODE( code ) \
+	(											 \
+	{											 \
+		uint8_t oldSREG = SREG;			 \
+		cli();								 \
+		code									 \
+		SREG = oldSREG;					 \
+		sei();								 \
+	}											 \
+	)
 }

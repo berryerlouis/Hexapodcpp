@@ -18,14 +18,25 @@ Tick::Tick( void )
 
 uint64_t Tick::GetUs ( void )
 {
-	return ( static_cast <uint64_t>( ( ( Tick::tick * 255U ) + TCNT0 ) * TICK_TIMER ) );
+	volatile uint32_t ovf0;
+	volatile uint8_t  tcnt0;
+
+	ATOMIC_EMBEDDED_CODE(
+		ovf0  = Tick::tick;
+		tcnt0 = TCNT0;
+		if ( ( TIFR0 & _BV( TOV0 ) ) && ( tcnt0 < 0xFFU ) )
+		{
+			ovf0++;
+		}
+		);
+	return ( static_cast <uint64_t>( ( ovf0 << 8U ) + tcnt0 ) / TICK_TIMER );
 }
 
 uint64_t Tick::GetMs ( void )
 {
-	double currentTime = GetUs();
+	uint64_t currentTime = GetUs();
 
-	return ( static_cast <uint64_t>( currentTime / 1000U ) );
+	return ( static_cast <uint64_t>( currentTime / 1000.0F ) );
 }
 
 void Tick::DelayMs ( uint64_t delayMs )
