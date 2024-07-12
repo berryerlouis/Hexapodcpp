@@ -1,4 +1,5 @@
 #include "ServiceGeneral.h"
+#include "../cor/Log.h"
 
 ServiceGeneral::ServiceGeneral( ClusterGeneral &clusterGeneral )
 	: Service( 1U )
@@ -13,10 +14,11 @@ Core::CoreStatus ServiceGeneral::Initialize ( void )
 
 void ServiceGeneral::Update ( const uint64_t currentTime )
 {
-	if ( this->GetPreviousTime() > 0U )
+	const uint64_t previousTime = this->GetPreviousTime();
+	if ( previousTime > 0U )
 	{
 		SoftwareInterface & software = this->mClusterGeneral.GetComponent();
-		uint64_t            delta    = currentTime - this->GetPreviousTime();
+		uint64_t            delta    = currentTime - previousTime;
 
 		if ( delta < software.GetMinTime() )
 		{
