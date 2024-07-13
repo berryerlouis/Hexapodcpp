@@ -22,7 +22,7 @@ Core::CoreStatus ServiceDisplay::Initialize ( void )
 
 void ServiceDisplay::Update ( const uint64_t currentTime )
 {
-	if ( ( ( currentTime - this->mPreviousTime ) >= 500UL ) || ( this->mPreviousTime == 0U ) )
+	if ( ( currentTime - this->mPreviousTime ) >= 500UL )
 	{
 		this->DisplayCommunicationBmp();
 		mPreviousTime = currentTime;

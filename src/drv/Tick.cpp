@@ -36,7 +36,7 @@ uint64_t Tick::GetMs ( void )
 {
 	uint64_t currentTime = GetUs();
 
-	return ( static_cast <uint64_t>( currentTime / 1000.0F ) );
+	return ( static_cast <uint64_t>( currentTime / 100.0F ) );
 }
 
 void Tick::DelayMs ( uint64_t delayMs )

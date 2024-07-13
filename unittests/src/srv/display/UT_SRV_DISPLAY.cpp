@@ -33,7 +33,7 @@ TEST( ServiceDisplay, Update_Ok )
 	ServiceDisplay           serviceDisplay( ssd1306 );
 	bool toggle = false;
 
-	for ( uint64_t i = 0U; i < 10U * 500U; i += 500U )
+	for ( uint64_t i = 500U; i < 10U * 500U; i += 500U )
 	{
 		if ( toggle == true )
 		{
