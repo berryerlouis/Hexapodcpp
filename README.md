@@ -15,20 +15,22 @@
   - parse all project files
   - run `./bin/dev/uncrustify-all`
  
- # Clean
+ # Using Make
+ ## Clean
   - run `make clean`
 
- # Compile
+ ## Compile
   - run `make -j16`
  
- # Upload
+ ## Upload
   - run `make flash`
- 
- # Compile Goole Test
-  - run bin/dev/startTU 
 
- # Test
-  - run bin/dev/launchTU 
+# Using Cmake
+ ## Compile
+  - run bin/dev/build.sh 
+ 
+ ## Goole Test
+  - run bin/dev/test.sh
 
  # Serial 
  ## attach to wsl

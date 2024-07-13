@@ -26,15 +26,15 @@ else
     else
         echo "Seach for Unit Test: $1"
         file=$(find unittests/build/ -name "$1")
-        if [ $file = ""]; then
-            echo "${RED}Error${NC}: Unit test file ${RED}${1}${NC} not found!"
-        else
+        if [ -f "$file" ]; then
             dir=$(dirname $file)
             echo "${GREEN}Success${NC}: Launch Unit test file ${GREEN}${1} ${NC}."
             cd $dir
             make -j16
             cd -
             eval "$file"
+        else
+            echo "${RED}Error${NC}: Unit test file ${RED}${1}${NC} not found!"
         fi
     fi
 fi
