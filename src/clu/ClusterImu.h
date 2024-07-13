@@ -15,7 +15,6 @@ public:
 
 	~ClusterImu() = default;
 
-
 	inline virtual Core::CoreStatus Execute ( Frame &request, Frame &response ) final override
 	{
 		Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
@@ -55,37 +54,71 @@ public:
 
 	Core::CoreStatus BuildFrameAll ( Frame &response )
 	{
-		uint8_t params[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-		/*Mpu9150Interface::Vector3 paramsAcc = this->GetComponent().ReadAcc();
-		 * Mpu9150Interface::Vector3 paramsGyr = this->GetComponent().ReadGyr();
-		 * Mpu9150Interface::Vector3 paramsMag = this->GetComponent().ReadMag();
-		 * int16_t paramsTemp = this->GetComponent().ReadTemp();*/
-		return ( response.Build( EClusters::IMU, EImuCommands::ALL, (uint8_t *) &params, 11U ) );
+		Core::CoreStatus success = response.Build(
+			EClusters::IMU,
+			EImuCommands::ALL );
+		if ( success )
+		{
+			Mpu9150Interface::Vector3 params = this->GetComponent().ReadAcc();
+			response.SetnBytesParam( 6U, (uint8_t *) &params );
+			params = this->GetComponent().ReadGyr();
+			response.SetnBytesParam( 6U, (uint8_t *) &params );
+			params = this->GetComponent().ReadMag();
+			response.SetnBytesParam( 6U, (uint8_t *) &params );
+			response.Set2BytesParam( this->GetComponent().ReadTemp() );
+		}
+		return ( success );
 	}
 
 	Core::CoreStatus BuildFrameAcc ( Frame &response )
 	{
-		Mpu9150Interface::Vector3 params = this->GetComponent().ReadAcc();
-		return ( response.Build( EClusters::IMU, EImuCommands::ACC, (uint8_t *) &params, 6U ) );
+		Core::CoreStatus success = response.Build(
+			EClusters::IMU,
+			EImuCommands::ACC );
+		if ( success )
+		{
+			Mpu9150Interface::Vector3 params = this->GetComponent().ReadAcc();
+			response.SetnBytesParam( 6U, (uint8_t *) &params );
+		}
+		return ( success );
 	}
 
 	Core::CoreStatus BuildFrameGyr ( Frame &response )
 	{
-		Mpu9150Interface::Vector3 params = this->GetComponent().ReadGyr();
-		return ( response.Build( EClusters::IMU, EImuCommands::GYR, (uint8_t *) &params, 6U ) );
+		Core::CoreStatus success = response.Build(
+			EClusters::IMU,
+			EImuCommands::GYR );
+		if ( success )
+		{
+			Mpu9150Interface::Vector3 params = this->GetComponent().ReadGyr();
+			response.SetnBytesParam( 6U, (uint8_t *) &params );
+		}
+		return ( success );
 	}
 
 	Core::CoreStatus BuildFrameMag ( Frame &response )
 	{
-		Mpu9150Interface::Vector3 params = this->GetComponent().ReadMag();
-		return ( response.Build( EClusters::IMU, EImuCommands::MAG, (uint8_t *) &params, 6U ) );
+		Core::CoreStatus success = response.Build(
+			EClusters::IMU,
+			EImuCommands::MAG );
+		if ( success )
+		{
+			Mpu9150Interface::Vector3 params = this->GetComponent().ReadMag();
+			response.SetnBytesParam( 6U, (uint8_t *) &params );
+		}
+		return ( success );
 	}
 
 	Core::CoreStatus BuildFrameTmp ( Frame &response )
 	{
-		int16_t params = this->GetComponent().ReadTemp();
-		return ( response.Build( EClusters::IMU, EImuCommands::TMP, (uint8_t *) &params, 2U ) );
+		Core::CoreStatus success = response.Build(
+			EClusters::IMU,
+			EImuCommands::TMP );
+		if ( success )
+		{
+			response.Set2BytesParam( this->GetComponent().ReadTemp() );
+		}
+		return ( success );
 	}
 };
 }

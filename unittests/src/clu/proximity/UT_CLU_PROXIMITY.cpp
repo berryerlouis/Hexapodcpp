@@ -61,8 +61,8 @@ TEST( ClusterProximity, BuildFrameDistanceSrfLeft_Ok )
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::PROXIMITY );
 	EXPECT_EQ( response.commandId, Clusters::EProximityCommands::US_LEFT );
 	EXPECT_EQ( response.nbParams, 2U );
-	EXPECT_EQ( response.params[0U], 0U );
-	EXPECT_EQ( response.params[1U], 10U );
+	EXPECT_EQ( response.params[0U], 10U );
+	EXPECT_EQ( response.params[1U], 0U );
 	EXPECT_TRUE( success );
 }
 
@@ -82,8 +82,8 @@ TEST( ClusterProximity, BuildFrameDistanceSrfRight_Ok )
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::PROXIMITY );
 	EXPECT_EQ( response.commandId, Clusters::EProximityCommands::US_RIGHT );
 	EXPECT_EQ( response.nbParams, 2U );
-	EXPECT_EQ( response.params[0U], 0U );
-	EXPECT_EQ( response.params[1U], 10U );
+	EXPECT_EQ( response.params[0U], 10U );
+	EXPECT_EQ( response.params[1U], 0U );
 	EXPECT_TRUE( success );
 }
 
@@ -103,7 +103,7 @@ TEST( ClusterProximity, BuildFrameDistanceVlx_Ok )
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::PROXIMITY );
 	EXPECT_EQ( response.commandId, Clusters::EProximityCommands::LASER );
 	EXPECT_EQ( response.nbParams, 2U );
-	EXPECT_EQ( response.params[0U], 0U );
-	EXPECT_EQ( response.params[1U], 10U );
+	EXPECT_EQ( response.params[0U], 10U );
+	EXPECT_EQ( response.params[1U], 0U );
 	EXPECT_TRUE( success );
 }

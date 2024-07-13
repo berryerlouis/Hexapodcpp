@@ -55,11 +55,16 @@ TEST( ClusterImu, Execute_ALL_Ok )
 	ClusterImu clusterImu( imu );
 
 	request.Build( Clusters::EClusters::IMU, Clusters::EImuCommands::ALL );
-	success = clusterImu.Execute( request, response );
+	EXPECT_CALL( imu, ReadAcc() ).WillOnce( Return( Mpu9150Interface::Vector3{ 5, 5, 5 } ) );
+	EXPECT_CALL( imu, ReadGyr() ).WillOnce( Return( Mpu9150Interface::Vector3{ 5, 5, 5 } ) );
+	EXPECT_CALL( imu, ReadMag() ).WillOnce( Return( Mpu9150Interface::Vector3{ 5, 5, 5 } ) );
+	EXPECT_CALL( imu, ReadTemp() ).WillOnce( Return( 25 ) );
 
+	success = clusterImu.Execute( request, response );
+	
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::IMU );
 	EXPECT_EQ( response.commandId, Clusters::EImuCommands::ALL );
-	EXPECT_EQ( response.nbParams, 11U );
+	EXPECT_EQ( response.nbParams, 20U );
 	EXPECT_TRUE( success );
 }
 

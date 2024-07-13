@@ -32,18 +32,15 @@ public:
 
 		case EGeneralCommands::MIN_EXECUTION_TIME:
 			success = this->BuildFrameGetMinTime( response );
-			success = Core::CoreStatus::CORE_OK;
 			break;
 
 		case EGeneralCommands::MAX_EXECUTION_TIME:
 			success = this->BuildFrameGetMaxTime( response );
-			success = Core::CoreStatus::CORE_OK;
 			break;
 
 		case EGeneralCommands::RESET_EXECUTION_TIME:
 			this->GetComponent().ResetTiming();
-			return ( response.Build( GENERAL, RESET_EXECUTION_TIME ) );
-
+			success = response.Build( EClusters::GENERAL, EGeneralCommands::RESET_EXECUTION_TIME );
 			break;
 
 		default:
@@ -54,21 +51,39 @@ public:
 
 	inline Core::CoreStatus BuildFrameGetVersion ( Frame &response )
 	{
-		SoftwareInterface::Version version = this->GetComponent().GetVersion();
-		uint8_t params[] = { version.major, version.minor };
-		return ( response.Build( GENERAL, VERSION, params, 2U ) );
+		Core::CoreStatus success = response.Build(
+			EClusters::GENERAL,
+			EGeneralCommands::VERSION );
+		if ( success )
+		{
+			SoftwareInterface::Version version = this->GetComponent().GetVersion();
+			response.SetnBytesParam( 2U, (uint8_t *) &version );
+		}
+		return ( success );
 	}
 
 	inline Core::CoreStatus BuildFrameGetMinTime ( Frame &response )
 	{
-		uint64_t time = this->GetComponent().GetMinTime();
-		return ( response.Build( GENERAL, MIN_EXECUTION_TIME, (uint8_t *) &time, 8U ) );
+		Core::CoreStatus success = response.Build(
+			EClusters::GENERAL,
+			EGeneralCommands::MIN_EXECUTION_TIME );
+		if ( success )
+		{
+			response.Set8BytesParam( this->GetComponent().GetMinTime() );
+		}
+		return ( success );
 	}
 
 	inline Core::CoreStatus BuildFrameGetMaxTime ( Frame &response )
 	{
-		uint64_t time = this->GetComponent().GetMaxTime();
-		return ( response.Build( GENERAL, MAX_EXECUTION_TIME, (uint8_t *) &time, 8U ) );
+		Core::CoreStatus success = response.Build(
+			EClusters::GENERAL,
+			EGeneralCommands::MAX_EXECUTION_TIME );
+		if ( success )
+		{
+			response.Set8BytesParam( this->GetComponent().GetMaxTime() );
+		}
+		return ( success );
 	}
 };
 }

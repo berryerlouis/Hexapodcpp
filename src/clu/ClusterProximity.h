@@ -43,9 +43,9 @@ public:
 		break;
 
 		case EProximityCommands::SET_THRESHOLD: {
-			SensorProximityInterface::SensorsId sensorId = (SensorProximityInterface::SensorsId) request.params[0U];
-			uint16_t threshold = (uint16_t) ( request.params[2U] << 8U ) + request.params[1U];
-			success = this->GetComponent().SetThreshold( sensorId, threshold );
+			uint8_t  sensorId  = request.Get1ByteParam( 0U );
+			uint16_t threshold = request.Get2BytesParam( 1U );
+			success = this->GetComponent().SetThreshold( (SensorProximityInterface::SensorsId) sensorId, threshold );
 			if ( success == true )
 			{
 				success = this->BuildFrameThreshold( (EProximityCommands) request.commandId, response );
@@ -59,18 +59,28 @@ public:
 		return ( success );
 	}
 
-	Core::CoreStatus BuildFrameDistance ( EProximityCommands side, Frame &response )
+	Core::CoreStatus BuildFrameDistance ( EProximityCommands sensorId, Frame &response )
 	{
-		uint16_t distance = this->GetComponent().GetDistance( (SensorProximityInterface::SensorsId) side );
-		uint8_t  params[] = { (uint8_t) ( distance >> 8U ), (uint8_t) ( distance & 0xFFU ) };
-		return ( response.Build( EClusters::PROXIMITY, side, params, 2U ) );
+		Core::CoreStatus success = response.Build(
+			EClusters::PROXIMITY,
+			sensorId );
+		if ( success )
+		{
+			response.Set2BytesParam( this->GetComponent().GetDistance( (SensorProximityInterface::SensorsId) sensorId ) );
+		}
+		return ( success );
 	}
 
-	Core::CoreStatus BuildFrameThreshold ( EProximityCommands side, Frame &response )
+	Core::CoreStatus BuildFrameThreshold ( EProximityCommands sensorId, Frame &response )
 	{
-		uint16_t threshold = this->GetComponent().GetThreshold( (SensorProximityInterface::SensorsId) side );
-		uint8_t  params[]  = { (uint8_t) ( threshold >> 8U ), (uint8_t) threshold };
-		return ( response.Build( EClusters::PROXIMITY, EProximityCommands::SET_THRESHOLD, params, 2U ) );
+		Core::CoreStatus success = response.Build(
+			EClusters::PROXIMITY,
+			EProximityCommands::SET_THRESHOLD );
+		if ( success )
+		{
+			response.Set2BytesParam( this->GetComponent().GetThreshold( (SensorProximityInterface::SensorsId) sensorId ) );
+		}
+		return ( success );
 	}
 };
 }

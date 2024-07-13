@@ -42,26 +42,27 @@ public:
 
 	inline Core::CoreStatus BuildFrameVoltage ( Frame &response )
 	{
-		uint16_t volt     = this->GetComponent().GetVoltage();
-		uint8_t  params[] = { (uint8_t) ( volt >> 8U ), (uint8_t) volt };
-
-		return ( response.Build(
-						EClusters::BATTERY,
-						EBatteryCommands::GET_VOLTAGE,
-						params,
-						2U ) );
+		Core::CoreStatus success = response.Build(
+			EClusters::BATTERY,
+			EBatteryCommands::GET_VOLTAGE );
+		if ( success )
+		{
+			response.Set2BytesParam( this->GetComponent().GetVoltage() );
+		}
+		return ( success );
 	}
 
 	inline Core::CoreStatus BuildFrameState ( Frame &response )
 	{
-		uint16_t volt     = this->GetComponent().GetVoltage();
-		uint8_t  params[] = { this->GetComponent().GetState(), (uint8_t) ( volt >> 8U ), (uint8_t) volt };
-
-		return ( response.Build(
-						EClusters::BATTERY,
-						EBatteryCommands::GET_BAT_STATUS,
-						params,
-						3U ) );
+		Core::CoreStatus success = response.Build(
+			EClusters::BATTERY,
+			EBatteryCommands::GET_BAT_STATUS );
+		if ( success )
+		{
+			response.Set1ByteParam( this->GetComponent().GetState() );
+			response.Set2BytesParam( this->GetComponent().GetVoltage() );
+		}
+		return ( success );
 	}
 };
 }

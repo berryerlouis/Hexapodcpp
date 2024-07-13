@@ -60,8 +60,8 @@ TEST( ClusterBattery, Execute_GET_VOLTAGE_Ok )
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::BATTERY );
 	EXPECT_EQ( response.commandId, Clusters::EBatteryCommands::GET_VOLTAGE );
 	EXPECT_EQ( response.nbParams, 2U );
-	EXPECT_EQ( response.params[0U], 0U );
-	EXPECT_EQ( response.params[1U], 10U );
+	EXPECT_EQ( response.params[0U], 10U );
+	EXPECT_EQ( response.params[1U], 0U );
 	EXPECT_TRUE( success );
 }
 
@@ -82,8 +82,8 @@ TEST( ClusterBattery, Execute_GET_BAT_STATUS_Ok )
 	EXPECT_EQ( response.commandId, Clusters::EBatteryCommands::GET_BAT_STATUS );
 	EXPECT_EQ( response.nbParams, 3U );
 	EXPECT_EQ( response.params[0U], BatteryInterface::BatteryState::NOMINAL );
-	EXPECT_EQ( response.params[1U], 0U );
-	EXPECT_EQ( response.params[2U], 10U );
+	EXPECT_EQ( response.params[1U], 10U );
+	EXPECT_EQ( response.params[2U], 0U );
 	EXPECT_TRUE( success );
 }
 
@@ -106,8 +106,8 @@ TEST( ClusterBattery, BuildFrameState_Nominal_Ok )
 	EXPECT_EQ( response.commandId, Clusters::EBatteryCommands::GET_BAT_STATUS );
 	EXPECT_EQ( response.nbParams, 3U );
 	EXPECT_EQ( response.params[0U], 0U );
-	EXPECT_EQ( response.params[1U], 0U );
-	EXPECT_EQ( response.params[2U], 10U );
+	EXPECT_EQ( response.params[1U], 10U );
+	EXPECT_EQ( response.params[2U], 0U );
 	EXPECT_TRUE( success );
 }
 
@@ -129,8 +129,8 @@ TEST( ClusterBattery, BuildFrameState_Critical_Ok )
 	EXPECT_EQ( response.commandId, Clusters::EBatteryCommands::GET_BAT_STATUS );
 	EXPECT_EQ( response.nbParams, 3U );
 	EXPECT_EQ( response.params[0U], 2U );
-	EXPECT_EQ( response.params[1U], 0U );
-	EXPECT_EQ( response.params[2U], 10U );
+	EXPECT_EQ( response.params[1U], 10U );
+	EXPECT_EQ( response.params[2U], 0U );
 	EXPECT_TRUE( success );
 }
 
@@ -152,7 +152,7 @@ TEST( ClusterBattery, BuildFrameState_Warning_Ok )
 	EXPECT_EQ( response.commandId, Clusters::EBatteryCommands::GET_BAT_STATUS );
 	EXPECT_EQ( response.nbParams, 3U );
 	EXPECT_EQ( response.params[0U], 1U );
-	EXPECT_EQ( response.params[1U], 0U );
-	EXPECT_EQ( response.params[2U], 10U );
+	EXPECT_EQ( response.params[1U], 10U );
+	EXPECT_EQ( response.params[2U], 0U );
 	EXPECT_TRUE( success );
 }
