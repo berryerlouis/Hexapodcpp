@@ -1,7 +1,7 @@
 #include "ServiceOrientation.h"
 
 ServiceOrientation::ServiceOrientation( ClusterImu &clusterImu )
-	: Service( 50 )
+	: Service( 50U )
 	, mClusterImu( clusterImu )
 {
 }

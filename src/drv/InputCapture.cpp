@@ -1,5 +1,5 @@
-#include "Isr.h"
 #include "InputCapture.h"
+#include "../cor/Isr.h"
 
 namespace Driver {
 static InputCapture *inputCapture[2U]  = {};

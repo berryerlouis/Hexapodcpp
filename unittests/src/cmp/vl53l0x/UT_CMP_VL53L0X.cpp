@@ -32,6 +32,7 @@ TEST( ComponentVl53l0x, Initialize_Ok )
 	EXPECT_CALL( twi, WriteRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
 	EXPECT_CALL( twi, ReadRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
 	EXPECT_CALL( twi, WriteRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( twi, WriteRegister32Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
 
 	EXPECT_CALL( twi, ReadRegister( _, VL53L0X_IDENTIFICATION_MODEL_ID, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 0xEEU ), Return( true ) ) );
 	EXPECT_CALL( twi, ReadRegister( _, 0x83, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 1U ), Return( true ) ) );
@@ -57,6 +58,7 @@ TEST( ComponentVl53l0x, Update_Ok )
 	EXPECT_CALL( twi, WriteRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
 	EXPECT_CALL( twi, ReadRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
 	EXPECT_CALL( twi, WriteRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( twi, WriteRegister32Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
 
 	EXPECT_CALL( twi, ReadRegister( _, VL53L0X_IDENTIFICATION_MODEL_ID, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 0xEEU ), Return( true ) ) );
 	EXPECT_CALL( twi, ReadRegister( _, 0x83, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 1U ), Return( true ) ) );
@@ -83,6 +85,7 @@ TEST( ComponentVl53l0x, IsDetecting_SetThreshold )
 	EXPECT_CALL( twi, WriteRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
 	EXPECT_CALL( twi, ReadRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
 	EXPECT_CALL( twi, WriteRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( twi, WriteRegister32Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
 
 	EXPECT_CALL( twi, ReadRegister( _, VL53L0X_IDENTIFICATION_MODEL_ID, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 0xEEU ), Return( true ) ) );
 	EXPECT_CALL( twi, ReadRegister( _, 0x83, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 1U ), Return( true ) ) );
@@ -110,6 +113,7 @@ TEST( ComponentVl53l0x, IsDetecting_UnderThreshold )
 	EXPECT_CALL( twi, WriteRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
 	EXPECT_CALL( twi, ReadRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
 	EXPECT_CALL( twi, WriteRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( twi, WriteRegister32Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
 
 	EXPECT_CALL( twi, ReadRegister( _, VL53L0X_IDENTIFICATION_MODEL_ID, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 0xEEU ), Return( true ) ) );
 	EXPECT_CALL( twi, ReadRegister( _, 0x83, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 1U ), Return( true ) ) );
@@ -138,6 +142,7 @@ TEST( ComponentVl53l0x, IsDetecting_AboveThreshold )
 	EXPECT_CALL( twi, WriteRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
 	EXPECT_CALL( twi, ReadRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
 	EXPECT_CALL( twi, WriteRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( twi, WriteRegister32Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
 
 	EXPECT_CALL( twi, ReadRegister( _, VL53L0X_IDENTIFICATION_MODEL_ID, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 0xEEU ), Return( true ) ) );
 	EXPECT_CALL( twi, ReadRegister( _, 0x83, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 1U ), Return( true ) ) );

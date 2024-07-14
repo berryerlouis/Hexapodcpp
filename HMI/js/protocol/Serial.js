@@ -70,7 +70,7 @@ export default class SerialInterface {
                         break;
                     }
                     if (value) {
-                        this.buffer += value;
+                        this.buffer += value.replace('\n', '');
                     }
                 }
             } catch (error) {

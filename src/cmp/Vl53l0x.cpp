@@ -170,7 +170,7 @@ void Vl53l0x::StartContinuous ( uint32_t period_ms )
 	this->mI2c.WriteRegister( this->mAddress, 0xFF, 0x00 );
 	this->mI2c.WriteRegister( this->mAddress, 0x80, 0x00 );
 
-	if ( period_ms == 0 )
+	if ( period_ms != 0U )
 	{
 		// continuous timed mode
 
@@ -332,7 +332,7 @@ bool Vl53l0x::GetSpadInfo ( uint8_t *count, bool *type_is_aperture )
 	do
 	{
 		this->mI2c.ReadRegister( this->mAddress, 0x83, data );
-		if ( ( (uint64_t) ( this->mTick.GetMs() - timeout ) > 50 ) )
+		if ( ( (uint64_t) ( this->mTick.GetMs() - timeout ) > 500 ) )
 		{
 			return ( false );
 		}
@@ -623,7 +623,7 @@ bool Vl53l0x::PerformSingleRefCalibration ( uint8_t vhv_init_byte )
 	{
 		this->mI2c.ReadRegister( this->mAddress, VL53L0X_RESULT_INTERRUPT_STATUS, data );
 
-		if ( ( (uint64_t) ( this->mTick.GetMs() - timeout ) > 50 ) )
+		if ( ( (uint64_t) ( this->mTick.GetMs() - timeout ) > 500 ) )
 		{
 			return ( false );
 		}

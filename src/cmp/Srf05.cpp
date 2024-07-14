@@ -1,11 +1,12 @@
 #include "Srf05.h"
 
 namespace Component {
-Srf05::Srf05( const EProximityCommands side, GpioInterface &gpioTrigger, InputCaptureInterface &gpioEcho, TickInterface &tick )
+Srf05::Srf05( const EProximityCommands side, GpioInterface &gpioTrigger, InputCaptureInterface &gpioEcho, LedInterface &led, TickInterface &tick )
 	: mSide( side )
 	, mGpioTrigger( gpioTrigger )
 	, mGpioEcho( gpioEcho )
 	, mTick( tick )
+	, mLed( led )
 	, mThreshold( DISTANCE_THRESHOLD )
 {
 }
@@ -13,6 +14,7 @@ Srf05::Srf05( const EProximityCommands side, GpioInterface &gpioTrigger, InputCa
 Core::CoreStatus Srf05::Initialize ( void )
 {
 	this->mGpioEcho.Initialize();
+	this->mLed.Initialize();
 	return ( Core::CoreStatus::CORE_OK );
 }
 
@@ -36,8 +38,17 @@ Core::CoreStatus Srf05::SetThreshold ( uint16_t mThreshold )
 bool Srf05::IsDetecting ( void )
 {
 	const uint16_t distance = this->GetDistance();
+	bool           success  = ( distance != 0U && distance <= this->mThreshold );
 
-	return ( distance != 0U && distance <= this->mThreshold );
+	if ( success )
+	{
+		this->mLed.On();
+	}
+	else
+	{
+		this->mLed.Off();
+	}
+	return ( success );
 }
 
 void Srf05::SendPulse ( void )

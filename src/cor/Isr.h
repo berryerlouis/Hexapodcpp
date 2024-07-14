@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 #include <avr/interrupt.h>
-namespace Driver {
+
 #define ISR_EMBEDDED_CODE( code ) \
 	(										 \
 	{										 \
@@ -23,4 +23,3 @@ namespace Driver {
 		sei();								 \
 	}											 \
 	)
-}
