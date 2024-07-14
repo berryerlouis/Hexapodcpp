@@ -25,8 +25,8 @@ App::App( void )
 	, mInputCaptureRight( echoRightPin, mTick )
 	, mBattery( mAdc )
 	, mMpu9150( mTwi )
-	, mSrf05Left( EProximityCommands::US_LEFT, triggerLeftPin, mInputCaptureLeft, mTick )
-	, mSrf05Right( EProximityCommands::US_RIGHT, triggerRightPin, mInputCaptureRight, mTick )
+	, mSrf05Left( EProximityCommands::US_LEFT, triggerLeftPin, mInputCaptureLeft, mLedLeft, mTick )
+	, mSrf05Right( EProximityCommands::US_RIGHT, triggerRightPin, mInputCaptureRight, mLedRight, mTick )
 	, mSsd1306( mTwi )
 	, mVl53l0x( mTwi, mTick )
 	, mSensorProximity( mSrf05Left, mSrf05Right, mVl53l0x )
@@ -66,13 +66,8 @@ Core::CoreStatus App::Initialize ( void )
 	if ( success == true )
 	{
 		success = mServices.Initialize();
-		mSsd1306.Initialize();
 	}
-	if ( success == true )
-	{
-		LOG( "<hello>" );
-	}
-	else
+	if ( success == false )
 	{
 		LOG( "<error>" );
 	}

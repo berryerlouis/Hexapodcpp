@@ -12,8 +12,8 @@ Services::Services(
 	: mCommunication( communication )
 	, mServices{
 					{ EServices::GENERAL, &serviceGeneral },
-					{ EServices::CONTROL, &serviceControl },
 					{ EServices::PROXIMITY, &serviceProximity },
+					{ EServices::CONTROL, &serviceControl },
 					{ EServices::ORIUENTATION, &serviceOrientation },
 					{ EServices::BATTERY, &serviceBattery },
 					{ EServices::DISPLAY, &serviceDisplay }

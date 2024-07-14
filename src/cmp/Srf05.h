@@ -4,6 +4,7 @@
 #include "../cmp/ProximityInterface.h"
 #include "../drv/InputCaptureInterface.h"
 #include "../drv/GpioInterface.h"
+#include "../cmp/LedInterface.h"
 #include "../drv/TickInterface.h"
 
 namespace Component {
@@ -14,7 +15,7 @@ public:
 	static const uint64_t ECHO_TIMEOUT       = 30000U;
 	static const uint16_t DISTANCE_THRESHOLD = 30U;
 
-	Srf05( const EProximityCommands side, GpioInterface &gpioTrigger, InputCaptureInterface &gpioEcho, TickInterface &tick );
+	Srf05( const EProximityCommands side, GpioInterface &gpioTrigger, InputCaptureInterface &gpioEcho, LedInterface &led, TickInterface &tick );
 	~Srf05() = default;
 
 	Core::CoreStatus Initialize( void ) final override;
@@ -31,6 +32,7 @@ private:
 	GpioInterface &mGpioTrigger;
 	InputCaptureInterface &mGpioEcho;
 	TickInterface &mTick;
+	LedInterface &mLed;
 	uint16_t mThreshold;
 };
 }

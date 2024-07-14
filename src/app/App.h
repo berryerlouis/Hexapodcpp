@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../cor/Log.h"
+#include "../cor/Isr.h"
 #include "../drv/Gpio.h"
 #include "../drv/Tick.h"
 #include "../drv/Twi.h"
