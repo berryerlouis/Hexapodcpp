@@ -11,16 +11,50 @@ using ::testing::StrictMock;
 
 using namespace Clusters;
 
-TEST( ClusterBattery, Execute_WrongCluster_Ko )
+class UT_CLU_BATTERY : public ::testing::Test  {
+protected:
+	UT_CLU_BATTERY() :
+		mMockBattery(),
+		mClusterBattery( mMockBattery )
+	{
+	}
+
+	virtual void SetUp ()
+	{
+	}
+
+	virtual void TearDown ()
+	{
+	}
+
+	virtual ~UT_CLU_BATTERY() = default;
+
+	/* Mocks */
+	StrictMock <MockBattery> mMockBattery;
+
+	/* Test class */
+	ClusterBattery mClusterBattery;
+};
+
+TEST_F( UT_CLU_BATTERY, Initialize_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame          request;
-	Clusters::Frame          response;
-	StrictMock <MockBattery> battery;
-	ClusterBattery           clusterBattery( battery );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  response;
+
+	EXPECT_CALL( mMockBattery, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mClusterBattery.Initialize();
+
+	EXPECT_TRUE( success );
+}
+
+TEST_F( UT_CLU_BATTERY, Execute_WrongCluster_Ko1 )
+{
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  request;
+	Clusters::Frame  response;
 
 	request.Build( Clusters::EClusters::BODY, Clusters::EBatteryCommands::GET_VOLTAGE );
-	success = clusterBattery.Execute( request, response );
+	success = mClusterBattery.Execute( request, response );
 
 	EXPECT_EQ( response.clusterId, 0U );
 	EXPECT_EQ( response.commandId, 0U );
@@ -28,16 +62,14 @@ TEST( ClusterBattery, Execute_WrongCluster_Ko )
 	EXPECT_FALSE( success );
 }
 
-TEST( ClusterBattery, Execute_WrongCommand_Ko )
+TEST_F( UT_CLU_BATTERY, Execute_WrongCommand_Ko )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame          request;
-	Clusters::Frame          response;
-	StrictMock <MockBattery> battery;
-	ClusterBattery           clusterBattery( battery );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  request;
+	Clusters::Frame  response;
 
 	request.Build( Clusters::EClusters::BATTERY, 0x5FU );
-	success = clusterBattery.Execute( request, response );
+	success = mClusterBattery.Execute( request, response );
 
 	EXPECT_EQ( response.clusterId, 0U );
 	EXPECT_EQ( response.commandId, 0U );
@@ -45,17 +77,15 @@ TEST( ClusterBattery, Execute_WrongCommand_Ko )
 	EXPECT_FALSE( success );
 }
 
-TEST( ClusterBattery, Execute_GET_VOLTAGE_Ok )
+TEST_F( UT_CLU_BATTERY, Execute_GET_VOLTAGE_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame          request;
-	Clusters::Frame          response;
-	StrictMock <MockBattery> battery;
-	ClusterBattery           clusterBattery( battery );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  request;
+	Clusters::Frame  response;
 
-	EXPECT_CALL( battery, GetVoltage() ).WillOnce( Return( 10U ) );
+	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
 	request.Build( Clusters::EClusters::BATTERY, Clusters::EBatteryCommands::GET_VOLTAGE );
-	success = clusterBattery.Execute( request, response );
+	success = mClusterBattery.Execute( request, response );
 
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::BATTERY );
 	EXPECT_EQ( response.commandId, Clusters::EBatteryCommands::GET_VOLTAGE );
@@ -65,18 +95,16 @@ TEST( ClusterBattery, Execute_GET_VOLTAGE_Ok )
 	EXPECT_TRUE( success );
 }
 
-TEST( ClusterBattery, Execute_GET_BAT_STATUS_Ok )
+TEST_F( UT_CLU_BATTERY, Execute_GET_BAT_STATUS_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame          request;
-	Clusters::Frame          response;
-	StrictMock <MockBattery> battery;
-	ClusterBattery           clusterBattery( battery );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  request;
+	Clusters::Frame  response;
 
-	EXPECT_CALL( battery, GetState() ).WillOnce( Return( BatteryInterface::BatteryState::NOMINAL ) );
-	EXPECT_CALL( battery, GetVoltage() ).WillOnce( Return( 10U ) );
+	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( BatteryInterface::BatteryState::NOMINAL ) );
+	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
 	request.Build( Clusters::EClusters::BATTERY, Clusters::EBatteryCommands::GET_BAT_STATUS );
-	success = clusterBattery.Execute( request, response );
+	success = mClusterBattery.Execute( request, response );
 
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::BATTERY );
 	EXPECT_EQ( response.commandId, Clusters::EBatteryCommands::GET_BAT_STATUS );
@@ -88,20 +116,18 @@ TEST( ClusterBattery, Execute_GET_BAT_STATUS_Ok )
 }
 
 
-TEST( ClusterBattery, BuildFrameState_Nominal_Ok )
+TEST_F( UT_CLU_BATTERY, BuildFrameState_Nominal_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame          response;
-	StrictMock <MockBattery> battery;
-	ClusterBattery           clusterBattery( battery );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  response;
 
-	EXPECT_CALL( battery, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = clusterBattery.Initialize();
+	EXPECT_CALL( mMockBattery, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mClusterBattery.Initialize();
 
-	EXPECT_CALL( battery, GetVoltage() ).WillOnce( Return( 10U ) );
-	EXPECT_CALL( battery, GetState() ).WillOnce( Return( BatteryInterface::BatteryState::NOMINAL ) );
+	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
+	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( BatteryInterface::BatteryState::NOMINAL ) );
 
-	clusterBattery.BuildFrameState( response );
+	mClusterBattery.BuildFrameState( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::BATTERY );
 	EXPECT_EQ( response.commandId, Clusters::EBatteryCommands::GET_BAT_STATUS );
 	EXPECT_EQ( response.nbParams, 3U );
@@ -111,20 +137,18 @@ TEST( ClusterBattery, BuildFrameState_Nominal_Ok )
 	EXPECT_TRUE( success );
 }
 
-TEST( ClusterBattery, BuildFrameState_Critical_Ok )
+TEST_F( UT_CLU_BATTERY, BuildFrameState_Critical_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame          response;
-	StrictMock <MockBattery> battery;
-	ClusterBattery           clusterBattery( battery );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  response;
 
-	EXPECT_CALL( battery, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = clusterBattery.Initialize();
+	EXPECT_CALL( mMockBattery, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mClusterBattery.Initialize();
 
-	EXPECT_CALL( battery, GetVoltage() ).WillOnce( Return( 10U ) );
-	EXPECT_CALL( battery, GetState() ).WillOnce( Return( BatteryInterface::BatteryState::CRITICAL ) );
+	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
+	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( BatteryInterface::BatteryState::CRITICAL ) );
 
-	clusterBattery.BuildFrameState( response );
+	mClusterBattery.BuildFrameState( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::BATTERY );
 	EXPECT_EQ( response.commandId, Clusters::EBatteryCommands::GET_BAT_STATUS );
 	EXPECT_EQ( response.nbParams, 3U );
@@ -134,20 +158,18 @@ TEST( ClusterBattery, BuildFrameState_Critical_Ok )
 	EXPECT_TRUE( success );
 }
 
-TEST( ClusterBattery, BuildFrameState_Warning_Ok )
+TEST_F( UT_CLU_BATTERY, BuildFrameState_Warning_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame          response;
-	StrictMock <MockBattery> battery;
-	ClusterBattery           clusterBattery( battery );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  response;
 
-	EXPECT_CALL( battery, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = clusterBattery.Initialize();
+	EXPECT_CALL( mMockBattery, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mClusterBattery.Initialize();
 
-	EXPECT_CALL( battery, GetVoltage() ).WillOnce( Return( 10U ) );
-	EXPECT_CALL( battery, GetState() ).WillOnce( Return( BatteryInterface::BatteryState::WARNING ) );
+	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
+	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( BatteryInterface::BatteryState::WARNING ) );
 
-	clusterBattery.BuildFrameState( response );
+	mClusterBattery.BuildFrameState( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::BATTERY );
 	EXPECT_EQ( response.commandId, Clusters::EBatteryCommands::GET_BAT_STATUS );
 	EXPECT_EQ( response.nbParams, 3U );

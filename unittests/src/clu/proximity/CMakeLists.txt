@@ -1,18 +1,9 @@
-add_executable(
-  UT_CLU_PROXIMITY
-  ../../../../src/clu/Frame.cpp
-  UT_CLU_PROXIMITY.cpp
+set(
+  SRC_FILES 
+  ../src/clu/Frame.cpp 
 )
-
-target_link_libraries(
-  UT_CLU_PROXIMITY
-  GTest::gtest_main
-  GTest::gmock_main
+set(
+  TEST_FILE 
+  src/clu/proximity/UT_CLU_PROXIMITY.cpp
 )
-
-add_test(
-  NAME
-  UT_CLU_PROXIMITY
-  COMMAND
-    $<TARGET_FILE:UT_CLU_PROXIMITY>
-  )
+set(UT_CLU_PROXIMITY ${SRC_FILES} ${TEST_FILE} PARENT_SCOPE)

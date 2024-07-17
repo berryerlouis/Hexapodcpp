@@ -11,16 +11,39 @@ using ::testing::StrictMock;
 
 using namespace Clusters;
 
-TEST( ClusterProximity, Execute_WrongCluster_Ko )
+class UT_CLU_PROXIMITY : public ::testing::Test  {
+protected:
+	UT_CLU_PROXIMITY() :
+		mMockSensorProximity(),
+		mClusterProximity( mMockSensorProximity )
+	{
+	}
+
+	virtual void SetUp ()
+	{
+	}
+
+	virtual void TearDown ()
+	{
+	}
+
+	virtual ~UT_CLU_PROXIMITY() = default;
+
+	/* Mocks */
+	StrictMock <MockSensorProximity> mMockSensorProximity;
+
+	/* Test class */
+	ClusterProximity mClusterProximity;
+};
+
+TEST_F( UT_CLU_PROXIMITY, Execute_WrongCluster_Ko )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame  response;
 	Clusters::Frame  request;
-	StrictMock <MockSensorProximity> sensorProximity;
-	ClusterProximity clusterProximity( sensorProximity );
 
 	request.Build( Clusters::EClusters::BODY, Clusters::EBatteryCommands::GET_VOLTAGE );
-	success = clusterProximity.Execute( request, response );
+	success = mClusterProximity.Execute( request, response );
 
 	EXPECT_EQ( response.clusterId, 0U );
 	EXPECT_EQ( response.commandId, 0U );
@@ -28,16 +51,14 @@ TEST( ClusterProximity, Execute_WrongCluster_Ko )
 	EXPECT_FALSE( success );
 }
 
-TEST( ClusterProximity, Execute_WrongCommand_Ko )
+TEST_F( UT_CLU_PROXIMITY, Execute_WrongCommand_Ko )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame  response;
 	Clusters::Frame  request;
-	StrictMock <MockSensorProximity> sensorProximity;
-	ClusterProximity clusterProximity( sensorProximity );
 
 	request.Build( Clusters::EClusters::PROXIMITY, 0x5FU );
-	success = clusterProximity.Execute( request, response );
+	success = mClusterProximity.Execute( request, response );
 
 	EXPECT_EQ( response.clusterId, 0U );
 	EXPECT_EQ( response.commandId, 0U );
@@ -45,19 +66,17 @@ TEST( ClusterProximity, Execute_WrongCommand_Ko )
 	EXPECT_FALSE( success );
 }
 
-TEST( ClusterProximity, BuildFrameDistanceSrfLeft_Ok )
+TEST_F( UT_CLU_PROXIMITY, BuildFrameDistanceSrfLeft_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame  response;
-	StrictMock <MockSensorProximity> sensorProximity;
-	ClusterProximity clusterProximity( sensorProximity );
 
-	EXPECT_CALL( sensorProximity, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = clusterProximity.Initialize();
+	EXPECT_CALL( mMockSensorProximity, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mClusterProximity.Initialize();
 
-	EXPECT_CALL( sensorProximity, GetDistance( SensorProximityInterface::SensorsId::SRF_LEFT ) ).WillOnce( Return( 10U ) );
+	EXPECT_CALL( mMockSensorProximity, GetDistance( SensorProximityInterface::SensorsId::SRF_LEFT ) ).WillOnce( Return( 10U ) );
 
-	clusterProximity.BuildFrameDistance( EProximityCommands::US_LEFT, response );
+	mClusterProximity.BuildFrameDistance( EProximityCommands::US_LEFT, response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::PROXIMITY );
 	EXPECT_EQ( response.commandId, Clusters::EProximityCommands::US_LEFT );
 	EXPECT_EQ( response.nbParams, 2U );
@@ -66,19 +85,17 @@ TEST( ClusterProximity, BuildFrameDistanceSrfLeft_Ok )
 	EXPECT_TRUE( success );
 }
 
-TEST( ClusterProximity, BuildFrameDistanceSrfRight_Ok )
+TEST_F( UT_CLU_PROXIMITY, BuildFrameDistanceSrfRight_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame  response;
-	StrictMock <MockSensorProximity> sensorProximity;
-	ClusterProximity clusterProximity( sensorProximity );
 
-	EXPECT_CALL( sensorProximity, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = clusterProximity.Initialize();
+	EXPECT_CALL( mMockSensorProximity, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mClusterProximity.Initialize();
 
-	EXPECT_CALL( sensorProximity, GetDistance( SensorProximityInterface::SensorsId::SRF_RIGHT ) ).WillOnce( Return( 10U ) );
+	EXPECT_CALL( mMockSensorProximity, GetDistance( SensorProximityInterface::SensorsId::SRF_RIGHT ) ).WillOnce( Return( 10U ) );
 
-	clusterProximity.BuildFrameDistance( EProximityCommands::US_RIGHT, response );
+	mClusterProximity.BuildFrameDistance( EProximityCommands::US_RIGHT, response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::PROXIMITY );
 	EXPECT_EQ( response.commandId, Clusters::EProximityCommands::US_RIGHT );
 	EXPECT_EQ( response.nbParams, 2U );
@@ -87,19 +104,17 @@ TEST( ClusterProximity, BuildFrameDistanceSrfRight_Ok )
 	EXPECT_TRUE( success );
 }
 
-TEST( ClusterProximity, BuildFrameDistanceVlx_Ok )
+TEST_F( UT_CLU_PROXIMITY, BuildFrameDistanceVlx_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame  response;
-	StrictMock <MockSensorProximity> sensorProximity;
-	ClusterProximity clusterProximity( sensorProximity );
 
-	EXPECT_CALL( sensorProximity, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = clusterProximity.Initialize();
+	EXPECT_CALL( mMockSensorProximity, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mClusterProximity.Initialize();
 
-	EXPECT_CALL( sensorProximity, GetDistance( SensorProximityInterface::SensorsId::VLX ) ).WillOnce( Return( 10U ) );
+	EXPECT_CALL( mMockSensorProximity, GetDistance( SensorProximityInterface::SensorsId::VLX ) ).WillOnce( Return( 10U ) );
 
-	clusterProximity.BuildFrameDistance( EProximityCommands::LASER, response );
+	mClusterProximity.BuildFrameDistance( EProximityCommands::LASER, response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::PROXIMITY );
 	EXPECT_EQ( response.commandId, Clusters::EProximityCommands::LASER );
 	EXPECT_EQ( response.nbParams, 2U );

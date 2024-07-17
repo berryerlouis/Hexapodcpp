@@ -6,35 +6,33 @@ NC='\033[0m'
 
 bin/dev/prebuild.sh test
 
-if [ $# -eq 0 ]; then
+buildAll() {
     cd unittests/build
-    CFLAGS=-fdiagnostics-color CXXFLAGS=-fdiagnostics-color CLICOLOR_FORCE=1 make -j16 -Wno-dev
+    CFLAGS=-fdiagnostics-color CXXFLAGS=-fdiagnostics-color CLICOLOR_FORCE=1 make -j16
     if command; then
-        ctest -j16 --rerun-failed --output-on-failure
+        ./HexapodcppTest -j16 --rerun-failed --output-on-failure --gtest_shuffle
     else
         echo "${RED}Error${NC}: Make failed!"
     fi
+    cd ../..
+}
+
+listAll() {
+    echo "$List of current Unit test:"
+    unittests/build/HexapodcppTest --gtest_list_tests
+}
+
+if [ $# -eq 0 ]; then
+    buildAll
 else
     if [ $1 = "list" ]; then
-        echo "${GREEN}Success${NC}: List of Unit test ${GREEN}${1}${NC}:"
-        UTfiles=$(find unittests/build/ -name 'UT_*' -type f ! -name "*.*")
-        for UTfile in $UTfiles; do
-            if [ -f "$UTfile" ]; then
-                echo ${GREEN}$(basename ${UTfile})${NC}
-            fi
-        done
+        listAll
     else
-        echo "Seach for Unit Test: $1"
-        file=$(find unittests/build/ -name "$1")
-        if [ -f "$file" ]; then
-            dir=$(dirname $file)
-            echo "${GREEN}Success${NC}: Launch Unit test file ${GREEN}${1} ${NC}."
-            cd $dir
-            make -j16
-            cd -
-            eval "$file"
-        else
-            echo "${RED}Error${NC}: Unit test file ${RED}${1}${NC} not found!"
-        fi
+        echo "Seach for Unit Test ${GREEN}${1}${NC}:"
+        cd unittests/build
+        make -j16
+        ./HexapodcppTest --gtest_filter="${1}*" --gtest_color=yes -j16 --rerun-failed --output-on-failure --gtest_shuffle
+
+        cd ../..
     fi
 fi

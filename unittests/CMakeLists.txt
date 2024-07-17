@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.14...3.29)
 
 project(
-  Hexapodcpp
+  HexapodcppTest
   VERSION 0.1
-  DESCRIPTION "Hexapodcpp"
+  DESCRIPTION "Unit test for Hexapodcpp"
   LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -17,23 +17,9 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-
-macro(package_add_test TESTNAME FILES )
-    add_executable(${TESTNAME} ${FILES})
-    target_link_libraries(${TESTNAME} gtest gmock gtest_main)
-    add_test(
-      NAME
-      ${TESTNAME}
-      COMMAND
-        $<TARGET_FILE:${TESTNAME}>
-      )
-endmacro()
-
 add_compile_definitions(GTEST)
 
 enable_testing()
-
-include(GoogleTest)
 
 add_subdirectory(src/clu/battery)
 add_subdirectory(src/clu/body)
@@ -62,3 +48,40 @@ add_subdirectory(src/srv/general)
 add_subdirectory(src/srv/orientation)
 add_subdirectory(src/srv/proximity)
 
+add_executable(
+  HexapodcppTest 
+    ${UT_CLU_BATTERY}
+    ${UT_CLU_BODY}
+    ${UT_CLU_FRAME}
+    ${UT_CLU_GENERAL}
+    ${UT_CLU_IMU}
+    ${UT_CLU_PROTOCOL}
+    ${UT_CLU_PROXIMITY}
+    ${UT_CLU_SERVO}
+    ${UT_CMP_BATTERY}
+    ${UT_CMP_COMMUNICATION}
+    ${UT_CMP_LED}
+    ${UT_CMP_MPU9150}
+    ${UT_CMP_PCA9685}
+    ${UT_CMP_PROXIMITY}
+    ${UT_CMP_SERVO}
+    ${UT_CMP_SERVOS}
+    ${UT_CMP_SFR05}
+    ${UT_CMP_VL53L0X}
+    ${UT_SRV_BATTERY}
+    ${UT_SRV_CONTROL}
+    ${UT_SRV_DISPLAY}
+    ${UT_SRV_GENERAL}
+    ${UT_SRV_ORIENTATION}
+    ${UT_SRV_PROXIMITY}
+)
+
+target_link_libraries(
+  HexapodcppTest
+  GTest::gtest_main
+  GTest::gmock_main
+)
+
+include(GoogleTest)
+
+gtest_discover_tests(HexapodcppTest)

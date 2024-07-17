@@ -1,18 +1,9 @@
-add_executable(
-  UT_CMP_SFR05
-  ../../../../src/cmp/Srf05.cpp
-  UT_CMP_SFR05.cpp
+set(
+  SRC_FILES  
+  ../src/cmp/Srf05.cpp 
 )
-
-target_link_libraries(
-  UT_CMP_SFR05
-  GTest::gtest_main
-  GTest::gmock_main
+set(
+  TEST_FILE 
+  src/cmp/srf05/UT_CMP_SFR05.cpp
 )
-
-add_test(
-  NAME
-  UT_CMP_SFR05
-  COMMAND
-    $<TARGET_FILE:UT_CMP_SFR05>
-  )
+set(UT_CMP_SFR05 ${SRC_FILES} ${TEST_FILE} PARENT_SCOPE)

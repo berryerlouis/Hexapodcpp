@@ -1,18 +1,9 @@
-add_executable(
-  UT_CMP_PCA9685
-  ../../../../src/cmp/Pca9685.cpp
-  UT_CMP_PCA9685.cpp
+set(
+  SRC_FILES 
+  ../src/cmp/Pca9685.cpp 
 )
-
-target_link_libraries(
-  UT_CMP_PCA9685
-  GTest::gtest_main
-  GTest::gmock_main
+set(
+  TEST_FILE 
+  src/cmp/pca9685/UT_CMP_PCA9685.cpp
 )
-
-add_test(
-  NAME
-  UT_CMP_PCA9685
-  COMMAND
-    $<TARGET_FILE:UT_CMP_PCA9685>
-  )
+set(UT_CMP_PCA9685 ${SRC_FILES} ${TEST_FILE} PARENT_SCOPE)
