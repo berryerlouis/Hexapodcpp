@@ -20,20 +20,96 @@
                 "-p",
                 "m1284p",
                 "-U",
-                "flash:w:build\\Hexapodcpp.elf"
+                "flash:w:build/Hexapodcpp.elf"
             ],
             "problemMatcher": [],
             "group": {
-                "kind": "build"
+                "kind": "build",
+                "isDefault": false
             }
         },
         {
-            "type": "cmake",
             "label": "Build",
-            "command": "build",
-            "targets": [],
-            "group": "build",
-            "problemMatcher": []
-        }
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "command": "bin/dev/build.sh",
+            "args": [
+                "${input:configuration}"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+        },
+        {
+            "label": "Test",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "args": [
+                "${input:makeTarget}"
+            ],
+            "command": "bin/dev/test.sh",
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+    ],
+    "inputs": [
+        {
+            "type": "pickString",
+            "id": "makeTarget",
+            "description": "What build target ?",
+            "options": [
+                "all",
+                "clean",
+                "help",
+                "UT_CLU_BATTERY",
+                "UT_CLU_BODY",
+                "UT_CLU_FRAME",
+                "UT_CLU_GENERAL",
+                "UT_CLU_IMU",
+                "UT_CLU_PROTOCOL",
+                "UT_CLU_PROXIMITY",
+                "UT_CLU_SERVO",
+                "UT_CMP_BATTERY",
+                "UT_CMP_COMMUNICATION",
+                "UT_CMP_LED",
+                "UT_CMP_MPU9150",
+                "UT_CMP_PCA9685",
+                "UT_CMP_PROXIMITY",
+                "UT_CMP_SERVO",
+                "UT_CMP_SERVOS",
+                "UT_CMP_SFR05",
+                "UT_CMP_VL53L0X",
+                "UT_SRV_BATTERY",
+                "UT_SRV_CONTROL",
+                "UT_SRV_DISPLAY",
+                "UT_SRV_GENERAL",
+                "UT_SRV_ORIENTATION",
+                "UT_SRV_PROXIMITY"
+            ],
+            "default": "all"
+        },
+        {
+            "type": "pickString",
+            "id": "configuration",
+            "description": "Which configuration to build ?",
+            "options": [
+                "RELEASE",
+                "DEBUG"
+            ],
+            "default": "DEBUG"
+        },
     ]
 }

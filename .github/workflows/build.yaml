@@ -3,7 +3,7 @@ name: Make
 on: [push, pull_request]
 
 jobs:
-  compile-hexapod:
+  compile-hexapod-debug:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,3 +26,15 @@ jobs:
         with:
           name: hexapodcpp
           path: archive/
+
+  compile-hexapod-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Test
+        run: |
+          bin/dev/build.sh RELEASE
+
