@@ -71,14 +71,24 @@ export default class Hexapod {
 
     drawObstacle() {
         this.sensors[0].position.x = 0
-        this.sensors[0].position.z = -100 - hexapod.body.height / 2 - 8
-        this.sensors[0].translateZ(-hexapod.head.srfLeft + 100);
+        this.sensors[0].position.z = -50 - hexapod.body.height / 2 - 8
+        if (-hexapod.head.srfLeft * 10 < -100) {
+            this.sensors[0].translateZ(-hexapod.head.srfLeft * 10)
+        }
+        else {
+            this.sensors[0].translateZ(-100)
+        }
         this.sensors[1].position.x = 0
         this.sensors[1].position.z = -100 - hexapod.body.height / 2 - 8
-        this.sensors[1].translateZ(-hexapod.head.vlx + 100);
+        this.sensors[1].translateZ(-10 - hexapod.head.vlx)
         this.sensors[2].position.x = 0
-        this.sensors[2].position.z = -100 - hexapod.body.height / 2 - 8
-        this.sensors[2].translateZ(-hexapod.head.srfRight + 100);
+        this.sensors[2].position.z = -50 - hexapod.body.height / 2 - 8
+        if (-hexapod.head.srfRight * 10 < -100) {
+            this.sensors[2].translateZ(-hexapod.head.srfRight * 10)
+        }
+        else {
+            this.sensors[2].translateZ(-100)
+        }
     }
 
     moveLeg(legId, coxa, femur, tibia) {
