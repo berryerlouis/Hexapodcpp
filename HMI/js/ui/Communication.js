@@ -111,7 +111,7 @@ export default class Communication {
                 if (message.command.name === Cluters.CommandServo.GET_ALL) {
                     if (message.size !== 0) {
                         for (let servoId = 0; servoId < message.params.length; servoId++) {
-                            let angleServo = parseInt(message.params[servoId], 16) - 90;
+                            let angleServo = message.fetchInt8U() - 90;
                             this.uiCanvas.moveServo(servoId, angleServo);
                         }
                     }
@@ -120,84 +120,73 @@ export default class Communication {
             else if (message.cluster.name === Cluters.ClusterName.IMU) {
                 if (message.command.name === Cluters.CommandImu.ACC) {
                     if (message.size !== 0) {
-                        let t = parseInt(message.params[1] + message.params[0], 16)
-                        t = (t & 0x8000) > 0 ? t - 0x10000 : t
-                        $('#accel-x').text(t);
-                        t = parseInt(message.params[3] + message.params[2], 16)
-                        t = (t & 0x8000) > 0 ? t - 0x10000 : t
-                        $('#accel-y').text(t);
-                        t = parseInt(message.params[5] + message.params[4], 16)
-                        t = (t & 0x8000) > 0 ? t - 0x10000 : t
-                        $('#accel-z').text(t);
+                        $('#accel-x').text(message.fetchInt16S());
+                        $('#accel-y').text(message.fetchInt16S());
+                        $('#accel-z').text(message.fetchInt16S());
                     }
                 }
                 else if (message.command.name === Cluters.CommandImu.GYR) {
                     if (message.size !== 0) {
-                        let t = parseInt(message.params[1] + message.params[0], 16)
-                        t = (t & 0x8000) > 0 ? t - 0x10000 : t
-                        $('#gyro-x').text(t);
-                        t = parseInt(message.params[3] + message.params[2], 16)
-                        t = (t & 0x8000) > 0 ? t - 0x10000 : t
-                        $('#gyro-y').text(t);
-                        t = parseInt(message.params[5] + message.params[4], 16)
-                        t = (t & 0x8000) > 0 ? t - 0x10000 : t
-                        $('#gyro-z').text(t);
+                        $('#gyro-x').text(message.fetchInt16S());
+                        $('#gyro-y').text(message.fetchInt16S());
+                        $('#gyro-z').text(message.fetchInt16S());
                     }
                 }
                 else if (message.command.name === Cluters.CommandImu.MAG) {
                     if (message.size !== 0) {
-                        let t = parseInt(message.params[1] + message.params[0], 16)
-                        t = (t & 0x8000) > 0 ? t - 0x10000 : t
-                        $('#mag-x').text(t);
-                        t = parseInt(message.params[3] + message.params[2], 16)
-                        t = (t & 0x8000) > 0 ? t - 0x10000 : t
-                        $('#mag-y').text(t);
-                        t = parseInt(message.params[5] + message.params[4], 16)
-                        t = (t & 0x8000) > 0 ? t - 0x10000 : t
-                        $('#mag-z').text(t);
+                        $('#mag-x').text(message.fetchInt16S());
+                        $('#mag-y').text(message.fetchInt16S());
+                        $('#mag-z').text(message.fetchInt16S());
                     }
                 }
             }
             else if (message.cluster.name === Cluters.ClusterName.PROXIMITY) {
                 if (message.command.name === Cluters.CommandProximity.US_LEFT) {
                     if (message.size > 1) {
-                        this.uiCanvas.drawObstacleLeft(parseInt(message.params[1], 16) * 16 + parseInt(message.params[0], 16));
+                        let distance = message.fetchInt16U();
+                        this.uiCanvas.drawObstacleLeft(distance);
                     }
                 }
                 else if (message.command.name === Cluters.CommandProximity.LAZER) {
                     if (message.size > 1) {
-                        this.uiCanvas.drawObstacleCenter((parseInt(message.params[1], 16) * 16 + parseInt(message.params[0], 16)) / 10);
+                        let distance = message.fetchInt16U();
+                        this.uiCanvas.drawObstacleCenter(distance / 10);
                     }
                 }
                 else if (message.command.name === Cluters.CommandProximity.US_RIGHT) {
                     if (message.size > 1) {
-                        this.uiCanvas.drawObstacleRight(parseInt(message.params[1], 16) * 16 + parseInt(message.params[0], 16));
+                        let distance = message.fetchInt16U();
+                        this.uiCanvas.drawObstacleRight(distance);
                     }
                 }
             }
             else if (message.cluster.name === Cluters.ClusterName.GENERAL) {
                 if (message.command.name === Cluters.CommandGeneral.VERSION) {
                     if (message.size > 0) {
-                        $('#hexapod-version').text(message.params[0] + '.' + message.params[1]);
+                        let major = message.fetchInt8U();
+                        let minor = message.fetchInt8U();
+                        $('#hexapod-version').text(major + '.' + minor);
                     }
                 }
             }
             else if (message.cluster.name === Cluters.ClusterName.BATTERY) {
                 if (message.command.name === Cluters.CommandBattery.STATUS) {
                     if (message.size > 0) {
-                        if (message.params[0] == 0) {
+                        let state = message.fetchInt8U();
+                        let voltage = message.fetchInt16U() / 100;
+                        if (state == 0) {
                             $('#hexapod-battery-status').removeClass('bi-battery');
                             $('#hexapod-battery-status').removeClass('bi-battery-half');
                             $('#hexapod-battery-status').addClass('bi-battery-full');
                             $('#hexapod-battery-status').attr('style', "color: rgb(50, 223, 27);");
                         }
-                        else if (message.params[0] == 1) {
+                        else if (state == 1) {
                             $('#hexapod-battery-status').removeClass('bi-battery');
                             $('#hexapod-battery-status').removeClass('bi-battery-full');
                             $('#hexapod-battery-status').addClass('bi-battery-half');
                             $('#hexapod-battery-status').attr('style', "color: rgb(223, 135, 27);");
                         }
-                        else if (message.params[0] == 2) {
+                        else if (state == 2) {
                             $('#hexapod-battery-status').removeClass('bi-battery-full');
                             $('#hexapod-battery-status').removeClass('bi-battery-half');
                             $('#hexapod-battery-status').addClass('bi-battery');
@@ -209,7 +198,7 @@ export default class Communication {
                             $('#hexapod-battery-status').addClass('bi-battery');
                             $('#hexapod-battery-status').attr('style', "color: rgb(223, 27, 27);");
                         }
-                        $('#hexapod-battery-voltage').text(((parseInt(message.params[1] + message.params[2], 16)) / 100).toFixed(2) + 'V');
+                        $('#hexapod-battery-voltage').text(voltage.toFixed(2) + 'V');
                     }
                 }
             }
