@@ -3,17 +3,23 @@ name: Make
 on: [push, pull_request]
 
 jobs:
-  compile-hexapod-debug:
+  compile-hexapod:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      
+      - name: Install gcc and avr-gcc
+        run: |
+          sudo apt update
+          sudo apt install build-essential binutils gcc-avr avr-libc
 
-      - name: Build Source
-        uses: bazhenov/action-avr-make@v1.0
+      - name: Build Release
+        run: |
+          bin/dev/build.sh RELEASE
 
-      - name: Build and Run Test
+      - name: Run Test
         run: |
           bin/dev/test.sh
 
@@ -26,15 +32,3 @@ jobs:
         with:
           name: hexapodcpp
           path: archive/
-
-  compile-hexapod-release:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build Test
-        run: |
-          bin/dev/build.sh RELEASE
-

@@ -1,5 +1,6 @@
 set(
   SRC_FILES 
+  ../src/cor/Bitmaps.cpp 
   ../src/clu/Frame.cpp 
   ../src/srv/ServiceDisplay.cpp
 )

@@ -19,12 +19,13 @@ set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_CXX_COMPILER avr-g++)
 set(CMAKE_C_COMPILER avr-gcc)
 set(CMAKE_ASM_COMPILER avr-gcc)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) 
 
 # mmcu MUST be passed to bot the compiler and linker, this handle the linker
 set(CMAKE_EXE_LINKER_FLAGS -mmcu=${MCU})
 
 add_compile_options(
-    ${CMAKE_BUILD_TYPE} -Wall -Wextra -std=gnu++17 -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -mmcu=${MCU} -DF_CPU=${F_CPU} -O1 -g -ftest-coverage
+    ${CMAKE_BUILD_TYPE} -Wall -Wextra -std=c++17 -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -mmcu=${MCU} -DF_CPU=${F_CPU} -O1 -g
 )
 file(GLOB_RECURSE SRC_FILES src/*.cpp src/*.h)
 
