@@ -11,82 +11,96 @@ using ::testing::StrictMock;
 
 using namespace Component;
 
+class UT_CMP_BATTERY : public ::testing::Test  {
+protected:
+	UT_CMP_BATTERY() :
+		mMockAdc(),
+		mBattery( mMockAdc )
+	{
+	}
 
-TEST( ComponentBattery, Initialize_Ok )
+	virtual void SetUp ()
+	{
+	}
+
+	virtual void TearDown ()
+	{
+	}
+
+	virtual ~UT_CMP_BATTERY() = default;
+
+	/* Mocks */
+	StrictMock <MockAdc> mMockAdc;
+
+	/* Test class */
+	Battery mBattery;
+};
+
+TEST_F( UT_CMP_BATTERY, Initialize_Ok )
 {
-	Core::CoreStatus     success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockAdc> adc;
-	Battery battery( adc );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	EXPECT_CALL( adc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockAdc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
-	success = battery.Initialize();
+	success = mBattery.Initialize();
 
 	EXPECT_TRUE( success );
 }
 
-TEST( ComponentBattery, GetStateAfterInit )
+TEST_F( UT_CMP_BATTERY, GetStateAfterInit )
 {
-	Core::CoreStatus     success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockAdc> adc;
-	Battery battery( adc );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	EXPECT_CALL( adc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockAdc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
-	success = battery.Initialize();
-	Battery::BatteryState state = battery.GetState();
+	success = mBattery.Initialize();
+	Battery::BatteryState state = mBattery.GetState();
 
 	EXPECT_TRUE( success );
 	EXPECT_EQ( state, Battery::BatteryState::UNKNOWN );
 }
 
 
-TEST( ComponentBattery, GetStateAfterUpdateCritical )
+TEST_F( UT_CMP_BATTERY, GetStateAfterUpdateCritical )
 {
-	Core::CoreStatus     success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockAdc> adc;
-	Battery battery( adc );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	EXPECT_CALL( adc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( adc, Read() ).WillOnce( Return( 74U ) );
+	EXPECT_CALL( mMockAdc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockAdc, Read() ).WillOnce( Return( 74U ) );
 
-	success = battery.Initialize();
-	battery.Update( 0UL );
-	Battery::BatteryState state = battery.GetState();
+	success = mBattery.Initialize();
+	mBattery.Update( 0UL );
+	Battery::BatteryState state = mBattery.GetState();
 
 	EXPECT_TRUE( success );
 	EXPECT_EQ( state, Battery::BatteryState::CRITICAL );
 }
 
-TEST( ComponentBattery, GetStateAfterUpdateWarning )
+TEST_F( UT_CMP_BATTERY, GetStateAfterUpdateWarning )
 {
-	Core::CoreStatus     success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockAdc> adc;
-	Battery battery( adc );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	EXPECT_CALL( adc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( adc, Read() ).WillOnce( Return( 79U ) );
+	EXPECT_CALL( mMockAdc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockAdc, Read() ).WillOnce( Return( 79U ) );
 
-	success = battery.Initialize();
-	battery.Update( 0UL );
-	Battery::BatteryState state = battery.GetState();
+	success = mBattery.Initialize();
+	mBattery.Update( 0UL );
+	Battery::BatteryState state = mBattery.GetState();
 
 	EXPECT_TRUE( success );
 	EXPECT_EQ( state, Battery::BatteryState::WARNING );
 }
 
-TEST( ComponentBattery, GetStateAfterUpdateNominal )
+TEST_F( UT_CMP_BATTERY, GetStateAfterUpdateNominal )
 {
-	Core::CoreStatus     success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockAdc> adc;
-	Battery battery( adc );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	EXPECT_CALL( adc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( adc, Read() ).WillOnce( Return( 90U ) );
+	EXPECT_CALL( mMockAdc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockAdc, Read() ).WillOnce( Return( 90U ) );
 
-	success = battery.Initialize();
-	battery.Update( 0UL );
-	Battery::BatteryState state = battery.GetState();
+	success = mBattery.Initialize();
+	mBattery.Update( 0UL );
+	Battery::BatteryState state = mBattery.GetState();
 
 	EXPECT_TRUE( success );
 	EXPECT_EQ( state, Battery::BatteryState::NOMINAL );

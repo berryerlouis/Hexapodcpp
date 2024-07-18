@@ -12,38 +12,60 @@ using ::testing::Return;
 
 using namespace Component;
 
-TEST( ComponentServos, Initialize_Ok )
+class UT_CMP_SERVOS : public ::testing::Test  {
+protected:
+	UT_CMP_SERVOS() :
+		mMockTick(),
+		mMockPca9685_0(),
+		mMockPca9685_1(),
+		mServos( mMockPca9685_0, mMockPca9685_1, mMockTick )
+	{
+	}
+
+	virtual void SetUp ()
+	{
+	}
+
+	virtual void TearDown ()
+	{
+	}
+
+	virtual ~UT_CMP_SERVOS() = default;
+
+	/* Mocks */
+	StrictMock <MockTick> mMockTick;
+	StrictMock <MockPca9685> mMockPca9685_0;
+	StrictMock <MockPca9685> mMockPca9685_1;
+
+	/* Test class */
+	Servos mServos;
+};
+
+TEST_F( UT_CMP_SERVOS, Initialize_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockTick>    tick;
-	StrictMock <MockPca9685> pca9685_0;
-	StrictMock <MockPca9685> pca9685_1;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	Servos servos( pca9685_0, pca9685_1, tick );
-	EXPECT_CALL( pca9685_0, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( pca9685_1, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockPca9685_0, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockPca9685_1, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
-	success = servos.Initialize();
+	success = mServos.Initialize();
 	EXPECT_TRUE( success );
 }
 
 
-TEST( ComponentServos, Update_Ok )
+TEST_F( UT_CMP_SERVOS, Update_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockTick>    tick;
-	StrictMock <MockPca9685> pca9685_0;
-	StrictMock <MockPca9685> pca9685_1;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	Servos servos( pca9685_0, pca9685_1, tick );
-	EXPECT_CALL( pca9685_0, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( pca9685_1, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( pca9685_0, SetPwm( _, _ ) ).Times( ServosInterface::NB_SERVOS / 2U );
-	EXPECT_CALL( pca9685_1, SetPwm( _, _ ) ).Times( ServosInterface::NB_SERVOS / 2U );
+	EXPECT_CALL( mMockPca9685_0, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockPca9685_1, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
-	success = servos.Initialize();
+	success = mServos.Initialize();
 
-	servos.Update( 0UL );
+	EXPECT_CALL( mMockPca9685_0, SetPwm( _, _ ) ).Times( ServosInterface::NB_SERVOS / 2U );
+	EXPECT_CALL( mMockPca9685_1, SetPwm( _, _ ) ).Times( ServosInterface::NB_SERVOS / 2U );
+
+	mServos.Update( 0UL );
 
 	EXPECT_TRUE( success );
 }

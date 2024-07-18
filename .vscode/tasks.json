@@ -26,6 +26,14 @@
             "group": {
                 "kind": "build"
             }
+        },
+        {
+            "type": "cmake",
+            "label": "Build",
+            "command": "build",
+            "targets": [],
+            "group": "build",
+            "problemMatcher": []
         }
     ]
 }

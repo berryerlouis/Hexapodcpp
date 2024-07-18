@@ -13,120 +13,124 @@ using ::testing::StrictMock;
 
 using namespace Component;
 
-TEST( SensorProximity, Initialize_Ok )
+class UT_CMP_PROXIMITY : public ::testing::Test  {
+protected:
+	UT_CMP_PROXIMITY() :
+		mMockSrf05Left(),
+		mMockSrf05Right(),
+		mMockVl53l0x(),
+		mSensorProximity( mMockSrf05Left, mMockSrf05Right, mMockVl53l0x )
+	{
+	}
+
+	virtual void SetUp ()
+	{
+	}
+
+	virtual void TearDown ()
+	{
+	}
+
+	virtual ~UT_CMP_PROXIMITY() = default;
+
+	/* Mocks */
+	StrictMock <MockSrf05> mMockSrf05Left;
+	StrictMock <MockSrf05> mMockSrf05Right;
+	StrictMock <MockVl53l0x> mMockVl53l0x;
+
+	/* Test class */
+	SensorProximity mSensorProximity;
+};
+
+TEST_F( UT_CMP_PROXIMITY, Initialize_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockSrf05>   srf05Left;
-	StrictMock <MockSrf05>   srf05Right;
-	StrictMock <MockVl53l0x> vl53l0x;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	SensorProximity sensorProximity( srf05Left, srf05Right, vl53l0x );
+	EXPECT_CALL( mMockSrf05Left, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockSrf05Right, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockVl53l0x, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
-	EXPECT_CALL( srf05Left, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( srf05Right, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( vl53l0x, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-
-	success = sensorProximity.Initialize();
+	success = mSensorProximity.Initialize();
 
 	EXPECT_TRUE( success );
 }
 
-TEST( SensorProximity, Update_Ok )
+TEST_F( UT_CMP_PROXIMITY, Update_Ok )
 {
 	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockSrf05>   srf05Left;
-	StrictMock <MockSrf05>   srf05Right;
-	StrictMock <MockVl53l0x> vl53l0x;
 
-	SensorProximity sensorProximity( srf05Left, srf05Right, vl53l0x );
+	EXPECT_CALL( mMockSrf05Left, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockSrf05Right, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockVl53l0x, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
-	EXPECT_CALL( srf05Left, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( srf05Right, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( vl53l0x, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockSrf05Left, Update( _ ) ).Times( 1U );
+	EXPECT_CALL( mMockSrf05Right, Update( _ ) ).Times( 0U );
+	EXPECT_CALL( mMockVl53l0x, Update( _ ) ).Times( 1U );
 
-	EXPECT_CALL( srf05Left, Update( _ ) ).Times( 1U );
-	EXPECT_CALL( srf05Right, Update( _ ) ).Times( 0U );
-	EXPECT_CALL( vl53l0x, Update( _ ) ).Times( 1U );
+	success = mSensorProximity.Initialize();
 
-	success = sensorProximity.Initialize();
-
-	sensorProximity.Update( 0UL );
+	mSensorProximity.Update( 0UL );
 	EXPECT_TRUE( success );
 }
 
-TEST( SensorProximity, Update2Times_Ok )
+TEST_F( UT_CMP_PROXIMITY, Update2Times_Ok )
 {
 	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockSrf05>   srf05Left;
-	StrictMock <MockSrf05>   srf05Right;
-	StrictMock <MockVl53l0x> vl53l0x;
 
-	SensorProximity sensorProximity( srf05Left, srf05Right, vl53l0x );
+	EXPECT_CALL( mMockSrf05Left, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockSrf05Right, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockVl53l0x, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
-	EXPECT_CALL( srf05Left, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( srf05Right, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( vl53l0x, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockSrf05Left, Update( _ ) ).Times( 1U );
+	EXPECT_CALL( mMockSrf05Right, Update( _ ) ).Times( 1U );
+	EXPECT_CALL( mMockVl53l0x, Update( _ ) ).Times( 2U );
 
-	EXPECT_CALL( srf05Left, Update( _ ) ).Times( 1U );
-	EXPECT_CALL( srf05Right, Update( _ ) ).Times( 1U );
-	EXPECT_CALL( vl53l0x, Update( _ ) ).Times( 2U );
+	success = mSensorProximity.Initialize();
 
-	success = sensorProximity.Initialize();
-
-	sensorProximity.Update( 0UL );
-	sensorProximity.Update( 0UL );
+	mSensorProximity.Update( 0UL );
+	mSensorProximity.Update( 0UL );
 	EXPECT_TRUE( success );
 }
 
-TEST( SensorProximity, GetDistance_Ok )
+TEST_F( UT_CMP_PROXIMITY, GetDistance_Ok )
 {
 	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockSrf05>   srf05Left;
-	StrictMock <MockSrf05>   srf05Right;
-	StrictMock <MockVl53l0x> vl53l0x;
 
-	SensorProximity sensorProximity( srf05Left, srf05Right, vl53l0x );
+	EXPECT_CALL( mMockSrf05Left, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockSrf05Right, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockVl53l0x, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
-	EXPECT_CALL( srf05Left, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( srf05Right, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( vl53l0x, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockSrf05Left, GetDistance() ).Times( 1U );
+	EXPECT_CALL( mMockSrf05Right, GetDistance() ).Times( 1U );
+	EXPECT_CALL( mMockVl53l0x, GetDistance() ).Times( 1U );
 
-	EXPECT_CALL( srf05Left, GetDistance() ).Times( 1U );
-	EXPECT_CALL( srf05Right, GetDistance() ).Times( 1U );
-	EXPECT_CALL( vl53l0x, GetDistance() ).Times( 1U );
-
-	success = sensorProximity.Initialize();
+	success = mSensorProximity.Initialize();
 
 	for ( size_t sensorId = 0U; sensorId < SensorProximity::NB_SENSORS; sensorId++ )
 	{
-		sensorProximity.GetDistance( (SensorProximity::SensorsId) sensorId );
+		mSensorProximity.GetDistance( (SensorProximity::SensorsId) sensorId );
 	}
 	EXPECT_TRUE( success );
 }
 
-TEST( SensorProximity, SetThreshold_Ok )
+TEST_F( UT_CMP_PROXIMITY, SetThreshold_Ok )
 {
 	Core::CoreStatus         success   = Core::CoreStatus::CORE_ERROR;
 	const uint16_t           threshold = 10U;
-	StrictMock <MockSrf05>   srf05Left;
-	StrictMock <MockSrf05>   srf05Right;
-	StrictMock <MockVl53l0x> vl53l0x;
 
-	SensorProximity sensorProximity( srf05Left, srf05Right, vl53l0x );
+	EXPECT_CALL( mMockSrf05Left, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockSrf05Right, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockVl53l0x, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mSensorProximity.Initialize();
 
-	EXPECT_CALL( srf05Left, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( srf05Right, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( vl53l0x, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = sensorProximity.Initialize();
-
-	EXPECT_CALL( srf05Left, SetThreshold( threshold ) ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( srf05Right, SetThreshold( threshold ) ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( vl53l0x, SetThreshold( threshold ) ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockSrf05Left, SetThreshold( threshold ) ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockSrf05Right, SetThreshold( threshold ) ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockVl53l0x, SetThreshold( threshold ) ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
 
 	for ( size_t sensorId = 0U; sensorId < SensorProximity::NB_SENSORS; sensorId++ )
 	{
-		EXPECT_TRUE( sensorProximity.SetThreshold( (SensorProximityInterface::SensorsId) sensorId, threshold ) );
+		EXPECT_TRUE( mSensorProximity.SetThreshold( (SensorProximityInterface::SensorsId) sensorId, threshold ) );
 	}
 	EXPECT_TRUE( success );
 }
