@@ -1,19 +1,11 @@
-add_executable(
-  UT_SRV_PROXIMITY
-  ../../../../src/clu/Frame.cpp
-  ../../../../src/srv/ServiceProximity.cpp
-  UT_SRV_PROXIMITY.cpp
+set(
+  SRC_FILES 
+  ../src/clu/Frame.cpp 
+  ../src/srv/ServiceProximity.cpp
 )
+set(
+  TEST_FILE 
+  src/srv/proximity/UT_SRV_PROXIMITY.cpp
 
-target_link_libraries(
-  UT_SRV_PROXIMITY
-  GTest::gtest_main
-  GTest::gmock_main
 )
-
-add_test(
-  NAME
-  UT_SRV_PROXIMITY
-  COMMAND
-    $<TARGET_FILE:UT_SRV_PROXIMITY>
-  )
+set(UT_SRV_PROXIMITY ${SRC_FILES} ${TEST_FILE} PARENT_SCOPE)

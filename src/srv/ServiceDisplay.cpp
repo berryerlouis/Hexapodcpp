@@ -5,9 +5,9 @@
 ServiceDisplay::ServiceDisplay( Ssd1306Interface &ssd1306 )
 	: Service( 5U )
 	, mSsd1306( ssd1306 )
-	, mBmpBatteryLevel{.bmp  = (uint8_t *) Bitmaps::bitmapBattery0, .width = 16U, .height = 7U }
-	, mBmpCommunication{.bmp = (uint8_t *) Bitmaps::bitmapCommunication, .width = 16U, .height = 8U }
-	, mBmpProximity{.bmp     = (uint8_t *) Bitmaps::bitmapArrowCenter, .width = 16U, .height = 6U }
+	, mBmpBatteryLevel{.bmp  = (uint8_t *) Bitmaps::Battery0, .width = 16U, .height = 7U }
+	, mBmpCommunication{.bmp = (uint8_t *) Bitmaps::Communication, .width = 16U, .height = 8U }
+	, mBmpProximity{.bmp     = (uint8_t *) Bitmaps::ArrowCenter, .width = 16U, .height = 6U }
 	, mPreviousTime( 0UL )
 	, mToggleCommunicationBmp( false )
 {
@@ -61,15 +61,15 @@ void ServiceDisplay::DisplayBatteryLevel ( Component::BatteryInterface::BatteryS
 {
 	if ( state == Component::BatteryInterface::BatteryState::WARNING )
 	{
-		this->mBmpBatteryLevel.bmp = (uint8_t *) Bitmaps::bitmapBattery50;
+		this->mBmpBatteryLevel.bmp = (uint8_t *) Bitmaps::Battery50;
 	}
 	else if ( state == Component::BatteryInterface::BatteryState::NOMINAL )
 	{
-		this->mBmpBatteryLevel.bmp = (uint8_t *) Bitmaps::bitmapBattery100;
+		this->mBmpBatteryLevel.bmp = (uint8_t *) Bitmaps::Battery100;
 	}
 	else
 	{
-		this->mBmpBatteryLevel.bmp = (uint8_t *) Bitmaps::bitmapBattery0;
+		this->mBmpBatteryLevel.bmp = (uint8_t *) Bitmaps::Battery0;
 	}
 	this->mSsd1306.DrawBitmap( &this->mBmpBatteryLevel, 0, 0, Ssd1306Interface::Color::COLOR_WHITE );
 }
@@ -78,7 +78,7 @@ void ServiceDisplay::DisplayProximitySensor ( Component::SensorProximityInterfac
 {
 	if ( sensor == Component::SensorProximityInterface::SensorsId::SRF_LEFT )
 	{
-		this->mBmpProximity.bmp = (uint8_t *) Bitmaps::bitmapArrowLeft;
+		this->mBmpProximity.bmp = (uint8_t *) Bitmaps::ArrowLeft;
 
 		this->mSsd1306.DrawBitmap(
 			&this->mBmpProximity,
@@ -88,7 +88,7 @@ void ServiceDisplay::DisplayProximitySensor ( Component::SensorProximityInterfac
 	}
 	if ( sensor == Component::SensorProximityInterface::SensorsId::VLX )
 	{
-		this->mBmpProximity.bmp = (uint8_t *) Bitmaps::bitmapArrowUp;
+		this->mBmpProximity.bmp = (uint8_t *) Bitmaps::ArrowUp;
 		this->mSsd1306.DrawBitmap(
 			&this->mBmpProximity,
 			( SCREEN_WIDTH / 2U ) - ( this->mBmpProximity.width / 2U ),
@@ -97,7 +97,7 @@ void ServiceDisplay::DisplayProximitySensor ( Component::SensorProximityInterfac
 	}
 	if ( sensor == Component::SensorProximityInterface::SensorsId::SRF_RIGHT )
 	{
-		this->mBmpProximity.bmp = (uint8_t *) Bitmaps::bitmapArrowRight;
+		this->mBmpProximity.bmp = (uint8_t *) Bitmaps::ArrowRight;
 		this->mSsd1306.DrawBitmap(
 			&this->mBmpProximity,
 			( SCREEN_WIDTH / 2U ) + ( this->mBmpProximity.width / 2U ),

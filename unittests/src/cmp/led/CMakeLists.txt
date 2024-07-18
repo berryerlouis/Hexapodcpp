@@ -1,18 +1,9 @@
-add_executable(
-  UT_CMP_LED
-  ../../../../src/cmp/Led.cpp
-  UT_CMP_LED.cpp
+set(
+  SRC_FILES 
+  ../src/cmp/Led.cpp 
 )
-
-target_link_libraries(
-  UT_CMP_LED
-  GTest::gtest_main
-  GTest::gmock_main
+set(
+  TEST_FILE 
+  src/cmp/led/UT_CMP_LED.cpp
 )
-
-add_test(
-  NAME
-  UT_CMP_LED
-  COMMAND
-    $<TARGET_FILE:UT_CMP_LED>
-  )
+set(UT_CMP_LED ${SRC_FILES} ${TEST_FILE} PARENT_SCOPE)

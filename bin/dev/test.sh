@@ -8,33 +8,21 @@ bin/dev/prebuild.sh test
 
 if [ $# -eq 0 ]; then
     cd unittests/build
-    CFLAGS=-fdiagnostics-color CXXFLAGS=-fdiagnostics-color CLICOLOR_FORCE=1 make -j16 -Wno-dev
-    if command; then
-        ctest -j16 --rerun-failed --output-on-failure
-    else
-        echo "${RED}Error${NC}: Make failed!"
-    fi
+    make -j16 ${1}
+    ./HexapodcppTest --gtest_color=yes -j16 --rerun-failed --output-on-failure --gtest_shuffle
+    cd ../..
 else
-    if [ $1 = "list" ]; then
-        echo "${GREEN}Success${NC}: List of Unit test ${GREEN}${1}${NC}:"
-        UTfiles=$(find unittests/build/ -name 'UT_*' -type f ! -name "*.*")
-        for UTfile in $UTfiles; do
-            if [ -f "$UTfile" ]; then
-                echo ${GREEN}$(basename ${UTfile})${NC}
-            fi
-        done
-    else
-        echo "Seach for Unit Test: $1"
-        file=$(find unittests/build/ -name "$1")
-        if [ -f "$file" ]; then
-            dir=$(dirname $file)
-            echo "${GREEN}Success${NC}: Launch Unit test file ${GREEN}${1} ${NC}."
-            cd $dir
-            make -j16
-            cd -
-            eval "$file"
-        else
-            echo "${RED}Error${NC}: Unit test file ${RED}${1}${NC} not found!"
+    if [ $1 = "all" ] || [ $1 = "clean" ] || [ $1 = "help" ]; then
+        cd unittests/build
+        make -j16 ${1}
+        if [ $1 = "all" ]; then
+            ./HexapodcppTest --gtest_color=yes -j16 --rerun-failed --output-on-failure --gtest_shuffle
         fi
+        cd ../..
+    else 
+        cd unittests/build
+        make -j16
+        ./HexapodcppTest --gtest_filter="${1}*" --gtest_color=yes -j16 --rerun-failed --output-on-failure --gtest_shuffle
+        cd ../..
     fi
 fi

@@ -16,35 +16,56 @@ using ::testing::StrictMock;
 
 using namespace Component;
 
-TEST( ServiceOrientation, Initialize_Ok )
+class UT_SRV_ORIENTATION : public ::testing::Test  {
+protected:
+	UT_SRV_ORIENTATION() :
+		mMockMpu9150(),
+		mClusterImu( mMockMpu9150 ),
+		mServiceOrientation( mClusterImu )
+	{
+	}
+
+	virtual void SetUp ()
+	{
+	}
+
+	virtual void TearDown ()
+	{
+	}
+
+	virtual ~UT_SRV_ORIENTATION() = default;
+
+	/* Mocks */
+	StrictMock <MockMpu9150> mMockMpu9150;
+
+	ClusterImu mClusterImu;
+
+	/* Test class */
+	ServiceOrientation mServiceOrientation;
+};
+
+TEST_F( UT_SRV_ORIENTATION, Initialize_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockMpu9150> mpu9150;
-	ClusterImu         clusterImu( mpu9150 );
-	ServiceOrientation serviceOrientation( clusterImu );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	EXPECT_CALL( mpu9150, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockMpu9150, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
-	success = serviceOrientation.Initialize();
+	success = mServiceOrientation.Initialize();
 
 	EXPECT_TRUE( success );
 }
 
-
-TEST( ServiceOrientation, Update_Ok )
+TEST_F( UT_SRV_ORIENTATION, Update_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockMpu9150> mpu9150;
-	ClusterImu         clusterImu( mpu9150 );
-	ServiceOrientation serviceOrientation( clusterImu );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	EXPECT_CALL( mpu9150, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockMpu9150, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
-	success = serviceOrientation.Initialize();
+	success = mServiceOrientation.Initialize();
 
-	EXPECT_CALL( mpu9150, Update( _ ) ).Times( 1U );
+	EXPECT_CALL( mMockMpu9150, Update( _ ) ).Times( 1U );
 
-	serviceOrientation.Update( 0UL );
+	mServiceOrientation.Update( 0UL );
 
 	EXPECT_TRUE( success );
 }

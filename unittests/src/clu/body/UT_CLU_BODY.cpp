@@ -10,29 +10,50 @@ using ::testing::StrictMock;
 
 using namespace Clusters;
 
-TEST( ClusterBody, Initialize_Ok )
+class UT_CLU_BODY : public ::testing::Test  {
+protected:
+	UT_CLU_BODY() :
+		mBodyMock(),
+		mClusterBody( mBodyMock )
+	{
+	}
+
+	virtual void SetUp ()
+	{
+	}
+
+	virtual void TearDown ()
+	{
+	}
+
+	virtual ~UT_CLU_BODY() = default;
+
+	/* Mocks */
+	StrictMock <MockBody> mBodyMock;
+
+	/* Test class */
+	ClusterBody mClusterBody;
+};
+
+TEST_F( UT_CLU_BODY, Initialize_Ok )
 {
 	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame       response;
-	StrictMock <MockBody> body;
-	ClusterBody           clusterBody( body );
 
-	EXPECT_CALL( body, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = clusterBody.Initialize();
+	EXPECT_CALL( mBodyMock, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mClusterBody.Initialize();
 
 	EXPECT_TRUE( success );
 }
 
-TEST( ClusterBody, Execute_WrongCluster_Ko )
+TEST_F( UT_CLU_BODY, Execute_WrongCluster_Ko )
 {
 	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame       request;
 	Clusters::Frame       response;
-	StrictMock <MockBody> body;
-	ClusterBody           clusterBody( body );
 
 	request.Build( Clusters::EClusters::BATTERY, Clusters::EBodyCommands::SET_LEG_X_Y_Z );
-	success = clusterBody.Execute( request, response );
+	success = mClusterBody.Execute( request, response );
 
 	EXPECT_EQ( response.clusterId, 0U );
 	EXPECT_EQ( response.commandId, 0U );
@@ -40,16 +61,14 @@ TEST( ClusterBody, Execute_WrongCluster_Ko )
 	EXPECT_FALSE( success );
 }
 
-TEST( ClusterBody, Execute_WrongCommand_Ko )
+TEST_F( UT_CLU_BODY, Execute_WrongCommand_Ko )
 {
 	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame       request;
 	Clusters::Frame       response;
-	StrictMock <MockBody> body;
-	ClusterBody           clusterBody( body );
 
 	request.Build( Clusters::EClusters::BODY, 0x5FU );
-	success = clusterBody.Execute( request, response );
+	success = mClusterBody.Execute( request, response );
 
 	EXPECT_EQ( response.clusterId, 0U );
 	EXPECT_EQ( response.commandId, 0U );
@@ -57,18 +76,16 @@ TEST( ClusterBody, Execute_WrongCommand_Ko )
 	EXPECT_FALSE( success );
 }
 
-TEST( ClusterBody, Execute_SET_LEG_X_Y_Z_Ok )
+TEST_F( UT_CLU_BODY, Execute_SET_LEG_X_Y_Z_Ok )
 {
 	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame       request;
 	Clusters::Frame       response;
-	StrictMock <MockBody> body;
-	ClusterBody           clusterBody( body );
 	uint8_t params [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-	EXPECT_CALL( body, SetPositionRotation( _, _, _ ) ).Times( 1U );
+	EXPECT_CALL( mBodyMock, SetPositionRotation( _, _, _ ) ).Times( 1U );
 	request.Build( Clusters::EClusters::BODY, Clusters::EBodyCommands::SET_LEG_X_Y_Z, params, 14U );
-	success = clusterBody.Execute( request, response );
+	success = mClusterBody.Execute( request, response );
 
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::BODY );
 	EXPECT_EQ( response.commandId, Clusters::EBodyCommands::SET_LEG_X_Y_Z );
@@ -77,14 +94,12 @@ TEST( ClusterBody, Execute_SET_LEG_X_Y_Z_Ok )
 	EXPECT_TRUE( success );
 }
 
-TEST( ClusterBody, BuildFrameSetPosition_Ok )
+TEST_F( UT_CLU_BODY, BuildFrameSetPosition_Ok )
 {
 	Clusters::Frame       response;
-	StrictMock <MockBody> body;
-	ClusterBody           clusterBody( body );
 	uint8_t params [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-	clusterBody.BuildFrameSetPosition( response );
+	mClusterBody.BuildFrameSetPosition( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::BODY );
 	EXPECT_EQ( response.commandId, Clusters::EBodyCommands::SET_LEG_X_Y_Z );
 	EXPECT_EQ( response.nbParams, 1U );

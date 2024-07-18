@@ -1,7 +1,6 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-
 #include "../../../mock/srv/MockServiceMediator.h"
 #include "../../../mock/cmp/MockSoftware.h"
 
@@ -14,108 +13,113 @@ using ::testing::StrictMock;
 
 using namespace Component;
 
-TEST( ServiceGeneral, Initialize_Ok )
+class UT_SRV_GENERAL : public ::testing::Test  {
+protected:
+	UT_SRV_GENERAL() :
+		mMockSoftware(),
+		mMockServiceMediator(),
+		mClusterGeneral( mMockSoftware ),
+		mServiceGeneral( mClusterGeneral )
+	{
+	}
+
+	virtual void SetUp ()
+	{
+		mServiceGeneral.SetComComponent( &mMockServiceMediator );
+	}
+
+	virtual void TearDown ()
+	{
+	}
+
+	virtual ~UT_SRV_GENERAL() = default;
+
+	/* Mocks */
+	StrictMock <MockSoftware> mMockSoftware;
+	StrictMock <MockServiceMediator> mMockServiceMediator;
+
+	ClusterGeneral mClusterGeneral;
+
+	/* Test class */
+	ServiceGeneral mServiceGeneral;
+};
+
+TEST_F( UT_SRV_GENERAL, Initialize_Ok )
 {
-	Core::CoreStatus          success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockSoftware> software;
-	ClusterGeneral            clusterGeneral( software );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	ServiceGeneral serviceGeneral( clusterGeneral );
+	EXPECT_CALL( mMockSoftware, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
-	EXPECT_CALL( software, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-
-	success = serviceGeneral.Initialize();
+	success = mServiceGeneral.Initialize();
 
 	EXPECT_TRUE( success );
 }
 
-TEST( ServiceGeneral, Initialize_Ko )
+TEST_F( UT_SRV_GENERAL, Initialize_Ko )
 {
-	Core::CoreStatus          success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockSoftware> software;
-	ClusterGeneral            clusterGeneral( software );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	ServiceGeneral serviceGeneral( clusterGeneral );
+	EXPECT_CALL( mMockSoftware, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_ERROR ) );
 
-	EXPECT_CALL( software, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_ERROR ) );
-
-	success = serviceGeneral.Initialize();
+	success = mServiceGeneral.Initialize();
 
 	EXPECT_FALSE( success );
 }
 
-TEST( ServiceGeneral, Update_FirstTimeUpdate_Ok )
+TEST_F( UT_SRV_GENERAL, Update_FirstTimeUpdate_Ok )
 {
-	Core::CoreStatus                 success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockSoftware>        software;
-	ClusterGeneral                   clusterGeneral( software );
-	StrictMock <MockServiceMediator> mediator;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	ServiceGeneral serviceGeneral( clusterGeneral );
-	serviceGeneral.SetComComponent( &mediator );
+	EXPECT_CALL( mMockSoftware, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mServiceGeneral.Initialize();
 
-	EXPECT_CALL( software, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = serviceGeneral.Initialize();
+	EXPECT_CALL( mMockSoftware, GetMinTime() ).Times( 1U ).WillOnce( Return( 0UL ) );
+	EXPECT_CALL( mMockSoftware, GetMaxTime() ).Times( 1U ).WillOnce( Return( 0UL ) );
 
-	EXPECT_CALL( software, GetMinTime() ).Times( 1U ).WillOnce( Return( 0UL ) );
-	EXPECT_CALL( software, GetMaxTime() ).Times( 1U ).WillOnce( Return( 0UL ) );
-
-	serviceGeneral.SetNewUpdateTime( 1000UL );
-	serviceGeneral.Update( 1000UL );
+	mServiceGeneral.SetNewUpdateTime( 1000UL );
+	mServiceGeneral.Update( 1000UL );
 	EXPECT_TRUE( success );
 }
 
-TEST( ServiceGeneral, Update_MultipleUpdateSetMin_Ok )
+TEST_F( UT_SRV_GENERAL, Update_MultipleUpdateSetMin_Ok )
 {
-	Core::CoreStatus                 success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockSoftware>        software;
-	ClusterGeneral                   clusterGeneral( software );
-	StrictMock <MockServiceMediator> mediator;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	ServiceGeneral serviceGeneral( clusterGeneral );
-	serviceGeneral.SetComComponent( &mediator );
+	EXPECT_CALL( mMockSoftware, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mServiceGeneral.Initialize();
 
-	EXPECT_CALL( software, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = serviceGeneral.Initialize();
-
-	serviceGeneral.SetNewUpdateTime( 1UL );
+	mServiceGeneral.SetNewUpdateTime( 1UL );
 	for ( uint64_t i = 10UL; i > 1U; i-- )
 	{
-		EXPECT_CALL( software, GetMinTime() ).Times( 2UL ).WillRepeatedly( Return( i + 1U ) );
-		EXPECT_CALL( software, SetMinTime( _ ) ).Times( 1U );
-		EXPECT_CALL( mediator, SendFrame( _ ) ).Times( 1U );
+		EXPECT_CALL( mMockSoftware, GetMinTime() ).Times( 2UL ).WillRepeatedly( Return( i + 1U ) );
+		EXPECT_CALL( mMockSoftware, SetMinTime( _ ) ).Times( 1U );
+		EXPECT_CALL( mMockServiceMediator, SendFrame( _ ) ).Times( 1U );
 
-		serviceGeneral.Update( i );
-		serviceGeneral.SetNewUpdateTime( i - 1U );
+		mServiceGeneral.Update( i );
+		mServiceGeneral.SetNewUpdateTime( i - 1U );
 	}
 
 	EXPECT_TRUE( success );
 }
 
-TEST( ServiceGeneral, Update_MultipleUpdateSetMax_Ok )
+TEST_F( UT_SRV_GENERAL, Update_MultipleUpdateSetMax_Ok )
 {
-	Core::CoreStatus                 success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockSoftware>        software;
-	ClusterGeneral                   clusterGeneral( software );
-	StrictMock <MockServiceMediator> mediator;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	ServiceGeneral serviceGeneral( clusterGeneral );
-	serviceGeneral.SetComComponent( &mediator );
+	EXPECT_CALL( mMockSoftware, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mServiceGeneral.Initialize();
 
-	EXPECT_CALL( software, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = serviceGeneral.Initialize();
-
-	serviceGeneral.SetNewUpdateTime( 1UL );
+	mServiceGeneral.SetNewUpdateTime( 1UL );
 
 	for ( uint64_t i = 2U; i < 10UL; i++ )
 	{
-		EXPECT_CALL( software, GetMinTime() ).Times( 1UL ).WillOnce( Return( 0U ) );
-		EXPECT_CALL( software, GetMaxTime() ).Times( 2UL ).WillRepeatedly( Return( 0U ) );
-		EXPECT_CALL( software, SetMaxTime( 1U ) ).Times( 1U );
-		EXPECT_CALL( mediator, SendFrame( _ ) ).Times( 1U );
+		EXPECT_CALL( mMockSoftware, GetMinTime() ).Times( 1UL ).WillOnce( Return( 0U ) );
+		EXPECT_CALL( mMockSoftware, GetMaxTime() ).Times( 2UL ).WillRepeatedly( Return( 0U ) );
+		EXPECT_CALL( mMockSoftware, SetMaxTime( 1U ) ).Times( 1U );
+		EXPECT_CALL( mMockServiceMediator, SendFrame( _ ) ).Times( 1U );
 
-		serviceGeneral.Update( i );
-		serviceGeneral.SetNewUpdateTime( i );
+		mServiceGeneral.Update( i );
+		mServiceGeneral.SetNewUpdateTime( i );
 	}
 
 	EXPECT_TRUE( success );

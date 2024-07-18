@@ -1,18 +1,9 @@
-add_executable(
-  UT_CLU_GENERAL
-  ../../../../src/clu/Frame.cpp
-  UT_CLU_GENERAL.cpp
+set(
+  SRC_FILES 
+  ../src/clu/Frame.cpp 
 )
-
-target_link_libraries(
-  UT_CLU_GENERAL
-  GTest::gtest_main
-  GTest::gmock_main
+set(
+  TEST_FILE 
+  src/clu/general/UT_CLU_GENERAL.cpp
 )
-
-add_test(
-  NAME
-  UT_CLU_GENERAL
-  COMMAND
-    $<TARGET_FILE:UT_CLU_GENERAL>
-  )
+set(UT_CLU_GENERAL ${SRC_FILES} ${TEST_FILE} PARENT_SCOPE)

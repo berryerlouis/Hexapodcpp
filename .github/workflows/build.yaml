@@ -9,11 +9,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      
+      - name: Install gcc and avr-gcc
+        run: |
+          sudo apt update
+          sudo apt install build-essential binutils gcc-avr avr-libc
 
-      - name: Build Source
-        uses: bazhenov/action-avr-make@v1.0
+      - name: Build Release
+        run: |
+          bin/dev/build.sh RELEASE
 
-      - name: Build and Run Test
+      - name: Run Test
         run: |
           bin/dev/test.sh
 

@@ -14,23 +14,44 @@ using ::testing::StrictMock;
 
 using namespace Component;
 
-TEST( ServiceDisplay, Initialize_Ok )
-{
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockSsd1306> ssd1306;
-	ServiceDisplay           serviceDisplay( ssd1306 );
+class UT_SRV_DISPLAY : public ::testing::Test  {
+protected:
+	UT_SRV_DISPLAY() :
+		mMockSsd1306(),
+		mServiceDisplay( mMockSsd1306 )
+	{
+	}
 
-	EXPECT_CALL( ssd1306, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( ssd1306, DrawLine( 0, 10U, SCREEN_WIDTH, 10U, Ssd1306Interface::Color::COLOR_WHITE ) ).Times( 1U );
-	success = serviceDisplay.Initialize();
+	virtual void SetUp ()
+	{
+	}
+
+	virtual void TearDown ()
+	{
+	}
+
+	virtual ~UT_SRV_DISPLAY() = default;
+
+	/* Mocks */
+	StrictMock <MockSsd1306> mMockSsd1306;
+
+	/* Test class */
+	ServiceDisplay mServiceDisplay;
+};
+
+TEST_F( UT_SRV_DISPLAY, Initialize_Ok )
+{
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+
+	EXPECT_CALL( mMockSsd1306, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockSsd1306, DrawLine( 0, 10U, SCREEN_WIDTH, 10U, Ssd1306Interface::Color::COLOR_WHITE ) ).Times( 1U );
+	success = mServiceDisplay.Initialize();
 
 	EXPECT_TRUE( success );
 }
 
-TEST( ServiceDisplay, Update_Ok )
+TEST_F( UT_SRV_DISPLAY, Update_Ok )
 {
-	StrictMock <MockSsd1306> ssd1306;
-	ServiceDisplay           serviceDisplay( ssd1306 );
 	bool toggle = false;
 
 	for ( uint64_t i = 500U; i < 10U * 500U; i += 500U )
@@ -38,14 +59,14 @@ TEST( ServiceDisplay, Update_Ok )
 		if ( toggle == true )
 		{
 			toggle = false;
-			EXPECT_CALL( ssd1306, DrawBitmap( _, _, 0U, Ssd1306Interface::Color::COLOR_WHITE ) ).Times( 1U );
+			EXPECT_CALL( mMockSsd1306, DrawBitmap( _, _, 0U, Ssd1306Interface::Color::COLOR_WHITE ) ).Times( 1U );
 		}
 		else
 		{
 			toggle = true;
-			EXPECT_CALL( ssd1306, EraseArea( _, 0U, SCREEN_WIDTH, _ ) ).Times( 1U );
+			EXPECT_CALL( mMockSsd1306, EraseArea( _, 0U, SCREEN_WIDTH, _ ) ).Times( 1U );
 		}
-		EXPECT_CALL( ssd1306, Update( i ) ).Times( 1U );
-		serviceDisplay.Update( i );
+		EXPECT_CALL( mMockSsd1306, Update( i ) ).Times( 1U );
+		mServiceDisplay.Update( i );
 	}
 }

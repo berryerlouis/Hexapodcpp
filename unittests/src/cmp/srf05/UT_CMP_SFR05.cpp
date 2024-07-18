@@ -14,106 +14,106 @@ using ::testing::StrictMock;
 
 using namespace Component;
 
-TEST( ComponentSrf05, Initialize_Ok )
+class UT_CMP_SRF05 : public ::testing::Test  {
+protected:
+	UT_CMP_SRF05() :
+		mMockTick(),
+		mMockGpio(),
+		mMockInputCapture(),
+		mMockLed(),
+		mSrf05( EProximityCommands::US_LEFT, mMockGpio, mMockInputCapture, mMockLed, mMockTick )
+	{
+	}
+
+	virtual void SetUp ()
+	{
+	}
+
+	virtual void TearDown ()
+	{
+	}
+
+	virtual ~UT_CMP_SRF05() = default;
+
+	/* Mocks */
+	StrictMock <MockTick> mMockTick;
+	StrictMock <MockGpio> mMockGpio;
+	StrictMock <MockInputCapture> mMockInputCapture;
+	StrictMock <MockLed> mMockLed;
+
+	/* Test class */
+	Srf05 mSrf05;
+};
+
+TEST_F( UT_CMP_SRF05, Initialize_Ok )
 {
-	Core::CoreStatus              success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockTick>         tick;
-	StrictMock <MockGpio>         gpioTrigger;
-	StrictMock <MockInputCapture> gpioInputCaptureEcho;
-	StrictMock <MockLed>          led;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	Srf05 srf05( EProximityCommands::US_LEFT, gpioTrigger, gpioInputCaptureEcho, led, tick );
+	EXPECT_CALL( mMockInputCapture, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockLed, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
-	EXPECT_CALL( gpioInputCaptureEcho, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( led, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mSrf05.Initialize();
 
-	success = srf05.Initialize();
-
-	EXPECT_EQ( srf05.GetThreshold(), 30U );
+	EXPECT_EQ( mSrf05.GetThreshold(), 30U );
 	EXPECT_TRUE( success );
 }
 
-TEST( ComponentSrf05, Update_Ok )
+TEST_F( UT_CMP_SRF05, Update_Ok )
 {
-	Core::CoreStatus              success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockTick>         tick;
-	StrictMock <MockGpio>         gpioTrigger;
-	StrictMock <MockInputCapture> gpioInputCaptureEcho;
-	StrictMock <MockLed>          led;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	Srf05 srf05( EProximityCommands::US_LEFT, gpioTrigger, gpioInputCaptureEcho, led, tick );
+	EXPECT_CALL( mMockInputCapture, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockGpio, Set() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockTick, DelayUs( _ ) ).Times( 1U );
+	EXPECT_CALL( mMockGpio, Reset() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockLed, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
-	EXPECT_CALL( gpioInputCaptureEcho, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( gpioTrigger, Set() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( tick, DelayUs( _ ) ).Times( 1U );
-	EXPECT_CALL( gpioTrigger, Reset() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( led, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-
-	success = srf05.Initialize();
-	srf05.Update( 0U );
+	success = mSrf05.Initialize();
+	mSrf05.Update( 0U );
 
 	EXPECT_TRUE( success );
 }
 
-TEST( ComponentSrf05, IsDetecting_SetThreshold )
+TEST_F( UT_CMP_SRF05, IsDetecting_SetThreshold )
 {
-	Core::CoreStatus              success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockTick>         tick;
-	StrictMock <MockGpio>         gpioTrigger;
-	StrictMock <MockInputCapture> gpioInputCaptureEcho;
-	StrictMock <MockLed>          led;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	Srf05 srf05( EProximityCommands::US_LEFT, gpioTrigger, gpioInputCaptureEcho, led, tick );
+	EXPECT_CALL( mMockInputCapture, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockLed, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
-	EXPECT_CALL( gpioInputCaptureEcho, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( led, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mSrf05.Initialize();
 
-	success = srf05.Initialize();
-
-	EXPECT_TRUE( srf05.SetThreshold( 35U ) );
-	EXPECT_EQ( 35U, srf05.GetThreshold() );
+	EXPECT_TRUE( mSrf05.SetThreshold( 35U ) );
+	EXPECT_EQ( 35U, mSrf05.GetThreshold() );
 	EXPECT_TRUE( success );
 }
 
-TEST( ComponentSrf05, IsDetecting_UnderThreshold )
+TEST_F( UT_CMP_SRF05, IsDetecting_UnderThreshold )
 {
-	Core::CoreStatus              success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockTick>         tick;
-	StrictMock <MockGpio>         gpioTrigger;
-	StrictMock <MockInputCapture> gpioInputCaptureEcho;
-	StrictMock <MockLed>          led;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	Srf05 srf05( EProximityCommands::US_LEFT, gpioTrigger, gpioInputCaptureEcho, led, tick );
+	EXPECT_CALL( mMockInputCapture, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockInputCapture, GetInputCaptureTime() ).Times( 1U ).WillOnce( Return( 580U ) );
+	EXPECT_CALL( mMockLed, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockLed, On ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
-	EXPECT_CALL( gpioInputCaptureEcho, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( gpioInputCaptureEcho, GetInputCaptureTime() ).Times( 1U ).WillOnce( Return( 580U ) );
-	EXPECT_CALL( led, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( led, On ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mSrf05.Initialize();
 
-	success = srf05.Initialize();
-
-	EXPECT_TRUE( srf05.IsDetecting() );
+	EXPECT_TRUE( mSrf05.IsDetecting() );
 	EXPECT_TRUE( success );
 }
 
-TEST( ComponentSrf05, IsDetecting_AboveThreshold )
+TEST_F( UT_CMP_SRF05, IsDetecting_AboveThreshold )
 {
-	Core::CoreStatus              success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockTick>         tick;
-	StrictMock <MockGpio>         gpioTrigger;
-	StrictMock <MockInputCapture> gpioInputCaptureEcho;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	StrictMock <MockLed> led;
+	EXPECT_CALL( mMockInputCapture, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockInputCapture, GetInputCaptureTime() ).Times( 1U ).WillOnce( Return( 58U * 31U ) );
+	EXPECT_CALL( mMockLed, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockLed, Off() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
-	Srf05 srf05( EProximityCommands::US_LEFT, gpioTrigger, gpioInputCaptureEcho, led, tick );
+	success = mSrf05.Initialize();
 
-	EXPECT_CALL( gpioInputCaptureEcho, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( gpioInputCaptureEcho, GetInputCaptureTime() ).Times( 1U ).WillOnce( Return( 58U * 31U ) );
-	EXPECT_CALL( led, Initialize() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( led, Off() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-
-	success = srf05.Initialize();
-
-	EXPECT_FALSE( srf05.IsDetecting() );
+	EXPECT_FALSE( mSrf05.IsDetecting() );
 	EXPECT_TRUE( success );
 }

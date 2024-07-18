@@ -11,17 +11,39 @@ using ::testing::StrictMock;
 
 using namespace Clusters;
 
+class UT_CLU_IMU : public ::testing::Test  {
+protected:
+	UT_CLU_IMU() :
+		mMockMpu9150(),
+		mClusterImu( mMockMpu9150 )
+	{
+	}
 
-TEST( ClusterImu, Execute_WrongCluster_Ko )
+	virtual void SetUp ()
+	{
+	}
+
+	virtual void TearDown ()
+	{
+	}
+
+	virtual ~UT_CLU_IMU() = default;
+
+	/* Mocks */
+	StrictMock <MockMpu9150> mMockMpu9150;
+
+	/* Test class */
+	ClusterImu mClusterImu;
+};
+
+TEST_F( UT_CLU_IMU, Execute_WrongCluster_Ko )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame          response;
-	Clusters::Frame          request;
-	StrictMock <MockMpu9150> imu;
-	ClusterImu clusterImu( imu );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  response;
+	Clusters::Frame  request;
 
 	request.Build( Clusters::EClusters::BODY, Clusters::EBatteryCommands::GET_VOLTAGE );
-	success = clusterImu.Execute( request, response );
+	success = mClusterImu.Execute( request, response );
 
 	EXPECT_EQ( response.clusterId, 0U );
 	EXPECT_EQ( response.commandId, 0U );
@@ -29,16 +51,14 @@ TEST( ClusterImu, Execute_WrongCluster_Ko )
 	EXPECT_FALSE( success );
 }
 
-TEST( ClusterImu, Execute_WrongCommand_Ko )
+TEST_F( UT_CLU_IMU, Execute_WrongCommand_Ko )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame          response;
-	Clusters::Frame          request;
-	StrictMock <MockMpu9150> imu;
-	ClusterImu clusterImu( imu );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  response;
+	Clusters::Frame  request;
 
 	request.Build( Clusters::EClusters::IMU, 0x5FU );
-	success = clusterImu.Execute( request, response );
+	success = mClusterImu.Execute( request, response );
 
 	EXPECT_EQ( response.clusterId, 0U );
 	EXPECT_EQ( response.commandId, 0U );
@@ -46,41 +66,37 @@ TEST( ClusterImu, Execute_WrongCommand_Ko )
 	EXPECT_FALSE( success );
 }
 
-TEST( ClusterImu, Execute_ALL_Ok )
+TEST_F( UT_CLU_IMU, Execute_ALL_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame          response;
-	Clusters::Frame          request;
-	StrictMock <MockMpu9150> imu;
-	ClusterImu clusterImu( imu );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  response;
+	Clusters::Frame  request;
 
 	request.Build( Clusters::EClusters::IMU, Clusters::EImuCommands::ALL );
-	EXPECT_CALL( imu, ReadAcc() ).WillOnce( Return( Mpu9150Interface::Vector3{ 5, 5, 5 } ) );
-	EXPECT_CALL( imu, ReadGyr() ).WillOnce( Return( Mpu9150Interface::Vector3{ 5, 5, 5 } ) );
-	EXPECT_CALL( imu, ReadMag() ).WillOnce( Return( Mpu9150Interface::Vector3{ 5, 5, 5 } ) );
-	EXPECT_CALL( imu, ReadTemp() ).WillOnce( Return( 25 ) );
+	EXPECT_CALL( mMockMpu9150, ReadAcc() ).WillOnce( Return( Mpu9150Interface::Vector3{ 5, 5, 5 } ) );
+	EXPECT_CALL( mMockMpu9150, ReadGyr() ).WillOnce( Return( Mpu9150Interface::Vector3{ 5, 5, 5 } ) );
+	EXPECT_CALL( mMockMpu9150, ReadMag() ).WillOnce( Return( Mpu9150Interface::Vector3{ 5, 5, 5 } ) );
+	EXPECT_CALL( mMockMpu9150, ReadTemp() ).WillOnce( Return( 25 ) );
 
-	success = clusterImu.Execute( request, response );
-	
+	success = mClusterImu.Execute( request, response );
+
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::IMU );
 	EXPECT_EQ( response.commandId, Clusters::EImuCommands::ALL );
 	EXPECT_EQ( response.nbParams, 20U );
 	EXPECT_TRUE( success );
 }
 
-TEST( ClusterImu, BuildFrameAcc_Ok )
+TEST_F( UT_CLU_IMU, BuildFrameAcc_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame          response;
-	StrictMock <MockMpu9150> imu;
-	ClusterImu clusterImu( imu );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  response;
 
-	EXPECT_CALL( imu, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = clusterImu.Initialize();
+	EXPECT_CALL( mMockMpu9150, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mClusterImu.Initialize();
 
-	EXPECT_CALL( imu, ReadAcc() ).WillOnce( Return( Mpu9150Interface::Vector3{ 5, 5, 5 } ) );
+	EXPECT_CALL( mMockMpu9150, ReadAcc() ).WillOnce( Return( Mpu9150Interface::Vector3{ 5, 5, 5 } ) );
 
-	clusterImu.BuildFrameAcc( response );
+	mClusterImu.BuildFrameAcc( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::IMU );
 	EXPECT_EQ( response.commandId, Clusters::EImuCommands::ACC );
 	EXPECT_EQ( response.nbParams, 6U );
@@ -93,19 +109,17 @@ TEST( ClusterImu, BuildFrameAcc_Ok )
 	EXPECT_TRUE( success );
 }
 
-TEST( ClusterImu, BuildFrameGyr_Ok )
+TEST_F( UT_CLU_IMU, BuildFrameGyr_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame          response;
-	StrictMock <MockMpu9150> imu;
-	ClusterImu clusterImu( imu );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  response;
 
-	EXPECT_CALL( imu, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = clusterImu.Initialize();
+	EXPECT_CALL( mMockMpu9150, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mClusterImu.Initialize();
 
-	EXPECT_CALL( imu, ReadGyr() ).WillOnce( Return( Mpu9150Interface::Vector3{ 5, 5, 5 } ) );
+	EXPECT_CALL( mMockMpu9150, ReadGyr() ).WillOnce( Return( Mpu9150Interface::Vector3{ 5, 5, 5 } ) );
 
-	clusterImu.BuildFrameGyr( response );
+	mClusterImu.BuildFrameGyr( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::IMU );
 	EXPECT_EQ( response.commandId, Clusters::EImuCommands::GYR );
 	EXPECT_EQ( response.nbParams, 6U );
@@ -118,19 +132,17 @@ TEST( ClusterImu, BuildFrameGyr_Ok )
 	EXPECT_TRUE( success );
 }
 
-TEST( ClusterImu, BuildFrameMag_Ok )
+TEST_F( UT_CLU_IMU, BuildFrameMag_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame          response;
-	StrictMock <MockMpu9150> imu;
-	ClusterImu clusterImu( imu );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  response;
 
-	EXPECT_CALL( imu, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = clusterImu.Initialize();
+	EXPECT_CALL( mMockMpu9150, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mClusterImu.Initialize();
 
-	EXPECT_CALL( imu, ReadMag() ).WillOnce( Return( Mpu9150Interface::Vector3{ 5, 5, 5 } ) );
+	EXPECT_CALL( mMockMpu9150, ReadMag() ).WillOnce( Return( Mpu9150Interface::Vector3{ 5, 5, 5 } ) );
 
-	clusterImu.BuildFrameMag( response );
+	mClusterImu.BuildFrameMag( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::IMU );
 	EXPECT_EQ( response.commandId, Clusters::EImuCommands::MAG );
 	EXPECT_EQ( response.nbParams, 6U );
@@ -143,19 +155,17 @@ TEST( ClusterImu, BuildFrameMag_Ok )
 	EXPECT_TRUE( success );
 }
 
-TEST( ClusterImu, BuildFrameTemp_Ok )
+TEST_F( UT_CLU_IMU, BuildFrameTemp_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame          response;
-	StrictMock <MockMpu9150> imu;
-	ClusterImu clusterImu( imu );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  response;
 
-	EXPECT_CALL( imu, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = clusterImu.Initialize();
+	EXPECT_CALL( mMockMpu9150, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	success = mClusterImu.Initialize();
 
-	EXPECT_CALL( imu, ReadTemp() ).WillOnce( Return( 25 ) );
+	EXPECT_CALL( mMockMpu9150, ReadTemp() ).WillOnce( Return( 25 ) );
 
-	clusterImu.BuildFrameTmp( response );
+	mClusterImu.BuildFrameTmp( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::IMU );
 	EXPECT_EQ( response.commandId, Clusters::EImuCommands::TMP );
 	EXPECT_EQ( response.nbParams, 2U );

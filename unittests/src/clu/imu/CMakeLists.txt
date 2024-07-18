@@ -1,18 +1,9 @@
-add_executable(
-  UT_CLU_IMU
-  ../../../../src/clu/Frame.cpp
-  UT_CLU_IMU.cpp
+set(
+  SRC_FILES 
+  ../src/clu/Frame.cpp 
 )
-
-target_link_libraries(
-  UT_CLU_IMU
-  GTest::gtest_main
-  GTest::gmock_main
+set(
+  TEST_FILE 
+  src/clu/imu/UT_CLU_IMU.cpp
 )
-
-add_test(
-  NAME
-  UT_CLU_IMU
-  COMMAND
-    $<TARGET_FILE:UT_CLU_IMU>
-  )
+set(UT_CLU_IMU ${SRC_FILES} ${TEST_FILE} PARENT_SCOPE)

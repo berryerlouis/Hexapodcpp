@@ -1,19 +1,11 @@
-add_executable(
-  UT_SRV_BATTERY
-  ../../../../src/clu/Frame.cpp
-  ../../../../src/srv/ServiceBattery.cpp
-  UT_SRV_BATTERY.cpp
+set(
+  SRC_FILES 
+  ../src/clu/Frame.cpp 
+  ../src/srv/ServiceBattery.cpp
 )
+set(
+  TEST_FILE 
+  src/srv/battery/UT_SRV_BATTERY.cpp
 
-target_link_libraries(
-  UT_SRV_BATTERY
-  GTest::gtest_main
-  GTest::gmock_main
 )
-
-add_test(
-  NAME
-  UT_SRV_BATTERY
-  COMMAND
-    $<TARGET_FILE:UT_SRV_BATTERY>
-  )
+set(UT_SRV_BATTERY ${SRC_FILES} ${TEST_FILE} PARENT_SCOPE)

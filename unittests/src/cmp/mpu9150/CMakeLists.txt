@@ -1,18 +1,9 @@
-add_executable(
-  UT_CMP_MPU9150
-  ../../../../src/cmp/Mpu9150.cpp
-  UT_CMP_MPU9150.cpp
+set(
+  SRC_FILES 
+  ../src/cmp/Mpu9150.cpp 
 )
-
-target_link_libraries(
-  UT_CMP_MPU9150
-  GTest::gtest_main
-  GTest::gmock_main
+set(
+  TEST_FILE 
+  src/cmp/mpu9150/UT_CMP_MPU9150.cpp
 )
-
-add_test(
-  NAME
-  UT_CMP_MPU9150
-  COMMAND
-    $<TARGET_FILE:UT_CMP_MPU9150>
-  )
+set(UT_CMP_MPU9150 ${SRC_FILES} ${TEST_FILE} PARENT_SCOPE)

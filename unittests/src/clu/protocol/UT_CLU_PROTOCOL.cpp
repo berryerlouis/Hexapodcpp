@@ -9,7 +9,28 @@ using ::testing::Return;
 
 using namespace Clusters;
 
-TEST( ClusterProtocol, Decode_NullPtrBufferData )
+class UT_CLU_PROTOCOL : public ::testing::Test  {
+protected:
+	UT_CLU_PROTOCOL()
+	{
+	}
+
+	virtual void SetUp ()
+	{
+	}
+
+	virtual void TearDown ()
+	{
+	}
+
+	virtual ~UT_CLU_PROTOCOL() = default;
+
+	/* Mocks */
+
+	/* Test class */
+};
+
+TEST_F( UT_CLU_PROTOCOL, Decode_NullPtrBufferData )
 {
 	Frame request;
 
@@ -25,7 +46,7 @@ TEST( ClusterProtocol, Decode_NullPtrBufferData )
 	}
 }
 
-TEST( ClusterProtocol, Decode_NoBufferData )
+TEST_F( UT_CLU_PROTOCOL, Decode_NoBufferData )
 {
 	Frame request;
 	char  bufferRx[] = "";
@@ -41,7 +62,7 @@ TEST( ClusterProtocol, Decode_NoBufferData )
 	}
 }
 
-TEST( ClusterProtocol, Decode_BufferDataWhitoutParam )
+TEST_F( UT_CLU_PROTOCOL, Decode_BufferDataWhitoutParam )
 {
 	Frame request;
 	char  bufferRx[] = "010400";
@@ -57,7 +78,7 @@ TEST( ClusterProtocol, Decode_BufferDataWhitoutParam )
 	}
 }
 
-TEST( ClusterProtocol, Decode_BufferDataWhitParam )
+TEST_F( UT_CLU_PROTOCOL, Decode_BufferDataWhitParam )
 {
 	Frame request;
 	char  bufferRx[] = "0608020102";
@@ -76,7 +97,7 @@ TEST( ClusterProtocol, Decode_BufferDataWhitParam )
 	}
 }
 
-TEST( ClusterProtocol, Decode_BufferDataTooSmall )
+TEST_F( UT_CLU_PROTOCOL, Decode_BufferDataTooSmall )
 {
 	Frame request;
 	char  bufferRx[] = "00000";
@@ -92,7 +113,7 @@ TEST( ClusterProtocol, Decode_BufferDataTooSmall )
 	}
 }
 
-TEST( ClusterProtocol, Decode_BufferDataTooBig )
+TEST_F( UT_CLU_PROTOCOL, Decode_BufferDataTooBig )
 {
 	Frame request;
 	char  bufferRx[] = "0000000";
@@ -108,7 +129,7 @@ TEST( ClusterProtocol, Decode_BufferDataTooBig )
 	}
 }
 
-TEST( ClusterProtocol, Decode_BufferDataInvalidCharacter )
+TEST_F( UT_CLU_PROTOCOL, Decode_BufferDataInvalidCharacter )
 {
 	Frame request;
 	char  bufferRx[] = "000g00";
@@ -124,7 +145,7 @@ TEST( ClusterProtocol, Decode_BufferDataInvalidCharacter )
 	}
 }
 
-TEST( ClusterProtocol, Decode_BufferDataSizeError )
+TEST_F( UT_CLU_PROTOCOL, Decode_BufferDataSizeError )
 {
 	Frame request;
 	char  bufferRx[] = "000001";
@@ -140,7 +161,7 @@ TEST( ClusterProtocol, Decode_BufferDataSizeError )
 	}
 }
 
-TEST( ClusterProtocol, Encode_Frame )
+TEST_F( UT_CLU_PROTOCOL, Encode_Frame )
 {
 	Frame   response;
 	uint8_t params[] = { 1U, 2U };

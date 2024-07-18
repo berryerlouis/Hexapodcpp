@@ -1,18 +1,9 @@
-add_executable(
-  UT_CMP_VL53L0X
-  ../../../../src/cmp/Vl53l0x.cpp
-  UT_CMP_VL53L0X.cpp
+set(
+  SRC_FILES  
+  ../src/cmp/Vl53l0x.cpp 
 )
-
-target_link_libraries(
-  UT_CMP_VL53L0X
-  GTest::gtest_main
-  GTest::gmock_main
+set(
+  TEST_FILE 
+  src/cmp/vl53l0x/UT_CMP_VL53L0X.cpp
 )
-
-add_test(
-  NAME
-  UT_CMP_VL53L0X
-  COMMAND
-    $<TARGET_FILE:UT_CMP_VL53L0X>
-  )
+set(UT_CMP_VL53L0X ${SRC_FILES} ${TEST_FILE} PARENT_SCOPE)

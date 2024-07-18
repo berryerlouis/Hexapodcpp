@@ -16,142 +16,148 @@ using ::testing::DoAll;
 
 using namespace Component;
 
-TEST( ComponentVl53l0x, Initialize_Ok )
+class UT_CMP_VL53L0X : public ::testing::Test  {
+protected:
+	UT_CMP_VL53L0X() :
+		mMockTick(),
+		mMockTwi(),
+		mVl53l0x( mMockTwi, mMockTick )
+	{
+	}
+
+	virtual void SetUp ()
+	{
+	}
+
+	virtual void TearDown ()
+	{
+	}
+
+	virtual ~UT_CMP_VL53L0X() = default;
+
+	/* Mocks */
+	StrictMock <MockTick> mMockTick;
+	StrictMock <MockTwi> mMockTwi;
+
+	/* Test class */
+	Vl53l0x mVl53l0x;
+};
+
+TEST_F( UT_CMP_VL53L0X, Initialize_Ok )
 {
-	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
-	uint8_t               data;
-	StrictMock <MockTick> tick;
-	StrictMock <MockTwi>  twi;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	Vl53l0x vl53l0x( twi, tick );
-	data = 0xEEU;
-	EXPECT_CALL( tick, GetMs() ).WillRepeatedly( Return( 0U ) );
-	EXPECT_CALL( twi, ReadRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, ReadRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, ReadRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegister32Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTick, GetMs() ).WillRepeatedly( Return( 0U ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, ReadRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, ReadRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegister32Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
 
-	EXPECT_CALL( twi, ReadRegister( _, VL53L0X_IDENTIFICATION_MODEL_ID, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 0xEEU ), Return( true ) ) );
-	EXPECT_CALL( twi, ReadRegister( _, 0x83, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 1U ), Return( true ) ) );
-	EXPECT_CALL( twi, ReadRegister( _, VL53L0X_RESULT_INTERRUPT_STATUS, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 0x07U ), Return( true ) ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, VL53L0X_IDENTIFICATION_MODEL_ID, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 0xEEU ), Return( true ) ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, 0x83, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 1U ), Return( true ) ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, VL53L0X_RESULT_INTERRUPT_STATUS, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 0x07U ), Return( true ) ) );
 
-	success = vl53l0x.Initialize();
+	success = mVl53l0x.Initialize();
 
 	EXPECT_TRUE( success );
 }
 
-TEST( ComponentVl53l0x, Update_Ok )
+TEST_F( UT_CMP_VL53L0X, Update_Ok )
 {
-	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockTick> tick;
-	StrictMock <MockTwi>  twi;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	Vl53l0x vl53l0x( twi, tick );
+	EXPECT_CALL( mMockTick, GetMs() ).WillRepeatedly( Return( 0U ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, ReadRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, ReadRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegister32Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
 
-	EXPECT_CALL( tick, GetMs() ).WillRepeatedly( Return( 0U ) );
-	EXPECT_CALL( twi, ReadRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, ReadRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, ReadRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegister32Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, VL53L0X_IDENTIFICATION_MODEL_ID, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 0xEEU ), Return( true ) ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, 0x83, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 1U ), Return( true ) ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, VL53L0X_RESULT_INTERRUPT_STATUS, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 0x07U ), Return( true ) ) );
 
-	EXPECT_CALL( twi, ReadRegister( _, VL53L0X_IDENTIFICATION_MODEL_ID, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 0xEEU ), Return( true ) ) );
-	EXPECT_CALL( twi, ReadRegister( _, 0x83, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 1U ), Return( true ) ) );
-	EXPECT_CALL( twi, ReadRegister( _, VL53L0X_RESULT_INTERRUPT_STATUS, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 0x07U ), Return( true ) ) );
-
-	success = vl53l0x.Initialize();
-	vl53l0x.Update( 0U );
+	success = mVl53l0x.Initialize();
+	mVl53l0x.Update( 0U );
 
 	EXPECT_TRUE( success );
 }
 
-TEST( ComponentVl53l0x, IsDetecting_SetThreshold )
+TEST_F( UT_CMP_VL53L0X, IsDetecting_SetThreshold )
 {
-	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockTick> tick;
-	StrictMock <MockTwi>  twi;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	Vl53l0x vl53l0x( twi, tick );
+	EXPECT_CALL( mMockTick, GetMs() ).WillRepeatedly( Return( 0U ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, ReadRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, ReadRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegister32Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
 
-	EXPECT_CALL( tick, GetMs() ).WillRepeatedly( Return( 0U ) );
-	EXPECT_CALL( twi, ReadRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, ReadRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, ReadRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegister32Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, VL53L0X_IDENTIFICATION_MODEL_ID, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 0xEEU ), Return( true ) ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, 0x83, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 1U ), Return( true ) ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, VL53L0X_RESULT_INTERRUPT_STATUS, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 0x07U ), Return( true ) ) );
 
-	EXPECT_CALL( twi, ReadRegister( _, VL53L0X_IDENTIFICATION_MODEL_ID, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 0xEEU ), Return( true ) ) );
-	EXPECT_CALL( twi, ReadRegister( _, 0x83, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 1U ), Return( true ) ) );
-	EXPECT_CALL( twi, ReadRegister( _, VL53L0X_RESULT_INTERRUPT_STATUS, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 0x07U ), Return( true ) ) );
+	success = mVl53l0x.Initialize();
 
-	success = vl53l0x.Initialize();
-
-	EXPECT_TRUE( vl53l0x.SetThreshold( 350U ) );
-	EXPECT_EQ( 350U, vl53l0x.GetThreshold() );
+	EXPECT_TRUE( mVl53l0x.SetThreshold( 350U ) );
+	EXPECT_EQ( 350U, mVl53l0x.GetThreshold() );
 	EXPECT_TRUE( success );
 }
 
-TEST( ComponentVl53l0x, IsDetecting_UnderThreshold )
+TEST_F( UT_CMP_VL53L0X, IsDetecting_UnderThreshold )
 {
-	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockTick> tick;
-	StrictMock <MockTwi>  twi;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	Vl53l0x vl53l0x( twi, tick );
+	EXPECT_CALL( mMockTick, GetMs() ).WillRepeatedly( Return( 0U ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, ReadRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, ReadRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegister32Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
 
-	EXPECT_CALL( tick, GetMs() ).WillRepeatedly( Return( 0U ) );
-	EXPECT_CALL( twi, ReadRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, ReadRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, ReadRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegister32Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, VL53L0X_IDENTIFICATION_MODEL_ID, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 0xEEU ), Return( true ) ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, 0x83, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 1U ), Return( true ) ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, VL53L0X_RESULT_INTERRUPT_STATUS, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 0x07U ), Return( true ) ) );
 
-	EXPECT_CALL( twi, ReadRegister( _, VL53L0X_IDENTIFICATION_MODEL_ID, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 0xEEU ), Return( true ) ) );
-	EXPECT_CALL( twi, ReadRegister( _, 0x83, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 1U ), Return( true ) ) );
-	EXPECT_CALL( twi, ReadRegister( _, VL53L0X_RESULT_INTERRUPT_STATUS, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 0x07U ), Return( true ) ) );
+	success = mVl53l0x.Initialize();
 
-	success = vl53l0x.Initialize();
+	EXPECT_CALL( mMockTwi, ReadRegister16Bits( _, VL53L0X_RESULT_RANGE_STATUS + 10, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 250U ), Return( true ) ) );
 
-	EXPECT_CALL( twi, ReadRegister16Bits( _, VL53L0X_RESULT_RANGE_STATUS + 10, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 250U ), Return( true ) ) );
-
-	EXPECT_TRUE( vl53l0x.IsDetecting() );
+	EXPECT_TRUE( mVl53l0x.IsDetecting() );
 	EXPECT_TRUE( success );
 }
 
-TEST( ComponentVl53l0x, IsDetecting_AboveThreshold )
+TEST_F( UT_CMP_VL53L0X, IsDetecting_AboveThreshold )
 {
-	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
-	StrictMock <MockTick> tick;
-	StrictMock <MockTwi>  twi;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	Vl53l0x vl53l0x( twi, tick );
+	EXPECT_CALL( mMockTick, GetMs() ).WillRepeatedly( Return( 0U ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, ReadRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, ReadRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, WriteRegister32Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
 
-	EXPECT_CALL( tick, GetMs() ).WillRepeatedly( Return( 0U ) );
-	EXPECT_CALL( twi, ReadRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegister( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, ReadRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegisters( _, _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, ReadRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegister16Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( twi, WriteRegister32Bits( _, _, _ ) ).WillRepeatedly( Return( true ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, VL53L0X_IDENTIFICATION_MODEL_ID, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 0xEEU ), Return( true ) ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, 0x83, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 1U ), Return( true ) ) );
+	EXPECT_CALL( mMockTwi, ReadRegister( _, VL53L0X_RESULT_INTERRUPT_STATUS, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 0x07U ), Return( true ) ) );
 
-	EXPECT_CALL( twi, ReadRegister( _, VL53L0X_IDENTIFICATION_MODEL_ID, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 0xEEU ), Return( true ) ) );
-	EXPECT_CALL( twi, ReadRegister( _, 0x83, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 1U ), Return( true ) ) );
-	EXPECT_CALL( twi, ReadRegister( _, VL53L0X_RESULT_INTERRUPT_STATUS, _ ) ).WillRepeatedly( DoAll( SetArgReferee <2U>( 0x07U ), Return( true ) ) );
+	success = mVl53l0x.Initialize();
 
-	success = vl53l0x.Initialize();
+	EXPECT_CALL( mMockTwi, ReadRegister16Bits( _, VL53L0X_RESULT_RANGE_STATUS + 10, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 350U ), Return( true ) ) );
 
-	EXPECT_CALL( twi, ReadRegister16Bits( _, VL53L0X_RESULT_RANGE_STATUS + 10, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 350U ), Return( true ) ) );
-
-	EXPECT_FALSE( vl53l0x.IsDetecting() );
+	EXPECT_FALSE( mVl53l0x.IsDetecting() );
 	EXPECT_TRUE( success );
 }

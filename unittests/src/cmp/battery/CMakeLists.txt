@@ -1,18 +1,9 @@
-add_executable(
-  UT_CMP_BATTERY
-  ../../../../src/cmp/Battery.cpp
-  UT_CMP_BATTERY.cpp
+set(
+  SRC_FILES 
+  ../src/cmp/Battery.cpp 
 )
-
-target_link_libraries(
-  UT_CMP_BATTERY
-  GTest::gtest_main
-  GTest::gmock_main
+set(
+  TEST_FILE 
+  src/cmp/battery/UT_CMP_BATTERY.cpp
 )
-
-add_test(
-  NAME
-  UT_CMP_BATTERY
-  COMMAND
-    $<TARGET_FILE:UT_CMP_BATTERY>
-  )
+set(UT_CMP_BATTERY ${SRC_FILES} ${TEST_FILE} PARENT_SCOPE)

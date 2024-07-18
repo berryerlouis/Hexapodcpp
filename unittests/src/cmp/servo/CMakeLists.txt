@@ -1,18 +1,9 @@
-add_executable(
-  UT_CMP_SERVO
-  ../../../../src/cmp/Servo.cpp
-  UT_CMP_SERVO.cpp
+set(
+  SRC_FILES 
+  ../src/cmp/Servo.cpp 
 )
-
-target_link_libraries(
-  UT_CMP_SERVO
-  GTest::gtest_main
-  GTest::gmock_main
+set(
+  TEST_FILE 
+  src/cmp/servo/UT_CMP_SERVO.cpp
 )
-
-add_test(
-  NAME
-  UT_CMP_SERVO
-  COMMAND
-    $<TARGET_FILE:UT_CMP_SERVO>
-  )
+set(UT_CMP_SERVO ${SRC_FILES} ${TEST_FILE} PARENT_SCOPE)
