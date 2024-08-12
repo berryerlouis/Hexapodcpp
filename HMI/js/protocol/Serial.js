@@ -1,7 +1,10 @@
+import { Protocol } from './Protocol.js';
+
 export default class SerialInterface {
 
     constructor() {
         this.buffer = ""
+        this.listOfIncommingMessages = [];
     }
 
     async init() {
@@ -20,7 +23,7 @@ export default class SerialInterface {
                 const textDecoder = new TextDecoderStream();
                 this.readableStreamClosed = this.port.readable.pipeTo(textDecoder.writable);
                 this.reader = textDecoder.readable.getReader();
-
+                this.listOfIncommingMessages = []
                 this.threadRx();
 
             } catch (error) {
@@ -30,6 +33,7 @@ export default class SerialInterface {
     }
 
     async close() {
+        this.listOfIncommingMessages = []
         this.reader.cancel();
         await this.readableStreamClosed.catch(() => { });
         this.writer.close();
@@ -41,24 +45,21 @@ export default class SerialInterface {
         await this.writer.write(data);
     }
 
-
     read() {
-        return this.buffer;
-    }
-
-
-    eat(data) {
-        this.buffer = this.buffer.substring(data.length);
+        return this.listOfIncommingMessages[0];
     }
 
     async console(callbackConsole) {
         this.callbackConsole = callbackConsole;
     }
 
-    dataAvailable() {
-        return this.buffer.length
+    MessageAvailable() {
+        return this.listOfIncommingMessages.length
     }
 
+    PopMessage() {
+        return this.listOfIncommingMessages.pop();
+    }
 
     async threadRx() {
         while (this.port.readable) {
@@ -71,6 +72,26 @@ export default class SerialInterface {
                     }
                     if (value) {
                         this.buffer += value.replace('\n', '');
+                        if (this.buffer.length > 0 && this.buffer.indexOf('>') != -1) {
+                            if (this.buffer.indexOf('<') == 0) {
+                                if (this.buffer.indexOf('<') != -1) {
+                                    const raw = this.buffer.substring(this.buffer.indexOf('<'), this.buffer.indexOf('>') + 1);
+                                    if (raw.length > 0) {
+                                        try {
+                                            let frame = Protocol.decode(raw);
+                                            this.listOfIncommingMessages.push(frame);
+                                        }
+                                        catch (msg) {
+                                            window.console.error("Decoding error: " + raw + "\n" + msg);
+                                        }
+                                        this.buffer = this.buffer.substring(raw.length);
+                                    }
+                                }
+                            }
+                            else {
+                                this.buffer = this.buffer.substring(this.buffer.indexOf('<'));
+                            }
+                        }
                     }
                 }
             } catch (error) {
