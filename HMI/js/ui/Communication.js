@@ -1,7 +1,6 @@
 import SerialInterface from '../protocol/Serial.js'
 import { Message } from '../protocol/Message.js'
 import * as Cluters from '../protocol/Cluster.js';
-import { Protocol } from '../protocol/Protocol.js';
 
 export default class Communication {
     consoleList = undefined;
@@ -19,43 +18,30 @@ export default class Communication {
             await this.serialInterface.init();
             setInterval(() => {
                 //RX part
-                if (this.serialInterface.dataAvailable()) {
-                    const data = this.serialInterface.read();
-                    if (data.indexOf('<') != -1 && data.indexOf('>') != -1) {
-                        let raw = data.substring(data.indexOf('<'), data.indexOf('>') + 1);
-                        try {
-                            if (raw == "<hello>") {
-                                this.currentSentMessage = null;
-                                this.timeout = 0;
-                                this.uiConsole.log("RESET", frame, false)
-                            }
-                            else if (raw == "<ffff0101>") {
-                                this.currentSentMessage = null;
-                                this.timeout = 0;
-                                this.uiConsole.log("ERROR", { raw }, false)
-                            }
-                            else {
-                                let frame = Protocol.decode(raw);
-
-                                this.executeMessage(frame);
-
-                                if (this.currentSentMessage && (frame.cluster.code == this.currentSentMessage.cluster.code &&
-                                    frame.command.code == this.currentSentMessage.command.code)) {
-                                    this.currentSentMessage = null;
-                                    this.timeout = 0;
-                                    this.uiConsole.log("RX", frame, true)
-                                }
-                                else {
-                                    this.uiConsole.log("RX", frame, false)
-                                }
-                            }
-                        }
-                        catch (msg) {
+                if (this.serialInterface.MessageAvailable()) {
+                    const frame = this.serialInterface.PopMessage();
+                    if (frame.raw == "<hello>") {
+                        this.currentSentMessage = null;
+                        this.timeout = 0;
+                        this.uiConsole.log("RESET", frame, false)
+                    }
+                    else if (frame.raw == "<ffff0101>") {
+                        this.currentSentMessage = null;
+                        this.timeout = 0;
+                        this.uiConsole.log("ERROR", { raw }, false)
+                    }
+                    else {
+                        if (this.currentSentMessage
+                            && ((frame.cluster.code == this.currentSentMessage.cluster.code)
+                                && (frame.command.code == this.currentSentMessage.command.code))) {
                             this.currentSentMessage = null;
                             this.timeout = 0;
-                            this.uiConsole.log("RX", { raw }, false)
+                            this.uiConsole.log("RX", frame, true)
                         }
-                        this.serialInterface.eat(raw);
+                        else {
+                            this.uiConsole.log("RX", frame, false)
+                        }
+                        this.executeMessage(frame);
                     }
                 }
 
@@ -63,7 +49,6 @@ export default class Communication {
                 if (this.messages.length > 0 && this.currentSentMessage == null) {
                     this.currentSentMessage = this.messages.pop();
                     this.serialInterface.write(this.currentSentMessage.raw);
-
                     this.uiConsole.log("TX", this.currentSentMessage, false)
                 }
                 else if (this.currentSentMessage != null) {
@@ -86,7 +71,7 @@ export default class Communication {
 
             setInterval(() => {
                 this.sendRawMessage(Cluters.ClusterName.SERVO, Cluters.CommandServo.GET_ALL)
-            }, 10)
+            }, 50)
 
             setInterval(() => {
                 this.sendRawMessage(Cluters.ClusterName.IMU, Cluters.CommandImu.ACC)

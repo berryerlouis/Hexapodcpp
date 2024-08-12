@@ -41,6 +41,10 @@ class CommandGeneric {
 }
 class CommandGeneral {
     static VERSION = 'VERSION';
+    static MIN_EXECUTION_TIME = 'MIN_EXECUTION_TIME';
+    static MAX_EXECUTION_TIME = 'MAX_EXECUTION_TIME';
+    static INSTANT_EXECUTION_TIME = 'INSTANT_EXECUTION_TIME';
+    static RESET_EXECUTION_TIME = 'RESET_EXECUTION_TIME';
 }
 class CommandImu {
     static ALL = 'ALL';
@@ -81,70 +85,73 @@ class CommandServo {
 
 export default class Clusters {
     static clusters = [
-            new Cluster(
-                ClusterName.GENERAL, '00',
-                [
-                    new Command(CommandGeneral.VERSION, '00')
-                ]
-            ),
-            new Cluster(
-                ClusterName.IMU, '01',
-                [
-                    new Command(CommandImu.ALL, '00'),
-                    new Command(CommandImu.ACC, '01'),
-                    new Command(CommandImu.GYR, '02'),
-                    new Command(CommandImu.MAG, '03'),
-                    new Command(CommandImu.TMP, '04')
-                ]
-            ),
-            new Cluster(
-                ClusterName.PROXIMITY, '02',
-                [
-                    new Command(CommandProximity.US_LEFT, '00'),
-                    new Command(CommandProximity.US_RIGHT, '01'),
-                    new Command(CommandProximity.LAZER, '02'),
-                    new Command(CommandProximity.SET_THRESHOLD, '03')
-                ]
-            ),
-            new Cluster(
-                ClusterName.SERVO, '03',
-                [
-                    new Command(CommandServo.GET_ALL, '00'),
-                    new Command(CommandServo.GET_ANGLE, '01'),
-                    new Command(CommandServo.SET_ANGLE, '02'),
-                    new Command(CommandServo.GET_MIN, '03'),
-                    new Command(CommandServo.SET_MIN, '04'),
-                    new Command(CommandServo.GET_MAX, '05'),
-                    new Command(CommandServo.SET_MAX, '06'),
-                    new Command(CommandServo.GET_OFFSET, '07'),
-                    new Command(CommandServo.SET_OFFSET, '08'),
-                    new Command(CommandServo.GET_STATE, '09'),
-                    new Command(CommandServo.SET_STATE, '0A'),
-                    new Command(CommandServo.GET_REVERSE, '0B'),
-                    new Command(CommandServo.SET_REVERSE, '0C'),
-                    new Command(CommandServo.SAVE, '0D'),
-                ]
-            ),
-            new Cluster(
-                ClusterName.BATTERY, '04',
-                [
-                    new Command(CommandBattery.VOLTAGE, '00'),
-                    new Command(CommandBattery.STATUS, '01')
-                ]
-            ),
-            new Cluster(
-                ClusterName.BODY, '05',
-                [
-                    new Command(CommandBody.SET_X_Y_Z, '00')
-                ]
-            )
-        ];
+        new Cluster(
+            ClusterName.GENERAL, '00',
+            [
+                new Command(CommandGeneral.VERSION, '00'),
+                new Command(CommandGeneral.MIN_EXECUTION_TIME, '01'),
+                new Command(CommandGeneral.MAX_EXECUTION_TIME, '02'),
+                new Command(CommandGeneral.INSTANT_EXECUTION_TIME, '03'),
+                new Command(CommandGeneral.RESET_EXECUTION_TIME, '04')
+            ]
+        ),
+        new Cluster(
+            ClusterName.IMU, '01',
+            [
+                new Command(CommandImu.ALL, '00'),
+                new Command(CommandImu.ACC, '01'),
+                new Command(CommandImu.GYR, '02'),
+                new Command(CommandImu.MAG, '03'),
+                new Command(CommandImu.TMP, '04')
+            ]
+        ),
+        new Cluster(
+            ClusterName.PROXIMITY, '02',
+            [
+                new Command(CommandProximity.US_LEFT, '00'),
+                new Command(CommandProximity.US_RIGHT, '01'),
+                new Command(CommandProximity.LAZER, '02'),
+                new Command(CommandProximity.SET_THRESHOLD, '03')
+            ]
+        ),
+        new Cluster(
+            ClusterName.SERVO, '03',
+            [
+                new Command(CommandServo.GET_ALL, '00'),
+                new Command(CommandServo.GET_ANGLE, '01'),
+                new Command(CommandServo.SET_ANGLE, '02'),
+                new Command(CommandServo.GET_MIN, '03'),
+                new Command(CommandServo.SET_MIN, '04'),
+                new Command(CommandServo.GET_MAX, '05'),
+                new Command(CommandServo.SET_MAX, '06'),
+                new Command(CommandServo.GET_OFFSET, '07'),
+                new Command(CommandServo.SET_OFFSET, '08'),
+                new Command(CommandServo.GET_STATE, '09'),
+                new Command(CommandServo.SET_STATE, '0A'),
+                new Command(CommandServo.GET_REVERSE, '0B'),
+                new Command(CommandServo.SET_REVERSE, '0C'),
+                new Command(CommandServo.SAVE, '0D'),
+            ]
+        ),
+        new Cluster(
+            ClusterName.BATTERY, '04',
+            [
+                new Command(CommandBattery.VOLTAGE, '00'),
+                new Command(CommandBattery.STATUS, '01')
+            ]
+        ),
+        new Cluster(
+            ClusterName.BODY, '05',
+            [
+                new Command(CommandBody.SET_X_Y_Z, '00')
+            ]
+        )
+    ];
 
     static findClusterByName(name) {
         let clusterFound = false;
         Clusters.clusters.forEach(cluster => {
-            if(cluster.name == name)
-            {
+            if (cluster.name == name) {
                 clusterFound = cluster;
             }
         });
@@ -196,4 +203,4 @@ export default class Clusters {
 }
 
 
-export { Clusters, Cluster, ClusterName, CommandGeneral, CommandImu, CommandProximity, CommandBattery,CommandBody, CommandServo };
+export { Clusters, Cluster, ClusterName, CommandGeneral, CommandImu, CommandProximity, CommandBattery, CommandBody, CommandServo };

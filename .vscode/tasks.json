@@ -67,7 +67,7 @@
         {
             "type": "pickString",
             "id": "makeTarget",
-            "description": "What build target ?",
+            "description": "Which test to run ?",
             "options": [
                 "all",
                 "clean",
