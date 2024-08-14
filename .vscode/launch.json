@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/unittests/build/HexapodcppTest",
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
