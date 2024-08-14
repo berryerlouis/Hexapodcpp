@@ -1,6 +1,4 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558 
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
@@ -44,7 +42,7 @@
             "group": {
                 "kind": "build",
                 "isDefault": false
-            },
+            }
         },
         {
             "label": "Test",
@@ -63,7 +61,7 @@
                 "kind": "build",
                 "isDefault": false
             }
-        },
+        }
     ],
     "inputs": [
         {
@@ -110,6 +108,6 @@
                 "DEBUG"
             ],
             "default": "DEBUG"
-        },
+        }
     ]
 }

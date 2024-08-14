@@ -12,6 +12,6 @@ else
     fi
     if [ $1 = "test" ]; then
         cd unittests
-        cmake -S . -B build
+        cmake -Dgtest_build_samples=ON -DCMAKE_BUILD_TYPE=Debug -S . -B build
     fi
 fi
