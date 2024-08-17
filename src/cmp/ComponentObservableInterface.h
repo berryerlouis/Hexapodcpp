@@ -11,6 +11,7 @@ public:
 	virtual Core::CoreStatus Attach( ComponentObserverInterface <ObjectType> *observer ) = 0;
 	virtual void Notify( const ObjectType &object ) = 0;
 };
+<<<<<<< HEAD
 
 
 template <typename ObjectType1, typename ObjectType2>
@@ -21,4 +22,6 @@ public:
 	virtual Core::CoreStatus Attach( ComponentObserver2Interface <ObjectType1, ObjectType2> *observer ) = 0;
 	virtual void Notify( const ObjectType1 &object1, const ObjectType2 &object2 ) = 0;
 };
+=======
+>>>>>>> f9be308 (create observer for Battery, used by service battery and service display, clusters are refactored to used the interface componenent)
 }

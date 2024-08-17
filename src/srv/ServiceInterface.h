@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../cmp/ComponentObserver.h"
 #include "../cmp/Communication.h"
 #include "../cmp/BatteryInterface.h"
 #include "../cmp/SensorProximityInterface.h"

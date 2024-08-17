@@ -110,7 +110,11 @@ TEST_F( UT_CLU_IMU, BuildFrameGyr_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame  response;
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> f9be308 (create observer for Battery, used by service battery and service display, clusters are refactored to used the interface componenent)
 	EXPECT_CALL( mMockMpu9150, ReadGyr() ).WillOnce( Return( Mpu9150Interface::Vector3{ 5, 5, 5 } ) );
 
 	success = mClusterImu.BuildFrameGyr( response );

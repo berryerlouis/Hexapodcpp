@@ -71,7 +71,11 @@ TEST_F( UT_CLU_PROXIMITY, BuildFrameDistanceSrfLeft_Ok )
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame  response;
 
+<<<<<<< HEAD
 	EXPECT_CALL( mMockSensorProximity, GetDistance( SensorsId::SRF_LEFT ) ).WillOnce( Return( 10U ) );
+=======
+	EXPECT_CALL( mMockSensorProximity, GetDistance( SensorProximityInterface::SensorsId::SRF_LEFT ) ).WillOnce( Return( 10U ) );
+>>>>>>> f9be308 (create observer for Battery, used by service battery and service display, clusters are refactored to used the interface componenent)
 
 	success = mClusterProximity.BuildFrameDistance( EProximityCommands::US_LEFT, response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::PROXIMITY );
@@ -87,7 +91,11 @@ TEST_F( UT_CLU_PROXIMITY, BuildFrameDistanceSrfRight_Ok )
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame  response;
 
+<<<<<<< HEAD
 	EXPECT_CALL( mMockSensorProximity, GetDistance( SensorsId::SRF_RIGHT ) ).WillOnce( Return( 10U ) );
+=======
+	EXPECT_CALL( mMockSensorProximity, GetDistance( SensorProximityInterface::SensorsId::SRF_RIGHT ) ).WillOnce( Return( 10U ) );
+>>>>>>> f9be308 (create observer for Battery, used by service battery and service display, clusters are refactored to used the interface componenent)
 
 	success = mClusterProximity.BuildFrameDistance( EProximityCommands::US_RIGHT, response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::PROXIMITY );
@@ -103,7 +111,11 @@ TEST_F( UT_CLU_PROXIMITY, BuildFrameDistanceVlx_Ok )
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame  response;
 
+<<<<<<< HEAD
 	EXPECT_CALL( mMockSensorProximity, GetDistance( SensorsId::VLX ) ).WillOnce( Return( 10U ) );
+=======
+	EXPECT_CALL( mMockSensorProximity, GetDistance( SensorProximityInterface::SensorsId::VLX ) ).WillOnce( Return( 10U ) );
+>>>>>>> f9be308 (create observer for Battery, used by service battery and service display, clusters are refactored to used the interface componenent)
 
 	success = mClusterProximity.BuildFrameDistance( EProximityCommands::LASER, response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::PROXIMITY );

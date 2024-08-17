@@ -20,6 +20,8 @@ public:
 	void DisplayBatteryLevel( Component::BatteryState state );
 	void DisplayProximitySensor( Component::SensorProximityInterface::SensorsId sensor );
 
+	virtual void UpdatedBatteryState( const BatteryState &batteryState ) final override;
+
 protected:
 	Ssd1306Interface & mSsd1306;
 	BatteryInterface & mBatteryInterface;
