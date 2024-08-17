@@ -21,7 +21,7 @@ protected:
 	UT_SRV_ORIENTATION() :
 		mMockMpu9150(),
 		mClusterImu( mMockMpu9150 ),
-		mServiceOrientation( mClusterImu )
+		mServiceOrientation( mClusterImu, mMockMpu9150 )
 	{
 	}
 

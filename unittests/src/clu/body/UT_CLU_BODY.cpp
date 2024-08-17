@@ -35,17 +35,6 @@ protected:
 	ClusterBody mClusterBody;
 };
 
-TEST_F( UT_CLU_BODY, Initialize_Ok )
-{
-	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame       response;
-
-	EXPECT_CALL( mBodyMock, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = mClusterBody.Initialize();
-
-	EXPECT_TRUE( success );
-}
-
 TEST_F( UT_CLU_BODY, Execute_WrongCluster_Ko )
 {
 	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;

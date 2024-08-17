@@ -105,7 +105,8 @@
             "description": "Which configuration to build ?",
             "options": [
                 "RELEASE",
-                "DEBUG"
+                "DEBUG",
+                "CLEAN"
             ],
             "default": "DEBUG"
         }

@@ -1,27 +1,32 @@
 #include "ServiceBattery.h"
 
-ServiceBattery::ServiceBattery( Clusters::ClusterBattery &clusterBattery )
+ServiceBattery::ServiceBattery( Clusters::ClusterBattery &clusterBattery, BatteryInterface &batteryInterface )
 	: Service( 100U )
 	, mClusterBattery( clusterBattery )
-	, mCurrentState( BatteryState::UNKNOWN )
+	, mBatteryInterface( batteryInterface )
 {
 }
 
 Core::CoreStatus ServiceBattery::Initialize ( void )
 {
-	return ( this->mClusterBattery.Initialize() );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	if ( this->mBatteryInterface.Initialize() )
+	{
+		this->mBatteryInterface.Attach( this );
+		success = Core::CoreStatus::CORE_OK;
+	}
+	return ( success );
 }
 
 void ServiceBattery::Update ( const uint64_t currentTime )
 {
-	this->mClusterBattery.Update( currentTime );
-	auto state = this->mClusterBattery.GetComponent().GetState();
-	if ( this->mCurrentState != state )
-	{
-		Frame response;
-		this->mCurrentState = state;
-		this->mClusterBattery.BuildFrameState( response );
-		this->mServiceMediator->SendFrame( response );
-		this->mServiceMediator->DisplayBatteryLevel( state );
-	}
+	this->mBatteryInterface.Update( currentTime );
+}
+
+void ServiceBattery::UpdatedBatteryState ( const BatteryState &batteryState )
+{
+	(void) batteryState;
+	Frame response;
+	this->mClusterBattery.BuildFrameState( response );
+	this->mServiceMediator->SendFrame( response );
 }

@@ -19,7 +19,7 @@ protected:
 		mMockSoftware(),
 		mMockServiceMediator(),
 		mClusterGeneral( mMockSoftware ),
-		mServiceGeneral( mClusterGeneral )
+		mServiceGeneral( mClusterGeneral, mMockSoftware )
 	{
 	}
 

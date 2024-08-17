@@ -21,7 +21,7 @@ protected:
 		mMockSensorProximity(),
 		mMockServiceMediator(),
 		mClusterProximity( mMockSensorProximity ),
-		mServiceProximity( mClusterProximity )
+		mServiceProximity( mClusterProximity, mMockSensorProximity )
 	{
 	}
 

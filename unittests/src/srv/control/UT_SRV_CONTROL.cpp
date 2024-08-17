@@ -19,7 +19,7 @@ protected:
 		mMockPca9685(),
 		mMockServos(),
 		mClusterServo( mMockServos ),
-		mServiceControl( mClusterServo )
+		mServiceControl( mClusterServo, mMockServos )
 	{
 	}
 

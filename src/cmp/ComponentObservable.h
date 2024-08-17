@@ -1,41 +1,45 @@
 #pragma once
 #include "../cor/CoreInterface.h"
+#include "ComponentObservableInterface.h"
 
 namespace Component {
 template <typename ObjectType>
-class ComponentObservableInterface {
+class ComponentObservable : public ComponentObservableInterface <ObjectType> {
 public:
-	~ComponentObservableInterface() = default;
+#define MAX_OBSERVERS    5U
+	ComponentObservable() :
+		mIndexList( 0U )
+		, mListObserver{ nullptr }
+	{
+	}
 
-	virtual void Attach( ComponentObserver <ObjectType> *observer ) = 0;
-	virtual void Notify( const ObjectType &object ) = 0;
+	~ComponentObservable() = default;
+
+	virtual Core::CoreStatus Attach ( ComponentObserverInterface <ObjectType> *observer ) final override
+	{
+		Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+		if ( this->mIndexList != MAX_OBSERVERS )
+		{
+			this->mListObserver[this->mIndexList] = observer;
+			this->mIndexList++;
+			success = Core::CoreStatus::CORE_OK;
+		}
+		return ( success );
+	}
+
+	virtual void Notify ( const ObjectType &object ) final override
+	{
+		for ( size_t i = 0; i < this->mIndexList; i++ )
+		{
+			if ( this->mListObserver[i] != nullptr )
+			{
+				this->mListObserver[i]->UpdatedValue( object );
+			}
+		}
+	}
+
+private:
+	uint8_t mIndexList;
+	ComponentObserverInterface <ObjectType> *mListObserver[3U];
 };
-
-/*template <typename ObjectType>
- * class ComponentObservable {
- * public:
- *      ComponentObservable() : mIndexList( 0U )
- *              , mListObserver{ nullptr }
- *      {
- *      }
- *
- *      ~ComponentObservable() = default;
- *
- *      void Attach ( ComponentObserver <ObjectType> *observer )
- *      {
- *              this->mListObserver[this->mIndexList] = observer;
- *      }
- *
- *      void Notify ( const ObjectType &object )
- *      {
- *              for ( size_t i = 0; i < this->mIndexList; i++ )
- *              {
- *                      this->mListObserver[i]->UpdatedValue( object );
- *              }
- *      }
- *
- * private:
- *      uint8_t mIndexList;
- *      ComponentObserver <ObjectType> *mListObserver[3U];
- * };*/
 }

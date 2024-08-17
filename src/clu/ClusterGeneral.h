@@ -6,10 +6,11 @@
 namespace Clusters {
 using namespace Component;
 
-class ClusterGeneral : public Cluster <SoftwareInterface> {
+class ClusterGeneral : public Cluster {
 public:
 	ClusterGeneral( SoftwareInterface &software )
-		: Cluster <SoftwareInterface>( GENERAL, software )
+		: Cluster( GENERAL )
+		, mSoftware( software )
 	{
 	}
 
@@ -39,7 +40,7 @@ public:
 			break;
 
 		case EGeneralCommands::RESET_EXECUTION_TIME:
-			this->GetComponent().ResetTiming();
+			this->mSoftware.ResetTiming();
 			success = response.Build( EClusters::GENERAL, EGeneralCommands::RESET_EXECUTION_TIME );
 			break;
 
@@ -56,7 +57,7 @@ public:
 			EGeneralCommands::VERSION );
 		if ( success )
 		{
-			SoftwareInterface::Version version = this->GetComponent().GetVersion();
+			SoftwareInterface::Version version = this->mSoftware.GetVersion();
 			response.SetnBytesParam( 2U, (uint8_t *) &version );
 		}
 		return ( success );
@@ -69,7 +70,7 @@ public:
 			EGeneralCommands::MIN_EXECUTION_TIME );
 		if ( success )
 		{
-			response.Set8BytesParam( this->GetComponent().GetMinTime() );
+			response.Set8BytesParam( this->mSoftware.GetMinTime() );
 		}
 		return ( success );
 	}
@@ -81,9 +82,12 @@ public:
 			EGeneralCommands::MAX_EXECUTION_TIME );
 		if ( success )
 		{
-			response.Set8BytesParam( this->GetComponent().GetMaxTime() );
+			response.Set8BytesParam( this->mSoftware.GetMaxTime() );
 		}
 		return ( success );
 	}
+
+private:
+	SoftwareInterface &mSoftware;
 };
 }

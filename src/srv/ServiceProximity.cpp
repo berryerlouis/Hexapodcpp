@@ -1,23 +1,24 @@
 #include "ServiceProximity.h"
 
-ServiceProximity::ServiceProximity( ClusterProximity &clusterProximity )
+ServiceProximity::ServiceProximity( ClusterProximity &clusterProximity, SensorProximityInterface &proximity )
 	: Service( 100 )
 	, mClusterProximity( clusterProximity )
+	, mProximity( proximity )
 {
 }
 
 Core::CoreStatus ServiceProximity::Initialize ( void )
 {
-	return ( this->mClusterProximity.Initialize() );
+	return ( this->mProximity.Initialize() );
 }
 
 void ServiceProximity::Update ( const uint64_t currentTime )
 {
-	this->mClusterProximity.Update( currentTime );
+	this->mProximity.Update( currentTime );
 
 	for ( size_t sensorId = 0U; sensorId < SensorProximityInterface::NB_SENSORS; sensorId++ )
 	{
-		if ( this->mClusterProximity.GetComponent().IsDetecting( (SensorProximityInterface::SensorsId) sensorId ) )
+		if ( this->mProximity.IsDetecting( (SensorProximityInterface::SensorsId) sensorId ) )
 		{
 			Frame response;
 			this->mClusterProximity.BuildFrameDistance( (EProximityCommands) sensorId, response );

@@ -82,13 +82,10 @@ TEST_F( UT_CLU_SERVO, BuildFrameAngle_Ok )
 	Clusters::Frame  response;
 	const uint8_t    servoId = 1U;
 
-	EXPECT_CALL( mMockServos, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = mClusterServo.Initialize();
-
 	Servo servo( mMockPca9685, mMockTick, servoId, 11U );
 	EXPECT_CALL( mMockServos, GetServo( servoId ) ).WillOnce( ReturnRef( servo ) );
 
-	mClusterServo.BuildFrameAngle( servoId, response );
+	success = mClusterServo.BuildFrameAngle( servoId, response );
 
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::SERVO );
 	EXPECT_EQ( response.commandId, Clusters::EServoCommands::GET_ANGLE );
@@ -104,13 +101,10 @@ TEST_F( UT_CLU_SERVO, BuildFrameMinAngle_Ok )
 	Clusters::Frame  response;
 	const uint8_t    servoId = 1U;
 
-	EXPECT_CALL( mMockServos, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = mClusterServo.Initialize();
-
 	Servo servo( mMockPca9685, mMockTick, servoId, 11U, 0U, 0U, 180U );
 	EXPECT_CALL( mMockServos, GetServo( servoId ) ).WillOnce( ReturnRef( servo ) );
 
-	mClusterServo.BuildFrameMinAngle( servoId, response );
+	success = mClusterServo.BuildFrameMinAngle( servoId, response );
 
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::SERVO );
 	EXPECT_EQ( response.commandId, Clusters::EServoCommands::GET_MIN );
@@ -126,13 +120,10 @@ TEST_F( UT_CLU_SERVO, BuildFrameMaxAngle_Ok )
 	Clusters::Frame  response;
 	const uint8_t    servoId = 1U;
 
-	EXPECT_CALL( mMockServos, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = mClusterServo.Initialize();
-
 	Servo servo( mMockPca9685, mMockTick, servoId, 11U, 0U, 0U, 180U );
 	EXPECT_CALL( mMockServos, GetServo( servoId ) ).WillOnce( ReturnRef( servo ) );
 
-	mClusterServo.BuildFrameMaxAngle( servoId, response );
+	success = mClusterServo.BuildFrameMaxAngle( servoId, response );
 
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::SERVO );
 	EXPECT_EQ( response.commandId, Clusters::EServoCommands::GET_MAX );
@@ -148,13 +139,10 @@ TEST_F( UT_CLU_SERVO, BuildFrameOffset_Ok )
 	Clusters::Frame  response;
 	const uint8_t    servoId = 1U;
 
-	EXPECT_CALL( mMockServos, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = mClusterServo.Initialize();
-
 	Servo servo( mMockPca9685, mMockTick, servoId, 11U, 50U, 0U, 180U );
 	EXPECT_CALL( mMockServos, GetServo( servoId ) ).WillOnce( ReturnRef( servo ) );
 
-	mClusterServo.BuildFrameOffset( servoId, response );
+	success = mClusterServo.BuildFrameOffset( servoId, response );
 
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::SERVO );
 	EXPECT_EQ( response.commandId, Clusters::EServoCommands::GET_OFFSET );
@@ -170,13 +158,10 @@ TEST_F( UT_CLU_SERVO, BuildFrameState_Ok )
 	Clusters::Frame  response;
 	const uint8_t    servoId = 1U;
 
-	EXPECT_CALL( mMockServos, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = mClusterServo.Initialize();
-
 	Servo servo( mMockPca9685, mMockTick, servoId, 11U, 50U, 0U, 180U );
 	EXPECT_CALL( mMockServos, GetServo( servoId ) ).WillOnce( ReturnRef( servo ) );
 
-	mClusterServo.BuildFrameState( servoId, response );
+	success = mClusterServo.BuildFrameState( servoId, response );
 
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::SERVO );
 	EXPECT_EQ( response.commandId, Clusters::EServoCommands::GET_STATE );
@@ -192,13 +177,10 @@ TEST_F( UT_CLU_SERVO, BuildFrameReverseFalse_Ok )
 	Clusters::Frame  response;
 	const uint8_t    servoId = 1U;
 
-	EXPECT_CALL( mMockServos, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = mClusterServo.Initialize();
-
 	Servo servo( mMockPca9685, mMockTick, servoId, 11U, 50U, 0U, 180U );
 	EXPECT_CALL( mMockServos, GetServo( servoId ) ).WillOnce( ReturnRef( servo ) );
 
-	mClusterServo.BuildFrameReverse( servoId, response );
+	success = mClusterServo.BuildFrameReverse( servoId, response );
 
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::SERVO );
 	EXPECT_EQ( response.commandId, Clusters::EServoCommands::GET_REVERSE );
@@ -214,13 +196,10 @@ TEST_F( UT_CLU_SERVO, BuildFrameReverseTrue_Ok )
 	Clusters::Frame  response;
 	const uint8_t    servoId = 1U;
 
-	EXPECT_CALL( mMockServos, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = mClusterServo.Initialize();
-
 	Servo servo( mMockPca9685, mMockTick, servoId, 11U, 50U, 0U, 180U, true );
 	EXPECT_CALL( mMockServos, GetServo( servoId ) ).WillOnce( ReturnRef( servo ) );
 
-	mClusterServo.BuildFrameReverse( servoId, response );
+	success = mClusterServo.BuildFrameReverse( servoId, response );
 
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::SERVO );
 	EXPECT_EQ( response.commandId, Clusters::EServoCommands::GET_REVERSE );

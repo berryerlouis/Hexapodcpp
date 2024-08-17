@@ -36,16 +36,6 @@ protected:
 	ClusterBattery mClusterBattery;
 };
 
-TEST_F( UT_CLU_BATTERY, Initialize_Ok )
-{
-	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame  response;
-
-	EXPECT_CALL( mMockBattery, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = mClusterBattery.Initialize();
-
-	EXPECT_TRUE( success );
-}
 
 TEST_F( UT_CLU_BATTERY, Execute_WrongCluster_Ko1 )
 {
@@ -95,43 +85,19 @@ TEST_F( UT_CLU_BATTERY, Execute_GET_VOLTAGE_Ok )
 	EXPECT_TRUE( success );
 }
 
-TEST_F( UT_CLU_BATTERY, Execute_GET_BAT_STATUS_Ok )
-{
-	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame  request;
-	Clusters::Frame  response;
-
-	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( BatteryState::NOMINAL ) );
-	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
-	request.Build( Clusters::EClusters::BATTERY, Clusters::EBatteryCommands::GET_BAT_STATUS );
-	success = mClusterBattery.Execute( request, response );
-
-	EXPECT_EQ( response.clusterId, Clusters::EClusters::BATTERY );
-	EXPECT_EQ( response.commandId, Clusters::EBatteryCommands::GET_BAT_STATUS );
-	EXPECT_EQ( response.nbParams, 3U );
-	EXPECT_EQ( response.params[0U], BatteryState::NOMINAL );
-	EXPECT_EQ( response.params[1U], 10U );
-	EXPECT_EQ( response.params[2U], 0U );
-	EXPECT_TRUE( success );
-}
-
-
 TEST_F( UT_CLU_BATTERY, BuildFrameState_Nominal_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame  response;
 
-	EXPECT_CALL( mMockBattery, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = mClusterBattery.Initialize();
-
 	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
 	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( BatteryState::NOMINAL ) );
 
-	mClusterBattery.BuildFrameState( response );
+	success = mClusterBattery.BuildFrameState( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::BATTERY );
 	EXPECT_EQ( response.commandId, Clusters::EBatteryCommands::GET_BAT_STATUS );
 	EXPECT_EQ( response.nbParams, 3U );
-	EXPECT_EQ( response.params[0U], 0U );
+	EXPECT_EQ( response.params[0U], BatteryState::NOMINAL );
 	EXPECT_EQ( response.params[1U], 10U );
 	EXPECT_EQ( response.params[2U], 0U );
 	EXPECT_TRUE( success );
@@ -142,17 +108,14 @@ TEST_F( UT_CLU_BATTERY, BuildFrameState_Critical_Ok )
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame  response;
 
-	EXPECT_CALL( mMockBattery, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = mClusterBattery.Initialize();
-
 	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
 	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( BatteryState::CRITICAL ) );
 
-	mClusterBattery.BuildFrameState( response );
+	success = mClusterBattery.BuildFrameState( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::BATTERY );
 	EXPECT_EQ( response.commandId, Clusters::EBatteryCommands::GET_BAT_STATUS );
 	EXPECT_EQ( response.nbParams, 3U );
-	EXPECT_EQ( response.params[0U], 2U );
+	EXPECT_EQ( response.params[0U], BatteryState::CRITICAL );
 	EXPECT_EQ( response.params[1U], 10U );
 	EXPECT_EQ( response.params[2U], 0U );
 	EXPECT_TRUE( success );
@@ -163,17 +126,14 @@ TEST_F( UT_CLU_BATTERY, BuildFrameState_Warning_Ok )
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame  response;
 
-	EXPECT_CALL( mMockBattery, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = mClusterBattery.Initialize();
-
 	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
 	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( BatteryState::WARNING ) );
 
-	mClusterBattery.BuildFrameState( response );
+	success = mClusterBattery.BuildFrameState( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::BATTERY );
 	EXPECT_EQ( response.commandId, Clusters::EBatteryCommands::GET_BAT_STATUS );
 	EXPECT_EQ( response.nbParams, 3U );
-	EXPECT_EQ( response.params[0U], 1U );
+	EXPECT_EQ( response.params[0U], BatteryState::WARNING );
 	EXPECT_EQ( response.params[1U], 10U );
 	EXPECT_EQ( response.params[2U], 0U );
 	EXPECT_TRUE( success );

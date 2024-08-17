@@ -6,10 +6,11 @@
 namespace Clusters {
 using namespace Component;
 
-class ClusterServo : public Cluster <ServosInterface> {
+class ClusterServo : public Cluster {
 public:
 	ClusterServo( ServosInterface &servos )
-		: Cluster <ServosInterface>( SERVO, servos )
+		: Cluster( SERVO )
+		, mServosInterface( servos )
 	{
 	}
 
@@ -64,7 +65,7 @@ public:
 			if ( request.nbParams == 2U )
 			{
 				uint8_t angle = request.Get1ByteParam( 1U );
-				this->GetComponent().GetServo( servoId ).SetAngle( angle );
+				this->mServosInterface.GetServo( servoId ).SetAngle( angle );
 				return ( this->BuildFrameAngle( servoId, response ) );
 			}
 			break;
@@ -82,7 +83,7 @@ public:
 			if ( request.nbParams == 2U )
 			{
 				uint8_t angle = request.Get1ByteParam( 1U );
-				this->GetComponent().GetServo( servoId ).SetMin( angle );
+				this->mServosInterface.GetServo( servoId ).SetMin( angle );
 				return ( this->BuildFrameMinAngle( servoId, response ) );
 			}
 			break;
@@ -100,7 +101,7 @@ public:
 			if ( request.nbParams == 2U )
 			{
 				uint8_t angle = request.Get1ByteParam( 1U );
-				this->GetComponent().GetServo( servoId ).SetMax( angle );
+				this->mServosInterface.GetServo( servoId ).SetMax( angle );
 				return ( this->BuildFrameMaxAngle( servoId, response ) );
 			}
 			break;
@@ -118,7 +119,7 @@ public:
 			if ( request.nbParams == 2U )
 			{
 				int8_t angle = request.Get1ByteParam( 1U );
-				this->GetComponent().GetServo( servoId ).SetOffset( angle );
+				this->mServosInterface.GetServo( servoId ).SetOffset( angle );
 				return ( this->BuildFrameOffset( servoId, response ) );
 			}
 			break;
@@ -136,7 +137,7 @@ public:
 			if ( request.nbParams == 2U )
 			{
 				bool state = request.Get1ByteParam( 1U );
-				this->GetComponent().GetServo( servoId ).SetEnable( state );
+				this->mServosInterface.GetServo( servoId ).SetEnable( state );
 				return ( this->BuildFrameState( servoId, response ) );
 			}
 			break;
@@ -154,7 +155,7 @@ public:
 			if ( request.nbParams == 2U )
 			{
 				bool reverse = request.Get1ByteParam( 1U );
-				this->GetComponent().GetServo( servoId ).SetReverse( reverse );
+				this->mServosInterface.GetServo( servoId ).SetReverse( reverse );
 				return ( this->BuildFrameReverse( servoId, response ) );
 			}
 			break;
@@ -175,7 +176,7 @@ public:
 			uint8_t params[ServosInterface::NB_SERVOS] = { 0U };
 			for ( size_t servoId = 0U; servoId < ServosInterface::NB_SERVOS; servoId++ )
 			{
-				params[servoId] = this->GetComponent().GetServo( servoId ).GetAngle();
+				params[servoId] = this->mServosInterface.GetServo( servoId ).GetAngle();
 			}
 			response.SetnBytesParam( ServosInterface::NB_SERVOS, (uint8_t *) &params );
 		}
@@ -190,7 +191,7 @@ public:
 		if ( success )
 		{
 			response.Set1ByteParam( servoId );
-			response.Set1ByteParam( this->GetComponent().GetServo( servoId ).GetAngle() );
+			response.Set1ByteParam( this->mServosInterface.GetServo( servoId ).GetAngle() );
 		}
 		return ( success );
 	}
@@ -203,7 +204,7 @@ public:
 		if ( success )
 		{
 			response.Set1ByteParam( servoId );
-			response.Set1ByteParam( this->GetComponent().GetServo( servoId ).GetMin() );
+			response.Set1ByteParam( this->mServosInterface.GetServo( servoId ).GetMin() );
 		}
 		return ( success );
 	}
@@ -216,7 +217,7 @@ public:
 		if ( success )
 		{
 			response.Set1ByteParam( servoId );
-			response.Set1ByteParam( this->GetComponent().GetServo( servoId ).GetMax() );
+			response.Set1ByteParam( this->mServosInterface.GetServo( servoId ).GetMax() );
 		}
 		return ( success );
 	}
@@ -229,7 +230,7 @@ public:
 		if ( success )
 		{
 			response.Set1ByteParam( servoId );
-			response.Set1ByteParam( this->GetComponent().GetServo( servoId ).GetOffset() );
+			response.Set1ByteParam( this->mServosInterface.GetServo( servoId ).GetOffset() );
 		}
 		return ( success );
 	}
@@ -242,7 +243,7 @@ public:
 		if ( success )
 		{
 			response.Set1ByteParam( servoId );
-			response.Set1ByteParam( this->GetComponent().GetServo( servoId ).IsEnable() );
+			response.Set1ByteParam( this->mServosInterface.GetServo( servoId ).IsEnable() );
 		}
 		return ( success );
 	}
@@ -255,9 +256,12 @@ public:
 		if ( success )
 		{
 			response.Set1ByteParam( servoId );
-			response.Set1ByteParam( this->GetComponent().GetServo( servoId ).GetReverse() );
+			response.Set1ByteParam( this->mServosInterface.GetServo( servoId ).GetReverse() );
 		}
 		return ( success );
 	}
+
+private:
+	ServosInterface &mServosInterface;
 };
 }

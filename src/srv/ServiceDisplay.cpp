@@ -2,9 +2,10 @@
 #include "../cor/Bitmaps.h"
 #include <stdlib.h>
 
-ServiceDisplay::ServiceDisplay( Ssd1306Interface &ssd1306 )
+ServiceDisplay::ServiceDisplay( Ssd1306Interface &ssd1306, BatteryInterface &batteryInterface )
 	: Service( 5U )
 	, mSsd1306( ssd1306 )
+	, mBatteryInterface( batteryInterface )
 	, mBmpBatteryLevel{.bmp  = (uint8_t *) Bitmaps::Battery0, .width = 16U, .height = 7U }
 	, mBmpCommunication{.bmp = (uint8_t *) Bitmaps::Communication, .width = 16U, .height = 8U }
 	, mBmpProximity{.bmp     = (uint8_t *) Bitmaps::ArrowCenter, .width = 16U, .height = 6U }
@@ -15,6 +16,7 @@ ServiceDisplay::ServiceDisplay( Ssd1306Interface &ssd1306 )
 
 Core::CoreStatus ServiceDisplay::Initialize ( void )
 {
+	this->mBatteryInterface.Attach( this );
 	this->mSsd1306.Initialize();
 	this->DisplayBackground();
 	return ( Core::CoreStatus::CORE_OK );
@@ -104,4 +106,9 @@ void ServiceDisplay::DisplayProximitySensor ( Component::SensorProximityInterfac
 			0U,
 			Ssd1306Interface::Color::COLOR_WHITE );
 	}
+}
+
+void ServiceDisplay::UpdatedBatteryState ( const BatteryState &batteryState )
+{
+	this->DisplayBatteryLevel( batteryState );
 }
