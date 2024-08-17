@@ -19,5 +19,5 @@ public:
 
 protected:
 	ClusterBattery &mClusterBattery;
-	BatteryInterface &mBatteryInterface;
+	BatteryState mCurrentState;
 };

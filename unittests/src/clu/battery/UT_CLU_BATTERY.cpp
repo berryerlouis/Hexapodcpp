@@ -85,6 +85,27 @@ TEST_F( UT_CLU_BATTERY, Execute_GET_VOLTAGE_Ok )
 	EXPECT_TRUE( success );
 }
 
+TEST_F( UT_CLU_BATTERY, Execute_GET_BAT_STATUS_Ok )
+{
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  request;
+	Clusters::Frame  response;
+
+	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( BatteryState::NOMINAL ) );
+	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
+	request.Build( Clusters::EClusters::BATTERY, Clusters::EBatteryCommands::GET_BAT_STATUS );
+	success = mClusterBattery.Execute( request, response );
+
+	EXPECT_EQ( response.clusterId, Clusters::EClusters::BATTERY );
+	EXPECT_EQ( response.commandId, Clusters::EBatteryCommands::GET_BAT_STATUS );
+	EXPECT_EQ( response.nbParams, 3U );
+	EXPECT_EQ( response.params[0U], BatteryState::NOMINAL );
+	EXPECT_EQ( response.params[1U], 10U );
+	EXPECT_EQ( response.params[2U], 0U );
+	EXPECT_TRUE( success );
+}
+
+
 TEST_F( UT_CLU_BATTERY, BuildFrameState_Nominal_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;

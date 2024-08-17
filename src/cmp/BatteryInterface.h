@@ -13,7 +13,7 @@ enum BatteryState
 	UNKNOWN = 0xFFU
 };
 
-class BatteryInterface : public ComponentInterface, public ComponentObservable <BatteryState> {
+class BatteryInterface : public ComponentInterface, ComponentObservable <BatteryState> {
 public:
 
 	BatteryInterface( void ) = default;

@@ -3,7 +3,7 @@
 ServiceBattery::ServiceBattery( Clusters::ClusterBattery &clusterBattery, BatteryInterface &batteryInterface )
 	: Service( 100U )
 	, mClusterBattery( clusterBattery )
-	, mBatteryInterface( batteryInterface )
+	, mCurrentState( BatteryState::UNKNOWN )
 {
 }
 
