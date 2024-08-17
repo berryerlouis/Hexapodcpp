@@ -16,7 +16,7 @@ public:
 
 	void DisplayBackground( void );
 	void DisplayCommunicationBmp( void );
-	void DisplayBatteryLevel( Component::BatteryInterface::BatteryState state );
+	void DisplayBatteryLevel( Component::BatteryState state );
 	void DisplayProximitySensor( Component::SensorProximityInterface::SensorsId sensor );
 
 protected:

@@ -57,13 +57,13 @@ void ServiceDisplay::DisplayCommunicationBmp ( void )
 	}
 }
 
-void ServiceDisplay::DisplayBatteryLevel ( Component::BatteryInterface::BatteryState state )
+void ServiceDisplay::DisplayBatteryLevel ( Component::BatteryState state )
 {
-	if ( state == Component::BatteryInterface::BatteryState::WARNING )
+	if ( state == Component::BatteryState::WARNING )
 	{
 		this->mBmpBatteryLevel.bmp = (uint8_t *) Bitmaps::Battery50;
 	}
-	else if ( state == Component::BatteryInterface::BatteryState::NOMINAL )
+	else if ( state == Component::BatteryState::NOMINAL )
 	{
 		this->mBmpBatteryLevel.bmp = (uint8_t *) Bitmaps::Battery100;
 	}

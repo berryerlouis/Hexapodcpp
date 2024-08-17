@@ -101,7 +101,7 @@ TEST_F( UT_CLU_BATTERY, Execute_GET_BAT_STATUS_Ok )
 	Clusters::Frame  request;
 	Clusters::Frame  response;
 
-	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( BatteryInterface::BatteryState::NOMINAL ) );
+	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( BatteryState::NOMINAL ) );
 	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
 	request.Build( Clusters::EClusters::BATTERY, Clusters::EBatteryCommands::GET_BAT_STATUS );
 	success = mClusterBattery.Execute( request, response );
@@ -109,7 +109,7 @@ TEST_F( UT_CLU_BATTERY, Execute_GET_BAT_STATUS_Ok )
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::BATTERY );
 	EXPECT_EQ( response.commandId, Clusters::EBatteryCommands::GET_BAT_STATUS );
 	EXPECT_EQ( response.nbParams, 3U );
-	EXPECT_EQ( response.params[0U], BatteryInterface::BatteryState::NOMINAL );
+	EXPECT_EQ( response.params[0U], BatteryState::NOMINAL );
 	EXPECT_EQ( response.params[1U], 10U );
 	EXPECT_EQ( response.params[2U], 0U );
 	EXPECT_TRUE( success );
@@ -125,7 +125,7 @@ TEST_F( UT_CLU_BATTERY, BuildFrameState_Nominal_Ok )
 	success = mClusterBattery.Initialize();
 
 	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
-	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( BatteryInterface::BatteryState::NOMINAL ) );
+	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( BatteryState::NOMINAL ) );
 
 	mClusterBattery.BuildFrameState( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::BATTERY );
@@ -146,7 +146,7 @@ TEST_F( UT_CLU_BATTERY, BuildFrameState_Critical_Ok )
 	success = mClusterBattery.Initialize();
 
 	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
-	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( BatteryInterface::BatteryState::CRITICAL ) );
+	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( BatteryState::CRITICAL ) );
 
 	mClusterBattery.BuildFrameState( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::BATTERY );
@@ -167,7 +167,7 @@ TEST_F( UT_CLU_BATTERY, BuildFrameState_Warning_Ok )
 	success = mClusterBattery.Initialize();
 
 	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
-	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( BatteryInterface::BatteryState::WARNING ) );
+	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( BatteryState::WARNING ) );
 
 	mClusterBattery.BuildFrameState( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::BATTERY );

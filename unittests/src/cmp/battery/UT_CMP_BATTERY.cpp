@@ -54,10 +54,10 @@ TEST_F( UT_CMP_BATTERY, GetStateAfterInit )
 	EXPECT_CALL( mMockAdc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
 	success = mBattery.Initialize();
-	Battery::BatteryState state = mBattery.GetState();
+	BatteryState state = mBattery.GetState();
 
 	EXPECT_TRUE( success );
-	EXPECT_EQ( state, Battery::BatteryState::UNKNOWN );
+	EXPECT_EQ( state, BatteryState::UNKNOWN );
 }
 
 
@@ -70,10 +70,10 @@ TEST_F( UT_CMP_BATTERY, GetStateAfterUpdateCritical )
 
 	success = mBattery.Initialize();
 	mBattery.Update( 0UL );
-	Battery::BatteryState state = mBattery.GetState();
+	BatteryState state = mBattery.GetState();
 
 	EXPECT_TRUE( success );
-	EXPECT_EQ( state, Battery::BatteryState::CRITICAL );
+	EXPECT_EQ( state, BatteryState::CRITICAL );
 }
 
 TEST_F( UT_CMP_BATTERY, GetStateAfterUpdateWarning )
@@ -85,10 +85,10 @@ TEST_F( UT_CMP_BATTERY, GetStateAfterUpdateWarning )
 
 	success = mBattery.Initialize();
 	mBattery.Update( 0UL );
-	Battery::BatteryState state = mBattery.GetState();
+	BatteryState state = mBattery.GetState();
 
 	EXPECT_TRUE( success );
-	EXPECT_EQ( state, Battery::BatteryState::WARNING );
+	EXPECT_EQ( state, BatteryState::WARNING );
 }
 
 TEST_F( UT_CMP_BATTERY, GetStateAfterUpdateNominal )
@@ -100,8 +100,8 @@ TEST_F( UT_CMP_BATTERY, GetStateAfterUpdateNominal )
 
 	success = mBattery.Initialize();
 	mBattery.Update( 0UL );
-	Battery::BatteryState state = mBattery.GetState();
+	BatteryState state = mBattery.GetState();
 
 	EXPECT_TRUE( success );
-	EXPECT_EQ( state, Battery::BatteryState::NOMINAL );
+	EXPECT_EQ( state, BatteryState::NOMINAL );
 }

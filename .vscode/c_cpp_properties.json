@@ -2,7 +2,7 @@
     "configurations": [
         {
             "name": "Avr",
-            "compilerPath": "/usr/avr8-gnu-toolchain-linux_x86_64/bin/avr-gcc",
+            "compilerPath": "/usr/bin/avr-gcc",
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/src/**",

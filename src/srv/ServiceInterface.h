@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../cmp/ComponentObserver.h"
 #include "../cmp/Communication.h"
 #include "../cmp/BatteryInterface.h"
 #include "../cmp/SensorProximityInterface.h"
@@ -9,8 +10,8 @@ class ServiceMediatorInterface {
 public:
 	ServiceMediatorInterface()  = default;
 	~ServiceMediatorInterface() = default;
-	virtual void SendFrame( Clusters::Frame &message ) const = 0;
-	virtual void DisplayBatteryLevel( Component::BatteryInterface::BatteryState state )          = 0;
+	virtual void SendFrame( Clusters::Frame &message ) const          = 0;
+	virtual void DisplayBatteryLevel( Component::BatteryState state ) = 0;
 	virtual void DisplayProximitySensor( Component::SensorProximityInterface::SensorsId sensor ) = 0;
 };
 

@@ -3,15 +3,16 @@
 #include "ComponentInterface.h"
 
 namespace Component {
-class BatteryInterface : public ComponentInterface {
+enum BatteryState
+{
+	NOMINAL = 0x00U,
+	WARNING,
+	CRITICAL,
+	UNKNOWN = 0xFFU
+};
+
+class BatteryInterface : public ComponentInterface, ComponentObservable <BatteryState> {
 public:
-	enum BatteryState
-	{
-		NOMINAL = 0x00U,
-		WARNING,
-		CRITICAL,
-		UNKNOWN = 0xFFU
-	};
 
 	BatteryInterface( void ) = default;
 	~BatteryInterface()      = default;

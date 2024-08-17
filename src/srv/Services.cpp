@@ -57,7 +57,7 @@ void Services::SendFrame ( Frame &message ) const
 	this->mCommunication.Send( message );
 }
 
-void Services::DisplayBatteryLevel ( Component::BatteryInterface::BatteryState state )
+void Services::DisplayBatteryLevel ( Component::BatteryState state )
 {
 	ServiceDisplay *displayService = static_cast <ServiceDisplay *>( this->Get( EServices::DISPLAY ) );
 	displayService->DisplayBatteryLevel( state );

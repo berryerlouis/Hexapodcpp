@@ -75,10 +75,10 @@ TEST_F( UT_SRV_BATTERY, Update_FirstTimeUpdate_Ok )
 	success = mServiceBattery.Initialize();
 
 	EXPECT_CALL( mMockBattery, Update( _ ) ).Times( 1U );
-	EXPECT_CALL( mMockBattery, GetState() ).Times( 2U ).WillRepeatedly( Return( BatteryInterface::BatteryState::NOMINAL ) );
+	EXPECT_CALL( mMockBattery, GetState() ).Times( 2U ).WillRepeatedly( Return( BatteryState::NOMINAL ) );
 	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
 	EXPECT_CALL( mMockServiceMediator, SendFrame( _ ) ).Times( 1U );
-	EXPECT_CALL( mMockServiceMediator, DisplayBatteryLevel( BatteryInterface::BatteryState::NOMINAL ) ).Times( 1U );
+	EXPECT_CALL( mMockServiceMediator, DisplayBatteryLevel( BatteryState::NOMINAL ) ).Times( 1U );
 
 	mServiceBattery.Update( 0UL );
 	EXPECT_TRUE( success );
@@ -93,10 +93,10 @@ TEST_F( UT_SRV_BATTERY, Update_SentFrameOnceAtFirstUpdate_Ok )
 	success = mServiceBattery.Initialize();
 
 	EXPECT_CALL( mMockBattery, Update( _ ) ).Times( nbUpdate );
-	EXPECT_CALL( mMockBattery, GetState() ).Times( nbUpdate + 1U ).WillRepeatedly( Return( BatteryInterface::BatteryState::NOMINAL ) );
+	EXPECT_CALL( mMockBattery, GetState() ).Times( nbUpdate + 1U ).WillRepeatedly( Return( BatteryState::NOMINAL ) );
 	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
 	EXPECT_CALL( mMockServiceMediator, SendFrame( _ ) ).Times( 1U );
-	EXPECT_CALL( mMockServiceMediator, DisplayBatteryLevel( BatteryInterface::BatteryState::NOMINAL ) ).Times( 1U );
+	EXPECT_CALL( mMockServiceMediator, DisplayBatteryLevel( BatteryState::NOMINAL ) ).Times( 1U );
 
 	for ( size_t i = 0U; i < nbUpdate; i++ )
 	{
@@ -115,25 +115,25 @@ TEST_F( UT_SRV_BATTERY, Update_SentFrameOnceAtFirstUpdateAndOnceAfterStateChange
 	success = mServiceBattery.Initialize();
 
 	EXPECT_CALL( mMockBattery, Update( 0UL ) ).Times( 1U );
-	EXPECT_CALL( mMockBattery, GetState() ).Times( 2U ).WillRepeatedly( Return( BatteryInterface::BatteryState::NOMINAL ) );
+	EXPECT_CALL( mMockBattery, GetState() ).Times( 2U ).WillRepeatedly( Return( BatteryState::NOMINAL ) );
 	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
 	EXPECT_CALL( mMockServiceMediator, SendFrame( _ ) ).Times( 1U );
-	EXPECT_CALL( mMockServiceMediator, DisplayBatteryLevel( BatteryInterface::BatteryState::NOMINAL ) ).Times( 1U );
+	EXPECT_CALL( mMockServiceMediator, DisplayBatteryLevel( BatteryState::NOMINAL ) ).Times( 1U );
 	mServiceBattery.Update( 0UL );
 
 	EXPECT_CALL( mMockBattery, Update( 1UL ) ).Times( 1U );
-	EXPECT_CALL( mMockBattery, GetState() ).Times( 1U ).WillOnce( Return( BatteryInterface::BatteryState::NOMINAL ) );
+	EXPECT_CALL( mMockBattery, GetState() ).Times( 1U ).WillOnce( Return( BatteryState::NOMINAL ) );
 	mServiceBattery.Update( 1UL );
 
 	EXPECT_CALL( mMockBattery, Update( 2UL ) ).Times( 1U );
-	EXPECT_CALL( mMockBattery, GetState() ).Times( 2U ).WillRepeatedly( Return( BatteryInterface::BatteryState::CRITICAL ) );
+	EXPECT_CALL( mMockBattery, GetState() ).Times( 2U ).WillRepeatedly( Return( BatteryState::CRITICAL ) );
 	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
 	EXPECT_CALL( mMockServiceMediator, SendFrame( _ ) ).Times( 1U );
-	EXPECT_CALL( mMockServiceMediator, DisplayBatteryLevel( BatteryInterface::BatteryState::CRITICAL ) ).Times( 1U );
+	EXPECT_CALL( mMockServiceMediator, DisplayBatteryLevel( BatteryState::CRITICAL ) ).Times( 1U );
 	mServiceBattery.Update( 2UL );
 
 	EXPECT_CALL( mMockBattery, Update( 3UL ) ).Times( 1U );
-	EXPECT_CALL( mMockBattery, GetState() ).Times( 1U ).WillOnce( Return( BatteryInterface::BatteryState::CRITICAL ) );
+	EXPECT_CALL( mMockBattery, GetState() ).Times( 1U ).WillOnce( Return( BatteryState::CRITICAL ) );
 	mServiceBattery.Update( 3UL );
 
 	EXPECT_TRUE( success );
