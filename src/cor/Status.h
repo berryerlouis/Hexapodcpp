@@ -10,7 +10,8 @@ struct CoreStatus
 	{
 	}
 
-	operator bool() const {
+	operator bool() const
+	{
 		return ( status == CORE_OK );
 	}
 private:

@@ -13,7 +13,7 @@ using ::testing::StrictMock;
 
 using namespace Component;
 
-class UT_SRV_GENERAL : public ::testing::Test  {
+class UT_SRV_GENERAL : public ::testing::Test {
 protected:
 	UT_SRV_GENERAL() :
 		mMockSoftware(),

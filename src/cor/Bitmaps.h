@@ -12,7 +12,7 @@
 class Bitmaps
 {
 public:
-    static int myArray[];
+	static int myArray[];
 	static const uint8_t PROGMEM Battery100[];
 	static const uint8_t PROGMEM Battery75[];
 	static const uint8_t PROGMEM Battery50[];

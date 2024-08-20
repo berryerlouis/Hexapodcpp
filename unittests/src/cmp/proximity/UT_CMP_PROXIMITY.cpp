@@ -13,7 +13,7 @@ using ::testing::StrictMock;
 
 using namespace Component;
 
-class UT_CMP_PROXIMITY : public ::testing::Test  {
+class UT_CMP_PROXIMITY : public ::testing::Test {
 protected:
 	UT_CMP_PROXIMITY() :
 		mMockSrf05Left(),
@@ -57,14 +57,14 @@ TEST_F( UT_CMP_PROXIMITY, Initialize_Ok )
 
 TEST_F( UT_CMP_PROXIMITY, Update_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
 	EXPECT_CALL( mMockSrf05Left, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	EXPECT_CALL( mMockSrf05Right, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	EXPECT_CALL( mMockVl53l0x, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
 	EXPECT_CALL( mMockSrf05Left, Update( _ ) ).Times( 1U );
-	EXPECT_CALL( mMockSrf05Right, Update( _ ) ).Times( 0U );
+	EXPECT_CALL( mMockSrf05Right, Update( _ ) ).Times( 1U );
 	EXPECT_CALL( mMockVl53l0x, Update( _ ) ).Times( 1U );
 
 	success = mSensorProximity.Initialize();
@@ -75,14 +75,14 @@ TEST_F( UT_CMP_PROXIMITY, Update_Ok )
 
 TEST_F( UT_CMP_PROXIMITY, Update2Times_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
 	EXPECT_CALL( mMockSrf05Left, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	EXPECT_CALL( mMockSrf05Right, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	EXPECT_CALL( mMockVl53l0x, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
-	EXPECT_CALL( mMockSrf05Left, Update( _ ) ).Times( 1U );
-	EXPECT_CALL( mMockSrf05Right, Update( _ ) ).Times( 1U );
+	EXPECT_CALL( mMockSrf05Left, Update( _ ) ).Times( 2U );
+	EXPECT_CALL( mMockSrf05Right, Update( _ ) ).Times( 2U );
 	EXPECT_CALL( mMockVl53l0x, Update( _ ) ).Times( 2U );
 
 	success = mSensorProximity.Initialize();
@@ -94,7 +94,7 @@ TEST_F( UT_CMP_PROXIMITY, Update2Times_Ok )
 
 TEST_F( UT_CMP_PROXIMITY, GetDistance_Ok )
 {
-	Core::CoreStatus         success = Core::CoreStatus::CORE_ERROR;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
 	EXPECT_CALL( mMockSrf05Left, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	EXPECT_CALL( mMockSrf05Right, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
@@ -108,15 +108,15 @@ TEST_F( UT_CMP_PROXIMITY, GetDistance_Ok )
 
 	for ( size_t sensorId = 0U; sensorId < SensorProximity::NB_SENSORS; sensorId++ )
 	{
-		mSensorProximity.GetDistance( (SensorProximity::SensorsId) sensorId );
+		mSensorProximity.GetDistance( (SensorsId) sensorId );
 	}
 	EXPECT_TRUE( success );
 }
 
 TEST_F( UT_CMP_PROXIMITY, SetThreshold_Ok )
 {
-	Core::CoreStatus         success   = Core::CoreStatus::CORE_ERROR;
-	const uint16_t           threshold = 10U;
+	Core::CoreStatus success   = Core::CoreStatus::CORE_ERROR;
+	const uint16_t   threshold = 10U;
 
 	EXPECT_CALL( mMockSrf05Left, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	EXPECT_CALL( mMockSrf05Right, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
@@ -130,7 +130,7 @@ TEST_F( UT_CMP_PROXIMITY, SetThreshold_Ok )
 
 	for ( size_t sensorId = 0U; sensorId < SensorProximity::NB_SENSORS; sensorId++ )
 	{
-		EXPECT_TRUE( mSensorProximity.SetThreshold( (SensorProximityInterface::SensorsId) sensorId, threshold ) );
+		EXPECT_TRUE( mSensorProximity.SetThreshold( (SensorsId) sensorId, threshold ) );
 	}
 	EXPECT_TRUE( success );
 }

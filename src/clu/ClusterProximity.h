@@ -8,7 +8,7 @@ using namespace Component;
 
 class ClusterProximity : public Cluster {
 public:
-	ClusterProximity( SensorProximityInterface &proximity )
+	ClusterProximity( SensorProximityMultipleInterface &proximity )
 		: Cluster( PROXIMITY )
 		, mProximity( proximity )
 	{
@@ -45,7 +45,7 @@ public:
 		case EProximityCommands::SET_THRESHOLD: {
 			uint8_t  sensorId  = request.Get1ByteParam( 0U );
 			uint16_t threshold = request.Get2BytesParam( 1U );
-			success = this->mProximity.SetThreshold( (SensorProximityInterface::SensorsId) sensorId, threshold );
+			success = this->mProximity.SetThreshold( (SensorsId) sensorId, threshold );
 			if ( success == true )
 			{
 				success = this->BuildFrameThreshold( (EProximityCommands) request.commandId, response );
@@ -66,7 +66,7 @@ public:
 			sensorId );
 		if ( success )
 		{
-			response.Set2BytesParam( this->mProximity.GetDistance( (SensorProximityInterface::SensorsId) sensorId ) );
+			response.Set2BytesParam( this->mProximity.GetDistance( (SensorsId) sensorId ) );
 		}
 		return ( success );
 	}
@@ -78,12 +78,12 @@ public:
 			EProximityCommands::SET_THRESHOLD );
 		if ( success )
 		{
-			response.Set2BytesParam( this->mProximity.GetThreshold( (SensorProximityInterface::SensorsId) sensorId ) );
+			response.Set2BytesParam( this->mProximity.GetThreshold( (SensorsId) sensorId ) );
 		}
 		return ( success );
 	}
 
 private:
-	SensorProximityInterface &mProximity;
+	SensorProximityMultipleInterface &mProximity;
 };
 }

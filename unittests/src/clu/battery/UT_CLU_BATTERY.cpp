@@ -11,7 +11,7 @@ using ::testing::StrictMock;
 
 using namespace Clusters;
 
-class UT_CLU_BATTERY : public ::testing::Test  {
+class UT_CLU_BATTERY : public ::testing::Test {
 protected:
 	UT_CLU_BATTERY() :
 		mMockBattery(),

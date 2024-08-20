@@ -16,7 +16,7 @@ using ::testing::StrictMock;
 
 using namespace Clusters;
 
-class UT_CLU_SERVO : public ::testing::Test  {
+class UT_CLU_SERVO : public ::testing::Test {
 protected:
 	UT_CLU_SERVO() :
 		mMockServos(),

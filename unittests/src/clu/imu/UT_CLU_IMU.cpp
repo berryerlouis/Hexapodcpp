@@ -11,7 +11,7 @@ using ::testing::StrictMock;
 
 using namespace Clusters;
 
-class UT_CLU_IMU : public ::testing::Test  {
+class UT_CLU_IMU : public ::testing::Test {
 protected:
 	UT_CLU_IMU() :
 		mMockMpu9150(),
@@ -110,7 +110,7 @@ TEST_F( UT_CLU_IMU, BuildFrameGyr_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame  response;
-	
+
 	EXPECT_CALL( mMockMpu9150, ReadGyr() ).WillOnce( Return( Mpu9150Interface::Vector3{ 5, 5, 5 } ) );
 
 	success = mClusterImu.BuildFrameGyr( response );

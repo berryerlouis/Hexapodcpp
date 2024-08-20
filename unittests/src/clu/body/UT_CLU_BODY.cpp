@@ -10,7 +10,7 @@ using ::testing::StrictMock;
 
 using namespace Clusters;
 
-class UT_CLU_BODY : public ::testing::Test  {
+class UT_CLU_BODY : public ::testing::Test {
 protected:
 	UT_CLU_BODY() :
 		mBodyMock(),
@@ -37,9 +37,9 @@ protected:
 
 TEST_F( UT_CLU_BODY, Execute_WrongCluster_Ko )
 {
-	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame       request;
-	Clusters::Frame       response;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  request;
+	Clusters::Frame  response;
 
 	request.Build( Clusters::EClusters::BATTERY, Clusters::EBodyCommands::SET_LEG_X_Y_Z );
 	success = mClusterBody.Execute( request, response );
@@ -52,9 +52,9 @@ TEST_F( UT_CLU_BODY, Execute_WrongCluster_Ko )
 
 TEST_F( UT_CLU_BODY, Execute_WrongCommand_Ko )
 {
-	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame       request;
-	Clusters::Frame       response;
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  request;
+	Clusters::Frame  response;
 
 	request.Build( Clusters::EClusters::BODY, 0x5FU );
 	success = mClusterBody.Execute( request, response );
@@ -67,10 +67,10 @@ TEST_F( UT_CLU_BODY, Execute_WrongCommand_Ko )
 
 TEST_F( UT_CLU_BODY, Execute_SET_LEG_X_Y_Z_Ok )
 {
-	Core::CoreStatus      success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame       request;
-	Clusters::Frame       response;
-	uint8_t params [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Clusters::Frame  request;
+	Clusters::Frame  response;
+	uint8_t          params [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	EXPECT_CALL( mBodyMock, SetPositionRotation( _, _, _ ) ).Times( 1U );
 	request.Build( Clusters::EClusters::BODY, Clusters::EBodyCommands::SET_LEG_X_Y_Z, params, 14U );
@@ -85,8 +85,8 @@ TEST_F( UT_CLU_BODY, Execute_SET_LEG_X_Y_Z_Ok )
 
 TEST_F( UT_CLU_BODY, BuildFrameSetPosition_Ok )
 {
-	Clusters::Frame       response;
-	uint8_t params [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	Clusters::Frame response;
+	uint8_t         params [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	mClusterBody.BuildFrameSetPosition( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::BODY );

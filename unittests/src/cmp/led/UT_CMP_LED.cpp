@@ -11,7 +11,7 @@ using ::testing::StrictMock;
 
 using namespace Component;
 
-class UT_CMP_LED : public ::testing::Test  {
+class UT_CMP_LED : public ::testing::Test {
 protected:
 	UT_CMP_LED() :
 		mMockGpio(),

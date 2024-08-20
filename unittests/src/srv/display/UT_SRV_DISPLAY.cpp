@@ -16,7 +16,7 @@ using ::testing::StrictMock;
 
 using namespace Component;
 
-class UT_SRV_DISPLAY : public ::testing::Test  {
+class UT_SRV_DISPLAY : public ::testing::Test {
 protected:
 	UT_SRV_DISPLAY() :
 		mMockAdc(),

@@ -1,6 +1,6 @@
 #include "ServiceProximity.h"
 
-ServiceProximity::ServiceProximity( ClusterProximity &clusterProximity, SensorProximityInterface &proximity )
+ServiceProximity::ServiceProximity( ClusterProximity &clusterProximity, SensorProximityMultipleInterface &proximity )
 	: Service( 100 )
 	, mClusterProximity( clusterProximity )
 	, mProximity( proximity )
@@ -9,21 +9,24 @@ ServiceProximity::ServiceProximity( ClusterProximity &clusterProximity, SensorPr
 
 Core::CoreStatus ServiceProximity::Initialize ( void )
 {
-	return ( this->mProximity.Initialize() );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	if ( this->mProximity.Initialize() )
+	{
+		this->mProximity.Attach( this );
+		success = Core::CoreStatus::CORE_OK;
+	}
+	return ( success );
 }
 
 void ServiceProximity::Update ( const uint64_t currentTime )
 {
 	this->mProximity.Update( currentTime );
+}
 
-	for ( size_t sensorId = 0U; sensorId < SensorProximityInterface::NB_SENSORS; sensorId++ )
-	{
-		if ( this->mProximity.IsDetecting( (SensorProximityInterface::SensorsId) sensorId ) )
-		{
-			Frame response;
-			this->mClusterProximity.BuildFrameDistance( (EProximityCommands) sensorId, response );
-			this->mServiceMediator->SendFrame( response );
-			this->mServiceMediator->DisplayProximitySensor( (SensorProximityInterface::SensorsId) sensorId );
-		}
-	}
+void ServiceProximity::Detect ( const SensorsId &sensorId, const uint16_t &distance )
+{
+	(void) distance;
+	Frame response;
+	this->mClusterProximity.BuildFrameDistance( (EProximityCommands) sensorId, response );
+	this->mServiceMediator->SendFrame( response );
 }

@@ -17,7 +17,7 @@ using ::testing::Matcher;
 
 using namespace Component;
 
-class UT_CMP_COMMUNICATION : public ::testing::Test  {
+class UT_CMP_COMMUNICATION : public ::testing::Test {
 protected:
 	UT_CMP_COMMUNICATION() :
 		mMockUart(),

@@ -4,12 +4,12 @@
 #include "../clu/Frame.h"
 #include "../drv/TwiInterface.h"
 #include "../drv/TickInterface.h"
-#include "../cmp/ProximityInterface.h"
+#include "../cmp/SensorProximityInterface.h"
 
 namespace Component {
 using namespace Driver;
 
-class Vl53l0x : public ProximityInterface {
+class Vl53l0x : public SensorProximityInterface {
 public:
 #define VL53L0X_ADDRESS                                        0x29U ///< I2C address of the VL53L0X module
 
@@ -82,7 +82,6 @@ public:
 	virtual uint16_t GetDistance( void ) final override;
 	virtual Core::CoreStatus SetThreshold( const uint16_t threshold ) final override;
 	virtual uint16_t GetThreshold( void ) final override;
-	virtual bool IsDetecting( void ) final override;
 
 private:
 	TwiInterface &mI2c;

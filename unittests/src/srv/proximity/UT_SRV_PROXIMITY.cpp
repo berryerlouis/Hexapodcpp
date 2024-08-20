@@ -15,7 +15,7 @@ using ::testing::StrictMock;
 
 using namespace Component;
 
-class UT_SRV_PROXIMITY : public ::testing::Test  {
+class UT_SRV_PROXIMITY : public ::testing::Test {
 protected:
 	UT_SRV_PROXIMITY() :
 		mMockSensorProximity(),
@@ -27,7 +27,14 @@ protected:
 
 	virtual void SetUp ()
 	{
+		Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+
+		EXPECT_CALL( mMockSensorProximity, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+
+		success = mServiceProximity.Initialize();
 		mServiceProximity.SetComComponent( &mMockServiceMediator );
+
+		EXPECT_TRUE( success );
 	}
 
 	virtual void TearDown ()
@@ -46,76 +53,16 @@ protected:
 	ServiceProximity mServiceProximity;
 };
 
-TEST_F( UT_SRV_PROXIMITY, Initialize_Ok )
-{
-	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-
-	EXPECT_CALL( mMockSensorProximity, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-
-	success = mServiceProximity.Initialize();
-
-	EXPECT_TRUE( success );
-}
-
-
 TEST_F( UT_SRV_PROXIMITY, Update_NoDetection_Ok )
 {
-	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-
-	EXPECT_CALL( mMockSensorProximity, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-
-	success = mServiceProximity.Initialize();
-
 	EXPECT_CALL( mMockSensorProximity, Update( _ ) ).Times( 1U );
-	EXPECT_CALL( mMockSensorProximity, IsDetecting( SensorProximityInterface::SensorsId::SRF_LEFT ) ).WillOnce( Return( false ) );
-	EXPECT_CALL( mMockSensorProximity, IsDetecting( SensorProximityInterface::SensorsId::SRF_RIGHT ) ).WillOnce( Return( false ) );
-	EXPECT_CALL( mMockSensorProximity, IsDetecting( SensorProximityInterface::SensorsId::VLX ) ).WillOnce( Return( false ) );
 
 	mServiceProximity.Update( 0UL );
-
-	EXPECT_TRUE( success );
 }
 
 TEST_F( UT_SRV_PROXIMITY, Update_Detection_Srf_Ok )
 {
-	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-
-	EXPECT_CALL( mMockSensorProximity, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-
-	success = mServiceProximity.Initialize();
-
 	EXPECT_CALL( mMockSensorProximity, Update( _ ) ).Times( 1U );
-	EXPECT_CALL( mMockSensorProximity, IsDetecting( SensorProximityInterface::SensorsId::SRF_LEFT ) ).WillOnce( Return( true ) );
-	EXPECT_CALL( mMockSensorProximity, IsDetecting( SensorProximityInterface::SensorsId::SRF_RIGHT ) ).WillOnce( Return( false ) );
-	EXPECT_CALL( mMockSensorProximity, IsDetecting( SensorProximityInterface::SensorsId::VLX ) ).WillOnce( Return( false ) );
-	EXPECT_CALL( mMockSensorProximity, GetDistance( SensorProximityInterface::SensorsId::SRF_LEFT ) ).WillOnce( Return( 10U ) );
-
-	EXPECT_CALL( mMockServiceMediator, SendFrame( _ ) ).Times( 1U );
-	EXPECT_CALL( mMockServiceMediator, DisplayProximitySensor( SensorProximityInterface::SensorsId::SRF_LEFT ) ).Times( 1U );
 
 	mServiceProximity.Update( 0UL );
-
-	EXPECT_TRUE( success );
-}
-
-TEST_F( UT_SRV_PROXIMITY, Update_Detection_Vlx_Ok )
-{
-	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-
-	EXPECT_CALL( mMockSensorProximity, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-
-	success = mServiceProximity.Initialize();
-
-	EXPECT_CALL( mMockSensorProximity, Update( _ ) ).Times( 1U );
-	EXPECT_CALL( mMockSensorProximity, IsDetecting( SensorProximityInterface::SensorsId::SRF_LEFT ) ).WillOnce( Return( false ) );
-	EXPECT_CALL( mMockSensorProximity, IsDetecting( SensorProximityInterface::SensorsId::SRF_RIGHT ) ).WillOnce( Return( false ) );
-	EXPECT_CALL( mMockSensorProximity, IsDetecting( SensorProximityInterface::SensorsId::VLX ) ).WillOnce( Return( true ) );
-	EXPECT_CALL( mMockSensorProximity, GetDistance( SensorProximityInterface::SensorsId::VLX ) ).WillOnce( Return( 10U ) );
-
-	EXPECT_CALL( mMockServiceMediator, SendFrame( _ ) ).Times( 1U );
-	EXPECT_CALL( mMockServiceMediator, DisplayProximitySensor( SensorProximityInterface::SensorsId::VLX ) ).Times( 1U );
-
-	mServiceProximity.Update( 0UL );
-
-	EXPECT_TRUE( success );
 }

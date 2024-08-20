@@ -76,9 +76,9 @@ void ServiceDisplay::DisplayBatteryLevel ( Component::BatteryState state )
 	this->mSsd1306.DrawBitmap( &this->mBmpBatteryLevel, 0, 0, Ssd1306Interface::Color::COLOR_WHITE );
 }
 
-void ServiceDisplay::DisplayProximitySensor ( Component::SensorProximityInterface::SensorsId sensor )
+void ServiceDisplay::DisplayProximitySensor ( Component::SensorsId sensor )
 {
-	if ( sensor == Component::SensorProximityInterface::SensorsId::SRF_LEFT )
+	if ( sensor == Component::SensorsId::SRF_LEFT )
 	{
 		this->mBmpProximity.bmp = (uint8_t *) Bitmaps::ArrowLeft;
 
@@ -88,7 +88,7 @@ void ServiceDisplay::DisplayProximitySensor ( Component::SensorProximityInterfac
 			0U,
 			Ssd1306Interface::Color::COLOR_WHITE );
 	}
-	if ( sensor == Component::SensorProximityInterface::SensorsId::VLX )
+	if ( sensor == Component::SensorsId::VLX )
 	{
 		this->mBmpProximity.bmp = (uint8_t *) Bitmaps::ArrowUp;
 		this->mSsd1306.DrawBitmap(
@@ -97,7 +97,7 @@ void ServiceDisplay::DisplayProximitySensor ( Component::SensorProximityInterfac
 			0U,
 			Ssd1306Interface::Color::COLOR_WHITE );
 	}
-	if ( sensor == Component::SensorProximityInterface::SensorsId::SRF_RIGHT )
+	if ( sensor == Component::SensorsId::SRF_RIGHT )
 	{
 		this->mBmpProximity.bmp = (uint8_t *) Bitmaps::ArrowRight;
 		this->mSsd1306.DrawBitmap(

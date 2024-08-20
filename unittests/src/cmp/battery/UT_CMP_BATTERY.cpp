@@ -11,7 +11,7 @@ using ::testing::StrictMock;
 
 using namespace Component;
 
-class UT_CMP_BATTERY : public ::testing::Test  {
+class UT_CMP_BATTERY : public ::testing::Test {
 protected:
 	UT_CMP_BATTERY() :
 		mMockAdc(),

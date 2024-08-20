@@ -4,7 +4,7 @@
 
 #include "../../../mock/drv/MockTwi.h"
 
-#include "../../../../src/cmp/ProximityInterface.h"
+#include "../../../../src/cmp/SensorProximityInterface.h"
 #include "../../../../src/cmp/Pca9685.h"
 
 using ::testing::_;
@@ -13,7 +13,7 @@ using ::testing::Return;
 
 using namespace Component;
 
-class UT_CMP_PCA9685 : public ::testing::Test  {
+class UT_CMP_PCA9685 : public ::testing::Test {
 protected:
 	UT_CMP_PCA9685() :
 		mMockTwi(),
