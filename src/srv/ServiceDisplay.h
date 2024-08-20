@@ -18,7 +18,7 @@ public:
 	void DisplayBackground( void );
 	void DisplayCommunicationBmp( void );
 	void DisplayBatteryLevel( Component::BatteryState state );
-	void DisplayProximitySensor( Component::SensorProximityInterface::SensorsId sensor );
+	void DisplayProximitySensor( Component::SensorsId sensor );
 
 	virtual void UpdatedBatteryState( const BatteryState &batteryState ) final override;
 

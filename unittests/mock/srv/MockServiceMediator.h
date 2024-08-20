@@ -7,5 +7,5 @@ class MockServiceMediator : public ServiceMediatorInterface {
 public:
 	MOCK_CONST_METHOD1( SendFrame, void( Clusters::Frame & ) );
 	MOCK_METHOD1( DisplayBatteryLevel, void ( Component::BatteryState ) );
-	MOCK_METHOD1( DisplayProximitySensor, void ( Component::SensorProximityInterface::SensorsId  ) );
+	MOCK_METHOD1( DisplayProximitySensor, void ( Component::SensorsId  ) );
 };

@@ -9,10 +9,14 @@ using namespace Component;
 class ClusterProximity : public Cluster {
 public:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ClusterProximity( SensorProximityMultipleInterface &proximity )
 =======
 	ClusterProximity( SensorProximityInterface &proximity )
 >>>>>>> f9be308 (create observer for Battery, used by service battery and service display, clusters are refactored to used the interface componenent)
+=======
+	ClusterProximity( SensorProximityMultipleInterface &proximity )
+>>>>>>> 4ea6771 (create observers and update UT)
 		: Cluster( PROXIMITY )
 		, mProximity( proximity )
 	{
@@ -50,10 +54,14 @@ public:
 			uint8_t  sensorId  = request.Get1ByteParam( 0U );
 			uint16_t threshold = request.Get2BytesParam( 1U );
 <<<<<<< HEAD
+<<<<<<< HEAD
 			success = this->mProximity.SetThreshold( (SensorsId) sensorId, threshold );
 =======
 			success = this->mProximity.SetThreshold( (SensorProximityInterface::SensorsId) sensorId, threshold );
 >>>>>>> f9be308 (create observer for Battery, used by service battery and service display, clusters are refactored to used the interface componenent)
+=======
+			success = this->mProximity.SetThreshold( (SensorsId) sensorId, threshold );
+>>>>>>> 4ea6771 (create observers and update UT)
 			if ( success == true )
 			{
 				success = this->BuildFrameThreshold( (EProximityCommands) request.commandId, response );
@@ -75,10 +83,14 @@ public:
 		if ( success )
 		{
 <<<<<<< HEAD
+<<<<<<< HEAD
 			response.Set2BytesParam( this->mProximity.GetDistance( (SensorsId) sensorId ) );
 =======
 			response.Set2BytesParam( this->mProximity.GetDistance( (SensorProximityInterface::SensorsId) sensorId ) );
 >>>>>>> f9be308 (create observer for Battery, used by service battery and service display, clusters are refactored to used the interface componenent)
+=======
+			response.Set2BytesParam( this->mProximity.GetDistance( (SensorsId) sensorId ) );
+>>>>>>> 4ea6771 (create observers and update UT)
 		}
 		return ( success );
 	}
@@ -91,19 +103,27 @@ public:
 		if ( success )
 		{
 <<<<<<< HEAD
+<<<<<<< HEAD
 			response.Set2BytesParam( this->mProximity.GetThreshold( (SensorsId) sensorId ) );
 =======
 			response.Set2BytesParam( this->mProximity.GetThreshold( (SensorProximityInterface::SensorsId) sensorId ) );
 >>>>>>> f9be308 (create observer for Battery, used by service battery and service display, clusters are refactored to used the interface componenent)
+=======
+			response.Set2BytesParam( this->mProximity.GetThreshold( (SensorsId) sensorId ) );
+>>>>>>> 4ea6771 (create observers and update UT)
 		}
 		return ( success );
 	}
 
 private:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SensorProximityMultipleInterface &mProximity;
 =======
 	SensorProximityInterface &mProximity;
 >>>>>>> f9be308 (create observer for Battery, used by service battery and service display, clusters are refactored to used the interface componenent)
+=======
+	SensorProximityMultipleInterface &mProximity;
+>>>>>>> 4ea6771 (create observers and update UT)
 };
 }

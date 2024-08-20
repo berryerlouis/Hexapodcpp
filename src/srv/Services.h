@@ -42,8 +42,6 @@ public:
 	virtual void Update( const uint64_t currentTime ) final override;
 
 	virtual void SendFrame( Frame &message ) const override;
-	virtual void DisplayBatteryLevel( Component::BatteryState state ) override;
-	virtual void DisplayProximitySensor( Component::SensorProximityInterface::SensorsId sensor ) override;
 
 private:
 
