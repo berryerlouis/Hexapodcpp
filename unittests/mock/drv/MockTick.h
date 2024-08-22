@@ -1,9 +1,10 @@
 #pragma once
 #include <gmock/gmock.h>
-#include "../../../src/drv/TickInterface.h"
+#include "../../../src/Driver/Tick/TickInterface.h"
 
 namespace Driver {
-class MockTick : public Driver::TickInterface {
+namespace Tick {
+class MockTick : public TickInterface {
 public:
 
 	MOCK_METHOD0( GetUs, uint64_t( void ) );
@@ -11,4 +12,5 @@ public:
 	MOCK_METHOD1( DelayMs, void( uint64_t ) );
 	MOCK_METHOD1( DelayUs, void( uint64_t ) );
 };
+}
 }

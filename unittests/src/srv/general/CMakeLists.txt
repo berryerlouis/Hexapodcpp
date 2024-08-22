@@ -1,7 +1,7 @@
 set(
   SRC_FILES 
-  ../src/clu/Frame.cpp 
-  ../src/srv/ServiceGeneral.cpp
+  ../src/Cluster/Frame/Frame.cpp 
+  ../src/Service/General/ServiceGeneral.cpp
 )
 set(
   TEST_FILE 

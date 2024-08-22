@@ -1,27 +1,25 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-
 #include "../../../mock/srv/MockServiceMediator.h"
-#include "../../../mock/drv/MockAdc.h"
+#include "../../../mock/cmp/MockBattery.h"
+#include "../../../mock/clu/MockClusterBattery.h"
 
-#include "../../../../src/cmp/Battery.h"
-#include "../../../../src/srv/ServiceBattery.h"
+#include "../../../../src/Service/Battery/ServiceBattery.h"
+#include "../../../../src/Component/Battery/BatteryObserverInterface.h"
 
 using ::testing::_;
 using ::testing::Return;
 using ::testing::StrictMock;
 
-using namespace Component;
-
-class UT_SRV_BATTERY : public ::testing::Test {
+namespace Service {
+namespace Battery {
+class UT_SRV_BATTERY : public ::testing::Test, public BatteryObserverInterface {
 protected:
 	UT_SRV_BATTERY() :
-		mMockAdc(),
 		mMockServiceMediator(),
-		mBattery( mMockAdc ),
-		mClusterBattery( mBattery ),
-		mServiceBattery( mClusterBattery, mBattery )
+		mMockClusterBattery( mMockBattery ),
+		mServiceBattery( mMockClusterBattery, mMockBattery )
 	{
 	}
 
@@ -37,21 +35,24 @@ protected:
 	virtual ~UT_SRV_BATTERY() = default;
 
 	/* Mocks */
-	StrictMock <MockAdc> mMockAdc;
+	StrictMock <Component::Battery::MockBattery> mMockBattery;
+	StrictMock <Cluster::Battery::MockClusterBattery> mMockClusterBattery;
 	StrictMock <MockServiceMediator> mMockServiceMediator;
-
-	Battery mBattery;
-	ClusterBattery mClusterBattery;
 
 	/* Test class */
 	ServiceBattery mServiceBattery;
+
+	virtual void UpdatedBatteryState ( const BatteryState &batteryState ) final override
+	{
+	}
 };
 
 TEST_F( UT_SRV_BATTERY, Initialize_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	EXPECT_CALL( mMockAdc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockBattery, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockBattery, Attach( _ ) ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	success = mServiceBattery.Initialize();
 
 	EXPECT_TRUE( success );
@@ -61,7 +62,7 @@ TEST_F( UT_SRV_BATTERY, Initialize_Ko )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	EXPECT_CALL( mMockAdc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_ERROR ) );
+	EXPECT_CALL( mMockBattery, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_ERROR ) );
 	success = mServiceBattery.Initialize();
 
 	EXPECT_FALSE( success );
@@ -71,11 +72,12 @@ TEST_F( UT_SRV_BATTERY, Initialize_NotifyNominal )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	EXPECT_CALL( mMockAdc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockBattery, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockBattery, Attach( _ ) ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	success = mServiceBattery.Initialize();
 
 	EXPECT_CALL( mMockServiceMediator, SendFrame( _ ) ).Times( 1U );
-	mBattery.Notify( BatteryState::NOMINAL );
+	mMockBattery.Notify( BatteryState::NOMINAL );
 
 	EXPECT_TRUE( success );
 }
@@ -84,12 +86,13 @@ TEST_F( UT_SRV_BATTERY, Initialize_NotifyNominalTwice )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	EXPECT_CALL( mMockAdc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockBattery, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockBattery, Attach( _ ) ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	success = mServiceBattery.Initialize();
 
 	EXPECT_CALL( mMockServiceMediator, SendFrame( _ ) ).Times( 2U );
-	mBattery.Notify( BatteryState::NOMINAL );
-	mBattery.Notify( BatteryState::NOMINAL );
+	mMockBattery.Notify( BatteryState::NOMINAL );
+	mMockBattery.Notify( BatteryState::NOMINAL );
 
 	EXPECT_TRUE( success );
 }
@@ -98,11 +101,12 @@ TEST_F( UT_SRV_BATTERY, Initialize_NotifyWarning )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	EXPECT_CALL( mMockAdc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockBattery, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockBattery, Attach( _ ) ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	success = mServiceBattery.Initialize();
 
 	EXPECT_CALL( mMockServiceMediator, SendFrame( _ ) ).Times( 1U );
-	mBattery.Notify( BatteryState::WARNING );
+	mMockBattery.Notify( BatteryState::WARNING );
 
 	EXPECT_TRUE( success );
 }
@@ -111,13 +115,16 @@ TEST_F( UT_SRV_BATTERY, Initialize_NotifyCritical )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-	EXPECT_CALL( mMockAdc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockBattery, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockBattery, Attach( _ ) ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	success = mServiceBattery.Initialize();
 
 	EXPECT_CALL( mMockServiceMediator, SendFrame( _ ) ).Times( 1U );
-	mBattery.Notify( BatteryState::CRITICAL );
+	mMockBattery.Notify( BatteryState::CRITICAL );
 
 	EXPECT_TRUE( success );
+}
+}
 }
 
 /*

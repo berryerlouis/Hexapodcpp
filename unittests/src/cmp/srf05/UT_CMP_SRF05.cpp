@@ -6,13 +6,17 @@
 #include "../../../mock/cmp/MockLed.h"
 #include "../../../mock/drv/MockInputCapture.h"
 #include "../../../mock/drv/MockTick.h"
-#include "../../../../src/cmp/Srf05.h"
+
+#include "../../../../src/Component/Proximity/Ultrasound/Srf05.h"
 
 using ::testing::_;
 using ::testing::Return;
 using ::testing::StrictMock;
 
-using namespace Component;
+
+namespace Component {
+namespace Proximity {
+namespace Ultrasound {
 
 class UT_CMP_SRF05 : public ::testing::Test {
 protected:
@@ -45,9 +49,9 @@ protected:
 	virtual ~UT_CMP_SRF05() = default;
 
 	/* Mocks */
-	StrictMock <MockTick> mMockTick;
-	StrictMock <MockGpio> mMockGpio;
-	StrictMock <MockInputCapture> mMockInputCapture;
+	StrictMock <Driver::Tick::MockTick> mMockTick;
+	StrictMock <Driver::Gpio::MockGpio> mMockGpio;
+	StrictMock <Driver::InputCapture::MockInputCapture> mMockInputCapture;
 	StrictMock <MockLed> mMockLed;
 	/* Test class */
 	Srf05 mSrf05;
@@ -81,4 +85,7 @@ TEST_F( UT_CMP_SRF05, AboveThreshold )
 	EXPECT_CALL( mMockLed, Off() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
 	mSrf05.Update( 0U );
+}
+}
+}
 }

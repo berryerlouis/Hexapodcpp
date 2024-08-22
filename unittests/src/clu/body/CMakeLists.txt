@@ -1,6 +1,6 @@
 set(
   SRC_FILES 
-  ../src/clu/Frame.cpp 
+  ../src/Cluster/Frame/Frame.cpp 
 )
 set(
   TEST_FILE 

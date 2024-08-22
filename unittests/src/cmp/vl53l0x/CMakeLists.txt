@@ -1,6 +1,6 @@
 set(
   SRC_FILES  
-  ../src/cmp/Vl53l0x.cpp 
+  ../src/Component/Proximity/Laser/Vl53l0x.cpp 
 )
 set(
   TEST_FILE 

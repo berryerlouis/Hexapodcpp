@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdint.h>
-
+namespace Bot {
 enum ELeg
 {
 	FRONT_LEFT = 0x00,
@@ -13,3 +13,4 @@ enum ELeg
 };
 
 static const uint8_t NB_LEGS = 6U;
+}

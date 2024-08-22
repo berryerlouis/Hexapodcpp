@@ -1,9 +1,10 @@
 #pragma once
 #include <gmock/gmock.h>
-#include "../../../src/drv/UartInterface.h"
+#include "../../../src/Driver/Uart/UartInterface.h"
 
 namespace Driver {
-class MockUart : public Driver::UartInterface {
+namespace Uart {
+class MockUart : public UartInterface {
 public:
 
 	MOCK_METHOD0( Initialize, Core::CoreStatus( void ) );
@@ -15,4 +16,5 @@ public:
 	MOCK_METHOD0( Read, uint8_t( void ) );
 	MOCK_CONST_METHOD0( DataAvailable, uint8_t( void ) );
 };
+}
 }

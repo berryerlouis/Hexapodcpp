@@ -1,46 +1,41 @@
 #pragma once
 
-#include "../cor/Log.h"
-#include "../cor/Isr.h"
-#include "../drv/Gpio.h"
-#include "../drv/Tick.h"
-#include "../drv/Twi.h"
-#include "../drv/Uart.h"
-#include "../drv/Adc.h"
-#include "../drv/InputCapture.h"
-#include "../clu/ClusterGeneral.h"
-#include "../clu/ClusterBattery.h"
-#include "../clu/ClusterBody.h"
-#include "../clu/ClusterImu.h"
-#include "../clu/ClusterProximity.h"
-#include "../clu/ClusterServo.h"
-#include "../clu/Clusters.h"
-#include "../cmp/Battery.h"
-#include "../cmp/Led.h"
-#include "../cmp/Mpu9150.h"
-#include "../cmp/Pca9685.h"
-#include "../cmp/Servos.h"
-#include "../cmp/Software.h"
-#include "../cmp/Srf05.h"
-#include "../cmp/Ssd1306.h"
-#include "../cmp/Vl53l0x.h"
-#include "../cmp/Communication.h"
-#include "../cmp/SensorProximity.h"
-#include "../srv/ServiceBattery.h"
-#include "../srv/ServiceControl.h"
-#include "../srv/ServiceDisplay.h"
-#include "../srv/ServiceGeneral.h"
-#include "../srv/ServiceOrientation.h"
-#include "../srv/ServiceProximity.h"
-#include "../srv/Services.h"
-#include "../bot/Body.h"
-#include "../bot/Legs.h"
+#include "../Misc/Logger/Logger.h"
+#include "../Driver/Gpio/Gpio.h"
+#include "../Driver/Tick/Tick.h"
+#include "../Driver/Twi/Twi.h"
+#include "../Driver/Uart/Uart.h"
+#include "../Driver/Adc/Adc.h"
+#include "../Driver/InputCapture/InputCapture.h"
+#include "../Cluster/General/ClusterGeneral.h"
+#include "../Cluster/Battery/ClusterBattery.h"
+#include "../Cluster/Body/ClusterBody.h"
+#include "../Cluster/Imu/ClusterImu.h"
+#include "../Cluster/Proximity/ClusterProximity.h"
+#include "../Cluster/Servo/ClusterServo.h"
+#include "../Cluster/Clusters/Clusters.h"
+#include "../Component/Battery/Battery.h"
+#include "../Component/Led/Led.h"
+#include "../Component/Imu/Mpu9150.h"
+#include "../Component/ServosController/Pca9685.h"
+#include "../Component/Servos/Servos.h"
+#include "../Component/Software/Software.h"
+#include "../Component/Display/Ssd1306.h"
+#include "../Component/Proximity/SensorProximity.h"
+#include "../Component/Proximity/Ultrasound/Srf05.h"
+#include "../Component/Proximity/Laser/Vl53l0x.h"
+#include "../Component/Communication/Communication.h"
+#include "../Service/Battery/ServiceBattery.h"
+#include "../Service/Control/ServiceControl.h"
+#include "../Service/Display/ServiceDisplay.h"
+#include "../Service/General/ServiceGeneral.h"
+#include "../Service/Orientation/ServiceOrientation.h"
+#include "../Service/Proximity/ServiceProximity.h"
+#include "../Service/Services/Services.h"
+#include "../Bot/Body/Body.h"
+#include "../Bot/Legs/Legs.h"
 
-
-using namespace Clusters;
-using namespace Component;
-using namespace Driver;
-namespace app {
+namespace App {
 class App : public Core::CoreInterface {
 public:
 	App( void );
@@ -51,46 +46,46 @@ public:
 
 private:
 
-	Tick mTick;
-	Uart mUart;
-	Twi mTwi;
-	Adc mAdc;
-	Led mLedBoot;
-	Led mLedStatus;
-	Led mLedLeft;
-	Led mLedRight;
-	InputCapture mInputCaptureLeft;
-	InputCapture mInputCaptureRight;
-	Battery mBattery;
-	Mpu9150 mMpu9150;
-	Srf05 mSrf05Left;
-	Srf05 mSrf05Right;
-	Ssd1306 mSsd1306;
-	Vl53l0x mVl53l0x;
-	SensorProximity mSensorProximity;
-	Pca9685 mPca9685Left;
-	Pca9685 mPca9685Right;
-	Servos mServos;
-	Software mSoftware;
-	Legs mLegs;
-	Body mBody;
+	Driver::Tick::Tick mTick;
+	Driver::Uart::Uart mUart;
+	Driver::Twi::Twi mTwi;
+	Driver::Adc::Adc mAdc;
+	Component::Led::Led mLedBoot;
+	Component::Led::Led mLedStatus;
+	Component::Led::Led mLedLeft;
+	Component::Led::Led mLedRight;
+	Driver::InputCapture::InputCapture mInputCaptureLeft;
+	Driver::InputCapture::InputCapture mInputCaptureRight;
+	Component::Battery::Battery mBattery;
+	Component::Imu::Mpu9150 mMpu9150;
+	Component::Proximity::Ultrasound::Srf05 mSrf05Left;
+	Component::Proximity::Ultrasound::Srf05 mSrf05Right;
+	Component::Proximity::Laser::Vl53l0x mVl53l0x;
+	Component::Proximity::SensorProximity mSensorProximity;
+	Component::Display::Ssd1306 mSsd1306;
+	Component::ServosController::Pca9685 mPca9685Left;
+	Component::ServosController::Pca9685 mPca9685Right;
+	Component::Servos::Servos mServos;
+	Component::Software::Software mSoftware;
+	Bot::Legs::Legs mLegs;
+	Bot::Body::Body mBody;
 
-	ClusterGeneral mClusterGeneral;
-	ClusterBattery mClusterBattery;
-	ClusterBody mClusterBody;
-	ClusterImu mClusterImu;
-	ClusterProximity mClusterProximity;
-	ClusterServo mClusterServo;
-	Clusters::Clusters mClusters;
+	Cluster::General::ClusterGeneral mClusterGeneral;
+	Cluster::Battery::ClusterBattery mClusterBattery;
+	Cluster::Body::ClusterBody mClusterBody;
+	Cluster::Imu::ClusterImu mClusterImu;
+	Cluster::Proximity::ClusterProximity mClusterProximity;
+	Cluster::Servo::ClusterServo mClusterServo;
+	Cluster::Clusters::Clusters mClusters;
 
-	Communication mCommunication;
+	Component::Communication::Communication mCommunication;
 
-	ServiceControl mServiceControl;
-	ServiceProximity mServiceProximity;
-	ServiceOrientation mServiceOrientation;
-	ServiceBattery mServiceBattery;
-	ServiceDisplay mServiceDisplay;
-	ServiceGeneral mServiceGeneral;
-	Services mServices;
+	Service::Control::ServiceControl mServiceControl;
+	Service::Proximity::ServiceProximity mServiceProximity;
+	Service::Orientation::ServiceOrientation mServiceOrientation;
+	Service::Battery::ServiceBattery mServiceBattery;
+	Service::Display::ServiceDisplay mServiceDisplay;
+	Service::General::ServiceGeneral mServiceGeneral;
+	Service::Services::Services mServices;
 };
 }

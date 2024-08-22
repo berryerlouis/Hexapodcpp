@@ -7,16 +7,16 @@
 #include "../../../mock/clu/MockClusters.h"
 
 
-#include "../../../../src/clu/Protocol.h"
-#include "../../../../src/cmp/Communication.h"
+#include "../../../../src/Cluster/Decoding/Protocol.h"
+#include "../../../../src/Component/Communication/Communication.h"
 
 using ::testing::_;
 using ::testing::Return;
 using ::testing::StrictMock;
 using ::testing::Matcher;
 
-using namespace Component;
-
+namespace Component {
+namespace Communication {
 class UT_CMP_COMMUNICATION : public ::testing::Test {
 protected:
 	UT_CMP_COMMUNICATION() :
@@ -38,9 +38,9 @@ protected:
 	virtual ~UT_CMP_COMMUNICATION() = default;
 
 	/* Mocks */
-	StrictMock <MockUart> mMockUart;
-	StrictMock <MockClusters> mMockClusters;
-	StrictMock <MockLed> mMockLed;
+	StrictMock <Driver::Uart::MockUart> mMockUart;
+	StrictMock <Cluster::Clusters::MockClusters> mMockClusters;
+	StrictMock <Component::Led::MockLed> mMockLed;
 
 	/* Test class */
 	Communication mCommunication;
@@ -82,7 +82,7 @@ TEST_F( UT_CMP_COMMUNICATION, Update_Ok_1frame )
 	EXPECT_CALL( mMockLed, On() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	EXPECT_CALL( mMockLed, Off() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	EXPECT_CALL( mMockUart, Send( Matcher <const uint8_t *>( _ ), _ ) ).Times( 1U );
-	EXPECT_CALL( mMockClusters, GetCluster( Clusters::EClusters::GENERAL ) ).Times( 1U );
+	EXPECT_CALL( mMockClusters, GetCluster( GENERAL ) ).Times( 1U );
 
 	for ( size_t i = 0; i < strlen( bufferRx ); i++ )
 	{
@@ -106,7 +106,7 @@ TEST_F( UT_CMP_COMMUNICATION, Update_Ok_1frame_IMU )
 	EXPECT_CALL( mMockLed, On() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	EXPECT_CALL( mMockLed, Off() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	EXPECT_CALL( mMockUart, Send( Matcher <const uint8_t *>( _ ), _ ) ).Times( 1U );
-	EXPECT_CALL( mMockClusters, GetCluster( Clusters::EClusters::IMU ) ).Times( 1U );
+	EXPECT_CALL( mMockClusters, GetCluster( IMU ) ).Times( 1U );
 
 	for ( size_t i = 0; i < strlen( bufferRx ); i++ )
 	{
@@ -140,4 +140,6 @@ TEST_F( UT_CMP_COMMUNICATION, Update_Ko_1frame )
 	}
 
 	EXPECT_TRUE( success );
+}
+}
 }

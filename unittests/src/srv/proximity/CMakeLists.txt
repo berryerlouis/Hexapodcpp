@@ -1,7 +1,7 @@
 set(
   SRC_FILES 
-  ../src/clu/Frame.cpp 
-  ../src/srv/ServiceProximity.cpp
+  ../src/Cluster/Frame/Frame.cpp 
+  ../src/Service/Proximity/ServiceProximity.cpp
 )
 set(
   TEST_FILE 

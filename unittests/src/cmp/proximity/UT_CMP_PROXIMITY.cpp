@@ -5,14 +5,14 @@
 #include "../../../mock/cmp/MockSrf05.h"
 #include "../../../mock/cmp/MockVl53l0x.h"
 
-#include "../../../../src/cmp/SensorProximity.h"
+#include "../../../../src/Component/Proximity/SensorProximity.h"
 
 using ::testing::_;
 using ::testing::Return;
 using ::testing::StrictMock;
 
-using namespace Component;
-
+namespace Component {
+namespace Proximity {
 class UT_CMP_PROXIMITY : public ::testing::Test {
 protected:
 	UT_CMP_PROXIMITY() :
@@ -34,9 +34,9 @@ protected:
 	virtual ~UT_CMP_PROXIMITY() = default;
 
 	/* Mocks */
-	StrictMock <MockSrf05> mMockSrf05Left;
-	StrictMock <MockSrf05> mMockSrf05Right;
-	StrictMock <MockVl53l0x> mMockVl53l0x;
+	StrictMock <Component::Proximity::Ultrasound::MockSrf05> mMockSrf05Left;
+	StrictMock <Component::Proximity::Ultrasound::MockSrf05> mMockSrf05Right;
+	StrictMock <Component::Proximity::Laser::MockVl53l0x> mMockVl53l0x;
 
 	/* Test class */
 	SensorProximity mSensorProximity;
@@ -133,4 +133,6 @@ TEST_F( UT_CMP_PROXIMITY, SetThreshold_Ok )
 		EXPECT_TRUE( mSensorProximity.SetThreshold( (SensorsId) sensorId, threshold ) );
 	}
 	EXPECT_TRUE( success );
+}
+}
 }

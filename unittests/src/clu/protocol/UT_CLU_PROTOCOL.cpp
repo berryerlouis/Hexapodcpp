@@ -2,13 +2,13 @@
 #include <gtest/gtest.h>
 
 
-#include "../../../../src/clu/Protocol.h"
+#include "../../../../src/Cluster/Decoding/Protocol.h"
 
 using ::testing::_;
 using ::testing::Return;
 
-using namespace Clusters;
-
+namespace Cluster {
+namespace Decoding {
 class UT_CLU_PROTOCOL : public ::testing::Test {
 protected:
 	UT_CLU_PROTOCOL()
@@ -176,4 +176,6 @@ TEST_F( UT_CLU_PROTOCOL, Encode_Frame )
 	EXPECT_EQ( size, 12U );
 
 	EXPECT_TRUE( 0U == strcmp( bufferTx, "<0401020102>" ) );
+}
+}
 }

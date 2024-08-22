@@ -1,6 +1,6 @@
 set(
   SRC_FILES 
-  ../src/cmp/Servo.cpp 
+  ../src/Component/Servo/Servo.cpp 
 )
 set(
   TEST_FILE 

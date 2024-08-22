@@ -3,14 +3,14 @@
 
 
 #include "../../../mock/cmp/MockSensorProximity.h"
-#include "../../../../src/clu/ClusterProximity.h"
+#include "../../../../src/Cluster/Proximity/ClusterProximity.h"
 
 using ::testing::_;
 using ::testing::Return;
 using ::testing::StrictMock;
 
-using namespace Clusters;
-
+namespace Cluster {
+namespace Proximity {
 class UT_CLU_PROXIMITY : public ::testing::Test {
 protected:
 	UT_CLU_PROXIMITY() :
@@ -30,7 +30,7 @@ protected:
 	virtual ~UT_CLU_PROXIMITY() = default;
 
 	/* Mocks */
-	StrictMock <MockSensorProximity> mMockSensorProximity;
+	StrictMock <Component::Proximity::MockSensorProximity> mMockSensorProximity;
 
 	/* Test class */
 	ClusterProximity mClusterProximity;
@@ -39,10 +39,10 @@ protected:
 TEST_F( UT_CLU_PROXIMITY, Execute_WrongCluster_Ko )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame  response;
-	Clusters::Frame  request;
+	Frame            response;
+	Frame            request;
 
-	request.Build( Clusters::EClusters::BODY, Clusters::EBatteryCommands::GET_VOLTAGE );
+	request.Build( BODY, EBatteryCommands::GET_VOLTAGE );
 	success = mClusterProximity.Execute( request, response );
 
 	EXPECT_EQ( response.clusterId, 0U );
@@ -54,10 +54,10 @@ TEST_F( UT_CLU_PROXIMITY, Execute_WrongCluster_Ko )
 TEST_F( UT_CLU_PROXIMITY, Execute_WrongCommand_Ko )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame  response;
-	Clusters::Frame  request;
+	Frame            response;
+	Frame            request;
 
-	request.Build( Clusters::EClusters::PROXIMITY, 0x5FU );
+	request.Build( PROXIMITY, 0x5FU );
 	success = mClusterProximity.Execute( request, response );
 
 	EXPECT_EQ( response.clusterId, 0U );
@@ -69,7 +69,7 @@ TEST_F( UT_CLU_PROXIMITY, Execute_WrongCommand_Ko )
 TEST_F( UT_CLU_PROXIMITY, BuildFrameDistanceSrfLeft_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame  response;
+	Frame            response;
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -82,8 +82,8 @@ TEST_F( UT_CLU_PROXIMITY, BuildFrameDistanceSrfLeft_Ok )
 >>>>>>> 4ea6771 (create observers and update UT)
 
 	success = mClusterProximity.BuildFrameDistance( EProximityCommands::US_LEFT, response );
-	EXPECT_EQ( response.clusterId, Clusters::EClusters::PROXIMITY );
-	EXPECT_EQ( response.commandId, Clusters::EProximityCommands::US_LEFT );
+	EXPECT_EQ( response.clusterId, PROXIMITY );
+	EXPECT_EQ( response.commandId, EProximityCommands::US_LEFT );
 	EXPECT_EQ( response.nbParams, 2U );
 	EXPECT_EQ( response.params[0U], 10U );
 	EXPECT_EQ( response.params[1U], 0U );
@@ -93,7 +93,7 @@ TEST_F( UT_CLU_PROXIMITY, BuildFrameDistanceSrfLeft_Ok )
 TEST_F( UT_CLU_PROXIMITY, BuildFrameDistanceSrfRight_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame  response;
+	Frame            response;
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -106,8 +106,8 @@ TEST_F( UT_CLU_PROXIMITY, BuildFrameDistanceSrfRight_Ok )
 >>>>>>> 4ea6771 (create observers and update UT)
 
 	success = mClusterProximity.BuildFrameDistance( EProximityCommands::US_RIGHT, response );
-	EXPECT_EQ( response.clusterId, Clusters::EClusters::PROXIMITY );
-	EXPECT_EQ( response.commandId, Clusters::EProximityCommands::US_RIGHT );
+	EXPECT_EQ( response.clusterId, PROXIMITY );
+	EXPECT_EQ( response.commandId, EProximityCommands::US_RIGHT );
 	EXPECT_EQ( response.nbParams, 2U );
 	EXPECT_EQ( response.params[0U], 10U );
 	EXPECT_EQ( response.params[1U], 0U );
@@ -117,7 +117,7 @@ TEST_F( UT_CLU_PROXIMITY, BuildFrameDistanceSrfRight_Ok )
 TEST_F( UT_CLU_PROXIMITY, BuildFrameDistanceVlx_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame  response;
+	Frame            response;
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -130,10 +130,12 @@ TEST_F( UT_CLU_PROXIMITY, BuildFrameDistanceVlx_Ok )
 >>>>>>> 4ea6771 (create observers and update UT)
 
 	success = mClusterProximity.BuildFrameDistance( EProximityCommands::LASER, response );
-	EXPECT_EQ( response.clusterId, Clusters::EClusters::PROXIMITY );
-	EXPECT_EQ( response.commandId, Clusters::EProximityCommands::LASER );
+	EXPECT_EQ( response.clusterId, PROXIMITY );
+	EXPECT_EQ( response.commandId, EProximityCommands::LASER );
 	EXPECT_EQ( response.nbParams, 2U );
 	EXPECT_EQ( response.params[0U], 10U );
 	EXPECT_EQ( response.params[1U], 0U );
 	EXPECT_TRUE( success );
+}
+}
 }

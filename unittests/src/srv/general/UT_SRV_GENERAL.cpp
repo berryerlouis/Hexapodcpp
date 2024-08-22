@@ -4,20 +4,18 @@
 #include "../../../mock/srv/MockServiceMediator.h"
 #include "../../../mock/cmp/MockSoftware.h"
 
-#include "../../../../src/clu/ClusterGeneral.h"
-#include "../../../../src/srv/ServiceGeneral.h"
+#include "../../../../src/Cluster/General/ClusterGeneral.h"
+#include "../../../../src/Service/General/ServiceGeneral.h"
 
 using ::testing::_;
 using ::testing::Return;
 using ::testing::StrictMock;
 
-using namespace Component;
-
+namespace Service {
+namespace General {
 class UT_SRV_GENERAL : public ::testing::Test {
 protected:
 	UT_SRV_GENERAL() :
-		mMockSoftware(),
-		mMockServiceMediator(),
 		mClusterGeneral( mMockSoftware ),
 		mServiceGeneral( mClusterGeneral, mMockSoftware )
 	{
@@ -35,7 +33,7 @@ protected:
 	virtual ~UT_SRV_GENERAL() = default;
 
 	/* Mocks */
-	StrictMock <MockSoftware> mMockSoftware;
+	StrictMock <Component::Software::MockSoftware> mMockSoftware;
 	StrictMock <MockServiceMediator> mMockServiceMediator;
 
 	ClusterGeneral mClusterGeneral;
@@ -123,4 +121,6 @@ TEST_F( UT_SRV_GENERAL, Update_MultipleUpdateSetMax_Ok )
 	}
 
 	EXPECT_TRUE( success );
+}
+}
 }

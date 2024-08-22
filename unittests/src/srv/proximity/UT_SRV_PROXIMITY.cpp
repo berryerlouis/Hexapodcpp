@@ -6,15 +6,15 @@
 #include "../../../mock/srv/MockServiceMediator.h"
 #include "../../../mock/cmp/MockSensorProximity.h"
 
-#include "../../../../src/clu/ClusterProximity.h"
-#include "../../../../src/srv/ServiceProximity.h"
+#include "../../../../src/Cluster/Proximity/ClusterProximity.h"
+#include "../../../../src/Service/Proximity/ServiceProximity.h"
 
 using ::testing::_;
 using ::testing::Return;
 using ::testing::StrictMock;
 
-using namespace Component;
-
+namespace Service {
+namespace Proximity {
 class UT_SRV_PROXIMITY : public ::testing::Test {
 protected:
 	UT_SRV_PROXIMITY() :
@@ -44,7 +44,7 @@ protected:
 	virtual ~UT_SRV_PROXIMITY() = default;
 
 	/* Mocks */
-	StrictMock <MockSensorProximity> mMockSensorProximity;
+	StrictMock <Component::Proximity::MockSensorProximity> mMockSensorProximity;
 	StrictMock <MockServiceMediator> mMockServiceMediator;
 
 	ClusterProximity mClusterProximity;
@@ -65,4 +65,6 @@ TEST_F( UT_SRV_PROXIMITY, Update_Detection_Srf_Ok )
 	EXPECT_CALL( mMockSensorProximity, Update( _ ) ).Times( 1U );
 
 	mServiceProximity.Update( 0UL );
+}
+}
 }

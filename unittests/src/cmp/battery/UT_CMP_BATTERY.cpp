@@ -3,14 +3,14 @@
 
 
 #include "../../../mock/drv/MockAdc.h"
-#include "../../../../src/cmp/Battery.h"
+#include "../../../../src/Component/Battery/Battery.h"
 
 using ::testing::_;
 using ::testing::Return;
 using ::testing::StrictMock;
 
-using namespace Component;
-
+namespace Component {
+namespace Battery {
 class UT_CMP_BATTERY : public ::testing::Test {
 protected:
 	UT_CMP_BATTERY() :
@@ -30,7 +30,7 @@ protected:
 	virtual ~UT_CMP_BATTERY() = default;
 
 	/* Mocks */
-	StrictMock <MockAdc> mMockAdc;
+	StrictMock <Driver::Adc::MockAdc> mMockAdc;
 
 	/* Test class */
 	Battery mBattery;
@@ -104,4 +104,6 @@ TEST_F( UT_CMP_BATTERY, GetStateAfterUpdateNominal )
 
 	EXPECT_TRUE( success );
 	EXPECT_EQ( state, BatteryState::NOMINAL );
+}
+}
 }

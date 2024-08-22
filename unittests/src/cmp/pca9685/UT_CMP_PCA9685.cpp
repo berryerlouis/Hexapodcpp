@@ -4,15 +4,15 @@
 
 #include "../../../mock/drv/MockTwi.h"
 
-#include "../../../../src/cmp/SensorProximityInterface.h"
-#include "../../../../src/cmp/Pca9685.h"
+#include "../../../../src/Component/ServosController/Pca9685.h"
 
 using ::testing::_;
 using ::testing::StrictMock;
 using ::testing::Return;
 
-using namespace Component;
 
+namespace Component {
+namespace ServosController {
 class UT_CMP_PCA9685 : public ::testing::Test {
 protected:
 	UT_CMP_PCA9685() :
@@ -32,7 +32,7 @@ protected:
 	virtual ~UT_CMP_PCA9685() = default;
 
 	/* Mocks */
-	StrictMock <MockTwi> mMockTwi;
+	StrictMock <Driver::Twi::MockTwi> mMockTwi;
 
 	/* Test class */
 	Pca9685 mPca9685;
@@ -66,4 +66,6 @@ TEST_F( UT_CMP_PCA9685, Update_Ok )
 	mPca9685.Update( 0U );
 
 	EXPECT_TRUE( success );
+}
+}
 }

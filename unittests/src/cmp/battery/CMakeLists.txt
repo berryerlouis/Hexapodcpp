@@ -1,6 +1,6 @@
 set(
   SRC_FILES 
-  ../src/cmp/Battery.cpp 
+  ../src/Component/Battery/Battery.cpp 
 )
 set(
   TEST_FILE 

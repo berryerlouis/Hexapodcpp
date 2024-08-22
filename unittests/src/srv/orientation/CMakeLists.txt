@@ -1,7 +1,7 @@
 set(
   SRC_FILES 
-  ../src/clu/Frame.cpp 
-  ../src/srv/ServiceOrientation.cpp
+  ../src/Cluster/Frame/Frame.cpp 
+  ../src/Service/Orientation/ServiceOrientation.cpp
 )
 set(
   TEST_FILE 

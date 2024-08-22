@@ -1,7 +1,7 @@
 set(
   SRC_FILES 
-  ../src/clu/Frame.cpp 
-  ../src/cmp/SensorProximity.cpp 
+  ../src/Cluster/Frame/Frame.cpp 
+  ../src/Component/Proximity/SensorProximity.cpp 
 )
 set(
   TEST_FILE 

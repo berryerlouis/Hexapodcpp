@@ -1,9 +1,10 @@
 #pragma once
 #include <gmock/gmock.h>
-#include "../../../src/cmp/Pca9685Interface.h"
+#include "../../../src/Component/ServosController/Pca9685Interface.h"
 
 namespace Component {
-class MockPca9685 : public Component::Pca9685Interface {
+namespace ServosController {
+class MockPca9685 : public Pca9685Interface {
 public:
 	MOCK_METHOD0( Initialize, Core::CoreStatus( void ) );
 	MOCK_METHOD1( Update, void( const uint64_t ) );
@@ -15,4 +16,5 @@ public:
 	MOCK_METHOD1( SetFrequency, void( const uint32_t  ) );
 	MOCK_METHOD2( SetPwm, void(uint8_t, uint16_t) );
 };
+}
 }

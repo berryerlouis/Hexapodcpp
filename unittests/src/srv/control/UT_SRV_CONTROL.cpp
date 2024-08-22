@@ -4,15 +4,15 @@
 #include "../../../mock/cmp/MockPca9685.h"
 #include "../../../mock/cmp/MockServos.h"
 
-#include "../../../../src/clu/ClusterServo.h"
-#include "../../../../src/srv/ServiceControl.h"
+#include "../../../../src/Cluster/Servo/ClusterServo.h"
+#include "../../../../src/Service/Control/ServiceControl.h"
 
 using ::testing::_;
 using ::testing::Return;
 using ::testing::StrictMock;
 
-using namespace Component;
-
+namespace Service {
+namespace Control {
 class UT_SRV_CONTROL : public ::testing::Test {
 protected:
 	UT_SRV_CONTROL() :
@@ -34,10 +34,10 @@ protected:
 	virtual ~UT_SRV_CONTROL() = default;
 
 	/* Mocks */
-	StrictMock <MockPca9685> mMockPca9685;
-	StrictMock <MockServos> mMockServos;
+	StrictMock <Component::ServosController::MockPca9685> mMockPca9685;
+	StrictMock <Component::Servos::MockServos> mMockServos;
 
-	ClusterServo mClusterServo;
+	Cluster::Servo::ClusterServo mClusterServo;
 
 	/* Test class */
 	ServiceControl mServiceControl;
@@ -63,7 +63,7 @@ TEST_F( UT_SRV_CONTROL, Update_Ok )
 	success = mServiceControl.Initialize();
 
 	EXPECT_CALL( mMockServos, Update( _ ) ).Times( 1U );
-	EXPECT_CALL( mMockServos, GetPca9685( _ ) ).WillOnce( ReturnRef( mMockPca9685 ) );
+	EXPECT_CALL( mMockServos, GetServosController( _ ) ).WillOnce( ReturnRef( mMockPca9685 ) );
 	EXPECT_CALL( mMockPca9685, Update( _ ) ).Times( 1U );
 
 	mServiceControl.Update( 0UL );
@@ -80,12 +80,14 @@ TEST_F( UT_SRV_CONTROL, Update_2Times_Ok )
 	success = mServiceControl.Initialize();
 
 	EXPECT_CALL( mMockServos, Update( _ ) ).Times( 2U );
-	EXPECT_CALL( mMockServos, GetPca9685( 0 ) ).WillOnce( ReturnRef( mMockPca9685 ) );
-	EXPECT_CALL( mMockServos, GetPca9685( 1 ) ).WillOnce( ReturnRef( mMockPca9685 ) );
+	EXPECT_CALL( mMockServos, GetServosController( 0 ) ).WillOnce( ReturnRef( mMockPca9685 ) );
+	EXPECT_CALL( mMockServos, GetServosController( 1 ) ).WillOnce( ReturnRef( mMockPca9685 ) );
 	EXPECT_CALL( mMockPca9685, Update( _ ) ).Times( 2U );
 
 	mServiceControl.Update( 0UL );
 	mServiceControl.Update( 0UL );
 
 	EXPECT_TRUE( success );
+}
+}
 }

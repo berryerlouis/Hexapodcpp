@@ -1,6 +1,6 @@
 set(
   SRC_FILES 
-  ../src/cmp/Pca9685.cpp 
+  ../src/Component/ServosController/Pca9685.cpp 
 )
 set(
   TEST_FILE 

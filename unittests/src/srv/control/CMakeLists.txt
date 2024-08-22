@@ -1,8 +1,8 @@
 set(
   SRC_FILES 
-  ../src/clu/Frame.cpp 
-  ../src/cmp/Servo.cpp 
-  ../src/srv/ServiceControl.cpp
+../src/Cluster/Frame/Frame.cpp 
+  ../src/Component/Servo/Servo.cpp 
+  ../src/Service/Control/ServiceControl.cpp
 )
 set(
   TEST_FILE 

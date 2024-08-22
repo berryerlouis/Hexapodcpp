@@ -4,14 +4,14 @@
 #include "../../../mock/cmp/MockPca9685.h"
 #include "../../../mock/drv/MockTick.h"
 
-#include "../../../../src/cmp/Servos.h"
+#include "../../../../src/Component/Servos/Servos.h"
 
 using ::testing::StrictMock;
 using ::testing::_;
 using ::testing::Return;
 
-using namespace Component;
-
+namespace Component {
+namespace Servos {
 class UT_CMP_SERVOS : public ::testing::Test {
 protected:
 	UT_CMP_SERVOS() :
@@ -33,9 +33,9 @@ protected:
 	virtual ~UT_CMP_SERVOS() = default;
 
 	/* Mocks */
-	StrictMock <MockTick> mMockTick;
-	StrictMock <MockPca9685> mMockPca9685_0;
-	StrictMock <MockPca9685> mMockPca9685_1;
+	StrictMock <Driver::Tick::MockTick> mMockTick;
+	StrictMock <Component::ServosController::MockPca9685> mMockPca9685_0;
+	StrictMock <Component::ServosController::MockPca9685> mMockPca9685_1;
 
 	/* Test class */
 	Servos mServos;
@@ -68,4 +68,6 @@ TEST_F( UT_CMP_SERVOS, Update_Ok )
 	mServos.Update( 0UL );
 
 	EXPECT_TRUE( success );
+}
+}
 }

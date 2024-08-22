@@ -4,13 +4,13 @@
 #include "../../../mock/cmp/MockPca9685.h"
 #include "../../../mock/drv/MockTick.h"
 
-#include "../../../../src/cmp/Servo.h"
+#include "../../../../src/Component/Servo/Servo.h"
 
 using ::testing::StrictMock;
 using ::testing::_;
 
-using namespace Component;
-
+namespace Component {
+namespace Servo {
 class UT_CMP_SERVO : public ::testing::Test {
 protected:
 	UT_CMP_SERVO() :
@@ -31,8 +31,8 @@ protected:
 	virtual ~UT_CMP_SERVO() = default;
 
 	/* Mocks */
-	StrictMock <MockTick> mMockTick;
-	StrictMock <MockPca9685> mMockPca9685;
+	StrictMock <Driver::Tick::MockTick> mMockTick;
+	StrictMock <Component::ServosController::MockPca9685> mMockPca9685;
 
 	/* Test class */
 	Servo mServo;
@@ -136,4 +136,6 @@ TEST_F( UT_CMP_SERVO, SetMax_Ok )
 
 	EXPECT_TRUE( mServo.SetMax( 90U ) );
 	EXPECT_EQ( mServo.GetMax(), 90U );
+}
+}
 }
