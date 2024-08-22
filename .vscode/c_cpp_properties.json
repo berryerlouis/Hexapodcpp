@@ -4,8 +4,8 @@
             "name": "Avr",
             "compilerPath": "/usr/bin/avr-gcc",
             "includePath": [
-                "${workspaceFolder}/**",
-                "${workspaceFolder}/unittests/**"
+                "${workspaceFolder}/**/*",
+                "${workspaceFolder}/unittests/**/*"
             ],
             "defines": [
                 "__AVR_ATmega1284P__",

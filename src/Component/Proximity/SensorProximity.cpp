@@ -11,16 +11,15 @@ Core::CoreStatus SensorProximity::Initialize ( void )
 {
 	uint8_t success = 0U;
 
-	for ( size_t sensorId = 0; sensorId < NB_SENSORS; sensorId++ )
+	for ( SensorProximityInterface *sensor : this->mSensors )
 	{
-		if ( this->mSensors[sensorId]->Initialize() )
+		if ( sensor->Initialize() )
 		{
-			this->mSensors[sensorId]->Attach( this );
-			success |= 1U << sensorId;
+			success++;
 		}
 	}
 
-	return ( ( success == 7U ) ? Core::CoreStatus::CORE_OK : Core::CoreStatus::CORE_ERROR );
+	return ( ( success == NB_SENSORS ) ? Core::CoreStatus::CORE_OK : Core::CoreStatus::CORE_ERROR );
 }
 
 void SensorProximity::Update ( const uint64_t currentTime )
@@ -46,9 +45,19 @@ uint16_t SensorProximity::GetThreshold ( const SensorsId &sensorId )
 	return ( this->mSensors[sensorId]->GetThreshold() );
 }
 
-void SensorProximity::Detect ( const SensorsId &sensorId, const uint16_t &distance )
+Core::CoreStatus SensorProximity::Attach ( SensorProximityObserverInterface *observer )
 {
-	this->Notify( sensorId, distance );
+	uint8_t success = 0U;
+
+	for ( SensorProximityInterface *sensor : this->mSensors )
+	{
+		if ( sensor->Attach( observer ) )
+		{
+			success++;
+		}
+	}
+
+	return ( ( success == NB_SENSORS ) ? Core::CoreStatus::CORE_OK : Core::CoreStatus::CORE_ERROR );
 }
 }
 }

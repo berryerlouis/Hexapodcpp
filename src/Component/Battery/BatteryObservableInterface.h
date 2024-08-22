@@ -1,11 +1,10 @@
 #pragma once
 
 #include "BatteryObserverInterface.h"
-#include "../ComponentObservableInterface.h"
 
 namespace Component {
 namespace Battery {
-class BatteryObservableInterface : public ComponentObservableInterface <BatteryObserverInterface, BatteryState> {
+class BatteryObservableInterface{
 public:
 	BatteryObservableInterface()  = default;
 	~BatteryObservableInterface() = default;

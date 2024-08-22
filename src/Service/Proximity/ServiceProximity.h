@@ -12,15 +12,8 @@ using namespace Cluster::Proximity;
 
 class ServiceProximity : public Service, public SensorProximityObserverInterface {
 public:
-<<<<<<< HEAD
-<<<<<<< HEAD
 	ServiceProximity( ClusterProximity &clusterProximity, SensorProximityMultipleInterface &proximity );
-=======
-	ServiceProximity( ClusterProximity &clusterProximity, SensorProximityInterface &proximity );
->>>>>>> f9be308 (create observer for Battery, used by service battery and service display, clusters are refactored to used the interface componenent)
-=======
-	ServiceProximity( ClusterProximity &clusterProximity, SensorProximityMultipleInterface &proximity );
->>>>>>> 4ea6771 (create observers and update UT)
+
 	~ServiceProximity() = default;
 
 	virtual Core::CoreStatus Initialize( void ) final override;
@@ -30,15 +23,7 @@ public:
 
 protected:
 	ClusterProximity &mClusterProximity;
-<<<<<<< HEAD
-<<<<<<< HEAD
 	SensorProximityMultipleInterface &mProximity;
-=======
-	SensorProximityInterface &mProximity;
->>>>>>> f9be308 (create observer for Battery, used by service battery and service display, clusters are refactored to used the interface componenent)
-=======
-	SensorProximityMultipleInterface &mProximity;
->>>>>>> 4ea6771 (create observers and update UT)
 };
 }
 }

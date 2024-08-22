@@ -7,7 +7,6 @@
 #include "../../Led/LedInterface.h"
 #include "../SensorProximityInterface.h"
 
-
 namespace Component {
 namespace Proximity {
 namespace Ultrasound {

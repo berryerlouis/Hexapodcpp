@@ -12,7 +12,6 @@ Logger *Logger::GetInstance ( Driver::Uart::UartInterface &uart )
 void Logger::Write ( const char *data )
 {
 	mUart.Send( data, strlen( data ) );
-	mUart.Send( '\n' );
 }
 
 void Logger::Write ( const uint64_t data )

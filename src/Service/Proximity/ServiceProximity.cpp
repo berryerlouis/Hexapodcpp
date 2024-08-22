@@ -11,12 +11,19 @@ ServiceProximity::ServiceProximity( ClusterProximity &clusterProximity, SensorPr
 
 Core::CoreStatus ServiceProximity::Initialize ( void )
 {
-	return ( this->mProximity.Initialize() );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	if ( this->mProximity.Initialize() )
+	{
+		this->mProximity.Attach( this );
+		success = Core::CoreStatus::CORE_OK;
+	}
+	return ( success );
 }
 
 void ServiceProximity::Update ( const uint64_t currentTime )
 {
 	this->mProximity.Update( currentTime );
+}
 
 void ServiceProximity::Detect ( const SensorsId &sensorId, const uint16_t &distance )
 {

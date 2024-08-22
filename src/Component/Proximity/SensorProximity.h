@@ -5,7 +5,7 @@
 
 namespace Component {
 namespace Proximity {
-class SensorProximity : public SensorProximityMultipleInterface, public SensorProximityObserverInterface {
+class SensorProximity : public SensorProximityMultipleInterface {
 public:
 	static const uint8_t NB_SENSORS = 3U;
 	SensorProximity( SensorProximityInterface &srf05Left, SensorProximityInterface &srf05Right, SensorProximityInterface &Vl53l0x );
@@ -16,8 +16,8 @@ public:
 	virtual uint16_t GetDistance( const SensorsId &sensorId ) final override;
 	virtual Core::CoreStatus SetThreshold( const SensorsId &sensorId, const uint16_t threshold ) final override;
 	virtual uint16_t GetThreshold( const SensorsId &sensorId ) final override;
-
-	virtual void Detect( const SensorsId &sensorId, const uint16_t &distance ) final override;
+	
+	virtual Core::CoreStatus Attach( SensorProximityObserverInterface *observer ) final override;
 
 private:
 	SensorProximityInterface *mSensors[NB_SENSORS];
