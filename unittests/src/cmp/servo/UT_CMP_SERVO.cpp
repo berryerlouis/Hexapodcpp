@@ -11,7 +11,7 @@ using ::testing::_;
 
 using namespace Component;
 
-class UT_CMP_SERVO : public ::testing::Test  {
+class UT_CMP_SERVO : public ::testing::Test {
 protected:
 	UT_CMP_SERVO() :
 		mMockTick(),

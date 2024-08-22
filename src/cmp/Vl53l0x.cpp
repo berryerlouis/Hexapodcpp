@@ -127,12 +127,12 @@ Core::CoreStatus Vl53l0x::Initialize ( void )
 void Vl53l0x::Update ( const uint64_t currentTime )
 {
 	(void) currentTime;
-}
 
-bool Vl53l0x::IsDetecting ( void )
-{
 	this->mDistance = this->GetDistance();
-	return ( this->mDistance != 0U && this->mDistance <= this->mThreshold );
+	if ( this->mDistance != 0U && this->mDistance <= this->mThreshold )
+	{
+		this->Notify( SensorsId::VLX, this->mDistance );
+	}
 }
 
 Core::CoreStatus Vl53l0x::SetThreshold ( uint16_t mThreshold )

@@ -4,6 +4,6 @@ set(
 )
 set(
   TEST_FILE 
-  src/cmp/srf05/UT_CMP_SFR05.cpp
+  src/cmp/srf05/UT_CMP_SRF05.cpp
 )
-set(UT_CMP_SFR05 ${SRC_FILES} ${TEST_FILE} PARENT_SCOPE)
+set(UT_CMP_SRF05 ${SRC_FILES} ${TEST_FILE} PARENT_SCOPE)

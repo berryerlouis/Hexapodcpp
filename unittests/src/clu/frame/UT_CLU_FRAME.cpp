@@ -10,7 +10,7 @@ using ::testing::StrictMock;
 
 using namespace Clusters;
 
-class UT_CLU_FRAME : public ::testing::Test  {
+class UT_CLU_FRAME : public ::testing::Test {
 protected:
 	UT_CLU_FRAME() :
 		mFrame()

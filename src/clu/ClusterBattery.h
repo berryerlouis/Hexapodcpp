@@ -6,10 +6,11 @@
 namespace Clusters {
 using namespace Component;
 
-class ClusterBattery : public Cluster <BatteryInterface> {
+class ClusterBattery : public Cluster {
 public:
 	ClusterBattery( BatteryInterface &battery )
-		: Cluster <BatteryInterface>( BATTERY, battery )
+		: Cluster( BATTERY )
+		, mBattery( battery )
 	{
 	}
 
@@ -47,7 +48,7 @@ public:
 			EBatteryCommands::GET_VOLTAGE );
 		if ( success )
 		{
-			response.Set2BytesParam( this->GetComponent().GetVoltage() );
+			response.Set2BytesParam( this->mBattery.GetVoltage() );
 		}
 		return ( success );
 	}
@@ -59,10 +60,13 @@ public:
 			EBatteryCommands::GET_BAT_STATUS );
 		if ( success )
 		{
-			response.Set1ByteParam( this->GetComponent().GetState() );
-			response.Set2BytesParam( this->GetComponent().GetVoltage() );
+			response.Set1ByteParam( this->mBattery.GetState() );
+			response.Set2BytesParam( this->mBattery.GetVoltage() );
 		}
 		return ( success );
 	}
+
+private:
+	BatteryInterface &mBattery;
 };
 }

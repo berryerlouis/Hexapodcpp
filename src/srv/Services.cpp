@@ -57,18 +57,6 @@ void Services::SendFrame ( Frame &message ) const
 	this->mCommunication.Send( message );
 }
 
-void Services::DisplayBatteryLevel ( Component::BatteryInterface::BatteryState state )
-{
-	ServiceDisplay *displayService = static_cast <ServiceDisplay *>( this->Get( EServices::DISPLAY ) );
-	displayService->DisplayBatteryLevel( state );
-}
-
-void Services::DisplayProximitySensor ( Component::SensorProximityInterface::SensorsId sensor )
-{
-	ServiceDisplay *displayService = static_cast <ServiceDisplay *>( this->Get( EServices::DISPLAY ) );
-	displayService->DisplayProximitySensor( sensor );
-}
-
 Service *Services::Get ( const EServices serviceId )
 {
 	for ( ServiceItem &item : this->mServices )

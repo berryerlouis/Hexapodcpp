@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../clu/Constants.h"
-#include "../cmp/ProximityInterface.h"
+#include "../cmp/SensorProximityInterface.h"
 #include "../drv/InputCaptureInterface.h"
 #include "../drv/GpioInterface.h"
 #include "../cmp/LedInterface.h"
@@ -10,7 +10,7 @@
 namespace Component {
 using namespace Driver;
 using namespace Clusters;
-class Srf05 : public ProximityInterface {
+class Srf05 : public SensorProximityInterface {
 public:
 	static const uint64_t ECHO_TIMEOUT       = 30000U;
 	static const uint16_t DISTANCE_THRESHOLD = 30U;
@@ -25,9 +25,9 @@ public:
 	virtual uint16_t GetDistance( void ) final override;
 	virtual uint16_t GetThreshold( void ) final override;
 	virtual Core::CoreStatus SetThreshold( const uint16_t threshold ) final override;
-	virtual bool IsDetecting( void ) final override;
 
 private:
+
 	EProximityCommands mSide;
 	GpioInterface &mGpioTrigger;
 	InputCaptureInterface &mGpioEcho;

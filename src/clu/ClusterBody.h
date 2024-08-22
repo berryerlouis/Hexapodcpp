@@ -6,10 +6,11 @@
 namespace Clusters {
 using namespace Component;
 
-class ClusterBody : public Cluster <BodyInterface> {
+class ClusterBody : public Cluster {
 public:
 	ClusterBody( BodyInterface &body )
-		: Cluster <BodyInterface>( BODY, body )
+		: Cluster( BODY )
+		, mBody( body )
 	{
 	}
 
@@ -45,7 +46,7 @@ public:
 				};
 
 				uint16_t travelTime = (uint16_t) ( request.Get2BytesParam( 12U ) );
-				this->GetComponent().SetPositionRotation( position, rotation, travelTime );
+				this->mBody.SetPositionRotation( position, rotation, travelTime );
 				success = this->BuildFrameSetPosition( response );
 			}
 			break;
@@ -67,5 +68,8 @@ public:
 		}
 		return ( success );
 	}
+
+private:
+	BodyInterface &mBody;
 };
 }

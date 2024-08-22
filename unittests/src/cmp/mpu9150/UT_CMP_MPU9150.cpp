@@ -14,7 +14,7 @@ using ::testing::Return;
 
 using namespace Component;
 
-class UT_CMP_MPU9150 : public ::testing::Test  {
+class UT_CMP_MPU9150 : public ::testing::Test {
 protected:
 	UT_CMP_MPU9150() :
 		mMockTwi(),

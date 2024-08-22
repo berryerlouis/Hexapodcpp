@@ -88,7 +88,7 @@
                 "UT_CMP_PROXIMITY",
                 "UT_CMP_SERVO",
                 "UT_CMP_SERVOS",
-                "UT_CMP_SFR05",
+                "UT_CMP_SRF05",
                 "UT_CMP_VL53L0X",
                 "UT_SRV_BATTERY",
                 "UT_SRV_CONTROL",
@@ -105,7 +105,8 @@
             "description": "Which configuration to build ?",
             "options": [
                 "RELEASE",
-                "DEBUG"
+                "DEBUG",
+                "CLEAN"
             ],
             "default": "DEBUG"
         }

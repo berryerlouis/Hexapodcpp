@@ -16,12 +16,12 @@ using ::testing::StrictMock;
 
 using namespace Component;
 
-class UT_SRV_ORIENTATION : public ::testing::Test  {
+class UT_SRV_ORIENTATION : public ::testing::Test {
 protected:
 	UT_SRV_ORIENTATION() :
 		mMockMpu9150(),
 		mClusterImu( mMockMpu9150 ),
-		mServiceOrientation( mClusterImu )
+		mServiceOrientation( mClusterImu, mMockMpu9150 )
 	{
 	}
 

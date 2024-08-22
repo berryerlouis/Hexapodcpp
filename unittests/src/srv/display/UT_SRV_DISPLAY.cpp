@@ -5,7 +5,9 @@
 #include "../../../mock/srv/MockService.h"
 #include "../../../mock/srv/MockServiceMediator.h"
 #include "../../../mock/cmp/MockSsd1306.h"
+#include "../../../mock/drv/MockAdc.h"
 
+#include "../../../../src/cmp/Battery.h"
 #include "../../../../src/srv/ServiceDisplay.h"
 
 using ::testing::_;
@@ -14,11 +16,13 @@ using ::testing::StrictMock;
 
 using namespace Component;
 
-class UT_SRV_DISPLAY : public ::testing::Test  {
+class UT_SRV_DISPLAY : public ::testing::Test {
 protected:
 	UT_SRV_DISPLAY() :
+		mMockAdc(),
 		mMockSsd1306(),
-		mServiceDisplay( mMockSsd1306 )
+		mBattery( mMockAdc ),
+		mServiceDisplay( mMockSsd1306, mBattery )
 	{
 	}
 
@@ -33,7 +37,10 @@ protected:
 	virtual ~UT_SRV_DISPLAY() = default;
 
 	/* Mocks */
+	StrictMock <MockAdc> mMockAdc;
 	StrictMock <MockSsd1306> mMockSsd1306;
+
+	Battery mBattery;
 
 	/* Test class */
 	ServiceDisplay mServiceDisplay;

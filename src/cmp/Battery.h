@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ComponentObservableInterface.h"
 #include "BatteryInterface.h"
 #include "../drv/AdcInterface.h"
 

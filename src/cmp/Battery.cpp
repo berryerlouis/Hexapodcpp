@@ -20,7 +20,7 @@ void Battery::Update ( const uint64_t currentTime )
 {
 	(void) currentTime;
 	this->mVoltage = this->mAdc.Read();
-
+	BatteryState state = this->mState;
 	if ( this->mVoltage >= NOMINAL_LEVEL )
 	{
 		this->mState = NOMINAL;
@@ -33,9 +33,13 @@ void Battery::Update ( const uint64_t currentTime )
 	{
 		this->mState = CRITICAL;
 	}
+	if ( state != this->mState )
+	{
+		this->Notify( this->mState );
+	}
 }
 
-Battery::BatteryState Battery::GetState ( void )
+BatteryState Battery::GetState ( void )
 {
 	return ( this->mState );
 }

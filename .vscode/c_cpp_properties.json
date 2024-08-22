@@ -2,16 +2,10 @@
     "configurations": [
         {
             "name": "Avr",
-            "compilerPath": "/usr/avr8-gnu-toolchain-linux_x86_64/bin/avr-gcc",
+            "compilerPath": "/usr/bin/avr-gcc",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/src/**",
-                "${workspaceFolder}/src/app/**",
-                "${workspaceFolder}/src/bot/**",
-                "${workspaceFolder}/src/clu/**",
-                "${workspaceFolder}/src/cmp/**",
-                "${workspaceFolder}/src/drv/**",
-                "${workspaceFolder}/src/srv/**"
+                "${workspaceFolder}/unittests/**"
             ],
             "defines": [
                 "__AVR_ATmega1284P__",

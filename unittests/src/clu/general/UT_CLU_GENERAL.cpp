@@ -11,7 +11,7 @@ using ::testing::StrictMock;
 
 using namespace Clusters;
 
-class UT_CLU_GENERAL : public ::testing::Test  {
+class UT_CLU_GENERAL : public ::testing::Test {
 protected:
 	UT_CLU_GENERAL() :
 		mMockSoftware(),
@@ -87,12 +87,10 @@ TEST_F( UT_CLU_GENERAL, BuildFrameGetVersion_Ok )
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame  response;
 
-	EXPECT_CALL( mMockSoftware, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = mClusterGeneral.Initialize();
 
 	EXPECT_CALL( mMockSoftware, GetVersion() ).WillOnce( Return( SoftwareInterface::Version{ 1, 0 } ) );
 
-	mClusterGeneral.BuildFrameGetVersion( response );
+	success = mClusterGeneral.BuildFrameGetVersion( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::GENERAL );
 	EXPECT_EQ( response.commandId, Clusters::EGeneralCommands::VERSION );
 	EXPECT_EQ( response.nbParams, 2U );
@@ -106,12 +104,9 @@ TEST_F( UT_CLU_GENERAL, BuildFrameGetMinTime_Ok )
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame  response;
 
-	EXPECT_CALL( mMockSoftware, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = mClusterGeneral.Initialize();
-
 	EXPECT_CALL( mMockSoftware, GetMinTime() ).WillOnce( Return( 50U ) );
 
-	mClusterGeneral.BuildFrameGetMinTime( response );
+	success = mClusterGeneral.BuildFrameGetMinTime( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::GENERAL );
 	EXPECT_EQ( response.commandId, Clusters::EGeneralCommands::MIN_EXECUTION_TIME );
 	EXPECT_EQ( response.nbParams, 8U );
@@ -131,12 +126,9 @@ TEST_F( UT_CLU_GENERAL, BuildFrameGetMaxTime_Ok )
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 	Clusters::Frame  response;
 
-	EXPECT_CALL( mMockSoftware, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	success = mClusterGeneral.Initialize();
-
 	EXPECT_CALL( mMockSoftware, GetMaxTime() ).WillOnce( Return( 50U ) );
 
-	mClusterGeneral.BuildFrameGetMaxTime( response );
+	success = mClusterGeneral.BuildFrameGetMaxTime( response );
 	EXPECT_EQ( response.clusterId, Clusters::EClusters::GENERAL );
 	EXPECT_EQ( response.commandId, Clusters::EGeneralCommands::MAX_EXECUTION_TIME );
 	EXPECT_EQ( response.nbParams, 8U );

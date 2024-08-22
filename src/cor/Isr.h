@@ -4,17 +4,17 @@
 #include <avr/interrupt.h>
 
 #define ISR_EMBEDDED_CODE( code ) \
-	(										 \
+		  (								 \
 	{										 \
 		uint8_t oldSREG = SREG;		 \
 		cli();							 \
 		code								 \
 		SREG = oldSREG;				 \
 	}										 \
-	)
+		  )
 
 #define ATOMIC_EMBEDDED_CODE( code ) \
-	(											 \
+		  (									 \
 	{											 \
 		uint8_t oldSREG = SREG;			 \
 		cli();								 \
@@ -22,4 +22,4 @@
 		SREG = oldSREG;					 \
 		sei();								 \
 	}											 \
-	)
+		  )

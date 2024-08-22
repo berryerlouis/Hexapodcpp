@@ -6,17 +6,17 @@
 namespace Clusters {
 using namespace Component;
 
-class ClusterProximity : public Cluster <SensorProximityInterface> {
+class ClusterProximity : public Cluster {
 public:
-	ClusterProximity( SensorProximityInterface &proximity )
-		: Cluster <SensorProximityInterface>( PROXIMITY, proximity )
+	ClusterProximity( SensorProximityMultipleInterface &proximity )
+		: Cluster( PROXIMITY )
+		, mProximity( proximity )
 	{
 	}
 
 	~ClusterProximity() = default;
 
-
-	Core::CoreStatus Execute ( Frame &request, Frame &response ) final override
+	inline virtual Core::CoreStatus Execute ( Frame &request, Frame &response ) final override
 	{
 		Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
@@ -45,7 +45,7 @@ public:
 		case EProximityCommands::SET_THRESHOLD: {
 			uint8_t  sensorId  = request.Get1ByteParam( 0U );
 			uint16_t threshold = request.Get2BytesParam( 1U );
-			success = this->GetComponent().SetThreshold( (SensorProximityInterface::SensorsId) sensorId, threshold );
+			success = this->mProximity.SetThreshold( (SensorsId) sensorId, threshold );
 			if ( success == true )
 			{
 				success = this->BuildFrameThreshold( (EProximityCommands) request.commandId, response );
@@ -59,28 +59,31 @@ public:
 		return ( success );
 	}
 
-	Core::CoreStatus BuildFrameDistance ( EProximityCommands sensorId, Frame &response )
+	inline Core::CoreStatus BuildFrameDistance ( EProximityCommands sensorId, Frame &response )
 	{
 		Core::CoreStatus success = response.Build(
 			EClusters::PROXIMITY,
 			sensorId );
 		if ( success )
 		{
-			response.Set2BytesParam( this->GetComponent().GetDistance( (SensorProximityInterface::SensorsId) sensorId ) );
+			response.Set2BytesParam( this->mProximity.GetDistance( (SensorsId) sensorId ) );
 		}
 		return ( success );
 	}
 
-	Core::CoreStatus BuildFrameThreshold ( EProximityCommands sensorId, Frame &response )
+	inline Core::CoreStatus BuildFrameThreshold ( EProximityCommands sensorId, Frame &response )
 	{
 		Core::CoreStatus success = response.Build(
 			EClusters::PROXIMITY,
 			EProximityCommands::SET_THRESHOLD );
 		if ( success )
 		{
-			response.Set2BytesParam( this->GetComponent().GetThreshold( (SensorProximityInterface::SensorsId) sensorId ) );
+			response.Set2BytesParam( this->mProximity.GetThreshold( (SensorsId) sensorId ) );
 		}
 		return ( success );
 	}
+
+private:
+	SensorProximityMultipleInterface &mProximity;
 };
 }

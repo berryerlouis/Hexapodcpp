@@ -12,7 +12,7 @@ using ::testing::Return;
 
 using namespace Component;
 
-class UT_CMP_SERVOS : public ::testing::Test  {
+class UT_CMP_SERVOS : public ::testing::Test {
 protected:
 	UT_CMP_SERVOS() :
 		mMockTick(),

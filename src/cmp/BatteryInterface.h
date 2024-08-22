@@ -1,17 +1,20 @@
 #pragma once
 
 #include "ComponentInterface.h"
+#include "ComponentObservable.h"
+#include "ComponentObserverInterface.h"
 
 namespace Component {
-class BatteryInterface : public ComponentInterface {
+enum BatteryState
+{
+	NOMINAL = 0x00U,
+	WARNING,
+	CRITICAL,
+	UNKNOWN = 0xFFU
+};
+
+class BatteryInterface : public ComponentInterface, public ComponentObservable <BatteryState> {
 public:
-	enum BatteryState
-	{
-		NOMINAL = 0x00U,
-		WARNING,
-		CRITICAL,
-		UNKNOWN = 0xFFU
-	};
 
 	BatteryInterface( void ) = default;
 	~BatteryInterface()      = default;
@@ -21,5 +24,18 @@ public:
 
 	virtual BatteryState GetState() = 0;
 	virtual uint16_t GetVoltage()   = 0;
+};
+
+class BatteryObserverInterface : public ComponentObserverInterface <BatteryState> {
+public:
+	BatteryObserverInterface()  = default;
+	~BatteryObserverInterface() = default;
+
+	virtual void UpdatedBatteryState( const BatteryState &batteryState ) = 0;
+
+	inline virtual void UpdatedValue ( const BatteryState &batteryState ) final override
+	{
+		UpdatedBatteryState( batteryState );
+	}
 };
 }

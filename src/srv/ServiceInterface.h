@@ -10,8 +10,6 @@ public:
 	ServiceMediatorInterface()  = default;
 	~ServiceMediatorInterface() = default;
 	virtual void SendFrame( Clusters::Frame &message ) const = 0;
-	virtual void DisplayBatteryLevel( Component::BatteryInterface::BatteryState state )          = 0;
-	virtual void DisplayProximitySensor( Component::SensorProximityInterface::SensorsId sensor ) = 0;
 };
 
 class BaseComponent : public Core::CoreInterface {

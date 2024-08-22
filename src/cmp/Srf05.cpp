@@ -22,6 +22,17 @@ void Srf05::Update ( const uint64_t currentTime )
 {
 	(void) currentTime;
 	this->SendPulse();
+	const uint16_t distance  = this->GetDistance();
+	bool           detection = ( distance != 0U && distance <= this->mThreshold );
+	if ( true == detection )
+	{
+		this->mLed.On();
+		this->Notify( (SensorsId) mSide, distance );
+	}
+	else
+	{
+		this->mLed.Off();
+	}
 }
 
 uint16_t Srf05::GetThreshold ( void )
@@ -33,22 +44,6 @@ Core::CoreStatus Srf05::SetThreshold ( uint16_t mThreshold )
 {
 	this->mThreshold = mThreshold;
 	return ( Core::CoreStatus::CORE_OK );
-}
-
-bool Srf05::IsDetecting ( void )
-{
-	const uint16_t distance = this->GetDistance();
-	bool           success  = ( distance != 0U && distance <= this->mThreshold );
-
-	if ( success )
-	{
-		this->mLed.On();
-	}
-	else
-	{
-		this->mLed.Off();
-	}
-	return ( success );
 }
 
 void Srf05::SendPulse ( void )

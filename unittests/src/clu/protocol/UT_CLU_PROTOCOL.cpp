@@ -9,7 +9,7 @@ using ::testing::Return;
 
 using namespace Clusters;
 
-class UT_CLU_PROTOCOL : public ::testing::Test  {
+class UT_CLU_PROTOCOL : public ::testing::Test {
 protected:
 	UT_CLU_PROTOCOL()
 	{
