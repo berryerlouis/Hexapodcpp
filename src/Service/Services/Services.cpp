@@ -1,6 +1,5 @@
 #include "Services.h"
 #include "../../Misc/Logger/Logger.h"
-
 namespace Service {
 namespace Services {
 Services::Services(
@@ -12,6 +11,7 @@ Services::Services(
 	ServiceBattery &serviceBattery,
 	ServiceDisplay &serviceDisplay )
 	: mCommunication( communication )
+	, mEvents()
 	, mServices{
 					{ EServices::GENERAL, &serviceGeneral },
 					{ EServices::PROXIMITY, &serviceProximity },
@@ -54,11 +54,6 @@ void Services::Update ( const uint64_t currentTime )
 	}
 }
 
-void Services::SendFrame ( Frame &message ) const
-{
-	this->mCommunication.Send( message );
-}
-
 Service *Services::Get ( const EServices serviceId )
 {
 	for ( ServiceItem &item : this->mServices )
@@ -69,6 +64,16 @@ Service *Services::Get ( const EServices serviceId )
 		}
 	}
 	return ( nullptr );
+}
+
+void Services::SendFrame ( Frame &message ) const
+{
+	this->mCommunication.Send( message );
+}
+
+void Services::AddEvent ( const Core::EventId &event )
+{
+	this->mEvents.Push( event );
 }
 }
 }

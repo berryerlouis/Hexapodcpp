@@ -29,7 +29,7 @@ void Srf05::Update ( const uint64_t currentTime )
 	if ( true == detection )
 	{
 		this->mLed.On();
-		this->Notify( (SensorsId) mSide, distance );
+		this->Notify( (SensorsId) mSide );
 	}
 	else
 	{

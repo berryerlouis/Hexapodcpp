@@ -2,6 +2,7 @@
 
 #include "../Component/Communication/Communication.h"
 #include "../Cluster/Frame/Frame.h"
+#include "../Core/Event/Event.h"
 
 namespace Service {
 using namespace Cluster;
@@ -32,7 +33,7 @@ public:
 	}
 };
 
-class ServiceInterface : public BaseComponent {
+class ServiceInterface : public BaseComponent  {
 public:
 	ServiceInterface()  = default;
 	~ServiceInterface() = default;

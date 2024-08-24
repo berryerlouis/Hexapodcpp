@@ -9,6 +9,8 @@
 #include "../General/ServiceGeneral.h"
 #include "../Orientation/ServiceOrientation.h"
 #include "../Proximity/ServiceProximity.h"
+#include "../../Core/Event/Event.h"
+#include "../../Core/Event/EventInterface.h"
 
 namespace Service {
 namespace Services {
@@ -29,7 +31,7 @@ struct ServiceItem
 	~ServiceItem() = default;
 };
 
-class Services : public ServiceInterface, public ServiceMediatorInterface {
+class Services : public ServiceInterface, public ServiceMediatorInterface, public Core::EventInterface {
 public:
 	Services(
 		CommunicationInterface &communication,
@@ -45,13 +47,16 @@ public:
 	virtual Core::CoreStatus Initialize( void ) final override;
 	virtual void Update( const uint64_t currentTime ) final override;
 
-	virtual void SendFrame( Frame &message ) const override;
+	virtual void SendFrame( Frame &message ) const final override;
+
+	virtual void AddEvent( const Core::EventId &event ) final override;
 
 private:
 
 	Service *Get( const EServices serviceId );
 
 	CommunicationInterface & mCommunication;
+	Core::Event mEvents;
 	ServiceItem mServices[NB_SERVICES];
 };
 }

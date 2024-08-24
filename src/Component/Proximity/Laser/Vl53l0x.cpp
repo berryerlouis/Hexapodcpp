@@ -134,7 +134,7 @@ void Vl53l0x::Update ( const uint64_t currentTime )
 	this->mDistance = this->GetDistance();
 	if ( this->mDistance != 0U && this->mDistance <= this->mThreshold )
 	{
-		this->Notify( SensorsId::VLX, this->mDistance );
+		this->Notify( SensorsId::VLX );
 	}
 }
 

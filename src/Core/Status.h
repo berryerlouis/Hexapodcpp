@@ -19,9 +19,4 @@ struct CoreStatus
 private:
 	int8_t              status = CORE_ERROR;
 };
-
-class Utils
-{
-public:
-};
 }

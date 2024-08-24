@@ -49,7 +49,7 @@ App::App( void )
 	, mServiceProximity( mClusterProximity, mSensorProximity )
 	, mServiceOrientation( mClusterImu, mMpu9150 )
 	, mServiceBattery( mClusterBattery, mBattery )
-	, mServiceDisplay( mSsd1306, mBattery )
+	, mServiceDisplay( mSsd1306, mBattery, mSensorProximity )
 	, mServiceGeneral( mClusterGeneral, mSoftware )
 	, mServices( mCommunication, mServiceGeneral, mServiceControl, mServiceProximity, mServiceOrientation, mServiceBattery, mServiceDisplay )
 {

@@ -2,10 +2,11 @@
 
 namespace Service {
 namespace Display {
-ServiceDisplay::ServiceDisplay( Ssd1306Interface &ssd1306, BatteryInterface &batteryInterface )
+ServiceDisplay::ServiceDisplay( Ssd1306Interface &ssd1306, BatteryInterface &batteryInterface, SensorProximityMultipleInterface &proximity )
 	: Service( 5U )
 	, mSsd1306( ssd1306 )
 	, mBatteryInterface( batteryInterface )
+	, mProximity( proximity )
 	, mBmpBatteryLevel{.bmp  = (uint8_t *) Bitmaps::Battery0, .width = 16U, .height = 7U }
 	, mBmpCommunication{.bmp = (uint8_t *) Bitmaps::Communication, .width = 16U, .height = 8U }
 	, mBmpProximity{.bmp     = (uint8_t *) Bitmaps::ArrowCenter, .width = 16U, .height = 6U }
@@ -17,6 +18,7 @@ ServiceDisplay::ServiceDisplay( Ssd1306Interface &ssd1306, BatteryInterface &bat
 Core::CoreStatus ServiceDisplay::Initialize ( void )
 {
 	this->mBatteryInterface.Attach( this );
+	this->mProximity.Attach( this );
 	this->mSsd1306.Initialize();
 	this->DisplayBackground();
 	return ( Core::CoreStatus::CORE_OK );
@@ -111,6 +113,11 @@ void ServiceDisplay::DisplayProximitySensor ( SensorsId sensor )
 void ServiceDisplay::UpdatedBatteryState ( const BatteryState &batteryState )
 {
 	this->DisplayBatteryLevel( batteryState );
+}
+
+void ServiceDisplay::Detect ( const SensorsId &sensorId )
+{
+	this->DisplayProximitySensor( sensorId );
 }
 }
 }
