@@ -7,14 +7,15 @@
 #include "../../../mock/cmp/MockMpu9150.h"
 
 
-#include "../../../../src/clu/ClusterImu.h"
-#include "../../../../src/srv/ServiceOrientation.h"
+#include "../../../../src/Cluster/Imu/ClusterImu.h"
+#include "../../../../src/Service/Orientation/ServiceOrientation.h"
 
 using ::testing::_;
 using ::testing::Return;
 using ::testing::StrictMock;
 
-using namespace Component;
+namespace Service {
+namespace Orientation {
 
 class UT_SRV_ORIENTATION : public ::testing::Test {
 protected:
@@ -36,7 +37,7 @@ protected:
 	virtual ~UT_SRV_ORIENTATION() = default;
 
 	/* Mocks */
-	StrictMock <MockMpu9150> mMockMpu9150;
+	StrictMock <Component::Imu::MockMpu9150> mMockMpu9150;
 
 	ClusterImu mClusterImu;
 
@@ -68,4 +69,6 @@ TEST_F( UT_SRV_ORIENTATION, Update_Ok )
 	mServiceOrientation.Update( 0UL );
 
 	EXPECT_TRUE( success );
+}
+}
 }

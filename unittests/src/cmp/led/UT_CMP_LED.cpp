@@ -3,14 +3,14 @@
 
 
 #include "../../../mock/drv/MockGpio.h"
-#include "../../../../src/cmp/Led.h"
+#include "../../../../src/Component/Led/Led.h"
 
 using ::testing::_;
 using ::testing::Return;
 using ::testing::StrictMock;
 
-using namespace Component;
-
+namespace Component {
+namespace Led {
 class UT_CMP_LED : public ::testing::Test {
 protected:
 	UT_CMP_LED() :
@@ -30,7 +30,7 @@ protected:
 	virtual ~UT_CMP_LED() = default;
 
 	/* Mocks */
-	StrictMock <MockGpio> mMockGpio;
+	StrictMock <Driver::Gpio::MockGpio> mMockGpio;
 
 	/* Test class */
 	Led mLed;
@@ -105,4 +105,6 @@ TEST_F( UT_CMP_LED, Get )
 
 	EXPECT_TRUE( success );
 	EXPECT_EQ( status, Led::LedState::OFF );
+}
+}
 }

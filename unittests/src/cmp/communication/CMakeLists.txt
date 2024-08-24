@@ -1,9 +1,10 @@
 set(
   SRC_FILES 
-  ../src/clu/Frame.cpp 
-  ../src/clu/Protocol.cpp 
-  ../src/cmp/Communication.cpp 
+../src/Cluster/Frame/Frame.cpp 
+  ../src/Cluster/Decoding/Protocol.cpp 
+  ../src/Component/Communication/Communication.cpp 
 )
+
 set(
   TEST_FILE 
   src/cmp/communication/UT_CMP_COMMUNICATION.cpp

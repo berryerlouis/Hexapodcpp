@@ -5,8 +5,8 @@
 #include "../../../mock/drv/MockTwi.h"
 #include "../../../mock/drv/MockTick.h"
 
-#include "../../../../src/cmp/SensorProximityInterface.h"
-#include "../../../../src/cmp/Vl53l0x.h"
+#include "../../../../src/Component/Proximity/SensorProximityInterface.h"
+#include "../../../../src/Component/Proximity/Laser/Vl53l0x.h"
 
 using ::testing::_;
 using ::testing::Return;
@@ -14,8 +14,10 @@ using ::testing::StrictMock;
 using ::testing::SetArgReferee;
 using ::testing::DoAll;
 
-using namespace Component;
 
+namespace Component {
+namespace Proximity {
+namespace Laser {
 class UT_CMP_VL53L0X : public ::testing::Test {
 protected:
 	UT_CMP_VL53L0X() :
@@ -54,8 +56,8 @@ protected:
 	virtual ~UT_CMP_VL53L0X() = default;
 
 	/* Mocks */
-	StrictMock <MockTick> mMockTick;
-	StrictMock <MockTwi> mMockTwi;
+	StrictMock <Driver::Tick::MockTick> mMockTick;
+	StrictMock <Driver::Twi::MockTwi> mMockTwi;
 
 	/* Test class */
 	Vl53l0x mVl53l0x;
@@ -86,4 +88,7 @@ TEST_F( UT_CMP_VL53L0X, AboveThreshold )
 	EXPECT_CALL( mMockTwi, ReadRegister16Bits( _, VL53L0X_RESULT_RANGE_STATUS + 10, _ ) ).WillOnce( DoAll( SetArgReferee <2U>( 350U ), Return( true ) ) );
 
 	mVl53l0x.Update( 0U );
+}
+}
+}
 }

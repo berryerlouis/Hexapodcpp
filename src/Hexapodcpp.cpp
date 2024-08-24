@@ -1,10 +1,10 @@
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
-#include "app/App.h"
+#include "App/App.h"
 
-using namespace app;
+using namespace App;
 
-App robot;
+App::App robot;
 
 int main ( void )
 {
@@ -21,10 +21,6 @@ int main ( void )
 			//hexapod loop update
 			robot.Update( 0UL );
 		}
-	}
-
-	while ( true )
-	{
 	}
 
 	return ( -1 );

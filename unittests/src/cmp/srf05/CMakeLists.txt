@@ -1,6 +1,6 @@
 set(
   SRC_FILES  
-  ../src/cmp/Srf05.cpp 
+  ../src/Component/Proximity/Ultrasound/Srf05.cpp 
 )
 set(
   TEST_FILE 

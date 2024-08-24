@@ -1,28 +1,21 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-
-#include "../../../mock/srv/MockService.h"
-#include "../../../mock/srv/MockServiceMediator.h"
 #include "../../../mock/cmp/MockSsd1306.h"
-#include "../../../mock/drv/MockAdc.h"
+#include "../../../mock/cmp/MockBattery.h"
 
-#include "../../../../src/cmp/Battery.h"
-#include "../../../../src/srv/ServiceDisplay.h"
+#include "../../../../src/Service/Display/ServiceDisplay.h"
 
 using ::testing::_;
 using ::testing::Return;
 using ::testing::StrictMock;
 
-using namespace Component;
-
+namespace Service {
+namespace Display {
 class UT_SRV_DISPLAY : public ::testing::Test {
 protected:
 	UT_SRV_DISPLAY() :
-		mMockAdc(),
-		mMockSsd1306(),
-		mBattery( mMockAdc ),
-		mServiceDisplay( mMockSsd1306, mBattery )
+		mServiceDisplay( mMockSsd1306, mMockBattery )
 	{
 	}
 
@@ -37,10 +30,8 @@ protected:
 	virtual ~UT_SRV_DISPLAY() = default;
 
 	/* Mocks */
-	StrictMock <MockAdc> mMockAdc;
-	StrictMock <MockSsd1306> mMockSsd1306;
-
-	Battery mBattery;
+	StrictMock <Component::Display::MockSsd1306> mMockSsd1306;
+	StrictMock <Component::Battery::MockBattery> mMockBattery;
 
 	/* Test class */
 	ServiceDisplay mServiceDisplay;
@@ -51,7 +42,8 @@ TEST_F( UT_SRV_DISPLAY, Initialize_Ok )
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
 	EXPECT_CALL( mMockSsd1306, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-	EXPECT_CALL( mMockSsd1306, DrawLine( 0, 10U, SCREEN_WIDTH, 10U, Ssd1306Interface::Color::COLOR_WHITE ) ).Times( 1U );
+	EXPECT_CALL( mMockBattery, Attach( _ ) ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+	EXPECT_CALL( mMockSsd1306, DrawLine( 0, 10U, SCREEN_WIDTH, 10U, Bitmap::Bitmaps::Color::COLOR_WHITE ) ).Times( 1U );
 	success = mServiceDisplay.Initialize();
 
 	EXPECT_TRUE( success );
@@ -66,7 +58,7 @@ TEST_F( UT_SRV_DISPLAY, Update_Ok )
 		if ( toggle == true )
 		{
 			toggle = false;
-			EXPECT_CALL( mMockSsd1306, DrawBitmap( _, _, 0U, Ssd1306Interface::Color::COLOR_WHITE ) ).Times( 1U );
+			EXPECT_CALL( mMockSsd1306, DrawBitmap( _, _, 0U, Bitmap::Bitmaps::Color::COLOR_WHITE ) ).Times( 1U );
 		}
 		else
 		{
@@ -76,4 +68,6 @@ TEST_F( UT_SRV_DISPLAY, Update_Ok )
 		EXPECT_CALL( mMockSsd1306, Update( i ) ).Times( 1U );
 		mServiceDisplay.Update( i );
 	}
+}
+}
 }

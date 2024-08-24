@@ -3,14 +3,14 @@
 
 
 #include "../../../mock/cmp/MockSoftware.h"
-#include "../../../../src/clu/ClusterGeneral.h"
+#include "../../../../src/Cluster/General/ClusterGeneral.h"
 
 using ::testing::_;
 using ::testing::Return;
 using ::testing::StrictMock;
 
-using namespace Clusters;
-
+namespace Cluster {
+namespace General {
 class UT_CLU_GENERAL : public ::testing::Test {
 protected:
 	UT_CLU_GENERAL() :
@@ -30,7 +30,7 @@ protected:
 	virtual ~UT_CLU_GENERAL() = default;
 
 	/* Mocks */
-	StrictMock <MockSoftware> mMockSoftware;
+	StrictMock <Component::Software::MockSoftware> mMockSoftware;
 
 	/* Test class */
 	ClusterGeneral mClusterGeneral;
@@ -39,10 +39,10 @@ protected:
 TEST_F( UT_CLU_GENERAL, Execute_WrongCluster_Ko )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame  request;
-	Clusters::Frame  response;
+	Frame     request;
+	Frame     response;
 
-	request.Build( Clusters::EClusters::BODY, Clusters::EBatteryCommands::GET_VOLTAGE );
+	request.Build( BODY, EBatteryCommands::GET_VOLTAGE );
 	success = mClusterGeneral.Execute( request, response );
 
 	EXPECT_EQ( response.clusterId, 0U );
@@ -54,10 +54,10 @@ TEST_F( UT_CLU_GENERAL, Execute_WrongCluster_Ko )
 TEST_F( UT_CLU_GENERAL, Execute_WrongCommand_Ko )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame  request;
-	Clusters::Frame  response;
+	Frame     request;
+	Frame     response;
 
-	request.Build( Clusters::EClusters::GENERAL, 0x5FU );
+	request.Build( GENERAL, 0x5FU );
 	success = mClusterGeneral.Execute( request, response );
 
 	EXPECT_EQ( response.clusterId, 0U );
@@ -69,15 +69,15 @@ TEST_F( UT_CLU_GENERAL, Execute_WrongCommand_Ko )
 TEST_F( UT_CLU_GENERAL, Execute_VERSION_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame  request;
-	Clusters::Frame  response;
+	Frame     request;
+	Frame     response;
 
 	EXPECT_CALL( mMockSoftware, GetVersion() ).WillOnce( Return( SoftwareInterface::Version{ 1, 0 } ) );
-	request.Build( Clusters::EClusters::GENERAL, Clusters::EGeneralCommands::VERSION );
+	request.Build( GENERAL, EGeneralCommands::VERSION );
 	success = mClusterGeneral.Execute( request, response );
 
-	EXPECT_EQ( response.clusterId, Clusters::EClusters::GENERAL );
-	EXPECT_EQ( response.commandId, Clusters::EGeneralCommands::VERSION );
+	EXPECT_EQ( response.clusterId, GENERAL );
+	EXPECT_EQ( response.commandId, EGeneralCommands::VERSION );
 	EXPECT_EQ( response.nbParams, 2U );
 	EXPECT_TRUE( success );
 }
@@ -85,14 +85,14 @@ TEST_F( UT_CLU_GENERAL, Execute_VERSION_Ok )
 TEST_F( UT_CLU_GENERAL, BuildFrameGetVersion_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame  response;
+	Frame     response;
 
 
 	EXPECT_CALL( mMockSoftware, GetVersion() ).WillOnce( Return( SoftwareInterface::Version{ 1, 0 } ) );
 
 	success = mClusterGeneral.BuildFrameGetVersion( response );
-	EXPECT_EQ( response.clusterId, Clusters::EClusters::GENERAL );
-	EXPECT_EQ( response.commandId, Clusters::EGeneralCommands::VERSION );
+	EXPECT_EQ( response.clusterId, GENERAL );
+	EXPECT_EQ( response.commandId, EGeneralCommands::VERSION );
 	EXPECT_EQ( response.nbParams, 2U );
 	EXPECT_EQ( response.params[0U], 1U );
 	EXPECT_EQ( response.params[1U], 0U );
@@ -102,13 +102,13 @@ TEST_F( UT_CLU_GENERAL, BuildFrameGetVersion_Ok )
 TEST_F( UT_CLU_GENERAL, BuildFrameGetMinTime_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame  response;
+	Frame     response;
 
 	EXPECT_CALL( mMockSoftware, GetMinTime() ).WillOnce( Return( 50U ) );
 
 	success = mClusterGeneral.BuildFrameGetMinTime( response );
-	EXPECT_EQ( response.clusterId, Clusters::EClusters::GENERAL );
-	EXPECT_EQ( response.commandId, Clusters::EGeneralCommands::MIN_EXECUTION_TIME );
+	EXPECT_EQ( response.clusterId, GENERAL );
+	EXPECT_EQ( response.commandId, EGeneralCommands::MIN_EXECUTION_TIME );
 	EXPECT_EQ( response.nbParams, 8U );
 	EXPECT_EQ( response.params[0U], 50U );
 	EXPECT_EQ( response.params[1U], 0U );
@@ -124,13 +124,13 @@ TEST_F( UT_CLU_GENERAL, BuildFrameGetMinTime_Ok )
 TEST_F( UT_CLU_GENERAL, BuildFrameGetMaxTime_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Clusters::Frame  response;
+	Frame     response;
 
 	EXPECT_CALL( mMockSoftware, GetMaxTime() ).WillOnce( Return( 50U ) );
 
 	success = mClusterGeneral.BuildFrameGetMaxTime( response );
-	EXPECT_EQ( response.clusterId, Clusters::EClusters::GENERAL );
-	EXPECT_EQ( response.commandId, Clusters::EGeneralCommands::MAX_EXECUTION_TIME );
+	EXPECT_EQ( response.clusterId, GENERAL );
+	EXPECT_EQ( response.commandId, EGeneralCommands::MAX_EXECUTION_TIME );
 	EXPECT_EQ( response.nbParams, 8U );
 	EXPECT_EQ( response.params[0U], 50U );
 	EXPECT_EQ( response.params[1U], 0U );
@@ -141,4 +141,6 @@ TEST_F( UT_CLU_GENERAL, BuildFrameGetMaxTime_Ok )
 	EXPECT_EQ( response.params[6U], 0U );
 	EXPECT_EQ( response.params[7U], 0U );
 	EXPECT_TRUE( success );
+}
+}
 }

@@ -1,7 +1,7 @@
 set(
   SRC_FILES 
-  ../src/clu/Frame.cpp 
-  ../src/clu/Protocol.cpp 
+  ../src/Cluster/Frame/Frame.cpp 
+  ../src/Cluster/Decoding/Protocol.cpp 
 )
 set(
   TEST_FILE 

@@ -1,6 +1,6 @@
 set(
   SRC_FILES 
-  ../src/cmp/Mpu9150.cpp 
+  ../src/Component/Imu/Mpu9150.cpp 
 )
 set(
   TEST_FILE 

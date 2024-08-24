@@ -1,7 +1,10 @@
 #pragma once
 #include <gmock/gmock.h>
-#include "../../../src/bot/BodyInterface.h"
+#include "../../../src/Bot/Body/BodyInterface.h"
 
+
+namespace Bot {
+namespace Body {
 class MockBody : public BodyInterface {
 public:
 	MOCK_METHOD0( Initialize, Core::CoreStatus( void ) );
@@ -9,3 +12,5 @@ public:
 
 	MOCK_METHOD3( SetPositionRotation, void(const Leg::Position3d &, const Leg::Rotation3d &, const uint16_t ) );
 };
+}
+}

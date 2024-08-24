@@ -1,9 +1,10 @@
 #pragma once
 #include <gmock/gmock.h>
-#include "../../../src/drv/AdcInterface.h"
+#include "../../../src/Driver/Adc/AdcInterface.h"
 
 namespace Driver {
-class MockAdc : public Driver::AdcInterface {
+namespace Adc {
+class MockAdc : public AdcInterface {
 public:
 	MOCK_METHOD0( Initialize, Core::CoreStatus( void ) );
 	MOCK_METHOD1( Update, void( const uint64_t ) );
@@ -11,4 +12,5 @@ public:
 	MOCK_METHOD0( StartConversion, void( void ) );
 	MOCK_METHOD0( Read, uint16_t( void ) );
 };
+}
 }
