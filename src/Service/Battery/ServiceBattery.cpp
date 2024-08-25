@@ -1,9 +1,9 @@
 #include "ServiceBattery.h"
+
 namespace Service {
 namespace Battery {
-ServiceBattery::ServiceBattery( ClusterBattery &clusterBattery, BatteryInterface &batteryInterface )
+ServiceBattery::ServiceBattery( BatteryInterface &batteryInterface )
 	: Service( 100U )
-	, mClusterBattery( clusterBattery )
 	, mBatteryInterface( batteryInterface )
 {
 }

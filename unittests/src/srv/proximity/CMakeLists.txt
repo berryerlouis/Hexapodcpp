@@ -1,6 +1,5 @@
 set(
   SRC_FILES 
-  ../src/Cluster/Frame/Frame.cpp 
   ../src/Service/Proximity/ServiceProximity.cpp
 )
 set(

@@ -4,6 +4,7 @@
 #include "../../../mock/cmp/MockSsd1306.h"
 #include "../../../mock/cmp/MockBattery.h"
 #include "../../../mock/cmp/MockSensorProximity.h"
+#include "../../../mock/cor/MockEventMediatorInterface.h"
 
 #include "../../../../src/Service/Display/ServiceDisplay.h"
 
@@ -16,21 +17,25 @@ namespace Display {
 class UT_SRV_DISPLAY : public ::testing::Test {
 protected:
 	UT_SRV_DISPLAY() :
+		mMockSsd1306(),
+		mMockBattery(),
+		mMockSensorProximity(),
+		mMockEventMediatorInterface(),
 		mServiceDisplay( mMockSsd1306, mMockBattery, mMockSensorProximity )
 	{
 	}
 
 	virtual void SetUp ()
 	{
-		Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+		EXPECT_CALL( mMockSsd1306, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_ERROR ) );
+		EXPECT_FALSE( mServiceDisplay.Initialize() );
 
 		EXPECT_CALL( mMockSsd1306, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 		EXPECT_CALL( mMockBattery, Attach( _ ) ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 		EXPECT_CALL( mMockSensorProximity, Attach( _ ) ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 		EXPECT_CALL( mMockSsd1306, DrawLine( 0, 10U, SCREEN_WIDTH, 10U, Bitmap::Bitmaps::Color::COLOR_WHITE ) ).Times( 1U );
-		success = mServiceDisplay.Initialize();
-
-		EXPECT_TRUE( success );
+		EXPECT_TRUE( mServiceDisplay.Initialize());
+		mServiceDisplay.setMediator( &mMockEventMediatorInterface );
 	}
 
 	virtual void TearDown ()
@@ -42,7 +47,8 @@ protected:
 	/* Mocks */
 	StrictMock <Component::Display::MockSsd1306> mMockSsd1306;
 	StrictMock <Component::Battery::MockBattery> mMockBattery;
-	StrictMock < Component::Proximity::MockSensorProximity> mMockSensorProximity;
+	StrictMock <Component::Proximity::MockSensorProximity> mMockSensorProximity;
+	StrictMock <Core::MockEventMediatorInterface> mMockEventMediatorInterface;
 
 	/* Test class */
 	ServiceDisplay mServiceDisplay;

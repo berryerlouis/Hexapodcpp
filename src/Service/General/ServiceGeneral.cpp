@@ -3,9 +3,8 @@
 
 namespace Service {
 namespace General {
-ServiceGeneral::ServiceGeneral( ClusterGeneral &clusterGeneral, SoftwareInterface &software )
+ServiceGeneral::ServiceGeneral( SoftwareInterface &software )
 	: Service( 1U )
-	, mClusterGeneral( clusterGeneral )
 	, mSoftware( software )
 {
 }

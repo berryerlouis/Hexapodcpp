@@ -1,22 +1,21 @@
 #include "Services.h"
-#include "../../Cluster/Constants.h"
 #include "../../Misc/Logger/Logger.h"
 
 namespace Service {
 namespace Services {
 Services::Services(
-	CommunicationInterface &communication,
 	ServiceGeneral &serviceGeneral,
 	ServiceControl &serviceControl,
+	ServiceCommunication &serviceCommunication,
 	ServiceProximity &serviceProximity,
 	ServiceOrientation &serviceOrientation,
 	ServiceBattery &serviceBattery,
 	ServiceDisplay &serviceDisplay )
-	: mCommunication( communication )
-	, mServices{
+	: mServices{
 					{ EServices::GENERAL, &serviceGeneral },
 					{ EServices::PROXIMITY, &serviceProximity },
 					{ EServices::CONTROL, &serviceControl },
+					{ EServices::COMMUNICATION, &serviceCommunication },
 					{ EServices::ORIUENTATION, &serviceOrientation },
 					{ EServices::BATTERY, &serviceBattery },
 					{ EServices::DISPLAY, &serviceDisplay }
@@ -26,12 +25,11 @@ Services::Services(
 
 Core::CoreStatus Services::Initialize ( void )
 {
-	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-
-	this->mCommunication.Initialize();
+	Core::CoreStatus      success    = Core::CoreStatus::CORE_ERROR;
+	ServiceCommunication *serviceCom = (ServiceCommunication *) this->Get( EServices::COMMUNICATION );
 	for ( ServiceItem item : this->mServices )
 	{
-		item.service->setMediator( this );
+		item.service->setMediator( serviceCom );
 		success = item.service->Initialize();
 		if ( false == success )
 		{
@@ -44,7 +42,6 @@ Core::CoreStatus Services::Initialize ( void )
 
 void Services::Update ( const uint64_t currentTime )
 {
-	this->mCommunication.Update( currentTime );
 	for ( ServiceItem item : this->mServices )
 	{
 		if ( item.service->NeedUpdate( currentTime ) )
@@ -65,63 +62,6 @@ Service *Services::Get ( const EServices serviceId )
 		}
 	}
 	return ( nullptr );
-}
-
-void Services::Notify ( Core::Event event ) const
-{
-	Frame response;
-	bool  success = false;
-	switch ( event.id )
-	{
-	case Cluster::GENERAL:
-	{
-		//this->mClusterGeneral.BuildFrameGetMinTime( response );
-		//this->mClusterGeneral.BuildFrameGetMaxTime( response );
-		//mCommunicationsuccess = true;
-		break;
-	} break;
-
-	case Cluster::IMU:
-	{
-		//success = true;
-		break;
-	} break;
-
-	case Cluster::PROXIMITY:
-	{
-		//this->mClusterProximity.BuildFrameDistance( (Cluster::EProximityCommands) sensorId, response );
-		//success = true;
-		break;
-	}
-
-	case Cluster::SERVO:
-	{
-		//success = true;
-		break;
-	} break;
-
-	case Cluster::BATTERY:
-	{
-		//this->mClusterBattery.BuildFrameState( response );
-		//success = true;
-		break;
-	}
-	break;
-
-	case Cluster::BODY:
-	{
-		//success = true;
-		break;
-	} break;
-
-	default:
-		break;
-	}
-
-	if ( true == success )
-	{
-		this->mCommunication.Send( response );
-	}
 }
 }
 }

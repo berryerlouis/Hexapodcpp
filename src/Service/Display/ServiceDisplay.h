@@ -34,6 +34,7 @@ protected:
 	Ssd1306Interface & mSsd1306;
 	BatteryInterface & mBatteryInterface;
 	SensorProximityMultipleInterface & mProximity;
+	uint8_t mSensors[NB_SENSORS];
 
 	Bitmaps::SBitmap mBmpBatteryLevel;
 	Bitmaps::SBitmap mBmpCommunication;

@@ -7,6 +7,7 @@ ServiceDisplay::ServiceDisplay( Ssd1306Interface &ssd1306, BatteryInterface &bat
 	, mSsd1306( ssd1306 )
 	, mBatteryInterface( batteryInterface )
 	, mProximity( proximity )
+	, mSensors{ 0U }
 	, mBmpBatteryLevel{.bmp  = (uint8_t *) Bitmaps::Battery0, .width = 16U, .height = 7U }
 	, mBmpCommunication{.bmp = (uint8_t *) Bitmaps::Communication, .width = 16U, .height = 8U }
 	, mBmpProximity{.bmp     = (uint8_t *) Bitmaps::ArrowCenter, .width = 16U, .height = 6U }
@@ -17,11 +18,15 @@ ServiceDisplay::ServiceDisplay( Ssd1306Interface &ssd1306, BatteryInterface &bat
 
 Core::CoreStatus ServiceDisplay::Initialize ( void )
 {
-	this->mBatteryInterface.Attach( this );
-	this->mProximity.Attach( this );
-	this->mSsd1306.Initialize();
-	this->DisplayBackground();
-	return ( Core::CoreStatus::CORE_OK );
+	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	if ( true == this->mSsd1306.Initialize() )
+	{
+		this->mBatteryInterface.Attach( this );
+		this->mProximity.Attach( this );
+		this->DisplayBackground();
+		success = Core::CoreStatus::CORE_OK;
+	}
+	return ( success );
 }
 
 void ServiceDisplay::Update ( const uint64_t currentTime )
@@ -82,7 +87,8 @@ void ServiceDisplay::DisplayProximitySensor ( SensorsId sensor )
 {
 	if ( sensor == SensorsId::SRF_LEFT )
 	{
-		this->mBmpProximity.bmp = (uint8_t *) Bitmaps::ArrowLeft;
+		this->mSensors[SensorsId::SRF_LEFT] = true;
+		this->mBmpProximity.bmp             = (uint8_t *) Bitmaps::ArrowLeft;
 
 		this->mSsd1306.DrawBitmap(
 			&this->mBmpProximity,
@@ -92,7 +98,8 @@ void ServiceDisplay::DisplayProximitySensor ( SensorsId sensor )
 	}
 	if ( sensor == SensorsId::VLX )
 	{
-		this->mBmpProximity.bmp = (uint8_t *) Bitmaps::ArrowUp;
+		this->mSensors[SensorsId::VLX] = true;
+		this->mBmpProximity.bmp        = (uint8_t *) Bitmaps::ArrowUp;
 		this->mSsd1306.DrawBitmap(
 			&this->mBmpProximity,
 			( SCREEN_WIDTH / 2U ) - ( this->mBmpProximity.width / 2U ),
@@ -101,6 +108,7 @@ void ServiceDisplay::DisplayProximitySensor ( SensorsId sensor )
 	}
 	if ( sensor == SensorsId::SRF_RIGHT )
 	{
+		this->mSensors[SensorsId::SRF_RIGHT] = true;
 		this->mBmpProximity.bmp = (uint8_t *) Bitmaps::ArrowRight;
 		this->mSsd1306.DrawBitmap(
 			&this->mBmpProximity,

@@ -2,9 +2,8 @@
 
 namespace Service {
 namespace Orientation {
-ServiceOrientation::ServiceOrientation( ClusterImu &clusterImu, Mpu9150Interface &imu )
+ServiceOrientation::ServiceOrientation( Mpu9150Interface &imu )
 	: Service( 50U )
-	, mClusterImu( clusterImu )
 	, mImu( imu )
 {
 }

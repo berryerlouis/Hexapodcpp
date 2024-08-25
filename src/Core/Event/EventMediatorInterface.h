@@ -1,11 +1,9 @@
 #pragma once
 
 #include "EventId.h"
-
 namespace Core {
 class EventMediatorInterface
 {
-	class EventManager;
 public:
 	EventMediatorInterface()  = default;
 	~EventMediatorInterface() = default;

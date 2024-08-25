@@ -1,10 +1,9 @@
 #pragma once
 
-#include "../../Component/Communication/CommunicationInterface.h"
-#include "../../Core/Event/EventMediatorInterface.h"
 #include "../Constants.h"
 #include "../Service.h"
 #include "../Battery/ServiceBattery.h"
+#include "../Communication/ServiceCommunication.h"
 #include "../Control/ServiceControl.h"
 #include "../Display/ServiceDisplay.h"
 #include "../General/ServiceGeneral.h"
@@ -13,9 +12,9 @@
 
 namespace Service {
 namespace Services {
-using namespace Component::Communication;
 using namespace ::Service::General;
 using namespace ::Service::Control;
+using namespace ::Service::Communication;
 using namespace ::Service::Proximity;
 using namespace ::Service::Orientation;
 using namespace ::Service::Battery;
@@ -30,12 +29,12 @@ struct ServiceItem
 	~ServiceItem() = default;
 };
 
-class Services : public ServiceInterface, public Core::EventMediatorInterface {
+class Services : public ServiceInterface {
 public:
 	Services(
-		CommunicationInterface &communication,
 		ServiceGeneral &serviceGeneral,
 		ServiceControl &serviceControl,
+		ServiceCommunication &serviceCommunication,
 		ServiceProximity &serviceProximity,
 		ServiceOrientation &serviceOrientation,
 		ServiceBattery &serviceBattery,
@@ -46,13 +45,10 @@ public:
 	virtual Core::CoreStatus Initialize( void ) final override;
 	virtual void Update( const uint64_t currentTime ) final override;
 
-	virtual void Notify( Core::Event event ) const final override;
-
 private:
 
 	Service *Get( const EServices serviceId );
 
-	CommunicationInterface & mCommunication;
 	ServiceItem mServices[NB_SERVICES];
 };
 }

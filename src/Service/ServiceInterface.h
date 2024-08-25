@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Component/Communication/Communication.h"
+#include "../Cluster/Constants.h"
 #include "../Cluster/Frame/Frame.h"
 
 namespace Service {

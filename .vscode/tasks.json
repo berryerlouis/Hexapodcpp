@@ -92,6 +92,7 @@
                 "UT_CMP_VL53L0X",
                 "UT_SRV_BATTERY",
                 "UT_SRV_CONTROL",
+                "UT_SRV_COMMUNICATION",
                 "UT_SRV_DISPLAY",
                 "UT_SRV_GENERAL",
                 "UT_SRV_ORIENTATION",

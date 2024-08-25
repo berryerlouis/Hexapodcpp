@@ -1,6 +1,5 @@
 set(
   SRC_FILES 
-  ../src/Cluster/Frame/Frame.cpp 
   ../src/Service/Orientation/ServiceOrientation.cpp
 )
 set(
