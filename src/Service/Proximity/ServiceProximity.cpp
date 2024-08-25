@@ -27,9 +27,7 @@ void ServiceProximity::Update ( const uint64_t currentTime )
 
 void ServiceProximity::Detect ( const SensorsId &sensorId )
 {
-	Frame response;
-	this->mClusterProximity.BuildFrameDistance( (Cluster::EProximityCommands) sensorId, response );
-	this->mServiceMediator->SendFrame( response );
+	this->mMediator->Notify( { id: Cluster::EClusters::GENERAL, value: sensorId } );
 }
 }
 }

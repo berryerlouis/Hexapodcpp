@@ -23,7 +23,7 @@ protected:
 
 	virtual void SetUp ()
 	{
-		mServiceGeneral.SetComComponent( &mMockServiceMediator );
+		mServiceGeneral.SetEventManager( &mMockServiceMediator );
 	}
 
 	virtual void TearDown ()

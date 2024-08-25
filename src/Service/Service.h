@@ -1,9 +1,9 @@
 #pragma once
 
 #include "ServiceInterface.h"
-
+#include "../Core/Event/EventMediatorInterface.h"
 namespace Service {
-class Service : public ServiceInterface {
+class Service : public ServiceInterface, public Core::EventManager {
 public:
 	Service( const uint64_t updateTime )
 		: mUpdateTime( updateTime )

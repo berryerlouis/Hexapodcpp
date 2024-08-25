@@ -1,11 +1,12 @@
 #pragma once
 
 #include <stdint.h>
+#include "../../Cluster/Constants.h"
 
 namespace Core {
-enum EventId
+struct Event
 {
-	STATUS,
-	PROXIMITY,
+	Cluster::EClusters id;
+	uint8_t            value;
 };
 }

@@ -30,7 +30,7 @@ protected:
 		EXPECT_CALL( mMockAdc, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 		EXPECT_TRUE( mServiceBattery.Initialize() );
 
-		mServiceBattery.SetComComponent( &mMockServiceMediator );
+		mServiceBattery.SetEventManager( &mMockServiceMediator );
 	}
 
 	virtual void TearDown ()

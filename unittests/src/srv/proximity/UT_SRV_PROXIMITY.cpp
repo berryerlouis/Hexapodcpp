@@ -39,7 +39,7 @@ protected:
 		EXPECT_CALL( mMockVl53l0x, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 
 		success = mServiceProximity.Initialize();
-		mServiceProximity.SetComComponent( &mMockServiceMediator );
+		mServiceProximity.SetEventManager( &mMockServiceMediator );
 
 		EXPECT_TRUE( success );
 	}

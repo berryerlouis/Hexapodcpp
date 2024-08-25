@@ -12,7 +12,7 @@ ServiceGeneral::ServiceGeneral( ClusterGeneral &clusterGeneral, SoftwareInterfac
 
 Core::CoreStatus ServiceGeneral::Initialize ( void )
 {
-	return this->mSoftware.Initialize();;
+	return ( this->mSoftware.Initialize() );;
 }
 
 void ServiceGeneral::Update ( const uint64_t currentTime )
@@ -22,17 +22,13 @@ void ServiceGeneral::Update ( const uint64_t currentTime )
 
 	if ( delta < this->mSoftware.GetMinTime() )
 	{
-		Frame response;
 		this->mSoftware.SetMinTime( delta );
-		this->mClusterGeneral.BuildFrameGetMinTime( response );
-		this->mServiceMediator->SendFrame( response );
+		this->mMediator->Notify( { id: Cluster::EClusters::GENERAL, value: Cluster::EGeneralCommands::MIN_EXECUTION_TIME } );
 	}
 	else if ( delta > this->mSoftware.GetMaxTime() )
 	{
-		Frame response;
 		this->mSoftware.SetMaxTime( delta );
-		this->mClusterGeneral.BuildFrameGetMaxTime( response );
-		this->mServiceMediator->SendFrame( response );
+		this->mMediator->Notify( { id: Cluster::EClusters::GENERAL, value: Cluster::EGeneralCommands::MAX_EXECUTION_TIME } );
 	}
 }
 }

@@ -1,5 +1,7 @@
 #include "Services.h"
+#include "../../Cluster/Constants.h"
 #include "../../Misc/Logger/Logger.h"
+
 namespace Service {
 namespace Services {
 Services::Services(
@@ -11,7 +13,6 @@ Services::Services(
 	ServiceBattery &serviceBattery,
 	ServiceDisplay &serviceDisplay )
 	: mCommunication( communication )
-	, mEvents()
 	, mServices{
 					{ EServices::GENERAL, &serviceGeneral },
 					{ EServices::PROXIMITY, &serviceProximity },
@@ -30,7 +31,7 @@ Core::CoreStatus Services::Initialize ( void )
 	this->mCommunication.Initialize();
 	for ( ServiceItem item : this->mServices )
 	{
-		item.service->SetComComponent( this );
+		item.service->setMediator( this );
 		success = item.service->Initialize();
 		if ( false == success )
 		{
@@ -66,14 +67,61 @@ Service *Services::Get ( const EServices serviceId )
 	return ( nullptr );
 }
 
-void Services::SendFrame ( Frame &message ) const
+void Services::Notify ( Core::Event event ) const
 {
-	this->mCommunication.Send( message );
-}
+	Frame response;
+	bool  success = false;
+	switch ( event.id )
+	{
+	case Cluster::GENERAL:
+	{
+		//this->mClusterGeneral.BuildFrameGetMinTime( response );
+		//this->mClusterGeneral.BuildFrameGetMaxTime( response );
+		//mCommunicationsuccess = true;
+		break;
+	} break;
 
-void Services::AddEvent ( const Core::EventId &event )
-{
-	this->mEvents.Push( event );
+	case Cluster::IMU:
+	{
+		//success = true;
+		break;
+	} break;
+
+	case Cluster::PROXIMITY:
+	{
+		//this->mClusterProximity.BuildFrameDistance( (Cluster::EProximityCommands) sensorId, response );
+		//success = true;
+		break;
+	}
+
+	case Cluster::SERVO:
+	{
+		//success = true;
+		break;
+	} break;
+
+	case Cluster::BATTERY:
+	{
+		//this->mClusterBattery.BuildFrameState( response );
+		//success = true;
+		break;
+	}
+	break;
+
+	case Cluster::BODY:
+	{
+		//success = true;
+		break;
+	} break;
+
+	default:
+		break;
+	}
+
+	if ( true == success )
+	{
+		this->mCommunication.Send( response );
+	}
 }
 }
 }
