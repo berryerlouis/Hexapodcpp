@@ -6,11 +6,12 @@
 #include "../../../Driver/Tick/TickInterface.h"
 #include "../../Led/LedInterface.h"
 #include "../SensorProximityInterface.h"
+#include "../SensorProximityWindow.h"
 
 namespace Component {
 namespace Proximity {
 namespace Ultrasound {
-class Srf05 : public SensorProximityInterface {
+class Srf05 : public SensorProximityInterface, public SensorProximityWindow {
 public:
 	static const uint64_t ECHO_TIMEOUT       = 30000U;
 	static const uint16_t DISTANCE_THRESHOLD = 30U;

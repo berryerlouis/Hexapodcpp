@@ -17,6 +17,7 @@ public:
 	virtual void Update( const uint64_t currentTime ) final override;
 
 	virtual void Detect( const SensorsId &sensorId ) final override;
+	virtual void NoDetect( const SensorsId &sensorId ) final override;
 
 protected:
 	SensorProximityMultipleInterface &mProximity;

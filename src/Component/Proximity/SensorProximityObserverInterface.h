@@ -10,6 +10,7 @@ public:
 	~SensorProximityObserverInterface() = default;
 
 	virtual void Detect( const SensorsId &sensorId ) = 0;
+	virtual void NoDetect( const SensorsId &sensorId ) = 0;
 };
 }
 }

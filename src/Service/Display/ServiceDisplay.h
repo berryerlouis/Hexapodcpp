@@ -29,12 +29,12 @@ public:
 
 	virtual void UpdatedBatteryState( const BatteryState &batteryState ) final override;
 	virtual void Detect( const SensorsId &sensorId ) final override;
+	virtual void NoDetect( const SensorsId &sensorId ) final override;
 
 protected:
 	Ssd1306Interface & mSsd1306;
 	BatteryInterface & mBatteryInterface;
 	SensorProximityMultipleInterface & mProximity;
-	uint8_t mSensors[NB_SENSORS];
 
 	Bitmaps::SBitmap mBmpBatteryLevel;
 	Bitmaps::SBitmap mBmpCommunication;
