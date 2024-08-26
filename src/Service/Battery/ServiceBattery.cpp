@@ -26,7 +26,7 @@ void ServiceBattery::Update ( const uint64_t currentTime )
 
 void ServiceBattery::UpdatedBatteryState ( const BatteryState &batteryState )
 {
-	this->mMediator->Notify( { id: Cluster::EClusters::BATTERY, value: batteryState } );
+	this->mMediator->Notify( { id: Cluster::EClusters::BATTERY, value: (uint8_t) batteryState } );
 }
 }
 }

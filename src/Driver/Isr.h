@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #define ISR_EMBEDDED_CODE( code ) \
-	(										 \
+		  (								 \
 	{										 \
 		uint8_t oldSREG = SREG;		 \
 		cli();							 \
@@ -13,4 +13,4 @@
 		SREG = oldSREG;				 \
 		sei();							 \
 	}										 \
-	)
+		  )

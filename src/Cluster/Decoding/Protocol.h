@@ -5,7 +5,6 @@
 
 namespace Cluster {
 namespace Decoding {
-
 class Protocol
 {
 public:

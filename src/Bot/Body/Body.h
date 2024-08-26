@@ -4,7 +4,6 @@
 
 namespace Bot {
 namespace Body {
-
 class Body : public BodyInterface {
 public:
 	struct SBodyIk

@@ -5,7 +5,6 @@
 
 namespace Component {
 namespace Proximity {
-
 class SensorProximityInterface : public ComponentInterface, public SensorProximityObservable {
 public:
 	SensorProximityInterface( void ) = default;
@@ -30,9 +29,8 @@ public:
 	virtual uint16_t GetDistance( const SensorsId &sensorId )  = 0;
 	virtual uint16_t GetThreshold( const SensorsId &sensorId ) = 0;
 	virtual Core::CoreStatus SetThreshold( const SensorsId &sensorId, const uint16_t threshold ) = 0;
-	
+
 	virtual Core::CoreStatus Attach( SensorProximityObserverInterface *observer ) = 0;
 };
-
 }
 }

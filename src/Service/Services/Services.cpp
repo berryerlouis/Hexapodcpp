@@ -16,7 +16,7 @@ Services::Services(
 					{ EServices::PROXIMITY, &serviceProximity },
 					{ EServices::CONTROL, &serviceControl },
 					{ EServices::COMMUNICATION, &serviceCommunication },
-					{ EServices::ORIUENTATION, &serviceOrientation },
+					{ EServices::ORIENTATION, &serviceOrientation },
 					{ EServices::BATTERY, &serviceBattery },
 					{ EServices::DISPLAY, &serviceDisplay }
 					}

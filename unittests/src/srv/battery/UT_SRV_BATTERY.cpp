@@ -56,8 +56,8 @@ TEST_F( UT_SRV_BATTERY, Update )
 TEST_F( UT_SRV_BATTERY, UpdatedBatteryState )
 {
 	BatteryState batteryState = BatteryState::WARNING;
-	Core::Event event = { id: Cluster::EClusters::BATTERY, value: batteryState };
-	EXPECT_CALL( mMockEventMediatorInterface, Notify(_) ).Times( 1U );
+	Core::Event  event        = { id: Cluster::EClusters::BATTERY, value: batteryState };
+	EXPECT_CALL( mMockEventMediatorInterface, Notify( _ ) ).Times( 1U );
 
 	mServiceBattery.UpdatedBatteryState( batteryState );
 }

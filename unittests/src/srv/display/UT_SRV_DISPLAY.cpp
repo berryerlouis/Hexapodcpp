@@ -34,7 +34,7 @@ protected:
 		EXPECT_CALL( mMockBattery, Attach( _ ) ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 		EXPECT_CALL( mMockSensorProximity, Attach( _ ) ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 		EXPECT_CALL( mMockSsd1306, DrawLine( 0, 10U, SCREEN_WIDTH, 10U, Bitmap::Bitmaps::Color::COLOR_WHITE ) ).Times( 1U );
-		EXPECT_TRUE( mServiceDisplay.Initialize());
+		EXPECT_TRUE( mServiceDisplay.Initialize() );
 		mServiceDisplay.setMediator( &mMockEventMediatorInterface );
 	}
 

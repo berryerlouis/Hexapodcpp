@@ -134,4 +134,3 @@ uint64_t Frame::Get8BytesParam ( const uint8_t index )
 								 | this->params[index] ) );
 }
 }
-

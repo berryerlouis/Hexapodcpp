@@ -22,12 +22,12 @@ void ServiceGeneral::Update ( const uint64_t currentTime )
 	if ( delta < this->mSoftware.GetMinTime() )
 	{
 		this->mSoftware.SetMinTime( delta );
-		this->mMediator->Notify( { id: Cluster::EClusters::GENERAL, value: Cluster::EGeneralCommands::MIN_EXECUTION_TIME } );
+		this->mMediator->Notify( { id: Cluster::EClusters::GENERAL, value: (uint8_t) Cluster::EGeneralCommands::MIN_EXECUTION_TIME } );
 	}
 	else if ( delta > this->mSoftware.GetMaxTime() )
 	{
 		this->mSoftware.SetMaxTime( delta );
-		this->mMediator->Notify( { id: Cluster::EClusters::GENERAL, value: Cluster::EGeneralCommands::MAX_EXECUTION_TIME } );
+		this->mMediator->Notify( { id: Cluster::EClusters::GENERAL, value: (uint8_t) Cluster::EGeneralCommands::MAX_EXECUTION_TIME } );
 	}
 }
 }

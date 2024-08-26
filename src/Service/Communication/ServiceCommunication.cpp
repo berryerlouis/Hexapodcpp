@@ -43,7 +43,6 @@ void ServiceCommunication::Notify ( Core::Event event ) const
 		{
 			clusterGeneral->BuildFrameGetMaxTime( response );
 		}
-
 		success = true;
 		break;
 	} break;

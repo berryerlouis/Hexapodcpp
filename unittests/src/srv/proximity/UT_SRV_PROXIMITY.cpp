@@ -49,16 +49,19 @@ protected:
 	ServiceProximity mServiceProximity;
 };
 
-TEST_F( UT_SRV_PROXIMITY, Update_NoDetection_Ok )
+TEST_F( UT_SRV_PROXIMITY, Update )
 {
-	EXPECT_CALL( mMockSensorProximity, Update( _ ) ).Times( 1U );
-	mServiceProximity.Update( 0UL );
+	EXPECT_CALL( mMockSensorProximity, Update( 12450UL ) ).Times( 1U );
+	mServiceProximity.Update( 12450UL );
 }
 
-TEST_F( UT_SRV_PROXIMITY, Update_Detection_Srf_Ok )
+TEST_F( UT_SRV_PROXIMITY, Detect )
 {
-	EXPECT_CALL( mMockSensorProximity, Update( _ ) ).Times( 1U );
-	mServiceProximity.Update( 0UL );
+	SensorsId   sensorId = SensorsId::SRF_LEFT;
+	Core::Event event    = { id: Cluster::EClusters::PROXIMITY, value: sensorId };
+	EXPECT_CALL( mMockEventMediatorInterface, Notify( _ ) ).Times( 1U );
+
+	mServiceProximity.Detect( sensorId );
 }
 }
 }

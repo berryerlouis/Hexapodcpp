@@ -3,7 +3,6 @@
 namespace Component {
 namespace Proximity {
 namespace Laser {
-
 #define decodeVcselPeriod( reg_val )             ( ( ( reg_val ) + 1 ) << 1 )
 #define encodeVcselPeriod( period_pclks )        ( ( ( period_pclks ) >> 1 ) - 1 )
 #define calcMacroPeriod( vcsel_period_pclks )    ( ( ( (uint32_t) 2304 * ( vcsel_period_pclks ) * 1655 ) + 500 ) / 1000 )

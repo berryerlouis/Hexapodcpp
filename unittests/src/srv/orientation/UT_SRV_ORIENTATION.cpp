@@ -14,7 +14,6 @@ using ::testing::StrictMock;
 
 namespace Service {
 namespace Orientation {
-
 class UT_SRV_ORIENTATION : public ::testing::Test {
 protected:
 	UT_SRV_ORIENTATION() :
@@ -28,7 +27,7 @@ protected:
 	{
 		EXPECT_CALL( mMockMpu9150, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_ERROR ) );
 		EXPECT_FALSE( mServiceOrientation.Initialize() );
-		
+
 		EXPECT_CALL( mMockMpu9150, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 		EXPECT_TRUE( mServiceOrientation.Initialize() );
 		mServiceOrientation.setMediator( &mMockEventMediatorInterface );

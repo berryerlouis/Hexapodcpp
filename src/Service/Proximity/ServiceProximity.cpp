@@ -3,7 +3,7 @@
 namespace Service {
 namespace Proximity {
 ServiceProximity::ServiceProximity( SensorProximityMultipleInterface &proximity )
-	: Service( 10 )
+	: Service( 25 )
 	, mProximity( proximity )
 {
 }
@@ -26,7 +26,7 @@ void ServiceProximity::Update ( const uint64_t currentTime )
 
 void ServiceProximity::Detect ( const SensorsId &sensorId )
 {
-	this->mMediator->Notify( { id: Cluster::EClusters::PROXIMITY, value: sensorId } );
+	this->mMediator->Notify( { id: Cluster::EClusters::PROXIMITY, value: (uint8_t) sensorId } );
 }
 }
 }

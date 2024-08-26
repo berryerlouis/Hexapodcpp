@@ -16,7 +16,7 @@ public:
 	virtual uint16_t GetDistance( const SensorsId &sensorId ) final override;
 	virtual Core::CoreStatus SetThreshold( const SensorsId &sensorId, const uint16_t threshold ) final override;
 	virtual uint16_t GetThreshold( const SensorsId &sensorId ) final override;
-	
+
 	virtual Core::CoreStatus Attach( SensorProximityObserverInterface *observer ) final override;
 
 private:

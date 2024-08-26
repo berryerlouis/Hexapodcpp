@@ -10,7 +10,7 @@ enum EServices
 	COMMUNICATION= 2U,
 	DISPLAY      = 3U,
 	GENERAL      = 4U,
-	ORIUENTATION = 5U,
+	ORIENTATION  = 5U,
 	PROXIMITY    = 6U
 };
 
