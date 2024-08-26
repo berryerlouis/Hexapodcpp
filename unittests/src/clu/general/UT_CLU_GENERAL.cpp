@@ -39,8 +39,8 @@ protected:
 TEST_F( UT_CLU_GENERAL, Execute_WrongCluster_Ko )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Frame     request;
-	Frame     response;
+	Frame            request;
+	Frame            response;
 
 	request.Build( BODY, EBatteryCommands::GET_VOLTAGE );
 	success = mClusterGeneral.Execute( request, response );
@@ -54,8 +54,8 @@ TEST_F( UT_CLU_GENERAL, Execute_WrongCluster_Ko )
 TEST_F( UT_CLU_GENERAL, Execute_WrongCommand_Ko )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Frame     request;
-	Frame     response;
+	Frame            request;
+	Frame            response;
 
 	request.Build( GENERAL, 0x5FU );
 	success = mClusterGeneral.Execute( request, response );
@@ -69,8 +69,8 @@ TEST_F( UT_CLU_GENERAL, Execute_WrongCommand_Ko )
 TEST_F( UT_CLU_GENERAL, Execute_VERSION_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Frame     request;
-	Frame     response;
+	Frame            request;
+	Frame            response;
 
 	EXPECT_CALL( mMockSoftware, GetVersion() ).WillOnce( Return( SoftwareInterface::Version{ 1, 0 } ) );
 	request.Build( GENERAL, EGeneralCommands::VERSION );
@@ -85,7 +85,7 @@ TEST_F( UT_CLU_GENERAL, Execute_VERSION_Ok )
 TEST_F( UT_CLU_GENERAL, BuildFrameGetVersion_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Frame     response;
+	Frame            response;
 
 
 	EXPECT_CALL( mMockSoftware, GetVersion() ).WillOnce( Return( SoftwareInterface::Version{ 1, 0 } ) );
@@ -102,7 +102,7 @@ TEST_F( UT_CLU_GENERAL, BuildFrameGetVersion_Ok )
 TEST_F( UT_CLU_GENERAL, BuildFrameGetMinTime_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Frame     response;
+	Frame            response;
 
 	EXPECT_CALL( mMockSoftware, GetMinTime() ).WillOnce( Return( 50U ) );
 
@@ -124,7 +124,7 @@ TEST_F( UT_CLU_GENERAL, BuildFrameGetMinTime_Ok )
 TEST_F( UT_CLU_GENERAL, BuildFrameGetMaxTime_Ok )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	Frame     response;
+	Frame            response;
 
 	EXPECT_CALL( mMockSoftware, GetMaxTime() ).WillOnce( Return( 50U ) );
 

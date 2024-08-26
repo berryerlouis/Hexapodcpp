@@ -3,7 +3,11 @@
 
 namespace Misc {
 namespace Buffer {
-Buffer::Buffer() :  mBuffer{ 0 }, mHead( 0 ), mTail( 0 ), mIsEmpty( true )
+Buffer::Buffer()
+	: mBuffer{ 0U }
+	, mHead( 0U )
+	, mTail( 0U )
+	, mIsEmpty( true )
 {
 }
 

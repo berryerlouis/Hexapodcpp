@@ -17,7 +17,6 @@ using ::testing::StrictMock;
 namespace Component {
 namespace Proximity {
 namespace Ultrasound {
-
 class UT_CMP_SRF05 : public ::testing::Test {
 protected:
 	UT_CMP_SRF05() :

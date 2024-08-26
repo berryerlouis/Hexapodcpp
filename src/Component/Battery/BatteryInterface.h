@@ -16,7 +16,7 @@ public:
 
 	virtual BatteryState GetState() = 0;
 	virtual uint16_t GetVoltage()   = 0;
-	
+
 	virtual Core::CoreStatus Attach( BatteryObserverInterface *observer ) = 0;
 	virtual void Notify( const BatteryState &object ) = 0;
 };

@@ -3,11 +3,9 @@
 
 
 #include "../../../mock/srv/MockService.h"
-#include "../../../mock/srv/MockServiceMediator.h"
-#include "../../../mock/cmp/MockSrf05.h"
-#include "../../../mock/cmp/MockVl53l0x.h"
+#include "../../../mock/cmp/MockSensorProximity.h"
+#include "../../../mock/cor/MockEventMediatorInterface.h"
 
-#include "../../../../src/Cluster/Proximity/ClusterProximity.h"
 #include "../../../../src/Service/Proximity/ServiceProximity.h"
 #include "../../../../src/Component/Proximity/SensorProximity.h"
 
@@ -20,28 +18,21 @@ namespace Proximity {
 class UT_SRV_PROXIMITY : public ::testing::Test {
 protected:
 	UT_SRV_PROXIMITY() :
-		mMockSrf05Left(),
-		mMockSrf05Right(),
-		mMockVl53l0x(),
-		mSensorProximity( mMockSrf05Left, mMockSrf05Right, mMockVl53l0x ),
-		mClusterProximity( mSensorProximity ),
-		mMockServiceMediator(),
-		mServiceProximity( mClusterProximity, mSensorProximity )
+		mMockSensorProximity(),
+		mMockEventMediatorInterface(),
+		mServiceProximity( mMockSensorProximity )
 	{
 	}
 
 	virtual void SetUp ()
 	{
-		Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+		EXPECT_CALL( mMockSensorProximity, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_ERROR ) );
+		EXPECT_FALSE( mServiceProximity.Initialize() );
 
-		EXPECT_CALL( mMockSrf05Left, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-		EXPECT_CALL( mMockSrf05Right, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-		EXPECT_CALL( mMockVl53l0x, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-
-		success = mServiceProximity.Initialize();
-		mServiceProximity.SetComComponent( &mMockServiceMediator );
-
-		EXPECT_TRUE( success );
+		EXPECT_CALL( mMockSensorProximity, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+		EXPECT_CALL( mMockSensorProximity, Attach( _ ) ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+		EXPECT_TRUE( mServiceProximity.Initialize() );
+		mServiceProximity.setMediator( &mMockEventMediatorInterface );
 	}
 
 	virtual void TearDown ()
@@ -50,34 +41,27 @@ protected:
 
 	virtual ~UT_SRV_PROXIMITY() = default;
 
-	/* Class */
-	Component::Proximity::SensorProximity mSensorProximity;
-	Cluster::Proximity::ClusterProximity mClusterProximity;
-
 	/* Mocks */
-	StrictMock <Component::Proximity::Ultrasound::MockSrf05> mMockSrf05Left;
-	StrictMock <Component::Proximity::Ultrasound::MockSrf05> mMockSrf05Right;
-	StrictMock <Component::Proximity::Laser::MockVl53l0x> mMockVl53l0x;
-	StrictMock <MockServiceMediator> mMockServiceMediator;
+	StrictMock <Component::Proximity::MockSensorProximity> mMockSensorProximity;
+	StrictMock <Core::MockEventMediatorInterface> mMockEventMediatorInterface;
 
 	/* Test class */
 	ServiceProximity mServiceProximity;
 };
 
-TEST_F( UT_SRV_PROXIMITY, Update_NoDetection_Ok )
+TEST_F( UT_SRV_PROXIMITY, Update )
 {
-	EXPECT_CALL( mMockSrf05Left, Update( _ ) ).Times( 1U );
-	EXPECT_CALL( mMockSrf05Right, Update( _ ) ).Times( 1U );
-	EXPECT_CALL( mMockVl53l0x, Update( _ ) ).Times( 1U );
-	mServiceProximity.Update( 0UL );
+	EXPECT_CALL( mMockSensorProximity, Update( 12450UL ) ).Times( 1U );
+	mServiceProximity.Update( 12450UL );
 }
 
-TEST_F( UT_SRV_PROXIMITY, Update_Detection_Srf_Ok )
+TEST_F( UT_SRV_PROXIMITY, Detect )
 {
-	EXPECT_CALL( mMockSrf05Left, Update( _ ) ).Times( 1U );
-	EXPECT_CALL( mMockSrf05Right, Update( _ ) ).Times( 1U );
-	EXPECT_CALL( mMockVl53l0x, Update( _ ) ).Times( 1U );
-	mServiceProximity.Update( 0UL );
+	SensorsId   sensorId = SensorsId::SRF_LEFT;
+	Core::Event event    = { id: Cluster::EClusters::PROXIMITY, value: sensorId };
+	EXPECT_CALL( mMockEventMediatorInterface, Notify( _ ) ).Times( 1U );
+
+	mServiceProximity.Detect( sensorId );
 }
 }
 }

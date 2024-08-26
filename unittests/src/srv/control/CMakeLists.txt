@@ -1,7 +1,5 @@
 set(
   SRC_FILES 
-../src/Cluster/Frame/Frame.cpp 
-  ../src/Component/Servo/Servo.cpp 
   ../src/Service/Control/ServiceControl.cpp
 )
 set(

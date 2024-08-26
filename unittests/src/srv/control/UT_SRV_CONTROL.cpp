@@ -3,8 +3,8 @@
 
 #include "../../../mock/cmp/MockPca9685.h"
 #include "../../../mock/cmp/MockServos.h"
+#include "../../../mock/cor/MockEventMediatorInterface.h"
 
-#include "../../../../src/Cluster/Servo/ClusterServo.h"
 #include "../../../../src/Service/Control/ServiceControl.h"
 
 using ::testing::_;
@@ -18,13 +18,19 @@ protected:
 	UT_SRV_CONTROL() :
 		mMockPca9685(),
 		mMockServos(),
-		mClusterServo( mMockServos ),
-		mServiceControl( mClusterServo, mMockServos )
+		mMockEventMediatorInterface(),
+		mServiceControl( mMockServos )
 	{
 	}
 
 	virtual void SetUp ()
 	{
+		EXPECT_CALL( mMockServos, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_ERROR ) );
+		EXPECT_FALSE( mServiceControl.Initialize() );
+
+		EXPECT_CALL( mMockServos, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
+		EXPECT_TRUE( mServiceControl.Initialize() );
+		mServiceControl.setMediator( &mMockEventMediatorInterface );
 	}
 
 	virtual void TearDown ()
@@ -36,23 +42,11 @@ protected:
 	/* Mocks */
 	StrictMock <Component::ServosController::MockPca9685> mMockPca9685;
 	StrictMock <Component::Servos::MockServos> mMockServos;
-
-	Cluster::Servo::ClusterServo mClusterServo;
+	StrictMock <Core::MockEventMediatorInterface> mMockEventMediatorInterface;
 
 	/* Test class */
 	ServiceControl mServiceControl;
 };
-
-TEST_F( UT_SRV_CONTROL, Initialize_Ok )
-{
-	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-
-	EXPECT_CALL( mMockServos, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-
-	success = mServiceControl.Initialize();
-
-	EXPECT_TRUE( success );
-}
 
 TEST_F( UT_SRV_CONTROL, Update_Ok )
 {

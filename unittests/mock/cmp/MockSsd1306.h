@@ -17,7 +17,7 @@ public:
 	MOCK_METHOD4( DrawCircle, void ( uint16_t xc, uint16_t yc, uint16_t r, uint16_t color ) );
 	MOCK_METHOD4( DrawChar, void ( char c, uint16_t x, uint16_t y, Bitmap::Bitmaps::Color color ) );
 	MOCK_METHOD4( DrawString, void ( const char *str, uint16_t x, uint16_t y, Bitmap::Bitmaps::Color color ) );
-	MOCK_METHOD4( DrawBitmap, void ( const Bitmap::Bitmaps::SBitmap *bmp, uint16_t x, uint16_t y, Bitmap::Bitmaps::Color color ) );
+	MOCK_METHOD4( DrawBitmap, void ( const Bitmap::Bitmaps::SBitmap * bmp, uint16_t x, uint16_t y, Bitmap::Bitmaps::Color color ) );
 	MOCK_METHOD0( ClearBuffer, void ( void ) );
 	MOCK_METHOD4( EraseArea, void ( uint16_t x, uint16_t y, uint16_t width, uint16_t height ) );
 };

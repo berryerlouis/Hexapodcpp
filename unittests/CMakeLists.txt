@@ -44,6 +44,7 @@ add_subdirectory(src/cmp/vl53l0x)
 
 add_subdirectory(src/srv/battery)
 add_subdirectory(src/srv/control)
+add_subdirectory(src/srv/communication)
 add_subdirectory(src/srv/display)
 add_subdirectory(src/srv/general)
 add_subdirectory(src/srv/orientation)
@@ -71,6 +72,7 @@ add_executable(
     ${UT_CMP_VL53L0X}
     ${UT_SRV_BATTERY}
     ${UT_SRV_CONTROL}
+    ${UT_SRV_COMMUNICATION}
     ${UT_SRV_DISPLAY}
     ${UT_SRV_GENERAL}
     ${UT_SRV_ORIENTATION}

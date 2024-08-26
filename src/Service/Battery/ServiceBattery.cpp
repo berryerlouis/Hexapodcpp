@@ -2,9 +2,8 @@
 
 namespace Service {
 namespace Battery {
-ServiceBattery::ServiceBattery( ClusterBattery &clusterBattery, BatteryInterface &batteryInterface )
+ServiceBattery::ServiceBattery( BatteryInterface &batteryInterface )
 	: Service( 100U )
-	, mClusterBattery( clusterBattery )
 	, mBatteryInterface( batteryInterface )
 {
 }
@@ -27,10 +26,7 @@ void ServiceBattery::Update ( const uint64_t currentTime )
 
 void ServiceBattery::UpdatedBatteryState ( const BatteryState &batteryState )
 {
-	(void) batteryState;
-	Frame response;
-	this->mClusterBattery.BuildFrameState( response );
-	this->mServiceMediator->SendFrame( response );
+	this->mMediator->Notify( { id: Cluster::EClusters::BATTERY, value: (uint8_t) batteryState } );
 }
 }
 }

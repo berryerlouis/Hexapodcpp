@@ -27,6 +27,7 @@
 #include "../Component/Communication/Communication.h"
 #include "../Service/Battery/ServiceBattery.h"
 #include "../Service/Control/ServiceControl.h"
+#include "../Service/Communication/ServiceCommunication.h"
 #include "../Service/Display/ServiceDisplay.h"
 #include "../Service/General/ServiceGeneral.h"
 #include "../Service/Orientation/ServiceOrientation.h"
@@ -81,6 +82,7 @@ private:
 	Component::Communication::Communication mCommunication;
 
 	Service::Control::ServiceControl mServiceControl;
+	Service::Communication::ServiceCommunication mServiceCommunication;
 	Service::Proximity::ServiceProximity mServiceProximity;
 	Service::Orientation::ServiceOrientation mServiceOrientation;
 	Service::Battery::ServiceBattery mServiceBattery;

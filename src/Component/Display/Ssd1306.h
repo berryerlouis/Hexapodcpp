@@ -51,7 +51,7 @@ public:
 
 
 
-#define BUFFER_DISPLAY_LENGTH                           SCREEN_WIDTH *( ( SCREEN_HEIGHT + 7U ) / 8U )
+#define BUFFER_DISPLAY_LENGTH    SCREEN_WIDTH *( ( SCREEN_HEIGHT + 7U ) / 8U )
 
 
 	Ssd1306( Twi::TwiInterface &twi, const uint8_t address = SSD1306_ADDRESS );

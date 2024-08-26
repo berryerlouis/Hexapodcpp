@@ -2,9 +2,8 @@
 
 namespace Service {
 namespace Control {
-ServiceControl::ServiceControl( ClusterServo &clusterServo, ServosInterface &servos )
+ServiceControl::ServiceControl( ServosInterface &servos )
 	: Service( 10U )
-	, mClusterServo( clusterServo )
 	, mStepPca9685( 0U )
 	, mServosInterface( servos )
 {

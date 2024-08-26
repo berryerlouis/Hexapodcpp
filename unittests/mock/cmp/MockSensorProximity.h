@@ -13,7 +13,7 @@ public:
 	MOCK_METHOD1( GetThreshold, uint16_t( const SensorsId & ) );
 	MOCK_METHOD2( SetThreshold, Core::CoreStatus( const SensorsId &, uint16_t ) );
 
-	MOCK_METHOD1( Attach, Core::CoreStatus( SensorProximityObserverInterface *observer ) );
+	MOCK_METHOD1( Attach, Core::CoreStatus( SensorProximityObserverInterface * observer ) );
 };
 }
 }

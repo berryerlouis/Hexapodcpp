@@ -4,7 +4,7 @@
 
 namespace Component {
 namespace Battery {
-class BatteryObservableInterface{
+class BatteryObservableInterface {
 public:
 	BatteryObservableInterface()  = default;
 	~BatteryObservableInterface() = default;

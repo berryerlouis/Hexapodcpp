@@ -1,7 +1,6 @@
 set(
   SRC_FILES 
   ../src/Misc/Bitmap/Bitmaps.cpp 
-  ../src/Cluster/Frame/Frame.cpp 
   ../src/Service/Display/ServiceDisplay.cpp
 )
 set(
