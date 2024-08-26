@@ -4,7 +4,8 @@ namespace Component {
 namespace Proximity {
 namespace Ultrasound {
 Srf05::Srf05( const Cluster::EProximityCommands side, Driver::Gpio::GpioInterface &gpioTrigger, Driver::InputCapture::InputCaptureInterface &gpioEcho, Led::LedInterface &led, Driver::Tick::TickInterface &tick )
-	: mSide( side )
+	: SensorProximityWindow()
+	, mSide( side )
 	, mGpioTrigger( gpioTrigger )
 	, mGpioEcho( gpioEcho )
 	, mTick( tick )
@@ -28,12 +29,19 @@ void Srf05::Update ( const uint64_t currentTime )
 	bool           detection = ( distance != 0U && distance <= this->mThreshold );
 	if ( true == detection )
 	{
-		this->mLed.On();
-		this->Notify( (SensorsId) mSide );
+		if ( true == this->Detect() )
+		{
+			this->mLed.On();
+			this->Notify( (SensorsId) mSide, true );
+		}
 	}
 	else
 	{
-		this->mLed.Off();
+		if ( true == this->UnDetect() )
+		{
+			this->mLed.Off();
+			this->Notify( (SensorsId) mSide, false );
+		}
 	}
 }
 

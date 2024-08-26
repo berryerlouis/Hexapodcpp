@@ -9,7 +9,8 @@ namespace Laser {
 
 
 Vl53l0x::Vl53l0x( Twi::TwiInterface &i2c, Tick::TickInterface &tick, const uint8_t address )
-	: mI2c( i2c )
+	: SensorProximityWindow()
+	, mI2c( i2c )
 	, mTick( tick )
 	, mAddress( address )
 	, mDistance( 0 )
@@ -131,9 +132,20 @@ void Vl53l0x::Update ( const uint64_t currentTime )
 	(void) currentTime;
 
 	this->mDistance = this->GetDistance();
-	if ( this->mDistance != 0U && this->mDistance <= this->mThreshold )
+	bool detection = this->mDistance != 0U && this->mDistance <= this->mThreshold;
+	if ( true == detection )
 	{
-		this->Notify( SensorsId::VLX );
+		if ( true == this->Detect() )
+		{
+			this->Notify( SensorsId::VLX, true );
+		}
+	}
+	else
+	{
+		if ( true == this->UnDetect() )
+		{
+			this->Notify( SensorsId::VLX, false );
+		}
 	}
 }
 

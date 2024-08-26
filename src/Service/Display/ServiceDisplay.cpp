@@ -7,7 +7,6 @@ ServiceDisplay::ServiceDisplay( Ssd1306Interface &ssd1306, BatteryInterface &bat
 	, mSsd1306( ssd1306 )
 	, mBatteryInterface( batteryInterface )
 	, mProximity( proximity )
-	, mSensors{ 0U }
 	, mBmpBatteryLevel{.bmp  = (uint8_t *) Bitmaps::Battery0, .width = 16U, .height = 7U }
 	, mBmpCommunication{.bmp = (uint8_t *) Bitmaps::Communication, .width = 16U, .height = 8U }
 	, mBmpProximity{.bmp     = (uint8_t *) Bitmaps::ArrowCenter, .width = 16U, .height = 6U }
@@ -58,9 +57,9 @@ void ServiceDisplay::DisplayCommunicationBmp ( void )
 	else
 	{
 		this->mSsd1306.EraseArea(
-			20U,
+			SCREEN_WIDTH - this->mBmpCommunication.width,
 			0U,
-			SCREEN_WIDTH,
+			this->mBmpCommunication.width,
 			8U );
 		this->mToggleCommunicationBmp = true;
 	}
@@ -87,7 +86,6 @@ void ServiceDisplay::DisplayProximitySensor ( SensorsId sensor )
 {
 	if ( sensor == SensorsId::SRF_LEFT )
 	{
-		this->mSensors[SensorsId::SRF_LEFT] = true;
 		this->mBmpProximity.bmp             = (uint8_t *) Bitmaps::ArrowLeft;
 
 		this->mSsd1306.DrawBitmap(
@@ -98,7 +96,6 @@ void ServiceDisplay::DisplayProximitySensor ( SensorsId sensor )
 	}
 	if ( sensor == SensorsId::VLX )
 	{
-		this->mSensors[SensorsId::VLX] = true;
 		this->mBmpProximity.bmp        = (uint8_t *) Bitmaps::ArrowUp;
 		this->mSsd1306.DrawBitmap(
 			&this->mBmpProximity,
@@ -108,7 +105,6 @@ void ServiceDisplay::DisplayProximitySensor ( SensorsId sensor )
 	}
 	if ( sensor == SensorsId::SRF_RIGHT )
 	{
-		this->mSensors[SensorsId::SRF_RIGHT] = true;
 		this->mBmpProximity.bmp = (uint8_t *) Bitmaps::ArrowRight;
 		this->mSsd1306.DrawBitmap(
 			&this->mBmpProximity,
@@ -126,6 +122,34 @@ void ServiceDisplay::UpdatedBatteryState ( const BatteryState &batteryState )
 void ServiceDisplay::Detect ( const SensorsId &sensorId )
 {
 	this->DisplayProximitySensor( sensorId );
+}
+
+void ServiceDisplay::NoDetect ( const SensorsId &sensorId )
+{
+	if ( sensorId == SensorsId::SRF_LEFT )
+	{
+		this->mSsd1306.EraseArea(
+			( SCREEN_WIDTH / 2U ) - ( this->mBmpProximity.width / 2U ) - this->mBmpProximity.width,
+			0U,
+			this->mBmpProximity.width,
+			8U );
+	}
+	if ( sensorId == SensorsId::VLX )
+	{
+		this->mSsd1306.EraseArea(
+			( SCREEN_WIDTH / 2U ) - ( this->mBmpProximity.width / 2U ),
+			0U,
+			this->mBmpProximity.width,
+			8U );
+	}
+	if ( sensorId == SensorsId::SRF_RIGHT )
+	{
+		this->mSsd1306.EraseArea(
+			( SCREEN_WIDTH / 2U ) + ( this->mBmpProximity.width / 2U ),
+			0U,
+			this->mBmpProximity.width,
+			8U );
+	}
 }
 }
 }

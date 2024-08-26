@@ -69,7 +69,7 @@ TEST_F( UT_SRV_DISPLAY, Update_Ok )
 		else
 		{
 			toggle = true;
-			EXPECT_CALL( mMockSsd1306, EraseArea( _, 0U, SCREEN_WIDTH, _ ) ).Times( 1U );
+			EXPECT_CALL( mMockSsd1306, EraseArea( _, 0U, _, 8U ) ).Times( 1U );
 		}
 		EXPECT_CALL( mMockSsd1306, Update( i ) ).Times( 1U );
 		mServiceDisplay.Update( i );

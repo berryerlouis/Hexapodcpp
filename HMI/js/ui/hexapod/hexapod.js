@@ -33,7 +33,7 @@ export default class Hexapod {
         let cylinder = new THREE.Mesh(geometry, material);
         cylinder.position.x = 0
         cylinder.position.z = -hexapod.body.height / 2 - 8
-        cylinder.position.y += 25 + hexapod.y;
+        cylinder.position.y += 50 + hexapod.y;
         cylinder.rotateY(30 * 3.14 / 180);
         cylinder.translateZ(-100 - hexapod.head.srfLeft)
         this.sensors.push(cylinder);
@@ -41,7 +41,7 @@ export default class Hexapod {
         cylinder = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 1), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
         cylinder.position.x = 0
         cylinder.position.z = -hexapod.body.height / 2 - 8
-        cylinder.position.y += 25 + hexapod.y;
+        cylinder.position.y += 50 + hexapod.y;
         cylinder.rotateY(0 * 3.14 / 180);
         cylinder.translateZ(-100 - hexapod.head.vlx)
         this.sensors.push(cylinder);
@@ -49,37 +49,36 @@ export default class Hexapod {
         cylinder = new THREE.Mesh(geometry, material);
         cylinder.position.x = 0
         cylinder.position.z = -hexapod.body.height / 2 - 8
-        cylinder.position.y += 25 + hexapod.y;
+        cylinder.position.y += 50 + hexapod.y;
         cylinder.rotateY(-30 * 3.14 / 180);
         cylinder.translateZ(-100 - hexapod.head.srfRight)
         this.sensors.push(cylinder);
         this.groupBody.add(...this.sensors);
     }
 
-    drawObstacleLeft() {
-        this.sensors[0].position.x = 0
-        this.sensors[0].position.z = -50 - hexapod.body.height / 2 - 8
-        if (-hexapod.head.srfLeft * 10 < -100) {
-            this.sensors[0].translateZ(-hexapod.head.srfLeft * 10)
-        }
-        else {
-            this.sensors[0].translateZ(-50)
-        }
+    drawObstacleLeft(dist) {
+        hexapod.head.srfLeft = dist;
+        this.robot.drawObstacle();
     }
     drawObstacleCenter() {
-        this.sensors[1].position.x = 0
-        this.sensors[1].position.z = -50 - hexapod.body.height / 2 - 8
-        this.sensors[1].translateZ(-hexapod.head.vlx * 10)
+        hexapod.head.vlx = dist;
+        this.robot.drawObstacle();
     }
     drawObstacleRight() {
+        hexapod.head.srfRight = dist;
+        this.robot.drawObstacle();
+    }
+
+    drawObstacle() {
+        this.sensors[0].position.x = 0
+        this.sensors[0].position.z = -100 - hexapod.body.height / 2 - 8
+        this.sensors[0].translateZ(-hexapod.head.srfLeft + 100);
+        this.sensors[1].position.x = 0
+        this.sensors[1].position.z = -100 - hexapod.body.height / 2 - 8
+        this.sensors[1].translateZ(-hexapod.head.vlx + 100);
         this.sensors[2].position.x = 0
-        this.sensors[2].position.z = -50 - hexapod.body.height / 2 - 8
-        if (-hexapod.head.srfRight * 10 < -100) {
-            this.sensors[2].translateZ(-hexapod.head.srfRight * 10)
-        }
-        else {
-            this.sensors[2].translateZ(-50)
-        }
+        this.sensors[2].position.z = -100 - hexapod.body.height / 2 - 8
+        this.sensors[2].translateZ(-hexapod.head.srfRight + 100);
     }
 
     moveLeg(legId, coxa, femur, tibia) {

@@ -29,13 +29,20 @@ public:
 		return ( success );
 	}
 
-	virtual void Notify ( const SensorsId &sensorId ) final override
+	virtual void Notify ( const SensorsId &sensorId, const bool detection ) final override
 	{
 		for ( size_t i = 0; i < this->mIndexList; i++ )
 		{
 			if ( this->mListObserver[i] != nullptr )
 			{
-				this->mListObserver[i]->Detect( sensorId );
+				if ( true == detection )
+				{
+					this->mListObserver[i]->Detect( sensorId );
+				}
+				else
+				{
+					this->mListObserver[i]->NoDetect( sensorId );
+				}
 			}
 		}
 	}

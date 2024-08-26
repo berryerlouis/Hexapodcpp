@@ -57,15 +57,15 @@ export default class Canvas {
 
     drawObstacleLeft(dist) {
         hexapod.head.srfLeft = dist;
-        this.robot.drawObstacleLeft();
+        this.robot.drawObstacle();
     }
     drawObstacleCenter(dist) {
         hexapod.head.vlx = dist;
-        this.robot.drawObstacleCenter();
+        this.robot.drawObstacle();
     }
     drawObstacleRight(dist) {
         hexapod.head.srfRight = dist;
-        this.robot.drawObstacleRight();
+        this.robot.drawObstacle();
     }
 
     moveLeg(legId, coxa, femur, tibia) {
