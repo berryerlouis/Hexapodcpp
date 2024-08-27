@@ -55,6 +55,7 @@ export default class Command {
         this.communication.sendMessage(msg)
     }
     updateBody() {
+
         let x = this.decimalTo16BitsHexString($('#body-position-x')[0].value).toString(16);
         let y = this.decimalTo16BitsHexString($('#body-position-y')[0].value).toString(16);
         let z = this.decimalTo16BitsHexString($('#body-position-z')[0].value).toString(16);
@@ -73,20 +74,17 @@ export default class Command {
         this.communication.sendMessage(msg)
     }
 
-
     decimalTo8BitsHexString(number) {
         if (number < 0) {
-            number = 255 + parseInt(number);
+            return parseInt(number >>> 0).toString(16).substring(6).toUpperCase();
         }
-
         return parseInt(number).toString(16).padStart(2, '0').toUpperCase();
     }
 
     decimalTo16BitsHexString(number) {
         if (number < 0) {
-            number = 32768 - parseInt(number);
+            return parseInt(number >>> 0).toString(16).substring(4).toUpperCase();
         }
-
         return parseInt(number).toString(16).padStart(4, '0').toUpperCase();
     }
 }

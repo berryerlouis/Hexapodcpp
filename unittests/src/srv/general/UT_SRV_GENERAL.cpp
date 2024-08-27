@@ -62,7 +62,7 @@ TEST_F( UT_SRV_GENERAL, Update_MultipleUpdateSetMin_Ok )
 	{
 		EXPECT_CALL( mMockSoftware, GetMinTime() ).Times( 1U ).WillRepeatedly( Return( i + 1U ) );
 		EXPECT_CALL( mMockSoftware, SetMinTime( _ ) ).Times( 1U );
-		EXPECT_CALL( mMockEventMediatorInterface, Notify( _ ) ).Times( 1U );
+		EXPECT_CALL( mMockEventMediatorInterface, SendMessage( _ ) ).Times( 1U );
 
 		mServiceGeneral.Update( i );
 		mServiceGeneral.SetNewUpdateTime( i - 1U );
@@ -78,7 +78,7 @@ TEST_F( UT_SRV_GENERAL, Update_MultipleUpdateSetMax_Ok )
 		EXPECT_CALL( mMockSoftware, GetMinTime() ).Times( 1U ).WillOnce( Return( 0U ) );
 		EXPECT_CALL( mMockSoftware, GetMaxTime() ).Times( 1U ).WillRepeatedly( Return( 0U ) );
 		EXPECT_CALL( mMockSoftware, SetMaxTime( 1U ) ).Times( 1U );
-		EXPECT_CALL( mMockEventMediatorInterface, Notify( _ ) ).Times( 1U );
+		EXPECT_CALL( mMockEventMediatorInterface, SendMessage( _ ) ).Times( 1U );
 
 		mServiceGeneral.Update( i );
 		mServiceGeneral.SetNewUpdateTime( i );

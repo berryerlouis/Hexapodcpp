@@ -35,7 +35,7 @@ void Communication::Update ( const uint64_t currentTime )
 			{
 				if ( true == cluster->Execute( request, response ) )
 				{
-					this->Send( response );
+					this->SendMessage( response );
 				}
 				else
 				{
@@ -43,7 +43,7 @@ void Communication::Update ( const uint64_t currentTime )
 					response.commandId = ( (uint8_t) EClusterCommandGeneric::GENERIC );
 					response.nbParams  = 1U;
 					response.params[0] = false;
-					this->Send( response );
+					this->SendMessage( response );
 				}
 				response.Reset();
 			}
@@ -53,7 +53,7 @@ void Communication::Update ( const uint64_t currentTime )
 				response.commandId = ( (uint8_t) EClusterCommandGeneric::GENERIC );
 				response.nbParams  = 1U;
 				response.params[0] = false;
-				this->Send( response );
+				this->SendMessage( response );
 			}
 		}
 		else
@@ -62,13 +62,13 @@ void Communication::Update ( const uint64_t currentTime )
 			response.commandId = ( (uint8_t) EClusterCommandGeneric::GENERIC );
 			response.nbParams  = 1U;
 			response.params[0] = parsedStatus;
-			this->Send( response );
+			this->SendMessage( response );
 		}
 		this->mLedStatus.Off();
 	}
 }
 
-Core::CoreStatus Communication::Send ( Frame &message )
+Core::CoreStatus Communication::SendMessage ( Frame &message )
 {
 	uint8_t buffer[50U];
 

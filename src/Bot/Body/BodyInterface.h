@@ -16,7 +16,7 @@ public:
 	virtual Core::CoreStatus Initialize( void )       = 0;
 	virtual void Update( const uint64_t currentTime ) = 0;
 
-	virtual void SetPositionRotation( const Position3d &position, const Rotation3d &rotation, const uint16_t travelTime ) = 0;
+	virtual void SetPositionRotation( const Misc::Geometry::Position3d &position, const Misc::Geometry::Rotation3d &rotation, const uint16_t travelTime ) = 0;
 };
 }
 }

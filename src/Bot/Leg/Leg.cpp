@@ -70,7 +70,7 @@ Leg::Leg( ELeg legId, ServoInterface &coxa, ServoInterface &femur, ServoInterfac
 	}
 }
 
-void Leg::SetLegIk ( const Position3d &position, const Position3d &bodyIk, const uint16_t travelTime )
+void Leg::SetLegIk ( const Misc::Geometry::Position3d &position, const Misc::Geometry::Position3d &bodyIk, const uint16_t travelTime )
 {
 	this->mLegIk.newFootPos.x = this->mFootPosition.x + position.x + bodyIk.x;
 	this->mLegIk.newFootPos.y = this->mFootPosition.y + position.y + bodyIk.y;

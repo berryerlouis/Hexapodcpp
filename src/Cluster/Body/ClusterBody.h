@@ -34,16 +34,16 @@ public:
 			{
 				Position3d position =
 				{
-					position.x = (uint16_t) ( request.Get2BytesParam( 0U ) ) / 10.0f,
-					position.y = (uint16_t) ( request.Get2BytesParam( 2U ) ) / 10.0f,
-					position.z = (uint16_t) ( request.Get2BytesParam( 4U ) ) / 10.0f
+					position.x = (int16_t) ( request.Get2BytesParam( 0U ) ) / 10.0f,
+					position.y = (int16_t) ( request.Get2BytesParam( 2U ) ) / 10.0f,
+					position.z = (int16_t) ( request.Get2BytesParam( 4U ) ) / 10.0f
 				};
 
 				Rotation3d rotation =
 				{
-					.angleX = (uint16_t) ( request.Get2BytesParam( 6U ) ) / 10.0f,
-					.angleY = (uint16_t) ( request.Get2BytesParam( 8U ) ) / 10.0f,
-					.angleZ = (uint16_t) ( request.Get2BytesParam( 10U ) ) / 10.0f
+					.angleX = (int16_t) ( request.Get2BytesParam( 6U ) ) / 10.0f,
+					.angleY = (int16_t) ( request.Get2BytesParam( 8U ) ) / 10.0f,
+					.angleZ = (int16_t) ( request.Get2BytesParam( 10U ) ) / 10.0f
 				};
 
 				uint16_t travelTime = (uint16_t) ( request.Get2BytesParam( 12U ) );

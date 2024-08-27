@@ -7,22 +7,22 @@ class EventMediatorInterface
 public:
 	EventMediatorInterface()  = default;
 	~EventMediatorInterface() = default;
-	virtual void Notify( Event event ) const = 0;
+	virtual void SendMessage( Event event ) const = 0;
 };
 
 class EventManager {
 public:
 	EventManager( EventMediatorInterface *mediator = nullptr )
-		: mMediator( mediator )
+		: mComMediator( mediator )
 	{
 	}
 
 	void setMediator ( EventMediatorInterface *mediator )
 	{
-		this->mMediator = mediator;
+		this->mComMediator = mediator;
 	}
 
 protected:
-	EventMediatorInterface *mMediator;
+	EventMediatorInterface *mComMediator;
 };
 }

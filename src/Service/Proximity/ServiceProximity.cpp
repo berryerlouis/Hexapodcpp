@@ -26,12 +26,12 @@ void ServiceProximity::Update ( const uint64_t currentTime )
 
 void ServiceProximity::Detect ( const SensorsId &sensorId )
 {
-	this->mMediator->Notify( { id: Cluster::EClusters::PROXIMITY, value: (uint8_t) sensorId } );
+	this->mComMediator->SendMessage( { id: Cluster::EClusters::PROXIMITY, value: (uint8_t) sensorId } );
 }
 
 void ServiceProximity::NoDetect ( const SensorsId &sensorId )
 {
-	this->mMediator->Notify( { id: Cluster::EClusters::PROXIMITY, value: (uint8_t) sensorId } );
+	this->mComMediator->SendMessage( { id: Cluster::EClusters::PROXIMITY, value: (uint8_t) sensorId } );
 }
 }
 }

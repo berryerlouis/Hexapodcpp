@@ -54,7 +54,7 @@ export default class SerialInterface {
     }
 
     MessageAvailable() {
-        return this.listOfIncommingMessages.length
+        return this.listOfIncommingMessages.length;
     }
 
     PopMessage() {

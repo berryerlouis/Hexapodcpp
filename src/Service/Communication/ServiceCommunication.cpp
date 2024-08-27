@@ -25,7 +25,7 @@ void ServiceCommunication::Update ( const uint64_t currentTime )
 	this->mCommunication.Update( currentTime );
 }
 
-void ServiceCommunication::Notify ( Core::Event event ) const
+void ServiceCommunication::SendMessage ( Core::Event event ) const
 {
 	Frame response;
 	bool  success = false;
@@ -88,7 +88,7 @@ void ServiceCommunication::Notify ( Core::Event event ) const
 
 	if ( true == success )
 	{
-		this->mCommunication.Send( response );
+		this->mCommunication.SendMessage( response );
 	}
 }
 }

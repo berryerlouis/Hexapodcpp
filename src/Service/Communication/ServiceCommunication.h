@@ -18,7 +18,7 @@ public:
 	virtual Core::CoreStatus Initialize( void ) final override;
 	virtual void Update( const uint64_t currentTime ) final override;
 
-	virtual void Notify( Core::Event event ) const final override;
+	virtual void SendMessage( Core::Event event ) const final override;
 
 private:
 	Clusters::ClustersInterface &mClusters;

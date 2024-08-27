@@ -11,8 +11,8 @@ Body::Body( Legs::Legs &legs )
 
 Core::CoreStatus Body::Initialize ( void )
 {
-	Position3d position = { 0.0, 0.0, 0.0 };
-	Rotation3d rotation = { 0.0, 0.0, 0.0 };
+	Misc::Geometry::Position3d position = { 0.0, 0.0, 0.0 };
+	Misc::Geometry::Rotation3d rotation = { 0.0, 0.0, 0.0 };
 
 	this->SetPositionRotation( position, rotation, 1000 );
 	return ( Core::CoreStatus::CORE_OK );
@@ -23,12 +23,12 @@ void Body::Update ( const uint64_t currentTime )
 	(void) currentTime;
 }
 
-void Body::SetPositionRotation ( const Position3d &position, const Rotation3d &rotation, const uint16_t travelTime )
+void Body::SetPositionRotation ( const Misc::Geometry::Position3d &position, const Misc::Geometry::Rotation3d &rotation, const uint16_t travelTime )
 {
 	this->SetBodyIk( position, rotation, travelTime );
 }
 
-void Body::SetBodyIk ( const Leg::Position3d &position, const Leg::Rotation3d &rotation, const uint16_t travelTime )
+void Body::SetBodyIk ( const Misc::Geometry::Position3d &position, const Misc::Geometry::Rotation3d &rotation, const uint16_t travelTime )
 {
 	for ( size_t legId = 0U; legId < NB_LEGS; legId++ )
 	{

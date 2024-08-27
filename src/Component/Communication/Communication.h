@@ -22,7 +22,7 @@ public:
 	virtual Core::CoreStatus Initialize( void ) final override;
 	virtual void Update( const uint64_t currentTime ) final override;
 
-	virtual Core::CoreStatus Send( Frame &message ) final override;
+	virtual Core::CoreStatus SendMessage( Frame &message ) final override;
 
 private:
 	bool ReceivedStringFrame( void );
