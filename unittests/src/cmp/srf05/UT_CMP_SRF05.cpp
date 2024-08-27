@@ -24,7 +24,7 @@ protected:
 		mMockGpio(),
 		mMockInputCapture(),
 		mMockLed(),
-		mSrf05( EProximityCommands::US_LEFT, mMockGpio, mMockInputCapture, mMockLed, mMockTick )
+		mSrf05( Cluster::EProximityCommands::US_LEFT, mMockGpio, mMockInputCapture, mMockLed, mMockTick )
 	{
 	}
 
@@ -51,7 +51,7 @@ protected:
 	StrictMock <Driver::Tick::MockTick> mMockTick;
 	StrictMock <Driver::Gpio::MockGpio> mMockGpio;
 	StrictMock <Driver::InputCapture::MockInputCapture> mMockInputCapture;
-	StrictMock <MockLed> mMockLed;
+	StrictMock <Component::Led::MockLed> mMockLed;
 	/* Test class */
 	Srf05 mSrf05;
 };
@@ -64,6 +64,7 @@ TEST_F( UT_CMP_SRF05, SetThreshold )
 
 TEST_F( UT_CMP_SRF05, UnderThreshold )
 {
+	mSrf05.UnDetect();
 	EXPECT_CALL( mMockInputCapture, GetInputCaptureTime() ).Times( 1U ).WillOnce( Return( 58U ) );
 	EXPECT_CALL( mMockGpio, Set() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	EXPECT_CALL( mMockTick, DelayUs( _ ) ).Times( 1U );
@@ -76,7 +77,7 @@ TEST_F( UT_CMP_SRF05, UnderThreshold )
 TEST_F( UT_CMP_SRF05, AboveThreshold )
 {
 	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-
+	mSrf05.Detect();
 	EXPECT_CALL( mMockInputCapture, GetInputCaptureTime() ).Times( 1U ).WillOnce( Return( 58U * 31U ) );
 	EXPECT_CALL( mMockGpio, Set() ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	EXPECT_CALL( mMockTick, DelayUs( _ ) ).Times( 1U );
