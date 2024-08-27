@@ -16,6 +16,10 @@ else
     fi
     if [ $1 = "test" ]; then
         cd unittests
-        cmake -Dgtest_build_samples=ON -DCMAKE_BUILD_TYPE=Debug -S . -B build
+        if [ $2 = "all" ] || [ $2 = "clean" ] || [ $2 = "help" ]; then
+            cmake -Dgtest_build_samples=ON -DCMAKE_BUILD_TYPE=Debug -DUT_TO_BUILD="all" -S . -B build
+        else
+            cmake -Dgtest_build_samples=ON -DCMAKE_BUILD_TYPE=Debug -DUT_TO_BUILD=${2} -S . -B build
+        fi
     fi
 fi
