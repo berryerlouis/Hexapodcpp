@@ -14,6 +14,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install build-essential binutils gcc-avr avr-libc
+          mkdir archive/
 
       - name: Build Release
         run: |
@@ -25,10 +26,36 @@ jobs:
 
       - name: Create Archive Directory
         run: |
-          bin/dev/archive.sh
+          mkdir -p archive/
+          cp build/Hexapodcpp.hex archive/
+          cp build/Hexapodcpp.elf archive/
 
       - name: Archive Artefacts
         uses: actions/upload-artifact@v4
         with:
           name: hexapodcpp
+          path: archive/
+
+  test-coverage-IHM:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: ArtiomTr/jest-coverage-report-action@v2
+        with:
+          working-directory: HMI
+          test-script: npm test
+
+      - name: Create Archive Directory
+        run: |
+          mkdir -p archive/
+          mv HMI/coverage/lcov-report/* archive/
+
+      - name: Archive Artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: IHM
           path: archive/
