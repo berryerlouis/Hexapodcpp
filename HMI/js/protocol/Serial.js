@@ -1,14 +1,16 @@
 import { Protocol } from './Protocol.js';
 
-export default class SerialInterface {
-    static init = false;
+export class SerialInterface {
     constructor() {
+        this.initialized = false;
         this.buffer = "";
         this.listOfIncommingMessages = [];
+        this.listOfCallbackRead = [];
+        this.listOfCallbackWrite = [];
     }
 
     async init(nav) {
-        if ("serial" in nav && SerialInterface.init == false) {
+        if ("serial" in nav && this.initialized == false) {
             const filters = [{ usbVendorId: 0x10C4, usbProductId: 0xEA60 }];
             try {
                 this.port = await nav.serial.requestPort({ filters });
@@ -25,7 +27,7 @@ export default class SerialInterface {
                 this.listOfIncommingMessages = [];
                 this.buffer = "";
                 this.threadRx();
-                SerialInterface.init = true;
+                this.initialized = true;
             } catch (error) {
                 console.error("Initialization error:", error);
             }
@@ -35,6 +37,7 @@ export default class SerialInterface {
     }
 
     async close() {
+        this.initialized = false;
         this.listOfIncommingMessages = [];
         if (this.reader) {
             await this.reader.cancel();
@@ -46,15 +49,17 @@ export default class SerialInterface {
         }
         if (this.port) {
             await this.port.close();
-            SerialInterface.init = false;
         }
     }
 
-    async write(data) {
+    async write(message) {
         if (this.writer) {
-            await this.writer.write(data);
+            await this.writer.write(message.raw);
+            this.notifyWrite(message);
+            return true;
         } else {
             console.error("Serial not initialized.");
+            return false;
         }
     }
 
@@ -68,6 +73,26 @@ export default class SerialInterface {
 
     popMessage() {
         return this.listOfIncommingMessages.pop();
+    }
+
+    addCallbackRead(cb) {
+        this.listOfCallbackRead.push(cb);
+    }
+
+    addCallbackWrite(cb) {
+        this.listOfCallbackWrite.push(cb);
+    }
+
+    notifyRead(message) {
+        this.listOfCallbackRead.forEach(function (cb) {
+            cb(message);
+        });
+    }
+
+    notifyWrite(message) {
+        this.listOfCallbackWrite.forEach(function (cb) {
+            cb(message);
+        });
     }
 
     catchIncommingMessage(value) {
@@ -86,8 +111,9 @@ export default class SerialInterface {
 
             if (raw.length > 0) {
                 try {
-                    let frame = Protocol.decode(raw);
+                    let frame = Protocol.decode("Rx", raw);
                     this.listOfIncommingMessages.push(frame);
+                    this.notifyRead(frame);
                 } catch (msg) {
                     console.error(`Decoding error: "${raw}"\n"${msg}"`);
                 }
@@ -109,6 +135,7 @@ export default class SerialInterface {
                 }
             }
         } catch (error) {
+            this.close()
             console.error(`Thread Serial error!"`);
         }
     }

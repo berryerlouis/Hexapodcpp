@@ -5,29 +5,23 @@ import { Clusters, Cluster, Command, ClusterName, CommandGeneral, CommandImu, Co
 describe('Protocol', () => {
 
     test('should handle incoming messages from cluster IMU', () => {
-        expect(Protocol.decode('<010303010203>')).toEqual(
-            {
-                "cluster":
-                {
-                    "code": "01",
-                    "name": "IMU",
-                },
-                "command":
-                {
-                    "code": "03",
-                    "name": "MAG",
-                },
-                "index": 0,
-                "params": ['01', '02', '03'],
-                "raw": "<010303010203>",
-                "size": 3,
-            },
-        );
+        const message = Protocol.decode("Rx", '<010303010203>');
+
+        expect(message.cluster.name).toBe('IMU');
+        expect(message.cluster.code).toBe('01');
+        expect(message.command.name).toBe('MAG');
+        expect(message.command.code).toBe('03');
+        expect(message.direction).toBe("Rx");
+        expect(message.index).toBe(0);
+        expect(message.timeout).toBe(0);
+        expect(message.size).toBe(3);
+        expect(message.params).toEqual(['01', '02', '03']);
+        expect(message.raw).toBe('<010303010203>');
     });
 
     test('should handle decoding error if frame is incorrect size', () => {
         const throwedDecode = () => {
-            Protocol.decode('<01030301020304>');
+            Protocol.decode("Tx", '<01030301020304>');
         };
         expect(throwedDecode).toThrow(Error);
         expect(throwedDecode).toThrow("Decoding error! incorect size: <01030301020304>");
@@ -35,7 +29,7 @@ describe('Protocol', () => {
 
     test('should handle decoding error if malformed frame', () => {
         const throwedDecode = () => {
-            Protocol.decode('<01030301020304');
+            Protocol.decode("Tx", '<01030301020304');
         };
         expect(throwedDecode).toThrow(Error);
         expect(throwedDecode).toThrow("Should starts and ends with \"<\" and \">\": <01030301020304");

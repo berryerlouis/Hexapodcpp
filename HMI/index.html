@@ -31,7 +31,6 @@
     </script>
 
 
-    <script defer src="js/ui/hexapod/confHexapod.js"></script>
     <script defer src="js/main.js" type="module"></script>
 </head>
 
@@ -262,13 +261,17 @@
                 </div>
                 <div class="col-2 d-flex align-items-center justify-content-around">
 
-                    <div class='console-number-rx'>
+                    <div class='console-number-messages-rx'>
                         <i class="bi bi-send-plus-fill"></i>
-                        <span id="console-number-sent-frame-all">0 </span>
+                        <span id="console-number-messages-rx">0 </span>
                     </div>
-                    <div class='console-number-rx-timeout'>
+                    <div class='console-number-messages-tx mx-2'>
+                        <i class="bi bi-send-plus-fill"></i>
+                        <span id="console-number-messages-tx">0 </span>
+                    </div>
+                    <div class='console-number-messages-timeout'>
                         <i class="bi bi-send-exclamation-fill"></i>
-                        <span id="console-number-sent-frame-timeout">0 </span>
+                        <span id="console-number-messages-timeout">0 </span>
                     </div>
                 </div>
                 <div class="col-1">

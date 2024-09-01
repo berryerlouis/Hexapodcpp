@@ -3,6 +3,8 @@ import { Protocol } from './Protocol.js'
 import { MessageSizeError } from './MessageError.js';
 
 export class Message {
+    date;
+    direction;
     params;
     cluster;
     command;
@@ -10,15 +12,14 @@ export class Message {
     params;
     raw;
     index;
+    timeout;
 
-    constructor() {
-        this.index = 0;
-    }
-
-    build(clusterName, commandName, size = 0, params = null) {
-
+    build(direction, clusterName, commandName, size = 0, params = null) {
+        this.setDate();
+        this.direction = direction;
         this.cluster = Clusters.getClusterByName(clusterName);
         this.command = Clusters.getCommandByName(this.cluster, commandName);
+        this.timeout = 0;
 
         if ((params != null && params.length != size) || (params == null && size != 0)) {
             throw new MessageSizeError(`Message with size ${size} doesn't expect the lenght of params ${params?.length}!`);
@@ -33,10 +34,14 @@ export class Message {
         return this;
     }
 
-    toString(direction) {
+    setDate() {
         let date = new Date();
-        let ret = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().replace('T', ' ').replace('Z', date.getMilliseconds().toString().padStart(3, '0'));
-        ret += '\t' + direction;
+        this.date = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().replace('T', ' ').replace('Z', ' ');
+    }
+
+    toString() {
+        let ret = this.date;
+        ret += '\t' + this.direction;
         ret += '\t' + this.raw;
         ret += '\t' + this.cluster.name;
         ret += '\t' + this.command.name;

@@ -1,0 +1,143 @@
+import { Header } from './Header.js';
+
+export class Logger {
+    consoleList = undefined;
+    constructor(messageManager) {
+        this.console = $('#console');
+        this.consoleList = $('#console-list');
+        this.header = new Header(messageManager.serialInterface);
+        this.initMessageManagerCallbacks(messageManager);
+
+        this.consoleList.click(() => {
+            this.stopScroll = (this.stopScroll == false) ? true : false;
+        });
+    }
+
+    initMessageManagerCallbacks(messageManager) {
+        this.messageManager = messageManager;
+        this.messageManager.addCallbackRead((message) => {
+            this.logMessage(message);
+            console.log(message.toString());
+            this.header.incrementRxMessage();
+        });
+        this.messageManager.addCallbackWrite((message) => {
+            this.logMessage(message);
+            console.log(message.toString());
+            this.header.incrementTxMessage();
+        });
+        this.messageManager.addCallbackWriteTimeout((message) => {
+            console.log(message.toString());
+            this.header.incrementMessageTimeout();
+            let itemLog = this.getLastTxMessage(message);
+            this.setMessageAsTimeout(itemLog);
+        });
+    }
+
+    setMessageAsTimeout(itemLog) {
+        itemLog.childNodes[0].childNodes[1].childNodes[0].className = itemLog.childNodes[0].childNodes[1].childNodes[0].className.replace('-tx', '-rx-timeout');
+    }
+
+    getLastTxMessage(message) {
+        return Array.from(this.consoleList[0].children).find((msg) => msg.message === message);
+    }
+
+    logMessage(message) {
+        if (this.consoleList[0].children.length >= 250) {
+            this.consoleList[0].children[this.consoleList[0].children.length - 1].remove();
+        }
+
+        let itemLog = document.createElement("li");
+        itemLog.className = "list-group-item py-0";
+        let itemLogRow = document.createElement("div");
+        itemLogRow.className = "row w-100";
+
+        const itemLogDate = this.setDate(message);
+        const itemLogDirection = this.setDirection(message);
+        const itemLogMessage = this.setMessage(message);
+        const itemLogCluster = this.setCluster(message);
+        const itemLogCommand = this.setCommand(message);
+        const itemLogParams = this.setParams(message);
+
+        itemLogRow.appendChild(itemLogDate);
+        itemLogRow.appendChild(itemLogDirection);
+        itemLogRow.appendChild(itemLogMessage);
+        itemLogRow.appendChild(itemLogCluster);
+        itemLogRow.appendChild(itemLogCommand);
+        itemLogRow.appendChild(itemLogParams);
+        itemLog.appendChild(itemLogRow);
+        itemLog.message = message;
+        this.consoleList.prepend(itemLog);
+    }
+
+    setDate(message) {
+        var itemLogDate = document.createElement("div");
+        itemLogDate.className = "col-2 px-0";
+        var itemLogDateSpan = document.createElement("span");
+        itemLogDateSpan.className = "console-date badge badge-pill";
+        itemLogDateSpan.innerText = message.date;
+        itemLogDate.appendChild(itemLogDateSpan);
+        return itemLogDate;
+    }
+
+    setDirection(message) {
+        var itemLogDirection = document.createElement("div");
+        itemLogDirection.className = "col-1 px-0";
+        var itemLogDirectionSpan = document.createElement("span");
+        itemLogDirectionSpan.className = "console-direction" + (message.direction == "Rx" ? "-rx" : "-tx") + " badge badge-pill";
+        itemLogDirectionSpan.innerText = message.direction;
+        itemLogDirection.appendChild(itemLogDirectionSpan);
+        return itemLogDirection;
+    }
+
+    setMessage(message) {
+        var itemLogMessage = document.createElement("div");
+        itemLogMessage.className = "col-3 px-0";
+        var itemLogMessageSpan = document.createElement("span");
+        itemLogMessageSpan.className = "console-raw badge badge-pill text-wrap text-break";
+        itemLogMessageSpan.innerText = message.raw.toUpperCase();
+        itemLogMessage.appendChild(itemLogMessageSpan);
+        return itemLogMessage;
+    }
+
+    setCluster(message) {
+        var itemLogCluster = document.createElement("div");
+        itemLogCluster.className = "col-1 px-0";
+        var itemLogClusterSpan = document.createElement("span");
+        itemLogClusterSpan.className = "console-cluster badge badge-pill";
+        itemLogClusterSpan.innerText = message.cluster?.name.toUpperCase();
+        itemLogCluster.appendChild(itemLogClusterSpan);
+        return itemLogCluster;
+    }
+
+    setCommand(message) {
+        var itemLogCommand = document.createElement("div");
+        itemLogCommand.className = "col-1 px-0";
+        var itemLogCommandSpan = document.createElement("span");
+        itemLogCommandSpan.className = "console-cluster badge badge-pill";
+        itemLogCommandSpan.innerText = message.command?.name.toUpperCase();
+        itemLogCommand.appendChild(itemLogCommandSpan);
+        return itemLogCommand;
+    }
+
+    setParams(message) {
+        var itemLogParams = document.createElement("div");
+        itemLogParams.className = "col-4 px-0";
+        if (message.size > 0) {
+            var itemLogParamsSpan = document.createElement("span");
+            itemLogParamsSpan.className = "console-param badge badge-pill text-wrap ms-3";
+            let params = "(" + message.size + ") [";
+            for (let index = 0; index < message.params?.length; index++) {
+                let intData = parseInt(message.params[index], 16);
+                params += '0x' + intData.toString(16).padStart(2, "0").toUpperCase();
+                params += (index < (message.params?.length - 1)) ? ' ' : '';
+            }
+            params += "]";
+            itemLogParamsSpan.innerText = params;
+            itemLogParams.appendChild(itemLogParamsSpan);
+        }
+        return itemLogParams;
+    }
+}
+
+
+
