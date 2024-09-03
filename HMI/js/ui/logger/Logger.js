@@ -1,7 +1,6 @@
 import { Header } from './Header.js';
 
 export class Logger {
-    consoleList = undefined;
     constructor(messageManager) {
         this.console = $('#console');
         this.consoleList = $('#console-list');

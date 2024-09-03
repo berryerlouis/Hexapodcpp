@@ -21,10 +21,14 @@ import { MessageManager } from './protocol/MessageManager.js'
 import { ClusterName, CommandBattery, CommandGeneral } from './protocol/Cluster.js'
 import { Message } from './protocol/Message.js'
 import { Logger } from './ui/logger/Logger.js'
+import { Treeview } from './ui/treeview/Treeview.js'
+import { Command } from './ui/Command.js'
 
 const serialInterface = new SerialInterface();
 const messageManager = new MessageManager(serialInterface);
 const logger = new Logger(messageManager);
+const treeview = new Treeview(messageManager);
+const menu = new Command();
 
 messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.GENERAL, CommandGeneral.VERSION, (message) => {
     if (message.size > 0) {
@@ -83,7 +87,7 @@ function update() {
     if (serialInterface.messageAvailable()) {
         const frame = serialInterface.popMessage();
     }
-    messageManager.update()
+    messageManager.update();
 }
 
 function animate() {

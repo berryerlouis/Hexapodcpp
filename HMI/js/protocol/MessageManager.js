@@ -69,6 +69,7 @@ export class MessageManager {
 
     notifyOnSpecificCommand(message) {
         this.listOfCallbackNotifyOnSpecificCommand.forEach((specificCommand) => {
+            message.index = 0;
             if ((specificCommand.clusterName === message.cluster.name) &&
                 (specificCommand.commandName === message.command.name)) {
                 specificCommand.cb && specificCommand.cb(message);
@@ -78,17 +79,20 @@ export class MessageManager {
 
     notifyRead(message) {
         this.listOfCallbackRead.forEach(function (cb) {
+            message.index = 0;
             cb(message);
         });
     }
 
     notifyWrite(message) {
         this.listOfCallbackWrite.forEach(function (cb) {
+            message.index = 0;
             cb(message.message);
         });
     }
     notifyWriteTimeout(message) {
         this.listOfCallbackTimeout.forEach(function (cb) {
+            message.index = 0;
             cb(message.message);
         });
     }
