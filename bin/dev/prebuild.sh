@@ -5,12 +5,12 @@ if [ $# -eq 0 ]; then
 else
     if [ $1 = "source" ]; then
         if [ $# -eq 1 ]; then
-            cmake -DCMAKE_BUILD_TYPE=DEBUG -S . -B build
+            cmake -DCMAKE_BUILD_TYPE=DEBUG -DTARGET="avr" -DGOOGLE_TEST=0 -S . -B build
         else 
             if [ $2 = "CLEAN" ]; then
                 cmake --build . --target clean
             else 
-                cmake -DCMAKE_BUILD_TYPE=${2} -S . -B build
+                cmake -DCMAKE_BUILD_TYPE=${2} -DTARGET="avr" -DGOOGLE_TEST=0 -S . -B build
             fi
         fi
     fi
