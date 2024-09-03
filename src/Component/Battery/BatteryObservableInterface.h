@@ -6,11 +6,11 @@ namespace Component {
 namespace Battery {
 class BatteryObservableInterface {
 public:
-	BatteryObservableInterface()  = default;
-	~BatteryObservableInterface() = default;
+    BatteryObservableInterface()  = default;
+    ~BatteryObservableInterface() = default;
 
-	virtual Core::CoreStatus Attach( BatteryObserverInterface *observer ) = 0;
-	virtual void Notify( const BatteryState &object ) = 0;
+    virtual Core::CoreStatus Attach( BatteryObserverInterface *observer ) = 0;
+    virtual void Notify( const BatteryState &object ) = 0;
 };
 }
 }

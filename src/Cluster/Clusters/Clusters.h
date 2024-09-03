@@ -20,19 +20,19 @@ using namespace ::Cluster::Servo;
 class Clusters : public ClustersInterface
 {
 public:
-	Clusters(
-		ClusterGeneral &general,
-		ClusterBattery &battery,
-		ClusterBody &body,
-		ClusterImu &imu,
-		ClusterProximity &proximity,
-		ClusterServo &servo );
-	~Clusters() = default;
+    Clusters(
+        ClusterGeneral &general,
+        ClusterBattery &battery,
+        ClusterBody &body,
+        ClusterImu &imu,
+        ClusterProximity &proximity,
+        ClusterServo &servo );
+    ~Clusters() = default;
 
-	virtual ClusterInterface *GetCluster( const EClusters clusterId ) const final override;
+    virtual ClusterInterface *GetCluster( const EClusters clusterId ) const final override;
 
 private:
-	ClusterInterface *mClusters[NB_CLUSTERS];
+    ClusterInterface *mClusters[NB_CLUSTERS];
 };
 }
 }

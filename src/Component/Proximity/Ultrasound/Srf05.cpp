@@ -4,68 +4,68 @@ namespace Component {
 namespace Proximity {
 namespace Ultrasound {
 Srf05::Srf05( const Cluster::EProximityCommands side, Driver::Gpio::GpioInterface &gpioTrigger, Driver::InputCapture::InputCaptureInterface &gpioEcho, Led::LedInterface &led, Driver::Tick::TickInterface &tick )
-	: SensorProximityWindow()
-	, mSide( side )
-	, mGpioTrigger( gpioTrigger )
-	, mGpioEcho( gpioEcho )
-	, mTick( tick )
-	, mLed( led )
-	, mThreshold( DISTANCE_THRESHOLD )
+    : SensorProximityWindow()
+    , mSide( side )
+    , mGpioTrigger( gpioTrigger )
+    , mGpioEcho( gpioEcho )
+    , mTick( tick )
+    , mLed( led )
+    , mThreshold( DISTANCE_THRESHOLD )
 {
 }
 
 Core::CoreStatus Srf05::Initialize ( void )
 {
-	this->mGpioEcho.Initialize();
-	this->mLed.Initialize();
-	return ( Core::CoreStatus::CORE_OK );
+    this->mGpioEcho.Initialize();
+    this->mLed.Initialize();
+    return ( Core::CoreStatus::CORE_OK );
 }
 
 void Srf05::Update ( const uint64_t currentTime )
 {
-	(void) currentTime;
-	this->SendPulse();
-	const uint16_t distance  = this->GetDistance();
-	bool           detection = ( distance != 0U && distance <= this->mThreshold );
-	if ( true == detection )
-	{
-		if ( true == this->Detect() )
-		{
-			this->mLed.On();
-			this->Notify( (SensorsId) mSide, true );
-		}
-	}
-	else
-	{
-		if ( true == this->UnDetect() )
-		{
-			this->mLed.Off();
-			this->Notify( (SensorsId) mSide, false );
-		}
-	}
+    (void) currentTime;
+    this->SendPulse();
+    const uint16_t distance  = this->GetDistance();
+    bool           detection = ( distance != 0U && distance <= this->mThreshold );
+    if ( true == detection )
+    {
+        if ( true == this->Detect() )
+        {
+            this->mLed.On();
+            this->Notify( (SensorsId) mSide, true );
+        }
+    }
+    else
+    {
+        if ( true == this->UnDetect() )
+        {
+            this->mLed.Off();
+            this->Notify( (SensorsId) mSide, false );
+        }
+    }
 }
 
 uint16_t Srf05::GetThreshold ( void )
 {
-	return ( this->mThreshold );
+    return ( this->mThreshold );
 }
 
 Core::CoreStatus Srf05::SetThreshold ( uint16_t mThreshold )
 {
-	this->mThreshold = mThreshold;
-	return ( Core::CoreStatus::CORE_OK );
+    this->mThreshold = mThreshold;
+    return ( Core::CoreStatus::CORE_OK );
 }
 
 void Srf05::SendPulse ( void )
 {
-	this->mGpioTrigger.Set();
-	this->mTick.DelayUs( 10U );
-	this->mGpioTrigger.Reset();
+    this->mGpioTrigger.Set();
+    this->mTick.DelayUs( 10U );
+    this->mGpioTrigger.Reset();
 }
 
 uint16_t Srf05::GetDistance ( void )
 {
-	return ( (uint16_t) ( ( this->mGpioEcho.GetInputCaptureTime() / 58.0F ) ) );
+    return ( (uint16_t) ( ( this->mGpioEcho.GetInputCaptureTime() / 58.0F ) ) );
 }
 }
 }

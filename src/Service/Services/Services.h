@@ -22,34 +22,34 @@ using namespace ::Service::Display;
 
 struct ServiceItem
 {
-	EServices serviceId;
-	Service * service;
+    EServices serviceId;
+    Service * service;
 
-	ServiceItem()  = default;
-	~ServiceItem() = default;
+    ServiceItem()  = default;
+    ~ServiceItem() = default;
 };
 
 class Services : public ServiceInterface {
 public:
-	Services(
-		ServiceGeneral &serviceGeneral,
-		ServiceControl &serviceControl,
-		ServiceCommunication &serviceCommunication,
-		ServiceProximity &serviceProximity,
-		ServiceOrientation &serviceOrientation,
-		ServiceBattery &serviceBattery,
-		ServiceDisplay &serviceDisplay );
+    Services(
+        ServiceGeneral &serviceGeneral,
+        ServiceControl &serviceControl,
+        ServiceCommunication &serviceCommunication,
+        ServiceProximity &serviceProximity,
+        ServiceOrientation &serviceOrientation,
+        ServiceBattery &serviceBattery,
+        ServiceDisplay &serviceDisplay );
 
-	~Services() = default;
+    ~Services() = default;
 
-	virtual Core::CoreStatus Initialize( void ) final override;
-	virtual void Update( const uint64_t currentTime ) final override;
+    virtual Core::CoreStatus Initialize( void ) final override;
+    virtual void Update( const uint64_t currentTime ) final override;
 
 private:
 
-	Service *Get( const EServices serviceId );
+    Service *Get( const EServices serviceId );
 
-	ServiceItem mServices[NB_SERVICES];
+    ServiceItem mServices[NB_SERVICES];
 };
 }
 }

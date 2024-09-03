@@ -10,19 +10,19 @@ using namespace Component::Servos;
 
 class Legs {
 public:
-	Legs( ServosInterface &servos );
-	~Legs() = default;
+    Legs( ServosInterface &servos );
+    ~Legs() = default;
 
-	Leg::Leg &GetLeg( const uint8_t legId );
+    Leg::Leg &GetLeg( const uint8_t legId );
 
 private:
-	Leg::Leg mLegFL;
-	Leg::Leg mLegML;
-	Leg::Leg mLegRL;
-	Leg::Leg mLegFR;
-	Leg::Leg mLegMR;
-	Leg::Leg mLegRR;
-	Leg::Leg *mLegs[NB_LEGS];
+    Leg::Leg mLegFL;
+    Leg::Leg mLegML;
+    Leg::Leg mLegRL;
+    Leg::Leg mLegFR;
+    Leg::Leg mLegMR;
+    Leg::Leg mLegRR;
+    Leg::Leg *mLegs[NB_LEGS];
 };
 }
 }

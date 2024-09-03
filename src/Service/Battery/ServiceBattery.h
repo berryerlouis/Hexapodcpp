@@ -11,16 +11,16 @@ using namespace Component::Battery;
 class ServiceBattery : public Service, public BatteryObserverInterface
 {
 public:
-	ServiceBattery( BatteryInterface &batteryInterface );
-	~ServiceBattery() = default;
+    ServiceBattery( BatteryInterface &batteryInterface );
+    ~ServiceBattery() = default;
 
-	virtual Core::CoreStatus Initialize( void ) final override;
-	virtual void Update( const uint64_t currentTime ) final override;
+    virtual Core::CoreStatus Initialize( void ) final override;
+    virtual void Update( const uint64_t currentTime ) final override;
 
-	virtual void UpdatedBatteryState( const BatteryState &batteryState ) final override;
+    virtual void UpdatedBatteryState( const BatteryState &batteryState ) final override;
 
 protected:
-	BatteryInterface &mBatteryInterface;
+    BatteryInterface &mBatteryInterface;
 };
 }
 }

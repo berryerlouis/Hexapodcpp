@@ -6,59 +6,59 @@ namespace Battery {
 #define WARNING_LEVEL    75U
 
 Battery::Battery( Adc::AdcInterface &adc )
-	: mVoltage( 0U )
-	, mState( BatteryState::UNKNOWN )
-	, mAdc( adc )
-	, mObservable()
+    : mVoltage( 0U )
+    , mState( BatteryState::UNKNOWN )
+    , mAdc( adc )
+    , mObservable()
 {
 }
 
 Core::CoreStatus Battery::Initialize ( void )
 {
-	return ( this->mAdc.Initialize() );
+    return ( this->mAdc.Initialize() );
 }
 
 void Battery::Update ( const uint64_t currentTime )
 {
-	(void) currentTime;
-	this->mVoltage = this->mAdc.Read();
-	BatteryState state = this->mState;
-	if ( this->mVoltage >= NOMINAL_LEVEL )
-	{
-		this->mState = NOMINAL;
-	}
-	else if ( this->mVoltage >= WARNING_LEVEL )
-	{
-		this->mState = WARNING;
-	}
-	else
-	{
-		this->mState = CRITICAL;
-	}
-	if ( state != this->mState )
-	{
-		this->Notify( this->mState );
-	}
+    (void) currentTime;
+    this->mVoltage = this->mAdc.Read();
+    BatteryState state = this->mState;
+    if ( this->mVoltage >= NOMINAL_LEVEL )
+    {
+        this->mState = NOMINAL;
+    }
+    else if ( this->mVoltage >= WARNING_LEVEL )
+    {
+        this->mState = WARNING;
+    }
+    else
+    {
+        this->mState = CRITICAL;
+    }
+    if ( state != this->mState )
+    {
+        this->Notify( this->mState );
+    }
 }
 
 BatteryState Battery::GetState ( void )
 {
-	return ( this->mState );
+    return ( this->mState );
 }
 
 uint16_t Battery::GetVoltage ( void )
 {
-	return ( this->mVoltage );
+    return ( this->mVoltage );
 }
 
 Core::CoreStatus Battery::Attach ( BatteryObserverInterface *observer )
 {
-	return ( this->mObservable.Attach( observer ) );
+    return ( this->mObservable.Attach( observer ) );
 }
 
 void Battery::Notify ( const BatteryState &object )
 {
-	this->mObservable.Notify( object );
+    this->mObservable.Notify( object );
 }
 }
 }

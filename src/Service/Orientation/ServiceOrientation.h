@@ -9,14 +9,14 @@ using namespace Component::Imu;
 
 class ServiceOrientation : public Service {
 public:
-	ServiceOrientation( Mpu9150Interface &imu );
-	~ServiceOrientation() = default;
+    ServiceOrientation( Mpu9150Interface &imu );
+    ~ServiceOrientation() = default;
 
-	virtual Core::CoreStatus Initialize( void ) final override;
-	virtual void Update( const uint64_t currentTime ) final override;
+    virtual Core::CoreStatus Initialize( void ) final override;
+    virtual void Update( const uint64_t currentTime ) final override;
 
 protected:
-	Mpu9150Interface &mImu;
+    Mpu9150Interface &mImu;
 };
 }
 }

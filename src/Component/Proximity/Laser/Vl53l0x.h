@@ -74,64 +74,64 @@ public:
 #define VL53L0X_ALGO_PHASECAL_LIM                              0x30U
 #define VL53L0X_ALGO_PHASECAL_CONFIG_TIMEOUT                   0x30U
 
-	static const uint16_t DISTANCE_THRESHOLD = 300U;
-	Vl53l0x( Twi::TwiInterface &i2c, Tick::TickInterface &tick, const uint8_t address = 0x29U );
-	~Vl53l0x() = default;
+    static const uint16_t DISTANCE_THRESHOLD = 300U;
+    Vl53l0x( Twi::TwiInterface &i2c, Tick::TickInterface &tick, const uint8_t address = 0x29U );
+    ~Vl53l0x() = default;
 
-	Core::CoreStatus Initialize( void );
-	void Update( const uint64_t currentTime );
+    Core::CoreStatus Initialize( void );
+    void Update( const uint64_t currentTime );
 
-	virtual uint16_t GetDistance( void ) final override;
-	virtual Core::CoreStatus SetThreshold( const uint16_t threshold ) final override;
-	virtual uint16_t GetThreshold( void ) final override;
+    virtual uint16_t GetDistance( void ) final override;
+    virtual Core::CoreStatus SetThreshold( const uint16_t threshold ) final override;
+    virtual uint16_t GetThreshold( void ) final override;
 
 private:
-	Twi::TwiInterface &mI2c;
-	Tick::TickInterface &mTick;
-	uint8_t mAddress;
-	uint16_t mDistance;
-	uint16_t mThreshold;
-	uint32_t mMeasurementTimingBudget = 0U;
-	uint8_t mStop;
+    Twi::TwiInterface &mI2c;
+    Tick::TickInterface &mTick;
+    uint8_t mAddress;
+    uint16_t mDistance;
+    uint16_t mThreshold;
+    uint32_t mMeasurementTimingBudget = 0U;
+    uint8_t mStop;
 
-	struct SequenceStepEnables
-	{
-		bool tcc;
-		bool msrc;
-		bool dss;
-		bool pre_range;
-		bool final_range;
-	};
-	struct SequenceStepTimeouts
-	{
-		uint16_t pre_range_vcsel_period_pclks, final_range_vcsel_period_pclks;
-		uint16_t msrc_dss_tcc_mclks, pre_range_mclks, final_range_mclks;
-		uint32_t msrc_dss_tcc_us, pre_range_us, final_range_us;
-	};
-	enum VcselPeriodType
-	{
-		VcselPeriodPreRange,
-		VcselPeriodFinalRange
-	};
+    struct SequenceStepEnables
+    {
+        bool tcc;
+        bool msrc;
+        bool dss;
+        bool pre_range;
+        bool final_range;
+    };
+    struct SequenceStepTimeouts
+    {
+        uint16_t pre_range_vcsel_period_pclks, final_range_vcsel_period_pclks;
+        uint16_t msrc_dss_tcc_mclks, pre_range_mclks, final_range_mclks;
+        uint32_t msrc_dss_tcc_us, pre_range_us, final_range_us;
+    };
+    enum VcselPeriodType
+    {
+        VcselPeriodPreRange,
+        VcselPeriodFinalRange
+    };
 
 
-	void StartContinuous( uint32_t period_ms = 50U );
+    void StartContinuous( uint32_t period_ms = 50U );
 
-	void Tune( void );
-	void GetSequenceStepEnables( SequenceStepEnables *enables );
-	void GetSequenceStepTimeouts( SequenceStepEnables const *enables, SequenceStepTimeouts *timeouts );
-	uint16_t DecodeTimeout( uint16_t reg_val );
-	uint16_t EncodeTimeout( uint32_t timeout_mclks );
-	uint8_t GetVcselPulsePeriod( VcselPeriodType type );
-	uint32_t TimeoutMclksToMicroseconds( uint16_t timeout_period_mclks, uint8_t vcsel_period_pclks );
-	uint32_t TimeoutMicrosecondsToMclks( uint32_t timeout_period_us, uint8_t vcsel_period_pclks );
-	bool SetSignalRateLimit( float limit_Mcps );
-	float GetSignalRateLimit( void );
-	bool GetSpadInfo( uint8_t *count, bool *type_is_aperture );
-	bool SetMeasurementTimingBudget( uint32_t budget_us );
-	uint32_t GetMeasurementTimingBudget( void );
-	bool PerformSingleRefCalibration( uint8_t vhv_init_byte );
-	bool SetVcselPulsePeriod( VcselPeriodType type, uint8_t period_pclks );
+    void Tune( void );
+    void GetSequenceStepEnables( SequenceStepEnables *enables );
+    void GetSequenceStepTimeouts( SequenceStepEnables const *enables, SequenceStepTimeouts *timeouts );
+    uint16_t DecodeTimeout( uint16_t reg_val );
+    uint16_t EncodeTimeout( uint32_t timeout_mclks );
+    uint8_t GetVcselPulsePeriod( VcselPeriodType type );
+    uint32_t TimeoutMclksToMicroseconds( uint16_t timeout_period_mclks, uint8_t vcsel_period_pclks );
+    uint32_t TimeoutMicrosecondsToMclks( uint32_t timeout_period_us, uint8_t vcsel_period_pclks );
+    bool SetSignalRateLimit( float limit_Mcps );
+    float GetSignalRateLimit( void );
+    bool GetSpadInfo( uint8_t *count, bool *type_is_aperture );
+    bool SetMeasurementTimingBudget( uint32_t budget_us );
+    uint32_t GetMeasurementTimingBudget( void );
+    bool PerformSingleRefCalibration( uint8_t vhv_init_byte );
+    bool SetVcselPulsePeriod( VcselPeriodType type, uint8_t period_pclks );
 };
 }
 }

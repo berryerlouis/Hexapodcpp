@@ -5,24 +5,24 @@ namespace Core {
 class EventMediatorInterface
 {
 public:
-	EventMediatorInterface()  = default;
-	~EventMediatorInterface() = default;
-	virtual void SendMessage( Event event ) const = 0;
+    EventMediatorInterface()  = default;
+    ~EventMediatorInterface() = default;
+    virtual void SendMessage( Event event ) const = 0;
 };
 
 class EventManager {
 public:
-	EventManager( EventMediatorInterface *mediator = nullptr )
-		: mComMediator( mediator )
-	{
-	}
+    EventManager( EventMediatorInterface *mediator = nullptr )
+        : mComMediator( mediator )
+    {
+    }
 
-	void setMediator ( EventMediatorInterface *mediator )
-	{
-		this->mComMediator = mediator;
-	}
+    void setMediator ( EventMediatorInterface *mediator )
+    {
+        this->mComMediator = mediator;
+    }
 
 protected:
-	EventMediatorInterface *mComMediator;
+    EventMediatorInterface *mComMediator;
 };
 }

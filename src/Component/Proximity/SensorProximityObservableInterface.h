@@ -6,11 +6,11 @@ namespace Component {
 namespace Proximity {
 class SensorProximityObservableInterface {
 public:
-	SensorProximityObservableInterface()  = default;
-	~SensorProximityObservableInterface() = default;
+    SensorProximityObservableInterface()  = default;
+    ~SensorProximityObservableInterface() = default;
 
-	virtual Core::CoreStatus Attach( SensorProximityObserverInterface *observer ) = 0;
-	virtual void Notify( const SensorsId &sensorId, const bool detection )  = 0;
+    virtual Core::CoreStatus Attach( SensorProximityObserverInterface *observer ) = 0;
+    virtual void Notify( const SensorsId &sensorId, const bool detection )  = 0;
 };
 }
 }
