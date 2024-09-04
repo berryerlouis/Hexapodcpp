@@ -37,7 +37,8 @@ public:
             }
             uint8_t servoId = request.Get1ByteParam( 0U );
 
-            if ( servoId > ServosInterface::NB_SERVOS )
+            if ( servoId > NB_SERVOS
+ )
             {
                 return ( Core::CoreStatus::CORE_ERROR );
             }
@@ -174,12 +175,15 @@ public:
             EServoCommands::GET_ALL );
         if ( success )
         {
-            uint8_t params[ServosInterface::NB_SERVOS] = { 0U };
-            for ( size_t servoId = 0U; servoId < ServosInterface::NB_SERVOS; servoId++ )
+            uint8_t params[NB_SERVOS
+] = { 0U };
+            for ( size_t servoId = 0U; servoId < NB_SERVOS
+; servoId++ )
             {
                 params[servoId] = this->mServosInterface.GetServo( servoId ).GetAngle();
             }
-            response.SetnBytesParam( ServosInterface::NB_SERVOS, (uint8_t *) &params );
+            response.SetnBytesParam( NB_SERVOS
+, (uint8_t *) &params );
         }
         return ( success );
     }

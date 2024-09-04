@@ -84,7 +84,7 @@ Core::CoreStatus App::Initialize ( void )
 void App::Update ( const uint64_t currentTime )
 {
     (void) currentTime;
-    uint64_t currentMillis = this->mTick.GetMs();
+    const uint64_t currentMillis = this->mTick.GetMs();
     mLedBoot.Toggle();
     mServices.Update( currentMillis );
 }
