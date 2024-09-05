@@ -16,7 +16,7 @@ namespace Component
         }
 
         Core::CoreStatus Ssd1306::Initialize(void) {
-            uint8_t vccstate = SSD1306_SWITCHCAPVCC;
+            uint8_t vccState = SSD1306_SWITCHCAPVCC;
             uint8_t init1[] =
             {
                 SSD1306_DISPLAYOFF,
@@ -37,7 +37,7 @@ namespace Component
             this->mTwi.WriteRegisters(this->mAddress, SSD1306_SETLOWCOLUMN, init2, sizeof(init2));
 
             this->mTwi.WriteRegister(this->mAddress, SSD1306_SETLOWCOLUMN,
-                                     (vccstate == SSD1306_EXTERNALVCC) ? 0x10 : 0x14);
+                                     (vccState == SSD1306_EXTERNALVCC) ? 0x10 : 0x14);
 
             uint8_t init3[] =
             {
@@ -59,7 +59,7 @@ namespace Component
 
             this->mTwi.WriteRegister(this->mAddress, SSD1306_SETLOWCOLUMN, SSD1306_SETPRECHARGE);
             this->mTwi.WriteRegister(this->mAddress, SSD1306_SETLOWCOLUMN,
-                                     (vccstate == SSD1306_EXTERNALVCC) ? 0x22 : 0xF1);
+                                     (vccState == SSD1306_EXTERNALVCC) ? 0x22 : 0xF1);
             uint8_t init5[] = {
                 SSD1306_SETVCOMDETECT,
                 0x40,
@@ -75,10 +75,10 @@ namespace Component
 
         void Ssd1306::Update(const uint64_t currentTime) {
             (void) currentTime;
-            static const uint8_t NB_BYTES = 64U;
+            static constexpr uint8_t NB_BYTES = 64U;
             if (this->mNeedToUpdate == true) {
                 if (this->mUpdateIndex == BUFFER_DISPLAY_LENGTH) {
-                    uint8_t dlist2[] = {
+                    uint8_t screenConfig[] = {
                         SSD1306_PAGEADDR,
                         0U,
                         0xFFU,
@@ -86,7 +86,7 @@ namespace Component
                         0U
                     };
 
-                    this->mTwi.WriteRegisters(this->mAddress, SSD1306_SETLOWCOLUMN, dlist2, sizeof(dlist2));
+                    this->mTwi.WriteRegisters(this->mAddress, SSD1306_SETLOWCOLUMN, screenConfig, sizeof(screenConfig));
                     this->mTwi.WriteRegister(this->mAddress, SSD1306_SETLOWCOLUMN, SCREEN_WIDTH - 1);
                 }
 
@@ -211,7 +211,7 @@ namespace Component
             }
 
             // which is really just a 1D array of size 96*char_width.
-            const uint8_t *chr = Bitmap::Font::font[(uint8_t) c];
+            const unsigned char *chr = Bitmap::Font::font[static_cast<uint8_t>(c)];
 
             // Draw pixels
             for (j = 0U; j < CHARACTER_WIDTH; j++) {

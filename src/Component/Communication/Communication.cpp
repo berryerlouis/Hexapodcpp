@@ -20,17 +20,17 @@ namespace Component
                 this->mLedStatus.On();
                 Frame request;
                 Frame response;
-                Protocol::ProtocolStatus parsedStatus = Protocol::Decode(this->mBufferRx, request);
+                const Protocol::ProtocolStatus parsedStatus = Protocol::Decode(this->mBufferRx, request);
                 if (parsedStatus == Protocol::ProtocolStatus::NO_ERROR) {
                     uint8_t frameClusterID = request.clusterId;
-                    auto cluster = this->mClusters.GetCluster((EClusters) frameClusterID);
+                    const auto cluster = this->mClusters.GetCluster(static_cast<EClusters>(frameClusterID));
 
                     if (cluster != nullptr) {
                         if (true == cluster->Execute(request, response)) {
                             this->SendMessage(response);
                         } else {
                             response.clusterId = request.clusterId;
-                            response.commandId = ((uint8_t) EClusterCommandGeneric::GENERIC);
+                            response.commandId = static_cast<uint8_t>(GENERIC);
                             response.nbParams = 1U;
                             response.params[0] = false;
                             this->SendMessage(response);
@@ -38,14 +38,14 @@ namespace Component
                         response.Reset();
                     } else {
                         response.clusterId = request.clusterId;
-                        response.commandId = ((uint8_t) EClusterCommandGeneric::GENERIC);
+                        response.commandId = static_cast<uint8_t>(GENERIC);
                         response.nbParams = 1U;
                         response.params[0] = false;
                         this->SendMessage(response);
                     }
                 } else {
                     response.clusterId = 0xFFU;
-                    response.commandId = ((uint8_t) EClusterCommandGeneric::GENERIC);
+                    response.commandId = static_cast<uint8_t>(GENERIC);
                     response.nbParams = 1U;
                     response.params[0] = parsedStatus;
                     this->SendMessage(response);
@@ -55,9 +55,8 @@ namespace Component
         }
 
         Core::CoreStatus Communication::SendMessage(Frame &message) {
-            uint8_t buffer[50U];
+            uint8_t buffer[50U] = {0U};
 
-            memset(buffer, 0U, 50U);
             const size_t size = Protocol::Encode(message, buffer);
 
             if (size != 0) {

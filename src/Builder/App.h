@@ -47,6 +47,7 @@ namespace Builder
         virtual void Update(const uint64_t currentTime) final override;
 
     private:
+        uint64_t mStartTime;
         Driver::Tick::Tick mTick;
         Driver::Uart::Uart mUart;
         Driver::Twi::Twi mTwi;

@@ -1,6 +1,5 @@
-// ReSharper disable CppTooWideScopeInitStatement
-#include "math.h"
 #include "Servo.h"
+#include "../../Misc/Maths/Maths.h"
 
 namespace Component
 {
@@ -11,7 +10,7 @@ namespace Component
 
         Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId)
             : mPca9685(pca9685)
-              , mtick(tick)
+              , mTick(tick)
               , mServoId(servoId)
               , mAngle(90U)
               , mTargetAngle(0U)
@@ -28,7 +27,7 @@ namespace Component
         Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
                      const uint8_t angle)
             : mPca9685(pca9685)
-              , mtick(tick)
+              , mTick(tick)
               , mServoId(servoId)
               , mAngle(angle)
               , mTargetAngle(0U)
@@ -45,7 +44,7 @@ namespace Component
         Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
                      const uint8_t angle, const int8_t offset)
             : mPca9685(pca9685)
-              , mtick(tick)
+              , mTick(tick)
               , mServoId(servoId)
               , mAngle(angle)
               , mTargetAngle(0U)
@@ -62,7 +61,7 @@ namespace Component
         Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
                      const uint8_t angle, const int8_t offset, const uint8_t min, const uint8_t max)
             : mPca9685(pca9685)
-              , mtick(tick)
+              , mTick(tick)
               , mServoId(servoId)
               , mAngle(angle)
               , mTargetAngle(0U)
@@ -79,7 +78,7 @@ namespace Component
         Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
                      const uint8_t angle, const int8_t offset, const uint8_t min, const uint8_t max, const bool reverse)
             : mPca9685(pca9685)
-              , mtick(tick)
+              , mTick(tick)
               , mServoId(servoId)
               , mAngle(angle)
               , mTargetAngle(0U)
@@ -98,17 +97,18 @@ namespace Component
                 this->mMax = REVERSE_ANGLE(this->mMin);
                 this->mMin = REVERSE_ANGLE(this->mMax);
             }
+            this->mAngle += this->mOffset;
             return (Core::CoreStatus::CORE_OK);
         }
 
         void Servo::Update(const uint64_t currentTime) {
             if (this->IsMoving()) {
                 this->mAngle = this->GetAngleFromDeltaTime(currentTime);
-                const uint16_t pwm = map(this->mAngle,
-                                         Servo::SERVO_ANGLE_MIN,
-                                         Servo::SERVO_ANGLE_MAX,
-                                         Servo::SERVO_PWM_MIN,
-                                         Servo::SERVO_PWM_MAX);
+                const uint16_t pwm = Misc::Maths::Map(this->mAngle,
+                                                      Servo::SERVO_ANGLE_MIN,
+                                                      Servo::SERVO_ANGLE_MAX,
+                                                      Servo::SERVO_PWM_MIN,
+                                                      Servo::SERVO_PWM_MAX);
                 this->mPca9685.SetPwm(this->mServoId, pwm);
             }
         }
@@ -118,15 +118,11 @@ namespace Component
 
             if (currentTime < endTime) {
                 float deltaTime = 1.0f;
-                deltaTime -= ((endTime - currentTime) / (float) (this->mSpeed));
-                return (this->Lerp(this->mAngle, this->mTargetAngle + this->mOffset, deltaTime));
+                deltaTime -= ((endTime - currentTime) / static_cast<float>(this->mSpeed));
+                return (Misc::Maths::Lerp(this->mAngle, this->mTargetAngle + this->mOffset, deltaTime));
             }
             this->mIsMoving = false;
             return (this->mTargetAngle + this->mOffset);
-        }
-
-        uint8_t Servo::Lerp(uint8_t a, uint8_t b, float t) {
-            return static_cast<uint8_t>(static_cast<float>(a) + (float) ((b - a) * t));
         }
 
         bool Servo::IsMoving(void) {
@@ -143,13 +139,13 @@ namespace Component
                 }
                 // Instant move
                 if ((travelTime == 0U) &&
-                    ((int8_t) (this->mTargetAngle + this->mOffset) >= 0)) {
+                    (static_cast<int8_t>(this->mTargetAngle + this->mOffset) >= 0)) {
                     this->mAngle = this->mTargetAngle + this->mOffset;
                     this->mIsMoving = true;
                 } else {
                     this->mIsMoving = true;
                     this->mSpeed = travelTime;
-                    this->mStartTime = this->mtick.GetMs();
+                    this->mStartTime = this->mTick.GetMs();
                 }
                 return (Core::CoreStatus::CORE_OK);
             }

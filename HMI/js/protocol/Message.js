@@ -1,6 +1,6 @@
-import { Clusters } from './Cluster.js'
-import { Protocol } from './Protocol.js'
-import { MessageSizeError } from './MessageError.js';
+import {Clusters} from './Cluster.js'
+import {Protocol} from './Protocol.js'
+import {MessageSizeError} from './MessageError.js';
 
 export class Message {
     date;
@@ -9,22 +9,19 @@ export class Message {
     cluster;
     command;
     size;
-    params;
     raw;
     index;
     timeout;
 
     build(direction, clusterName, commandName, size = 0, params = null) {
-        this.setDate();
         this.direction = direction;
         this.cluster = Clusters.getClusterByName(clusterName);
         this.command = Clusters.getCommandByName(this.cluster, commandName);
         this.timeout = 0;
 
-        if ((params != null && params.length != size) || (params == null && size != 0)) {
+        if ((params != null && params.length !== size) || (params == null && size !== 0)) {
             throw new MessageSizeError(`Message with size ${size} doesn't expect the lenght of params ${params?.length}!`);
-        }
-        else {
+        } else {
 
             this.size = size;
             this.params = params;

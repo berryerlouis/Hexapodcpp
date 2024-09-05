@@ -15,7 +15,7 @@ namespace Bot
                 float angleBodyCenterX;
                 float rollZ;
                 float pitchZ;
-                Misc::Geometry::Position3d bodyIk;
+                Misc::Maths::Position3d bodyIk;
             };
 
             Body(Legs::Legs &legs);
@@ -26,15 +26,15 @@ namespace Bot
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void SetPositionRotation(const Misc::Geometry::Position3d &position,
-                                             const Misc::Geometry::Rotation3d &rotation,
+            virtual void SetPositionRotation(const Misc::Maths::Position3d &position,
+                                             const Misc::Maths::Rotation3d &rotation,
                                              const uint16_t travelTime) final override;
 
         private:
             SBodyIk mBodyIk;
             Legs::Legs &mLegs;
 
-            void SetBodyIk(const Misc::Geometry::Position3d &position, const Misc::Geometry::Rotation3d &rotation,
+            void SetBodyIk(const Misc::Maths::Position3d &position, const Misc::Maths::Rotation3d &rotation,
                            const uint16_t travelTime);
         };
     }

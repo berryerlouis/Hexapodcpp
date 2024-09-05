@@ -1,5 +1,5 @@
-import { Clusters } from './Cluster.js'
-import { Message } from './Message.js'
+import {Clusters} from './Cluster.js'
+import {Message} from './Message.js'
 
 export class Protocol {
 
@@ -27,15 +27,15 @@ export class Protocol {
             for (let index = 0; index < size; index++) {
                 params.push(data.substring(0, 2));
                 data = data.substring(2);
-            };
+            }
+            ;
 
             if (data.length > 0) {
-                throw new Error(`Decoding error! incorect size: ${raw}`);
+                throw new Error(`Decoding error! incorrect size: ${raw}`);
             }
 
             return new Message().build(direction, cluster.name, command.name, size, params);
-        }
-        else {
+        } else {
             throw new Error(`Should starts and ends with "<" and ">": ${data}`);
         }
     }

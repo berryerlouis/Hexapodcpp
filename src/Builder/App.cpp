@@ -4,24 +4,26 @@
 
 using namespace Driver::Gpio;
 
-Gpio ledBoot = Gpio({EPort::PORT_B, EPin::PIN_0}, EPortDirection::OUT);
-Gpio ledStatus = Gpio({EPort::PORT_B, EPin::PIN_1}, EPortDirection::OUT);
-Gpio ledLeft = Gpio({EPort::PORT_B, EPin::PIN_2}, EPortDirection::OUT);
-Gpio ledRight = Gpio({EPort::PORT_B, EPin::PIN_3}, EPortDirection::OUT);
-Gpio adcPinBattery = Gpio({EPort::PORT_A, EPin::PIN_0}, EPortDirection::IN);
-Gpio echoLeftPin = Gpio({EPort::PORT_A, EPin::PIN_2}, EPortDirection::IN);
-Gpio echoRightPin = Gpio({EPort::PORT_A, EPin::PIN_4}, EPortDirection::IN);
-Gpio triggerLeftPin = Gpio({EPort::PORT_A, EPin::PIN_1}, EPortDirection::OUT);
-Gpio triggerRightPin = Gpio({EPort::PORT_A, EPin::PIN_3}, EPortDirection::OUT);
+Gpio ledBoot = Gpio({PORT_B, PIN_0}, OUT);
+Gpio ledStatus = Gpio({PORT_B, PIN_1}, OUT);
+Gpio ledLeft = Gpio({PORT_B, PIN_2}, OUT);
+Gpio ledRight = Gpio({PORT_B, PIN_3}, OUT);
+Gpio adcPinBattery = Gpio({PORT_A, PIN_0}, IN);
+Gpio echoLeftPin = Gpio({PORT_A, PIN_2}, IN);
+Gpio echoRightPin = Gpio({PORT_A, PIN_4}, IN);
+Gpio triggerLeftPin = Gpio({PORT_A, PIN_1}, OUT);
+Gpio triggerRightPin = Gpio({PORT_A, PIN_3}, OUT);
+
 
 namespace Builder
 {
     App::App(void)
-        : mTick()
+        : mStartTime(0UL)
+          , mTick()
           , mUart()
           , mTwi(Driver::Twi::EI2cFreq::FREQ_400_KHZ)
           , mAdc(adcPinBattery)
-          , mLedBoot(ledStatus)
+          , mLedBoot(ledBoot)
           , mLedStatus(ledStatus)
           , mLedLeft(ledLeft)
           , mLedRight(ledRight)
@@ -70,12 +72,13 @@ namespace Builder
         if (success == false) {
             LOG("<error>");
         }
+        this->mStartTime = this->mTick.GetMs();
         return (success);
     }
 
     void App::Update(const uint64_t currentTime) {
         (void) currentTime;
-        const uint64_t currentMillis = this->mTick.GetMs();
+        const uint64_t currentMillis = this->mTick.GetMs() - this->mStartTime;
         mLedBoot.Toggle();
         mServices.Update(currentMillis);
     }

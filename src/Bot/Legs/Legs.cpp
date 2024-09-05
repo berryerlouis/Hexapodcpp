@@ -32,7 +32,7 @@ namespace Bot
               , mLegs{&mLegFL, &mLegML, &mLegRL, &mLegFR, &mLegMR, &mLegRR} {
         }
 
-        Leg::Leg &Legs::GetLeg(const uint8_t legId) {
+        Leg::Leg &Legs::GetLeg(const uint8_t legId) const {
             return (*this->mLegs[legId]);
         }
     }

@@ -2,7 +2,6 @@ export class MessageManager {
     constructor(serialInterface) {
         this.serialInterface = serialInterface;
         this.listMessagesToSent = [];
-        this.timeoutMessage;
         this.currentMessagesToSent = null;
         this.listOfCallbackNotifyOnSpecificCommand = [];
         this.listOfCallbackRead = [];
@@ -12,28 +11,28 @@ export class MessageManager {
     }
 
     write(message, cbResponse) {
-        this.listMessagesToSent.push({ message, cbResponse });
+        this.listMessagesToSent.push({message, cbResponse});
     }
 
     read(message) {
+        message.setDate();
         if ((this.currentMessagesToSent != null) &&
-            (message.cluster.code == this.currentMessagesToSent.message.cluster.code) &&
-            (message.command.code == this.currentMessagesToSent.message.command.code)) {
-            clearTimeout(this.timeoutMessage);
+            (message.cluster.code === this.currentMessagesToSent.message.cluster.code) &&
+            (message.command.code === this.currentMessagesToSent.message.command.code)) {
             this.currentMessagesToSent.cbResponse && this.currentMessagesToSent.cbResponse(message);
-            this.notifyRead(message);
             this.currentMessagesToSent = null;
         }
         this.notifyOnSpecificCommand(message);
+        this.notifyRead(message);
     }
 
     update() {
-        if (this.serialInterface.initialized == true) {
-            // dequeue the listy of messages to write
+        if (this.serialInterface.initialized === true) {
+            // dequeue the list of messages to write
             if (this.listMessagesToSent.length > 0 && this.currentMessagesToSent == null) {
                 const messageTx = this.listMessagesToSent.pop();
+                messageTx.message.setDate();
                 if (this.serialInterface.write(messageTx.message)) {
-                    messageTx.message.setDate();
                     this.currentMessagesToSent = messageTx;
                     this.notifyWrite(this.currentMessagesToSent);
                 }
@@ -52,7 +51,7 @@ export class MessageManager {
     }
 
     addCallbackNotifyOnSpecificCommand(clusterName, commandName, cb) {
-        this.listOfCallbackNotifyOnSpecificCommand.push({ clusterName, commandName, cb });
+        this.listOfCallbackNotifyOnSpecificCommand.push({clusterName, commandName, cb});
     }
 
     addCallbackRead(cb) {
@@ -90,6 +89,7 @@ export class MessageManager {
             cb(message.message);
         });
     }
+
     notifyWriteTimeout(message) {
         this.listOfCallbackTimeout.forEach(function (cb) {
             message.index = 0;

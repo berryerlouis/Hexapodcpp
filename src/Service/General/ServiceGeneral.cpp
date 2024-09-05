@@ -1,5 +1,4 @@
 #include "ServiceGeneral.h"
-#include "../../Misc/Logger/Logger.h"
 
 namespace Service
 {
@@ -11,22 +10,24 @@ namespace Service
         }
 
         Core::CoreStatus ServiceGeneral::Initialize(void) {
-            return (this->mSoftware.Initialize());;
+            return (this->mSoftware.Initialize());
         }
 
         void ServiceGeneral::Update(const uint64_t currentTime) {
-            const uint64_t previousTime = this->GetPreviousTime();
-            uint64_t delta = currentTime - previousTime;
+            (void) currentTime;
+            const uint64_t deltaTime = this->GetDeltaTime();
 
-            if (delta < this->mSoftware.GetMinTime()) {
-                this->mSoftware.SetMinTime(delta);
+            if (deltaTime < this->mSoftware.GetMinTime()) {
+                this->mSoftware.SetMinTime(deltaTime);
                 this->mComMediator->SendMessage({
-                    id: Cluster::EClusters::GENERAL, value: (uint8_t) Cluster::EGeneralCommands::MIN_EXECUTION_TIME
+                    .id = Cluster::EClusters::GENERAL,
+                    .value = static_cast<uint8_t>(Cluster::EGeneralCommands::MIN_EXECUTION_TIME)
                 });
-            } else if (delta > this->mSoftware.GetMaxTime()) {
-                this->mSoftware.SetMaxTime(delta);
+            } else if (deltaTime > this->mSoftware.GetMaxTime()) {
+                this->mSoftware.SetMaxTime(deltaTime);
                 this->mComMediator->SendMessage({
-                    id: Cluster::EClusters::GENERAL, value: (uint8_t) Cluster::EGeneralCommands::MAX_EXECUTION_TIME
+                    .id = Cluster::EClusters::GENERAL,
+                    .value = static_cast<uint8_t>(Cluster::EGeneralCommands::MAX_EXECUTION_TIME)
                 });
             }
         }

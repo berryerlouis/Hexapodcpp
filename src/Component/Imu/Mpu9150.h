@@ -8,7 +8,7 @@ namespace Component
     namespace Imu
     {
         using namespace Driver;
-        using namespace Misc::Geometry;
+        using namespace Misc::Maths;
 
         class Mpu9150 : public Mpu9150Interface {
         public:

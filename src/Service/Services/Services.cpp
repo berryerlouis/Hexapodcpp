@@ -26,8 +26,8 @@ namespace Service
 
         Core::CoreStatus Services::Initialize(void) {
             Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-            ServiceCommunication *serviceCom = (ServiceCommunication *) this->Get(EServices::COMMUNICATION);
-            for (ServiceItem item: this->mServices) {
+            ServiceCommunication *serviceCom = static_cast<ServiceCommunication *>(this->Get(EServices::COMMUNICATION));
+            for (const ServiceItem item: this->mServices) {
                 item.service->setMediator(serviceCom);
                 success = item.service->Initialize();
                 if (!success) {
@@ -39,7 +39,7 @@ namespace Service
         }
 
         void Services::Update(const uint64_t currentTime) {
-            for (ServiceItem item: this->mServices) {
+            for (const ServiceItem item: this->mServices) {
                 if (item.service->NeedUpdate(currentTime)) {
                     item.service->Update(currentTime);
                     item.service->SetNewUpdateTime(currentTime);
@@ -48,7 +48,7 @@ namespace Service
         }
 
         Service *Services::Get(const EServices serviceId) {
-            for (ServiceItem &item: this->mServices) {
+            for (const ServiceItem &item: this->mServices) {
                 if (item.serviceId == serviceId) {
                     return (item.service);
                 }

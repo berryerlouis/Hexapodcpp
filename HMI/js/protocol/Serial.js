@@ -1,4 +1,4 @@
-import { Protocol } from './Protocol.js';
+import {Protocol} from './Protocol.js';
 
 export class SerialInterface {
     constructor() {
@@ -9,12 +9,16 @@ export class SerialInterface {
         this.listOfCallbackWrite = [];
     }
 
+    getScriptPath(foo) {
+        return window.URL.createObjectURL(new Blob([foo.toString().match(/^\s*function\s*\(\s*\)\s*\{(([\s\S](?!\}$))*[\s\S])/)[1]], {type: 'text/javascript'}));
+    }
+
     async init(nav) {
-        if ("serial" in nav && this.initialized == false) {
-            const filters = [{ usbVendorId: 0x10C4, usbProductId: 0xEA60 }];
+        if ("serial" in nav && this.initialized === false) {
+            const filters = [{usbVendorId: 0x10C4, usbProductId: 0xEA60}];
             try {
-                this.port = await nav.serial.requestPort({ filters });
-                await this.port.open({ baudRate: 115200 });
+                this.port = await nav.serial.requestPort({filters});
+                await this.port.open({baudRate: 115200});
 
                 const textEncoder = new TextEncoderStream();
                 this.writableStreamClosed = textEncoder.readable.pipeTo(this.port.writable);
@@ -26,8 +30,9 @@ export class SerialInterface {
 
                 this.listOfIncommingMessages = [];
                 this.buffer = "";
-                this.threadRx();
                 this.initialized = true;
+                await this.threadRx();
+
             } catch (error) {
                 console.error("Initialization error:", error);
             }
@@ -41,7 +46,8 @@ export class SerialInterface {
         this.listOfIncommingMessages = [];
         if (this.reader) {
             await this.reader.cancel();
-            await this.readableStreamClosed.catch(() => { });
+            await this.readableStreamClosed.catch(() => {
+            });
         }
         if (this.writer) {
             await this.writer.close();
@@ -95,7 +101,7 @@ export class SerialInterface {
         });
     }
 
-    catchIncommingMessage(value) {
+    catchIncomingMessage(value) {
         this.buffer += value;
 
         while (this.buffer.length > 0 && this.buffer.includes('>')) {
@@ -124,18 +130,20 @@ export class SerialInterface {
 
     async threadRx() {
         try {
-            while (this.port.readable) {
-                const { value, done } = await this.reader.read();
-                if (done) {
-                    this.reader.releaseLock();
-                    break;
+            setInterval(async () => {
+                if (this.port.readable) {
+                    const {value, done} = await this.reader.read();
+                    if (done) {
+                        this.reader.releaseLock();
+                    }
+                    if (value) {
+                        this.catchIncomingMessage(value.replace('\n', ''));
+                    }
                 }
-                if (value) {
-                    this.catchIncommingMessage(value.replace('\n', ''));
-                }
-            }
+            }, 0);
+
         } catch (error) {
-            this.close()
+            await this.close()
             console.error(`Thread Serial error!"`);
         }
     }

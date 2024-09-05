@@ -8,11 +8,11 @@ namespace Bot
             : mBodyCenterOffsetX{0}
               , mBodyCenterOffsetY{0}
               , mFootPosition{0, 0, 0}
-              , mLegIk{{0, 0, 0}, 0, 0, 0, 0, 0, 0, 0, 0},
-              mLegId(legId),
-              mCoxa(coxa),
-              mFemur(femur),
-              mTibia(tibia) {
+              , mLegIk{{0, 0, 0}, 0, 0, 0, 0, 0, 0, 0, 0}
+              , mLegId(legId)
+              , mCoxa(coxa)
+              , mFemur(femur)
+              , mTibia(tibia) {
             switch (mLegId) {
                 case ELeg::FRONT_LEFT:
                     this->mBodyCenterOffsetX = -BODY_LEG_FRONT_REAR_FROM_CENTER_X_LENGTH;
@@ -70,7 +70,7 @@ namespace Bot
             }
         }
 
-        void Leg::SetLegIk(const Misc::Geometry::Position3d &position, const Misc::Geometry::Position3d &bodyIk,
+        void Leg::SetLegIk(const Misc::Maths::Position3d &position, const Misc::Maths::Position3d &bodyIk,
                            const uint16_t travelTime) {
             this->mLegIk.newFootPos.x = this->mFootPosition.x + position.x + bodyIk.x;
             this->mLegIk.newFootPos.y = this->mFootPosition.y + position.y + bodyIk.y;
@@ -118,10 +118,10 @@ namespace Bot
                     break;
             }
             this->mLegIk.coxaIk += 90;
-            this->mLegIk.coxaIk = (uint16_t) this->mLegIk.coxaIk % 360;
-            this->mCoxa.SetAngle((uint8_t) this->mLegIk.coxaIk, travelTime);
-            this->mFemur.SetAngle((uint8_t) this->mLegIk.femurIk, travelTime);
-            this->mTibia.SetAngle((uint8_t) this->mLegIk.tibiaIk, travelTime);
-        } // Leg::SetLegIk
+            this->mLegIk.coxaIk = static_cast<uint16_t>(this->mLegIk.coxaIk) % 360;
+            this->mCoxa.SetAngle(static_cast<uint8_t>(this->mLegIk.coxaIk), travelTime);
+            this->mFemur.SetAngle(static_cast<uint8_t>(this->mLegIk.femurIk), travelTime);
+            this->mTibia.SetAngle(static_cast<uint8_t>(this->mLegIk.tibiaIk), travelTime);
+        }
     }
 }

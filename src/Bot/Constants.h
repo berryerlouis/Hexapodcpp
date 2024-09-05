@@ -13,5 +13,5 @@ namespace Bot
         REAR_RIGHT
     };
 
-    static const uint8_t NB_LEGS = 6U;
+    static constexpr uint8_t NB_LEGS = 6U;
 }

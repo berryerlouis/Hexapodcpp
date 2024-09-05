@@ -25,25 +25,25 @@ namespace Cluster
                     return (success);
                 }
 
-                switch ((EBodyCommands) request.commandId) {
+                switch (static_cast<EBodyCommands>(request.commandId)) {
                     case EBodyCommands::SET_LEG_X_Y_Z:
 
                         if (request.nbParams == 14U) {
-                            Position3d position =
+                            const Position3d position =
                             {
-                                position.x = (int16_t) (request.Get2BytesParam(0U)) / 10.0f,
-                                position.y = (int16_t) (request.Get2BytesParam(2U)) / 10.0f,
-                                position.z = (int16_t) (request.Get2BytesParam(4U)) / 10.0f
+                                .x = static_cast<int16_t>(request.Get2BytesParam(0U)) / 10.0f,
+                                .y = static_cast<int16_t>(request.Get2BytesParam(2U)) / 10.0f,
+                                .z = static_cast<int16_t>(request.Get2BytesParam(4U)) / 10.0f
                             };
 
-                            Rotation3d rotation =
+                            const Rotation3d rotation =
                             {
-                                .angleX = (int16_t) (request.Get2BytesParam(6U)) / 10.0f,
-                                .angleY = (int16_t) (request.Get2BytesParam(8U)) / 10.0f,
-                                .angleZ = (int16_t) (request.Get2BytesParam(10U)) / 10.0f
+                                .angleX = static_cast<int16_t>(request.Get2BytesParam(6U)) / 10.0f,
+                                .angleY = static_cast<int16_t>(request.Get2BytesParam(8U)) / 10.0f,
+                                .angleZ = static_cast<int16_t>(request.Get2BytesParam(10U)) / 10.0f
                             };
 
-                            uint16_t travelTime = (uint16_t) (request.Get2BytesParam(12U));
+                            const uint16_t travelTime = request.Get2BytesParam(12U);
                             this->mBody.SetPositionRotation(position, rotation, travelTime);
                             success = this->BuildFrameSetPosition(response);
                         }
@@ -55,8 +55,8 @@ namespace Cluster
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameSetPosition(Frame &response) {
-                Core::CoreStatus success = response.Build(
+            inline Core::CoreStatus BuildFrameSetPosition(Frame &response) const {
+                const Core::CoreStatus success = response.Build(
                     EClusters::BODY,
                     EBodyCommands::SET_LEG_X_Y_Z);
                 if (success) {

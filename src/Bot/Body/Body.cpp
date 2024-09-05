@@ -10,8 +10,8 @@ namespace Bot
         }
 
         Core::CoreStatus Body::Initialize(void) {
-            Misc::Geometry::Position3d position = {0.0, 0.0, 0.0};
-            Misc::Geometry::Rotation3d rotation = {0.0, 0.0, 0.0};
+            Misc::Maths::Position3d position = {0.0, 0.0, 0.0};
+            Misc::Maths::Rotation3d rotation = {0.0, 0.0, 0.0};
 
             this->SetPositionRotation(position, rotation, 1000);
             return (Core::CoreStatus::CORE_OK);
@@ -21,12 +21,12 @@ namespace Bot
             (void) currentTime;
         }
 
-        void Body::SetPositionRotation(const Misc::Geometry::Position3d &position,
-                                       const Misc::Geometry::Rotation3d &rotation, const uint16_t travelTime) {
+        void Body::SetPositionRotation(const Misc::Maths::Position3d &position,
+                                       const Misc::Maths::Rotation3d &rotation, const uint16_t travelTime) {
             this->SetBodyIk(position, rotation, travelTime);
         }
 
-        void Body::SetBodyIk(const Misc::Geometry::Position3d &position, const Misc::Geometry::Rotation3d &rotation,
+        void Body::SetBodyIk(const Misc::Maths::Position3d &position, const Misc::Maths::Rotation3d &rotation,
                              const uint16_t travelTime) {
             for (size_t legId = 0U; legId < NB_LEGS; legId++) {
                 Leg::Leg &leg = mLegs.GetLeg(legId);

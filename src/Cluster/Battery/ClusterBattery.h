@@ -25,7 +25,7 @@ namespace Cluster
                     return (success);
                 }
 
-                switch ((EBatteryCommands) request.commandId) {
+                switch (static_cast<EBatteryCommands>(request.commandId)) {
                     case EBatteryCommands::GET_VOLTAGE:
                         success = this->BuildFrameVoltage(response);
                         break;
@@ -40,8 +40,8 @@ namespace Cluster
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameVoltage(Frame &response) {
-                Core::CoreStatus success = response.Build(
+            inline Core::CoreStatus BuildFrameVoltage(Frame &response) const {
+                const Core::CoreStatus success = response.Build(
                     EClusters::BATTERY,
                     EBatteryCommands::GET_VOLTAGE);
                 if (success) {
@@ -50,8 +50,8 @@ namespace Cluster
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameState(Frame &response) {
-                Core::CoreStatus success = response.Build(
+            inline Core::CoreStatus BuildFrameState(Frame &response) const {
+                const Core::CoreStatus success = response.Build(
                     EClusters::BATTERY,
                     EBatteryCommands::GET_BAT_STATUS);
                 if (success) {

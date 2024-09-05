@@ -7,7 +7,7 @@
 #include "../../../mock/clu/MockClusters.h"
 
 
-#include "../../../../src/Misc/Geometry/Geometry.h"
+#include "../../../../src/Misc/Maths/Geometry.h"
 #include "../../../../src/Cluster/Decoding/Protocol.h"
 #include "../../../../src/Cluster/Body/ClusterBody.h"
 #include "../../../../src/Component/Communication/Communication.h"
@@ -150,8 +150,8 @@ TEST_F( UT_CMP_COMMUNICATION, Update_Ko_1frame )
 TEST_F( UT_CMP_COMMUNICATION, Update_Ok_BodySet )
 {
 	Core::CoreStatus           success  = Core::CoreStatus::CORE_ERROR;
-	Misc::Geometry::Position3d position = { -5.0, 5.0, -5.0 };
-	Misc::Geometry::Rotation3d rotation = { -3.0, 3.0, -2.0 };
+	Misc::Maths::Position3d position = { -5.0, 5.0, -5.0 };
+	Misc::Maths::Rotation3d rotation = { -3.0, 3.0, -2.0 };
 	uint16_t travelTime = 500U;
 
 	const char *bufferRx = "<05000ECEFF3200CEFFE2FF1E00ECFFF401>";

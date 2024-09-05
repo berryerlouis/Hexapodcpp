@@ -2,16 +2,14 @@
 
 #include "../../Component/Servo/ServoInterface.h"
 #include "../Constants.h"
-#include "../../Misc/Geometry/Geometry.h"
-#include <math.h>
-#include <stddef.h>
+#include "../../Misc/Maths/Geometry.h"
 
 namespace Bot
 {
     namespace Leg
     {
         using namespace Component::Servo;
-        using namespace Misc::Geometry;
+        using namespace Misc::Maths;
 
         class Leg {
         public:

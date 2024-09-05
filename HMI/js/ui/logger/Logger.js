@@ -1,14 +1,14 @@
-import { Header } from './Header.js';
+import {Header} from './Header.js';
 
 export class Logger {
     constructor(messageManager) {
         this.console = $('#console');
         this.consoleList = $('#console-list');
-        this.header = new Header(messageManager.serialInterface);
+        this.header = new Header(messageManager);
         this.initMessageManagerCallbacks(messageManager);
 
         this.consoleList.click(() => {
-            this.stopScroll = (this.stopScroll == false) ? true : false;
+            this.stopScroll = (this.stopScroll === false);
         });
     }
 
@@ -25,7 +25,7 @@ export class Logger {
             this.header.incrementTxMessage();
         });
         this.messageManager.addCallbackWriteTimeout((message) => {
-            console.log(message.toString());
+            console.warn(message.toString());
             this.header.incrementMessageTimeout();
             let itemLog = this.getLastTxMessage(message);
             this.setMessageAsTimeout(itemLog);
@@ -69,9 +69,9 @@ export class Logger {
     }
 
     setDate(message) {
-        var itemLogDate = document.createElement("div");
+        const itemLogDate = document.createElement("div");
         itemLogDate.className = "col-2 px-0";
-        var itemLogDateSpan = document.createElement("span");
+        const itemLogDateSpan = document.createElement("span");
         itemLogDateSpan.className = "console-date badge badge-pill";
         itemLogDateSpan.innerText = message.date;
         itemLogDate.appendChild(itemLogDateSpan);
@@ -79,29 +79,29 @@ export class Logger {
     }
 
     setDirection(message) {
-        var itemLogDirection = document.createElement("div");
+        const itemLogDirection = document.createElement("div");
         itemLogDirection.className = "col-1 px-0";
-        var itemLogDirectionSpan = document.createElement("span");
-        itemLogDirectionSpan.className = "console-direction" + (message.direction == "Rx" ? "-rx" : "-tx") + " badge badge-pill";
+        const itemLogDirectionSpan = document.createElement("span");
+        itemLogDirectionSpan.className = "console-direction" + (message.direction === "Rx" ? "-rx" : "-tx") + " badge badge-pill";
         itemLogDirectionSpan.innerText = message.direction;
         itemLogDirection.appendChild(itemLogDirectionSpan);
         return itemLogDirection;
     }
 
     setMessage(message) {
-        var itemLogMessage = document.createElement("div");
+        const itemLogMessage = document.createElement("div");
         itemLogMessage.className = "col-3 px-0";
-        var itemLogMessageSpan = document.createElement("span");
-        itemLogMessageSpan.className = "console-raw badge badge-pill text-wrap text-break";
+        const itemLogMessageSpan = document.createElement("span");
+        itemLogMessageSpan.className = "console-raw badge badge-pill text-wrap text-break mx-2";
         itemLogMessageSpan.innerText = message.raw.toUpperCase();
         itemLogMessage.appendChild(itemLogMessageSpan);
         return itemLogMessage;
     }
 
     setCluster(message) {
-        var itemLogCluster = document.createElement("div");
+        const itemLogCluster = document.createElement("div");
         itemLogCluster.className = "col-1 px-0";
-        var itemLogClusterSpan = document.createElement("span");
+        const itemLogClusterSpan = document.createElement("span");
         itemLogClusterSpan.className = "console-cluster badge badge-pill";
         itemLogClusterSpan.innerText = message.cluster?.name.toUpperCase();
         itemLogCluster.appendChild(itemLogClusterSpan);
@@ -109,9 +109,9 @@ export class Logger {
     }
 
     setCommand(message) {
-        var itemLogCommand = document.createElement("div");
+        const itemLogCommand = document.createElement("div");
         itemLogCommand.className = "col-1 px-0";
-        var itemLogCommandSpan = document.createElement("span");
+        const itemLogCommandSpan = document.createElement("span");
         itemLogCommandSpan.className = "console-cluster badge badge-pill";
         itemLogCommandSpan.innerText = message.command?.name.toUpperCase();
         itemLogCommand.appendChild(itemLogCommandSpan);
@@ -119,10 +119,10 @@ export class Logger {
     }
 
     setParams(message) {
-        var itemLogParams = document.createElement("div");
+        const itemLogParams = document.createElement("div");
         itemLogParams.className = "col-4 px-0";
         if (message.size > 0) {
-            var itemLogParamsSpan = document.createElement("span");
+            const itemLogParamsSpan = document.createElement("span");
             itemLogParamsSpan.className = "console-param badge badge-pill text-wrap ms-3";
             let params = "(" + message.size + ") [";
             for (let index = 0; index < message.params?.length; index++) {

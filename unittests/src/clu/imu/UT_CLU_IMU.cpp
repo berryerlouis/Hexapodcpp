@@ -3,7 +3,7 @@
 
 #include "../../../mock/cmp/MockMpu9150.h"
 #include "../../../../src/Cluster/Imu/ClusterImu.h"
-#include "../../../../src/Misc/Geometry/Geometry.h"
+#include "../../../../src/Misc/Maths/Geometry.h"
 
 using ::testing::_;
 using ::testing::Return;

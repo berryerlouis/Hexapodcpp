@@ -3,7 +3,7 @@
 
 #include "../Cluster.h"
 #include "../../Component/Imu/Mpu9150Interface.h"
-#include "../../Misc/Geometry/Geometry.h"
+#include "../../Misc/Maths/Geometry.h"
 
 namespace Cluster
 {

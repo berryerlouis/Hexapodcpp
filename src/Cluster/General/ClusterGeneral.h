@@ -49,8 +49,8 @@ namespace Cluster
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameGetVersion(Frame &response) {
-                Core::CoreStatus success = response.Build(
+            inline Core::CoreStatus BuildFrameGetVersion(Frame &response) const {
+                const Core::CoreStatus success = response.Build(
                     EClusters::GENERAL,
                     EGeneralCommands::VERSION);
                 if (success) {
@@ -60,8 +60,8 @@ namespace Cluster
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameGetMinTime(Frame &response) {
-                Core::CoreStatus success = response.Build(
+            inline Core::CoreStatus BuildFrameGetMinTime(Frame &response) const {
+                const Core::CoreStatus success = response.Build(
                     EClusters::GENERAL,
                     EGeneralCommands::MIN_EXECUTION_TIME);
                 if (success) {
@@ -70,8 +70,8 @@ namespace Cluster
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameGetMaxTime(Frame &response) {
-                Core::CoreStatus success = response.Build(
+            inline Core::CoreStatus BuildFrameGetMaxTime(Frame &response) const {
+                const Core::CoreStatus success = response.Build(
                     EClusters::GENERAL,
                     EGeneralCommands::MAX_EXECUTION_TIME);
                 if (success) {

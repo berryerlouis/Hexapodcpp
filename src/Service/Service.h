@@ -10,6 +10,7 @@ namespace Service
     public:
         Service(const uint64_t updateTime)
             : mUpdateTime(updateTime)
+              , mDeltaTime(0U)
               , mPreviousTime(0UL) {
         }
 
@@ -22,6 +23,7 @@ namespace Service
         }
 
         void SetNewUpdateTime(const uint64_t currentTime) {
+            this->mDeltaTime = currentTime - this->mPreviousTime;
             this->mPreviousTime = currentTime;
         }
 
@@ -29,8 +31,13 @@ namespace Service
             return (this->mPreviousTime);
         }
 
+        uint64_t GetDeltaTime(void) const {
+            return (this->mDeltaTime);
+        }
+
     protected:
         uint64_t mUpdateTime;
+        uint64_t mDeltaTime;
 
     private:
         uint64_t mPreviousTime;

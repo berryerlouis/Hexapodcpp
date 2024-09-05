@@ -10,11 +10,11 @@ namespace Component
         using namespace Driver;
 
         class Servo : public ServoInterface {
-            static const uint16_t SERVO_PWM_MIN = 168U;
-            static const uint16_t SERVO_PWM_MAX = 413U;
-            static const uint16_t SERVO_ANGLE_MIN = 0U;
-            static const uint16_t SERVO_ANGLE_MAX = 180;
-            static const uint16_t SERVO_ANGLE_RANGE = 180;
+            static constexpr uint16_t SERVO_PWM_MIN = 168U;
+            static constexpr uint16_t SERVO_PWM_MAX = 413U;
+            static constexpr uint16_t SERVO_ANGLE_MIN = 0U;
+            static constexpr uint16_t SERVO_ANGLE_MAX = 180U;
+            static constexpr uint16_t SERVO_ANGLE_RANGE = 180U;
 
         public:
             Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId);
@@ -66,14 +66,8 @@ namespace Component
         private:
             uint8_t GetAngleFromDeltaTime(const uint64_t currentTime);
 
-            uint8_t Lerp(uint8_t a, uint8_t b, float t);
-
-            inline long map(long x, long in_min, long in_max, long out_min, long out_max) {
-                return ((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
-            }
-
             ServosController::Pca9685Interface &mPca9685;
-            Tick::TickInterface &mtick;
+            Tick::TickInterface &mTick;
             uint8_t mServoId;
             uint8_t mAngle;
             uint8_t mTargetAngle;

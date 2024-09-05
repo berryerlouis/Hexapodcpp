@@ -9,15 +9,15 @@ namespace Cluster
 
         Protocol::ProtocolStatus Protocol::Decode(const char *frameBuffer, Frame &frame) {
             if (frameBuffer == nullptr) {
-                return (Protocol::ProtocolStatus::ERROR_NULL_BUFFER);
+                return (ERROR_NULL_BUFFER);
             }
-            uint8_t frameLenght = strlen(frameBuffer);
+            uint8_t frameLength = strlen(frameBuffer);
 
-            if (frameLenght >= 6U && frameLenght % 2U == 0U) {
-                for (size_t i = 0U; i < frameLenght; i++) {
+            if (frameLength >= 6U && frameLength % 2U == 0U) {
+                for (size_t i = 0U; i < frameLength; i++) {
                     if (Protocol::ConvertHexCharToInt(frameBuffer[i]) == 0xFFU) {
                         // char is invalid
-                        return (Protocol::ProtocolStatus::ERROR_CHAR_INVALID);
+                        return (ERROR_CHAR_INVALID);
                     }
                 }
 
@@ -28,27 +28,27 @@ namespace Cluster
                 frame.nbParams = Protocol::ConvertHexCharToInt(frameBuffer[4U]) * 16U + Protocol::ConvertHexCharToInt(
                                      frameBuffer[5U]);
 
-                if (frame.nbParams == 0U && frameLenght == 6U) {
-                    return (Protocol::ProtocolStatus::NO_ERROR);
-                } else if ((frame.nbParams * 2U) + 6U == frameLenght) {
+                if (frame.nbParams == 0U && frameLength == 6U) {
+                    return (NO_ERROR);
+                } else if ((frame.nbParams * 2U) + 6U == frameLength) {
                     for (size_t i = 0U; i < frame.nbParams * 2U; i += 2U) {
                         frame.params[i / 2U] = Protocol::ConvertHexCharToInt(frameBuffer[6 + i]) * 16U +
                                                Protocol::ConvertHexCharToInt(frameBuffer[7U + i]);
                     }
 
-                    return (Protocol::ProtocolStatus::NO_ERROR);
+                    return (NO_ERROR);
                 } else {
                     // wrong param size
-                    return (Protocol::ProtocolStatus::ERROR_SIZE_PARAMS);
+                    return (ERROR_SIZE_PARAMS);
                 }
             } else {
-                // frameLenght is not or less than 6 bytes
-                return (Protocol::ProtocolStatus::ERROR_LENGHT);
+                // frameLength is not or less than 6 bytes
+                return (ERROR_LENGHT);
             }
         }
 
-        uint8_t Protocol::Encode(Frame &response, const uint8_t *buffer) {
-            if (buffer == nullptr || response.nbParams == 0 || response.params == nullptr) {
+        uint8_t Protocol::Encode(const Frame &response, const uint8_t *buffer) {
+            if (buffer == nullptr || response.nbParams == 0) {
                 return (0U);
             }
             const uint8_t *params = response.params;
@@ -56,7 +56,7 @@ namespace Cluster
             const uint8_t cluster = response.clusterId;
             const uint8_t command = response.commandId;
 
-            uint8_t length = sprintf((char *) buffer, "<%02x%02x%02x", cluster, command, size);
+            uint8_t length = sprintf((char *) (buffer), "<%02x%02x%02x", cluster, command, size);
 
             for (size_t i = 0U; i < size; i++) {
                 length += sprintf((char *) &buffer[length], "%02x", params[i]);

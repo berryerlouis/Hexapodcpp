@@ -1,9 +1,10 @@
-import { Protocol } from '../../protocol/Protocol.js';
+import {Protocol} from '../../protocol/Protocol.js';
 
 export class Header {
     consoleList = undefined;
-    constructor(serialInterface) {
-        this.serialInterface = serialInterface;
+
+    constructor(messageManager) {
+        this.messageManager = messageManager;
         this.initConsoleDropDown();
         this.initConsoleSendFrame();
         this.initConsoleClearButton();
@@ -22,8 +23,7 @@ export class Header {
             if (!this.console.hasClass('show')) {
                 this.consoleButtonDropDownIcon.removeClass('bi-arrow-up');
                 this.consoleButtonDropDownIcon.addClass('bi-arrow-down');
-            }
-            else {
+            } else {
                 this.consoleButtonDropDownIcon.removeClass('bi-arrow-down');
                 this.consoleButtonDropDownIcon.addClass('bi-arrow-up');
             }
@@ -40,18 +40,18 @@ export class Header {
             try {
                 const parsedFrame = Protocol.decode("Tx", this.frameToSend.val());
                 if (parsedFrame) {
-                    this.serialInterface.write(parsedFrame);
+                    this.messageManager.write(parsedFrame);
                 }
             } catch (error) {
                 this.showMessageParsingError(error);
             }
         });
         this.frameToSend.keypress((e) => {
-            if (e.key == 'Enter') {
+            if (e.key === 'Enter') {
                 try {
                     const parsedFrame = Protocol.decode("Tx", this.frameToSend.val());
                     if (parsedFrame) {
-                        this.serialInterface.write(parsedFrame);
+                        this.messageManager.write(parsedFrame);
                     }
                 } catch (error) {
                     this.showMessageParsingError(error);

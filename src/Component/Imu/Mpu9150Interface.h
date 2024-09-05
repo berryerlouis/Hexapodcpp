@@ -1,13 +1,13 @@
 #pragma once
 
 #include "../ComponentInterface.h"
-#include "../../Misc/Geometry/Geometry.h"
+#include "../../Misc/Maths/Geometry.h"
 
 namespace Component
 {
     namespace Imu
     {
-        using namespace Misc::Geometry;
+        using namespace Misc::Maths;
 
         class Mpu9150Interface : public ComponentInterface {
         public:

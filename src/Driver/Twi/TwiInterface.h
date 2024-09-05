@@ -34,8 +34,6 @@ namespace Driver
 
             virtual bool WriteRegisters(const uint8_t address, const uint8_t reg, uint8_t *data,
                                         const uint8_t length) = 0;
-
-        private:
         };
     }
 }

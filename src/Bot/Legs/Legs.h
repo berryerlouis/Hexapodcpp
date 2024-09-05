@@ -16,7 +16,7 @@ namespace Bot
 
             ~Legs() = default;
 
-            Leg::Leg &GetLeg(const uint8_t legId);
+            Leg::Leg &GetLeg(const uint8_t legId) const;
 
         private:
             Leg::Leg mLegFL;

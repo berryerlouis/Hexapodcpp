@@ -1,10 +1,11 @@
 #pragma once
 
 #include <stdint.h>
+#include <math.h>
 
 namespace Misc
 {
-    namespace Geometry
+    namespace Maths
     {
         struct Position3d {
             float x;
