@@ -2,21 +2,20 @@
 
 #include <stdint.h>
 
-namespace Core {
-struct CoreStatus
+namespace Core
 {
-    static const int8_t CORE_ERROR = ( -1 );
-    static const int8_t CORE_OK    = ( 0 );
+    struct CoreStatus {
+        static const int8_t CORE_ERROR = (-1);
+        static const int8_t CORE_OK = (0);
 
-    CoreStatus( int8_t state ) : status( state )
-    {
-    }
+        CoreStatus(int8_t state) : status(state) {
+        }
 
-    operator bool() const
-    {
-        return ( status == CORE_OK );
-    }
-private:
-    int8_t              status = CORE_ERROR;
-};
+        operator bool() const {
+            return (status == CORE_OK);
+        }
+
+    private:
+        int8_t status = CORE_ERROR;
+    };
 }

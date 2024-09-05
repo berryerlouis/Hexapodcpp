@@ -3,12 +3,14 @@
 #include "Ssd1306Interface.h"
 #include "../../Driver/Twi/TwiInterface.h"
 
-namespace Component {
-namespace Display {
-using namespace Driver;
+namespace Component
+{
+    namespace Display
+    {
+        using namespace Driver;
 
-class Ssd1306 : public Ssd1306Interface {
-public:
+        class Ssd1306 : public Ssd1306Interface {
+        public:
 #define SSD1306_ADDRESS                                 0x3CU ///< I2C address of the ssd1306 module
 
 #define INVERSE                                         2U    ///< Invert pixels
@@ -50,32 +52,44 @@ public:
 #define SSD1306_SET_VERTICAL_SCROLL_AREA                0xA3U ///< Set scroll range
 
 
-
 #define BUFFER_DISPLAY_LENGTH    SCREEN_WIDTH *( ( SCREEN_HEIGHT + 7U ) / 8U )
 
 
-    Ssd1306( Twi::TwiInterface &twi, const uint8_t address = SSD1306_ADDRESS );
-    ~Ssd1306() = default;
+            Ssd1306(Twi::TwiInterface &twi, const uint8_t address = SSD1306_ADDRESS);
 
-    virtual Core::CoreStatus  Initialize( void ) final override;
-    virtual void Update( const uint64_t currentTime ) final override;
+            ~Ssd1306() = default;
 
-    virtual void DrawPixel( uint16_t x, uint16_t y, uint16_t color ) final override;
-    virtual void DrawLine( uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color ) final override;
-    virtual void DrawRectangle( uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color ) final override;
-    virtual void DrawCircle( uint16_t xc, uint16_t yc, uint16_t r, uint16_t color ) final override;
-    virtual void DrawChar( char c, uint16_t x, uint16_t y, Bitmap::Bitmaps::Color color ) final override;
-    virtual void DrawString( const char *str, uint16_t x, uint16_t y, Bitmap::Bitmaps::Color color ) final override;
-    virtual void DrawBitmap( const Bitmap::Bitmaps::SBitmap *bmp, uint16_t x, uint16_t y, Bitmap::Bitmaps::Color color ) final override;
-    virtual void ClearBuffer( void ) final override;
-    virtual void EraseArea( uint16_t x, uint16_t y, uint16_t width, uint16_t height ) final override;
+            virtual Core::CoreStatus Initialize(void) final override;
 
-private:
-    Twi::TwiInterface &mTwi;
-    const uint8_t mAddress;
-    uint8_t mBufferScreen[BUFFER_DISPLAY_LENGTH];
-    bool mNeedToUpdate;
-    int16_t mUpdateIndex;
-};
-}
+            virtual void Update(const uint64_t currentTime) final override;
+
+            virtual void DrawPixel(uint16_t x, uint16_t y, uint16_t color) final override;
+
+            virtual void DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) final override;
+
+            virtual void
+            DrawRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) final override;
+
+            virtual void DrawCircle(uint16_t xc, uint16_t yc, uint16_t r, uint16_t color) final override;
+
+            virtual void DrawChar(char c, uint16_t x, uint16_t y, Bitmap::Bitmaps::Color color) final override;
+
+            virtual void
+            DrawString(const char *str, uint16_t x, uint16_t y, Bitmap::Bitmaps::Color color) final override;
+
+            virtual void DrawBitmap(const Bitmap::Bitmaps::SBitmap *bmp, uint16_t x, uint16_t y,
+                                    Bitmap::Bitmaps::Color color) final override;
+
+            virtual void ClearBuffer(void) final override;
+
+            virtual void EraseArea(uint16_t x, uint16_t y, uint16_t width, uint16_t height) final override;
+
+        private:
+            Twi::TwiInterface &mTwi;
+            const uint8_t mAddress;
+            uint8_t mBufferScreen[BUFFER_DISPLAY_LENGTH];
+            bool mNeedToUpdate;
+            int16_t mUpdateIndex;
+        };
+    }
 }

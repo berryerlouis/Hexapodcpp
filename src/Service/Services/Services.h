@@ -10,46 +10,48 @@
 #include "../Orientation/ServiceOrientation.h"
 #include "../Proximity/ServiceProximity.h"
 
-namespace Service {
-namespace Services {
-using namespace ::Service::General;
-using namespace ::Service::Control;
-using namespace ::Service::Communication;
-using namespace ::Service::Proximity;
-using namespace ::Service::Orientation;
-using namespace ::Service::Battery;
-using namespace ::Service::Display;
-
-struct ServiceItem
+namespace Service
 {
-    EServices serviceId;
-    Service * service;
+    namespace Services
+    {
+        using namespace ::Service::General;
+        using namespace ::Service::Control;
+        using namespace ::Service::Communication;
+        using namespace ::Service::Proximity;
+        using namespace ::Service::Orientation;
+        using namespace ::Service::Battery;
+        using namespace ::Service::Display;
 
-    ServiceItem()  = default;
-    ~ServiceItem() = default;
-};
+        struct ServiceItem {
+            EServices serviceId;
+            Service *service;
 
-class Services : public ServiceInterface {
-public:
-    Services(
-        ServiceGeneral &serviceGeneral,
-        ServiceControl &serviceControl,
-        ServiceCommunication &serviceCommunication,
-        ServiceProximity &serviceProximity,
-        ServiceOrientation &serviceOrientation,
-        ServiceBattery &serviceBattery,
-        ServiceDisplay &serviceDisplay );
+            ServiceItem() = default;
 
-    ~Services() = default;
+            ~ServiceItem() = default;
+        };
 
-    virtual Core::CoreStatus Initialize( void ) final override;
-    virtual void Update( const uint64_t currentTime ) final override;
+        class Services : public ServiceInterface {
+        public:
+            Services(
+                ServiceGeneral &serviceGeneral,
+                ServiceControl &serviceControl,
+                ServiceCommunication &serviceCommunication,
+                ServiceProximity &serviceProximity,
+                ServiceOrientation &serviceOrientation,
+                ServiceBattery &serviceBattery,
+                ServiceDisplay &serviceDisplay);
 
-private:
+            ~Services() = default;
 
-    Service *Get( const EServices serviceId );
+            virtual Core::CoreStatus Initialize(void) final override;
 
-    ServiceItem mServices[NB_SERVICES];
-};
-}
+            virtual void Update(const uint64_t currentTime) final override;
+
+        private:
+            Service *Get(const EServices serviceId);
+
+            ServiceItem mServices[NB_SERVICES];
+        };
+    }
 }

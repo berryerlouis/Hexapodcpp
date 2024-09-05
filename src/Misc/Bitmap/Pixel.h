@@ -1,7 +1,9 @@
 #pragma once
 
-namespace Misc {
-namespace Bitmap {
+namespace Misc
+{
+    namespace Bitmap
+    {
 #define ________    0U
 #define _______X    1U
 #define ______X_    2U
@@ -258,5 +260,5 @@ namespace Bitmap {
 #define XXXXXX_X    253U
 #define XXXXXXX_    254U
 #define XXXXXXXX    255U
-}
+    }
 }

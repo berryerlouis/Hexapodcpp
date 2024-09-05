@@ -8,27 +8,24 @@ using namespace Builder;
 
 Builder::App robot;
 
-int main ( void )
-{
+int main(void) {
     //hexapod initialization
-    if ( robot.Initialize() )
-    {
+    if (robot.Initialize()) {
         //enable ITs
 #ifndef GTEST
         sei();
-        wdt_enable( WDTO_15MS );
+        wdt_enable(WDTO_15MS);
 #endif
-        while ( true )
-        {
+        while (true) {
 #ifndef GTEST
             wdt_reset();
 #endif
             //hexapod loop update
-            robot.Update( 0UL );
+            robot.Update(0UL);
         }
     }
 
-    return ( -1 );
+    return (-1);
 }
 
 /*

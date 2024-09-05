@@ -3,27 +3,35 @@
 #include "UartInterface.h"
 #include "../../Misc/Buffer/Buffer.h"
 
-namespace Driver {
-namespace Uart {
-class Uart : public UartInterface {
-public:
-    Uart( const EBaudRate & baud = BAUDRATE_115200 );
-    ~Uart() = default;
+namespace Driver
+{
+    namespace Uart
+    {
+        class Uart : public UartInterface {
+        public:
+            Uart(const EBaudRate &baud = BAUDRATE_115200);
 
-    virtual Core::CoreStatus Initialize( void ) final override;
-    virtual void Update( const uint64_t currentTime ) final override;
+            ~Uart() = default;
 
-    virtual void Send( const char *data, const size_t len ) final override;
-    virtual void Send( const uint8_t *data, const size_t len ) final override;
-    virtual void Send( const uint8_t data ) final override;
-    virtual uint8_t Read( void ) final override;
-    virtual uint8_t DataAvailable( void ) const final override;
+            virtual Core::CoreStatus Initialize(void) final override;
 
-    static Misc::Buffer::Buffer bufferRx;
-    static Misc::Buffer::Buffer bufferTx;
+            virtual void Update(const uint64_t currentTime) final override;
 
-private:
-    EBaudRate mBaudRate;
-};
-}
+            virtual void Send(const char *data, const size_t len) final override;
+
+            virtual void Send(const uint8_t *data, const size_t len) final override;
+
+            virtual void Send(const uint8_t data) final override;
+
+            virtual uint8_t Read(void) final override;
+
+            virtual uint8_t DataAvailable(void) const final override;
+
+            static Misc::Buffer::Buffer bufferRx;
+            static Misc::Buffer::Buffer bufferTx;
+
+        private:
+            EBaudRate mBaudRate;
+        };
+    }
 }

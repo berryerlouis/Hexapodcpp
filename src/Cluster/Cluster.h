@@ -3,22 +3,21 @@
 #include "ClusterInterface.h"
 #include "../Misc/Logger/Logger.h"
 
-namespace Cluster {
-class Cluster : public ClusterInterface {
-public:
-    Cluster( EClusters clusterId )
-        : mClusterId( clusterId )
-    {
-    }
+namespace Cluster
+{
+    class Cluster : public ClusterInterface {
+    public:
+        Cluster(EClusters clusterId)
+            : mClusterId(clusterId) {
+        }
 
-    virtual Core::CoreStatus Execute( Frame &request, Frame &response ) = 0;
+        virtual Core::CoreStatus Execute(Frame &request, Frame &response) = 0;
 
-    virtual EClusters GetId ( void )
-    {
-        return ( mClusterId );
-    }
+        virtual EClusters GetId(void) {
+            return (mClusterId);
+        }
 
-protected:
-    const EClusters mClusterId;
-};
+    protected:
+        const EClusters mClusterId;
+    };
 }

@@ -2,28 +2,30 @@
 
 #include "../Frame/Frame.h"
 
-namespace Cluster {
-namespace Decoding {
-class Protocol
+namespace Cluster
 {
-public:
-    enum ProtocolStatus
+    namespace Decoding
     {
-        NO_ERROR,
-        ERROR_LENGHT,
-        ERROR_CHAR_INVALID,
-        ERROR_SIZE_PARAMS,
-        ERROR_NULL_BUFFER,
-    };
+        class Protocol {
+        public:
+            enum ProtocolStatus {
+                NO_ERROR,
+                ERROR_LENGHT,
+                ERROR_CHAR_INVALID,
+                ERROR_SIZE_PARAMS,
+                ERROR_NULL_BUFFER,
+            };
 
-    Protocol( void );
-    ~Protocol() = default;
+            Protocol(void);
 
-    static ProtocolStatus Decode( const char *frameBuffer, Frame &frame );
-    static uint8_t Encode( Frame &response, const uint8_t *buffer );
+            ~Protocol() = default;
 
-private:
-    static uint8_t ConvertHexCharToInt( uint8_t byte );
-};
-}
+            static ProtocolStatus Decode(const char *frameBuffer, Frame &frame);
+
+            static uint8_t Encode(Frame &response, const uint8_t *buffer);
+
+        private:
+            static uint8_t ConvertHexCharToInt(uint8_t byte);
+        };
+    }
 }

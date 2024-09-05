@@ -2,14 +2,17 @@
 
 #include "BatteryState.h"
 
-namespace Component {
-namespace Battery {
-class BatteryObserverInterface {
-public:
-    BatteryObserverInterface()  = default;
-    ~BatteryObserverInterface() = default;
+namespace Component
+{
+    namespace Battery
+    {
+        class BatteryObserverInterface {
+        public:
+            BatteryObserverInterface() = default;
 
-    virtual void UpdatedBatteryState( const BatteryState &batteryState ) = 0;
-};
-}
+            ~BatteryObserverInterface() = default;
+
+            virtual void UpdatedBatteryState(const BatteryState &batteryState) = 0;
+        };
+    }
 }

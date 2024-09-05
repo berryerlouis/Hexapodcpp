@@ -5,53 +5,8 @@ project(Hexapodcpp
         VERSION 1.0
         DESCRIPTION "Hexapodcpp")
 
-if (${GTEST} EQUAL 1)
+if (${GTEST})
     add_subdirectory(unittests)
-else()
-    set(PRODUCT_NAME Hexapodcpp)
-    if (${TARGET} STREQUAL "gcc")
-        # using GCC
-        add_compile_definitions(GTEST)
-        add_compile_definitions(DEBUG)
-        add_compile_options(-DF_CPU=${F_CPU} -Wall -Wextra -std=c++17 -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O1 -g)
-
-        file(GLOB_RECURSE SRC_FILES src/*.cpp src/*.h)
-
-        get_filename_component(full_path_test_cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/Driver/Adc/Adc.cpp ABSOLUTE)
-        list(REMOVE_ITEM SRC_FILES ${full_path_test_cpp})
-        get_filename_component(full_path_test_cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/Driver/Gpio/Gpio.cpp ABSOLUTE)
-        list(REMOVE_ITEM SRC_FILES ${full_path_test_cpp})
-        get_filename_component(full_path_test_cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/Driver/Twi/Twi.cpp ABSOLUTE)
-        list(REMOVE_ITEM SRC_FILES ${full_path_test_cpp})
-        get_filename_component(full_path_test_cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/Driver/InputCapture/InputCapture.cpp ABSOLUTE)
-        list(REMOVE_ITEM SRC_FILES ${full_path_test_cpp})
-        get_filename_component(full_path_test_cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/Driver/Uart/Uart.cpp ABSOLUTE)
-        list(REMOVE_ITEM SRC_FILES ${full_path_test_cpp})
-        get_filename_component(full_path_test_cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/Driver/Tick/Tick.cpp ABSOLUTE)
-        list(REMOVE_ITEM SRC_FILES ${full_path_test_cpp})
-
-    else()
-        # using AVR GCC
-        set(F_CPU 20000000UL)
-        set(MCU atmega1284p)
-        set(CMAKE_CXX_COMPILER avr-g++)
-        set(CMAKE_C_COMPILER avr-gcc)
-        set(CMAKE_ASM_COMPILER avr-gcc)
-        set(CMAKE_EXE_LINKER_FLAGS -mmcu=${MCU})
-        add_compile_options(-mmcu=${MCU} -DF_CPU=${F_CPU} -Wall -Wextra -std=c++17 -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O1 -g)
-        # Get all src files
-        file(GLOB_RECURSE SRC_FILES src/*.cpp src/*.h)
-    endif()
-
-    # Create one target
-    add_executable(${PRODUCT_NAME} ${SRC_FILES})
-
-    # Rename the output to .elf as we will create multiple files
-    set_target_properties(${PRODUCT_NAME} PROPERTIES OUTPUT_NAME ${PRODUCT_NAME}.elf)
-
-    # Strip binary for upload
-    add_custom_target(strip ALL avr-strip ${PRODUCT_NAME}.elf DEPENDS ${PRODUCT_NAME})
-
-    add_custom_target(hex ALL avr-objcopy -R .eeprom -O ihex ${PRODUCT_NAME}.elf ${PRODUCT_NAME}.hex DEPENDS strip)
-
-endif()
+else ()
+    add_subdirectory(src)
+endif ()

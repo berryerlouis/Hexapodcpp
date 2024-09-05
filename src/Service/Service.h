@@ -3,35 +3,36 @@
 #include "ServiceInterface.h"
 #include "../Core/Event/EventMediatorInterface.h"
 #include "../Misc/Logger/Logger.h"
-namespace Service {
-class Service : public ServiceInterface, public Core::EventManager {
-public:
-    Service( const uint64_t updateTime )
-        : mUpdateTime( updateTime )
-        , mPreviousTime( 0UL )
-    {
-    }
 
-    ~Service() = default;
+namespace Service
+{
+    class Service : public ServiceInterface, public Core::EventManager {
+    public:
+        Service(const uint64_t updateTime)
+            : mUpdateTime(updateTime)
+              , mPreviousTime(0UL) {
+        }
 
-    Core::CoreStatus NeedUpdate ( const uint64_t currentTime ) const
-    {
-        return ( ( ( currentTime - this->mPreviousTime ) >= this->mUpdateTime ) ? Core::CoreStatus::CORE_OK : Core::CoreStatus::CORE_ERROR );
-    }
+        ~Service() = default;
 
-    void SetNewUpdateTime ( const uint64_t currentTime )
-    {
-        this->mPreviousTime = currentTime;
-    }
+        Core::CoreStatus NeedUpdate(const uint64_t currentTime) const {
+            return (((currentTime - this->mPreviousTime) >= this->mUpdateTime)
+                        ? Core::CoreStatus::CORE_OK
+                        : Core::CoreStatus::CORE_ERROR);
+        }
 
-    uint64_t GetPreviousTime ( void ) const
-    {
-        return ( this->mPreviousTime );
-    }
+        void SetNewUpdateTime(const uint64_t currentTime) {
+            this->mPreviousTime = currentTime;
+        }
 
-protected:
-    uint64_t mUpdateTime;
-private:
-    uint64_t mPreviousTime;
-};
+        uint64_t GetPreviousTime(void) const {
+            return (this->mPreviousTime);
+        }
+
+    protected:
+        uint64_t mUpdateTime;
+
+    private:
+        uint64_t mPreviousTime;
+    };
 }

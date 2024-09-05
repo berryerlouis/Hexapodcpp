@@ -1,44 +1,40 @@
 #include "Adc.h"
 #include "../Isr.h"
 
-namespace Driver {
-namespace Adc {
-volatile uint16_t Adc::sAdcValue = 0U;
-
-Adc::Adc( Gpio::GpioInterface & gpio )
-    : mGpio( gpio )
+namespace Driver
 {
-}
+    namespace Adc
+    {
+        volatile uint16_t Adc::sAdcValue = 0U;
 
-Core::CoreStatus Adc::Initialize ( void )
-{
-    ADMUX  = ( 1 << REFS0 ) | ( 1 << REFS1 );
-    ADCSRA = ( 1 << ADEN ) | ( 1 << ADPS0 ) | ( 1 << ADPS1 ) | ( 1 << ADIE );
-    ADMUX  = ( ( ADMUX & 0xE0U ) | (uint8_t) this->mGpio.GetPin() );
+        Adc::Adc(Gpio::GpioInterface &gpio)
+            : mGpio(gpio) {
+        }
 
-    this->StartConversion();
-    return ( Core::CoreStatus::CORE_OK );
-}
+        Core::CoreStatus Adc::Initialize(void) {
+            ADMUX = (1 << REFS0) | (1 << REFS1);
+            ADCSRA = (1 << ADEN) | (1 << ADPS0) | (1 << ADPS1) | (1 << ADIE);
+            ADMUX = ((ADMUX & 0xE0U) | (uint8_t) this->mGpio.GetPin());
 
-void Adc::Update ( const uint64_t currentTime )
-{
-    (void) currentTime;
-}
+            this->StartConversion();
+            return (Core::CoreStatus::CORE_OK);
+        }
 
-void Adc::StartConversion ( void )
-{
-    ADCSRA |= _BV( ADSC );
-}
+        void Adc::Update(const uint64_t currentTime) {
+            (void) currentTime;
+        }
 
-uint16_t Adc::Read ()
-{
-    this->StartConversion();
-    return ( (uint16_t) ( 100.0 * ADC_VOLT( Adc::sAdcValue / BRIDGE_DIVIDER ) ) );
-}
+        void Adc::StartConversion(void) {
+            ADCSRA |= _BV(ADSC);
+        }
 
-ISR( ADC_vect )
-{
-    ISR_EMBEDDED_CODE( Adc::sAdcValue = ADC; );
-}
-}
+        uint16_t Adc::Read() {
+            this->StartConversion();
+            return ((uint16_t) (100.0 * ADC_VOLT(Adc::sAdcValue / BRIDGE_DIVIDER)));
+        }
+
+        ISR(ADC_vect) {
+            ISR_EMBEDDED_CODE(Adc::sAdcValue = ADC;);
+        }
+    }
 }

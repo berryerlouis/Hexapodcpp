@@ -2,30 +2,38 @@
 
 #include "../ComponentInterface.h"
 
-namespace Component {
-namespace Software {
-class SoftwareInterface : public ComponentInterface {
-public:
-    struct Version
+namespace Component
+{
+    namespace Software
     {
-        uint8_t major;
-        uint8_t minor;
-    };
+        class SoftwareInterface : public ComponentInterface {
+        public:
+            struct Version {
+                uint8_t major;
+                uint8_t minor;
+            };
 
-    SoftwareInterface()  = default;
-    ~SoftwareInterface() = default;
+            SoftwareInterface() = default;
 
-    virtual Core::CoreStatus Initialize( void )       = 0;
-    virtual void Update( const uint64_t currentTime ) = 0;
+            ~SoftwareInterface() = default;
 
-    virtual Version GetVersion( void )             = 0;
-    virtual uint64_t GetMinTime( void )            = 0;
-    virtual uint64_t GetMaxTime( void )            = 0;
-    virtual void ResetTiming( void )               = 0;
-    virtual void SetMinTime( const uint64_t time ) = 0;
-    virtual void SetMaxTime( const uint64_t time ) = 0;
+            virtual Core::CoreStatus Initialize(void) = 0;
 
-private:
-};
-}
+            virtual void Update(const uint64_t currentTime) = 0;
+
+            virtual Version GetVersion(void) = 0;
+
+            virtual uint64_t GetMinTime(void) = 0;
+
+            virtual uint64_t GetMaxTime(void) = 0;
+
+            virtual void ResetTiming(void) = 0;
+
+            virtual void SetMinTime(const uint64_t time) = 0;
+
+            virtual void SetMaxTime(const uint64_t time) = 0;
+
+        private:
+        };
+    }
 }

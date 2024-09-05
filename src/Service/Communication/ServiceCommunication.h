@@ -5,25 +5,29 @@
 #include "../../Core/Event/EventMediatorInterface.h"
 #include "../Service.h"
 
-namespace Service {
-namespace Communication {
-using namespace Component::Communication;
-
-class ServiceCommunication : public Service, public Core::EventMediatorInterface
+namespace Service
 {
-public:
-    ServiceCommunication( CommunicationInterface &communication, Clusters::ClustersInterface &clusters );
-    ~ServiceCommunication() = default;
+    namespace Communication
+    {
+        using namespace Component::Communication;
 
-    virtual Core::CoreStatus Initialize( void ) final override;
-    virtual void Update( const uint64_t currentTime ) final override;
+        class ServiceCommunication : public Service, public Core::EventMediatorInterface {
+        public:
+            ServiceCommunication(CommunicationInterface &communication, Clusters::ClustersInterface &clusters);
 
-    virtual void SendMessage( Core::Event event ) const final override;
+            ~ServiceCommunication() = default;
 
-private:
-    Clusters::ClustersInterface &mClusters;
-protected:
-    CommunicationInterface & mCommunication;
-};
-}
+            virtual Core::CoreStatus Initialize(void) final override;
+
+            virtual void Update(const uint64_t currentTime) final override;
+
+            virtual void SendMessage(Core::Event event) const final override;
+
+        private:
+            Clusters::ClustersInterface &mClusters;
+
+        protected:
+            CommunicationInterface &mCommunication;
+        };
+    }
 }
