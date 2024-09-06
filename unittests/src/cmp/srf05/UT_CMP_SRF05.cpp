@@ -24,7 +24,7 @@ protected:
 		mMockGpio(),
 		mMockInputCapture(),
 		mMockLed(),
-		mSrf05( Cluster::EProximityCommands::US_LEFT, mMockGpio, mMockInputCapture, mMockLed, mMockTick )
+		mSrf05( ClusterBase::EProximityCommands::US_LEFT, mMockGpio, mMockInputCapture, mMockLed, mMockTick )
 	{
 	}
 

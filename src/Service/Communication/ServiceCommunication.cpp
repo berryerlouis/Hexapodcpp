@@ -27,10 +27,9 @@ namespace Service
             Frame response;
             bool success = false;
             switch (event.id) {
-                case Cluster::EClusters::GENERAL: {
-                    Cluster::General::ClusterGeneral *clusterGeneral = (Cluster::General::ClusterGeneral *) this->
-                            mClusters.GetCluster(
-                                Cluster::EClusters::GENERAL);
+                case GENERAL: {
+                    const Cluster::General::ClusterGeneral *clusterGeneral =
+                            static_cast<Cluster::General::ClusterGeneral *>(this->mClusters.GetCluster(GENERAL));
 
                     if (event.value == Cluster::EGeneralCommands::MIN_EXECUTION_TIME) {
                         clusterGeneral->BuildFrameGetMinTime(response);
@@ -40,44 +39,38 @@ namespace Service
                     success = true;
                     break;
                 }
-                break;
 
-                case Cluster::EClusters::IMU: {
+                case IMU: {
                     //success = true;
                     break;
                 }
-                break;
 
-                case Cluster::EClusters::PROXIMITY: {
-                    Cluster::Proximity::ClusterProximity *clusterProximity = (Cluster::Proximity::ClusterProximity *)
-                            this->mClusters.GetCluster(
-                                Cluster::EClusters::PROXIMITY);
-                    clusterProximity->BuildFrameDistance((Cluster::EProximityCommands) event.value, response);
+                case PROXIMITY: {
+                    const Cluster::Proximity::ClusterProximity *clusterProximity =
+                            static_cast<Cluster::Proximity::ClusterProximity *>(this->mClusters.GetCluster(PROXIMITY));
+                    clusterProximity->BuildFrameDistance(static_cast<Cluster::EProximityCommands>(event.value),
+                                                         response);
                     success = true;
                     break;
                 }
 
-                case Cluster::EClusters::SERVO: {
+                case SERVO: {
                     //success = true;
                     break;
                 }
-                break;
 
-                case Cluster::EClusters::BATTERY: {
-                    Cluster::Battery::ClusterBattery *clusterBattery = (Cluster::Battery::ClusterBattery *) this->
-                            mClusters.GetCluster(
-                                Cluster::EClusters::BATTERY);
+                case BATTERY: {
+                    const Cluster::Battery::ClusterBattery *clusterBattery =
+                            static_cast<Cluster::Battery::ClusterBattery *>(this->mClusters.GetCluster(BATTERY));
                     clusterBattery->BuildFrameState(response);
                     success = true;
                     break;
                 }
-                break;
 
-                case Cluster::EClusters::BODY: {
+                case BODY: {
                     //success = true;
                     break;
                 }
-                break;
 
                 default:
                     break;

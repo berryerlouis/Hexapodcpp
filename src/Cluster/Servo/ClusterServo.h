@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Cluster.h"
+#include "../ClusterBase.h"
 #include "../../Component/Servos/ServosInterface.h"
 
 namespace Cluster
@@ -9,10 +9,10 @@ namespace Cluster
     {
         using namespace Component::Servos;
 
-        class ClusterServo : public Cluster {
+        class ClusterServo : public ClusterBase {
         public:
             ClusterServo(ServosInterface &servos)
-                : Cluster(SERVO)
+                : ClusterBase(SERVO)
                   , mServosInterface(servos) {
             }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Cluster.h"
+#include "../ClusterBase.h"
 #include "../../Component/Software/SoftwareInterface.h"
 
 namespace Cluster
@@ -9,10 +9,10 @@ namespace Cluster
     {
         using namespace Component::Software;
 
-        class ClusterGeneral : public Cluster {
+        class ClusterGeneral : public ClusterBase {
         public:
             ClusterGeneral(SoftwareInterface &software)
-                : Cluster(GENERAL)
+                : ClusterBase(GENERAL)
                   , mSoftware(software) {
             }
 

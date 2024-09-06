@@ -67,7 +67,7 @@ namespace Component
         }
 
         bool Communication::ReceivedStringFrame(void) {
-            if (this->mUart.DataAvailable() > 0) {
+            while (this->mUart.DataAvailable() > 0) {
                 const char rc = this->mUart.Read();
                 if (rc == '<') {
                     this->mIndexBufferRx = 0U;

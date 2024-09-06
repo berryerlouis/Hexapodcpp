@@ -15,15 +15,15 @@ namespace Core
 
     class EventManager {
     public:
-        EventManager(EventMediatorInterface *mediator = nullptr)
+        EventManager(const EventMediatorInterface *mediator = nullptr)
             : mComMediator(mediator) {
         }
 
-        void setMediator(EventMediatorInterface *mediator) {
+        void setMediator(const EventMediatorInterface *mediator) {
             this->mComMediator = mediator;
         }
 
     protected:
-        EventMediatorInterface *mComMediator;
+        const EventMediatorInterface *mComMediator;
     };
 }

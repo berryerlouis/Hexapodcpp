@@ -3,156 +3,126 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <title>Hexapod</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
-        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="styles/style.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" rel="stylesheet">
+    <link href="styles/style.css" rel="stylesheet" type="text/css"/>
 
-    <script defer src="https://code.jquery.com/jquery-3.7.0.min.js"
-        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-        crossorigin="anonymous"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"
-        integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa"
-        crossorigin="anonymous"></script>
+    <script crossorigin="anonymous" defer
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script crossorigin="anonymous" defer
+            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script crossorigin="anonymous" defer
+            integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa"
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
     <script type="importmap">
-    {
-        "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/"
+        {
+            "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/"
+            }
         }
-    }
     </script>
 
 
+    <script src="js/hexapod/confHexapod.js"></script>
     <script defer src="js/main.js" type="module"></script>
 </head>
 
 <body>
-    <div class="d-flex flex-column vh-100">
-        <div class="d-flex w-100 justify-content-center">
-            <div class="container-fluid bg-dark row">
-                <div class="row justify-content-center mt-0 align-items-center g-2">
+<div class="d-flex flex-column vh-100">
+    <div class="d-flex w-100 justify-content-center">
+        <div class="container-fluid bg-dark row">
+            <div class="row justify-content-center mt-0 align-items-center g-2">
 
-                    <div class="col-3">
-                        Hexapod version : <span id="hexapod-version">xx.xx</span>
-                    </div>
-                    <div class="col-3">
-                        <button type="button" class="btn btn-secondary " id="open-command">
-                            <i class="bi bi-tools"></i>
-                        </button>
-                    </div>
-                    <div class="col-3">
-                        Battery : <span id="hexapod-battery-voltage">xx.xxV</span>
-                        <i id="hexapod-battery-status" class="bi bi-battery fs-4 px-3"></i>
-                    </div>
-                    <div class="col-3">
-                        <div class="d-flex w-100 justify-content-end py-3">
-                            <button id="connect-button" type="button" class="btn btn-light">Connect</button>
-                        </div>
+                <div class="col-3">
+                    Hexapod version : <span id="hexapod-version">xx.xx</span>
+                </div>
+                <div class="col-3">
+                    <button class="btn btn-secondary " id="open-command" type="button">
+                        <i class="bi bi-tools"></i>
+                    </button>
+                </div>
+                <div class="col-3">
+                    Battery : <span id="hexapod-battery-voltage">xx.xxV</span>
+                    <i class="bi bi-battery fs-4 px-3" id="hexapod-battery-status"></i>
+                </div>
+                <div class="col-3">
+                    <div class="d-flex w-100 justify-content-end py-3">
+                        <button class="btn btn-light" id="connect-button" type="button">Connect</button>
                     </div>
                 </div>
             </div>
-        </div>
-        <div id="myCanvas">
         </div>
     </div>
-    <div class="position-fixed start-0 p-3" style="z-index: 11; top: 10%; ">
-        <div id="command-menu" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true"
-            data-bs-autohide="false">
-            <div class="toast-header">
-                <strong class="me-auto">Command</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" id="command-menu-close"
-                    aria-label="Close"></button>
-            </div>
-            <div class="toast-body text-dark">
-                <ul class="list-group list-group-flush" id="treeview-list"></ul>
+    <div id="myCanvas">
+    </div>
+</div>
+<div class="position-fixed start-0 p-3" style="z-index: 11; top: 10%; ">
+    <div aria-atomic="true" aria-live="assertive" class="toast hide" data-bs-autohide="false" id="command-menu"
+         role="alert">
+        <div class="toast-header">
+            <strong class="me-auto">Command</strong>
+            <button aria-label="Close" class="btn-close" data-bs-dismiss="toast" id="command-menu-close"
+                    type="button"></button>
+        </div>
+        <div class="toast-body text-dark">
+            <ul class="list-group list-group-flush" id="treeview-list"></ul>
 
-                <!-- <div>
-                    Servo:
-                    <div class="row ps-3">
-                        <div class="row px-1">
-                            <div class="col-2 px-1">
-                                <small>Id:</small>
-                            </div>
-                            <div class="col-10 px-1">
-                                <input type="number" class="form-control" min="0" max="17" value="0" id="servo-id">
-                            </div>
+            <!-- <div>
+                Servo:
+                <div class="row ps-3">
+                    <div class="row px-1">
+                        <div class="col-2 px-1">
+                            <small>Id:</small>
                         </div>
-                        <div class="row px-1">
-                            <div class="col-2 px-1">
-                                <small>Angle:</small>
-                            </div>
-                            <div class="col-8 px-1">
-                                <input type="range" class="form-range" min="0" max="180" value="90" id="servo-angle">
-                            </div>
-                            <div class="col-2 px-1">
-                                <small id="servo-angle-value">90</small>
-                            </div>
+                        <div class="col-10 px-1">
+                            <input type="number" class="form-control" min="0" max="17" value="0" id="servo-id">
                         </div>
-                        <div class="row px-1">
-                            <div class="col-2 px-1">
-                                <small>Offset:</small>
-                            </div>
-                            <div class="col-8 px-1">
-                                <input type="range" class="form-range" min="-10" max="10" value="0" id="servo-offset">
-                            </div>
-                            <div class="col-2 px-1">
-                                <small id="servo-offset-value">0</small>
-                            </div>
+                    </div>
+                    <div class="row px-1">
+                        <div class="col-2 px-1">
+                            <small>Angle:</small>
+                        </div>
+                        <div class="col-8 px-1">
+                            <input type="range" class="form-range" min="0" max="180" value="90" id="servo-angle">
+                        </div>
+                        <div class="col-2 px-1">
+                            <small id="servo-angle-value">90</small>
+                        </div>
+                    </div>
+                    <div class="row px-1">
+                        <div class="col-2 px-1">
+                            <small>Offset:</small>
+                        </div>
+                        <div class="col-8 px-1">
+                            <input type="range" class="form-range" min="-10" max="10" value="0" id="servo-offset">
+                        </div>
+                        <div class="col-2 px-1">
+                            <small id="servo-offset-value">0</small>
                         </div>
                     </div>
                 </div>
-                <div>
-                    Body:
-                    <div class="row ps-3">
-                        <div class="col-6">
-                            <small>Position:</small>
-                            <ul>
-                                <li class="row">
-                                    <div class="col-2 px-1">
-                                        x:
-                                    </div>
-                                    <div class="col-10 px-1">
-                                        <input type="range" class="form-range" min="-50" max="50" value="0"
-                                            id="body-position-x">
-                                    </div>
-                                </li>
-                                <li class="row">
-                                    <div class="col-2 px-1">
-                                        y:
-                                    </div>
-                                    <div class="col-10 px-1">
-                                        <input type="range" class="form-range" min="-50" max="50" value="0"
-                                            id="body-position-y">
-                                    </div>
-                                </li>
-                                <li class="row">
-                                    <div class="col-2 px-1">
-                                        z:
-                                    </div>
-                                    <div class="col-10 px-1">
-                                        <input type="range" class="form-range" min="-50" max="50" value="0"
-                                            id="body-position-z">
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-6">
-                            <small>Rotation:</small>
+            </div>
+            <div>
+                Body:
+                <div class="row ps-3">
+                    <div class="col-6">
+                        <small>Position:</small>
+                        <ul>
                             <li class="row">
                                 <div class="col-2 px-1">
                                     x:
                                 </div>
                                 <div class="col-10 px-1">
-                                    <input type="range" class="form-range" min="-30" max="30" value="0"
-                                        id="body-rotation-x">
+                                    <input type="range" class="form-range" min="-50" max="50" value="0"
+                                        id="body-position-x">
                                 </div>
                             </li>
                             <li class="row">
@@ -160,8 +130,8 @@
                                     y:
                                 </div>
                                 <div class="col-10 px-1">
-                                    <input type="range" class="form-range" min="-30" max="30" value="0"
-                                        id="body-rotation-y">
+                                    <input type="range" class="form-range" min="-50" max="50" value="0"
+                                        id="body-position-y">
                                 </div>
                             </li>
                             <li class="row">
@@ -169,124 +139,155 @@
                                     z:
                                 </div>
                                 <div class="col-10 px-1">
-                                    <input type="range" class="form-range" min="-30" max="30" value="0"
-                                        id="body-rotation-z">
+                                    <input type="range" class="form-range" min="-50" max="50" value="0"
+                                        id="body-position-z">
                                 </div>
                             </li>
-                        </div>
+                        </ul>
+                    </div>
+                    <div class="col-6">
+                        <small>Rotation:</small>
+                        <li class="row">
+                            <div class="col-2 px-1">
+                                x:
+                            </div>
+                            <div class="col-10 px-1">
+                                <input type="range" class="form-range" min="-30" max="30" value="0"
+                                    id="body-rotation-x">
+                            </div>
+                        </li>
+                        <li class="row">
+                            <div class="col-2 px-1">
+                                y:
+                            </div>
+                            <div class="col-10 px-1">
+                                <input type="range" class="form-range" min="-30" max="30" value="0"
+                                    id="body-rotation-y">
+                            </div>
+                        </li>
+                        <li class="row">
+                            <div class="col-2 px-1">
+                                z:
+                            </div>
+                            <div class="col-10 px-1">
+                                <input type="range" class="form-range" min="-30" max="30" value="0"
+                                    id="body-rotation-z">
+                            </div>
+                        </li>
                     </div>
                 </div>
-                <div>
-                    3D:
-                    <div class="row ps-3">
-                        <div class="col-4">
-                            <small>Accel:</small>
-                            <ul>
-                                <li class="row">
-                                    <div class="col-12 px-1">
-                                        x:<small id="accel-x">0</small>
-                                    </div>
-                                </li>
-                                <li class="row">
-                                    <div class="col-12 px-1">
-                                        y:<small id="accel-y">0</small>
-                                    </div>
-                                </li>
-                                <li class="row">
-                                    <div class="col-12 px-1">
-                                        z:<small id="accel-z">0</small>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-4">
-                            <small>Gyro:</small>
-                            <ul>
-                                <li class="row">
-                                    <div class="col-12 px-1">
-                                        x:<small id="gyro-x">0</small>
-                                    </div>
-                                </li>
-                                <li class="row">
-                                    <div class="col-12 px-1">
-                                        y:<small id="gyro-y">0</small>
-                                    </div>
-                                </li>
-                                <li class="row">
-                                    <div class="col-12 px-1">
-                                        z:<small id="gyro-z">0</small>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-4">
-                            <small>Mag:</small>
-                            <ul>
-                                <li class="row">
-                                    <div class="col-12 px-1">
-                                        x:<small id="mag-x">0</small>
-                                    </div>
-                                </li>
-                                <li class="row">
-                                    <div class="col-12 px-1">
-                                        y:<small id="mag-y">0</small>
-                                    </div>
-                                </li>
-                                <li class="row">
-                                    <div class="col-12 px-1">
-                                        z:<small id="mag-z">0</small>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div> -->
             </div>
+            <div>
+                3D:
+                <div class="row ps-3">
+                    <div class="col-4">
+                        <small>Accel:</small>
+                        <ul>
+                            <li class="row">
+                                <div class="col-12 px-1">
+                                    x:<small id="accel-x">0</small>
+                                </div>
+                            </li>
+                            <li class="row">
+                                <div class="col-12 px-1">
+                                    y:<small id="accel-y">0</small>
+                                </div>
+                            </li>
+                            <li class="row">
+                                <div class="col-12 px-1">
+                                    z:<small id="accel-z">0</small>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-4">
+                        <small>Gyro:</small>
+                        <ul>
+                            <li class="row">
+                                <div class="col-12 px-1">
+                                    x:<small id="gyro-x">0</small>
+                                </div>
+                            </li>
+                            <li class="row">
+                                <div class="col-12 px-1">
+                                    y:<small id="gyro-y">0</small>
+                                </div>
+                            </li>
+                            <li class="row">
+                                <div class="col-12 px-1">
+                                    z:<small id="gyro-z">0</small>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-4">
+                        <small>Mag:</small>
+                        <ul>
+                            <li class="row">
+                                <div class="col-12 px-1">
+                                    x:<small id="mag-x">0</small>
+                                </div>
+                            </li>
+                            <li class="row">
+                                <div class="col-12 px-1">
+                                    y:<small id="mag-y">0</small>
+                                </div>
+                            </li>
+                            <li class="row">
+                                <div class="col-12 px-1">
+                                    z:<small id="mag-z">0</small>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div> -->
         </div>
     </div>
+</div>
 
-    <div class="fixed-bottom">
-        <div class="d-flex flex-column bg-dark py-1">
-            <div class="row px-2">
-                <div class="col-2">
-                    <div id="console-button" type="button" class="btn btn-secondary">
-                        Console <i id="console-button-icon" class="bi bi-arrow-down"></i>
-                    </div>
-                </div>
-                <div class="col-7">
-                    <input type="text" id="console-send-frame" class="w-50" aria-describedby="button-addon2">
-                    <button class="btn btn-secondary" type="button" id="console-send-button">
-                        <i class="bi bi-send"></i>
-                    </button>
-                    <div class="badge rounded-pill bg-danger" id="console-send-frame-invalid" style="display: none;">
-                    </div>
-                </div>
-                <div class="col-2 d-flex align-items-center justify-content-around">
-
-                    <div class='console-number-messages-rx'>
-                        <i class="bi bi-send-plus-fill"></i>
-                        <span id="console-number-messages-rx">0 </span>
-                    </div>
-                    <div class='console-number-messages-tx mx-2'>
-                        <i class="bi bi-send-plus-fill"></i>
-                        <span id="console-number-messages-tx">0 </span>
-                    </div>
-                    <div class='console-number-messages-timeout'>
-                        <i class="bi bi-send-exclamation-fill"></i>
-                        <span id="console-number-messages-timeout">0 </span>
-                    </div>
-                </div>
-                <div class="col-1">
-                    <div id="console-clear-button" type="button" class="btn btn-secondary float-end">
-                        <i class="bi bi-trash3"></i>
-                    </div>
+<div class="fixed-bottom">
+    <div class="d-flex flex-column bg-dark py-1">
+        <div class="row px-2">
+            <div class="col-2">
+                <div class="btn btn-secondary" id="console-button" type="button">
+                    Console <i class="bi bi-arrow-down" id="console-button-icon"></i>
                 </div>
             </div>
-            <div class="collapse mt-1" id="console">
-                <div class="list-group" id="console-list"></div>
+            <div class="col-7">
+                <input aria-describedby="button-addon2" class="w-50" id="console-send-frame" type="text">
+                <button class="btn btn-secondary" id="console-send-button" type="button">
+                    <i class="bi bi-send"></i>
+                </button>
+                <div class="badge rounded-pill bg-danger" id="console-send-frame-invalid" style="display: none;">
+                </div>
+            </div>
+            <div class="col-2 d-flex align-items-center justify-content-around">
+
+                <div class='console-number-messages-rx'>
+                    <i class="bi bi-send-plus-fill"></i>
+                    <span id="console-number-messages-rx">0 </span>
+                </div>
+                <div class='console-number-messages-tx mx-2'>
+                    <i class="bi bi-send-plus-fill"></i>
+                    <span id="console-number-messages-tx">0 </span>
+                </div>
+                <div class='console-number-messages-timeout'>
+                    <i class="bi bi-send-exclamation-fill"></i>
+                    <span id="console-number-messages-timeout">0 </span>
+                </div>
+            </div>
+            <div class="col-1">
+                <div class="btn btn-secondary float-end" id="console-clear-button" type="button">
+                    <i class="bi bi-trash3"></i>
+                </div>
             </div>
         </div>
+        <div class="collapse mt-1" id="console">
+            <div class="list-group" id="console-list"></div>
+        </div>
     </div>
+</div>
 </body>
 
 </html>

@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "../Cluster.h"
+#include "../ClusterBase.h"
 #include "../../Component/Imu/Mpu9150Interface.h"
 #include "../../Misc/Maths/Geometry.h"
 
@@ -11,10 +11,10 @@ namespace Cluster
     {
         using namespace Component::Imu;
 
-        class ClusterImu : public Cluster {
+        class ClusterImu : public ClusterBase {
         public:
             ClusterImu(Mpu9150Interface &imu)
-                : Cluster(IMU)
+                : ClusterBase(IMU)
                   , mImu(imu) {
             }
 

@@ -44,9 +44,9 @@ protected:
 	/* Mocks */
 	StrictMock <Bot::Body::MockBody> mMockBody;
 	StrictMock <Driver::Uart::MockUart> mMockUart;
-	StrictMock <Cluster::Clusters::MockClusters> mMockClusters;
+	StrictMock <ClusterBase::Clusters::MockClusters> mMockClusters;
 	StrictMock <Component::Led::MockLed> mMockLed;
-	Cluster::Body::ClusterBody mClusterBody;
+	ClusterBase::Body::ClusterBody mClusterBody;
 
 	/* Test class */
 	Communication mCommunication;
@@ -163,7 +163,7 @@ TEST_F( UT_CMP_COMMUNICATION, Update_Ok_BodySet )
 	EXPECT_CALL( mMockLed, On() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	EXPECT_CALL( mMockLed, Off() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
 	EXPECT_CALL( mMockUart, Send( Matcher <const uint8_t *>( _ ), _ ) ).Times( 1U );
-	EXPECT_CALL( mMockClusters, GetCluster( Cluster::EClusters::BODY ) ).WillOnce( Return( &mClusterBody ) );
+	EXPECT_CALL( mMockClusters, GetCluster( ClusterBase::EClusters::BODY ) ).WillOnce( Return( &mClusterBody ) );
 	EXPECT_CALL( mMockBody, SetPositionRotation( position, rotation, travelTime ) ).Times( 1U );
 
 	for ( size_t i = 0; i < strlen( bufferRx ); i++ )

@@ -58,7 +58,7 @@ TEST_F( UT_SRV_PROXIMITY, Update )
 TEST_F( UT_SRV_PROXIMITY, Detect )
 {
 	SensorsId   sensorId = SensorsId::SRF_LEFT;
-	Core::Event event    = { id: Cluster::EClusters::PROXIMITY, value: sensorId };
+	Core::Event event    = { id: ClusterBase::EClusters::PROXIMITY, value: sensorId };
 	EXPECT_CALL( mMockEventMediatorInterface, SendMessage( _ ) ).Times( 1U );
 
 	mServiceProximity.Detect( sensorId );

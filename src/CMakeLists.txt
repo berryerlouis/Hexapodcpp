@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.22.1)
 
+message(INFO " => Compilation with ${TARGET} in ${CMAKE_BUILD_TYPE} mode for ${PROJECT_NAME}")
 if (${TARGET} STREQUAL "gcc")
     # using GCC
     add_compile_definitions(GTEST)
@@ -11,6 +12,9 @@ else ()
     set(F_CPU 20000000UL)
     set(MCU atmega1284p)
     set(CMAKE_EXE_LINKER_FLAGS -mmcu=${MCU})
+    if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+        add_compile_definitions(DEBUG)
+    endif ()
     add_compile_options(-mmcu=${MCU} -DF_CPU=${F_CPU} -Wall -Wextra -std=c++17 -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O1 -g)
 endif ()
 
@@ -120,3 +124,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME}.elf
 add_custom_target(strip ALL avr-strip ${PROJECT_NAME}.elf DEPENDS ${PROJECT_NAME})
 
 add_custom_target(hex ALL avr-objcopy -R .eeprom -O ihex ${PROJECT_NAME}.elf ${PROJECT_NAME}.hex DEPENDS strip)
+
+# Upload the firmware with avrdude
+add_custom_target(upload avrdude.exe -c arduino -P COM4 -b 500000 -p m1284p -U flash:w:build/avr-debug/src/Hexapodcpp.elf DEPEND HEX)

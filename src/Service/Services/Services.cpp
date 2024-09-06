@@ -14,19 +14,19 @@ namespace Service
             ServiceBattery &serviceBattery,
             ServiceDisplay &serviceDisplay)
             : mServices{
-                {EServices::GENERAL, &serviceGeneral},
-                {EServices::PROXIMITY, &serviceProximity},
-                {EServices::CONTROL, &serviceControl},
-                {EServices::COMMUNICATION, &serviceCommunication},
-                {EServices::ORIENTATION, &serviceOrientation},
-                {EServices::BATTERY, &serviceBattery},
-                {EServices::DISPLAY, &serviceDisplay}
+                {GENERAL, &serviceGeneral},
+                {PROXIMITY, &serviceProximity},
+                {CONTROL, &serviceControl},
+                {COMMUNICATION, &serviceCommunication},
+                {ORIENTATION, &serviceOrientation},
+                {BATTERY, &serviceBattery},
+                {DISPLAY, &serviceDisplay}
             } {
         }
 
         Core::CoreStatus Services::Initialize(void) {
             Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-            ServiceCommunication *serviceCom = static_cast<ServiceCommunication *>(this->Get(EServices::COMMUNICATION));
+            const ServiceCommunication *serviceCom = static_cast<ServiceCommunication *>(this->Get(COMMUNICATION));
             for (const ServiceItem item: this->mServices) {
                 item.service->setMediator(serviceCom);
                 success = item.service->Initialize();

@@ -5,66 +5,44 @@ import {Message} from './protocol/Message.js'
 import {Logger} from './ui/logger/Logger.js'
 import {Treeview} from './ui/treeview/Treeview.js'
 import {Command} from './ui/Command.js'
+import {ClusterBattery} from "./ui/clusters/battery/ClusterBattery.js";
+import {ClusterGeneral} from "./ui/clusters/general/ClusterGeneral.js";
+import Canvas from "./ui/Canvas.js";
 
+const canvas = new Canvas(window.innerWidth, window.innerHeight - document.body.children[0].children[0].clientHeight);
 const serialInterface = new SerialInterface();
 const messageManager = new MessageManager(serialInterface);
 const logger = new Logger(messageManager);
 const treeview = new Treeview(messageManager);
 const menu = new Command();
-
-messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.GENERAL, CommandGeneral.VERSION, (message) => {
-    if (message.size > 0) {
-        let major = message.fetchInt8U();
-        let minor = message.fetchInt8U();
-        $('#hexapod-version').text(major + '.' + minor);
-    }
-});
-
-messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.BATTERY, CommandBattery.STATUS, (message) => {
-    if (message.size > 0) {
-        let state = message.fetchInt8U();
-        let voltage = message.fetchInt16U() / 100;
-        if (state === 0) {
-            $('#hexapod-battery-status').removeClass('bi-battery');
-            $('#hexapod-battery-status').removeClass('bi-battery-half');
-            $('#hexapod-battery-status').addClass('bi-battery-full');
-            $('#hexapod-battery-status').attr('style', "color: rgb(50, 223, 27);");
-        } else if (state === 1) {
-            $('#hexapod-battery-status').removeClass('bi-battery');
-            $('#hexapod-battery-status').removeClass('bi-battery-full');
-            $('#hexapod-battery-status').addClass('bi-battery-half');
-            $('#hexapod-battery-status').attr('style', "color: rgb(223, 135, 27);");
-        } else if (state === 2) {
-            $('#hexapod-battery-status').removeClass('bi-battery-full');
-            $('#hexapod-battery-status').removeClass('bi-battery-half');
-            $('#hexapod-battery-status').addClass('bi-battery');
-            $('#hexapod-battery-status').attr('style', "color: rgb(223, 27, 27);");
-        } else {
-            $('#hexapod-battery-status').removeClass('bi-battery-full');
-            $('#hexapod-battery-status').removeClass('bi-battery-half');
-            $('#hexapod-battery-status').addClass('bi-battery');
-            $('#hexapod-battery-status').attr('style', "color: rgb(223, 27, 27);");
-        }
-        $('#hexapod-battery-voltage').text(voltage.toFixed(2) + 'V');
-    }
-});
-
+const cluBattery = new ClusterBattery(messageManager);
+const cluGeneral = new ClusterGeneral(messageManager);
+const clusters = [cluBattery, cluGeneral];
 
 $('#connect-button').click(async () => {
     await serialInterface.init(navigator);
-
-    //setInterval(() => {
-    messageManager.write(new Message().build("Tx", ClusterName.GENERAL, CommandGeneral.VERSION));
-    //messageManager.write(new Message().build("Tx", ClusterName.BATTERY, CommandBattery.STATUS));
-    //}, 100);
+    let toto = 0;
+    setInterval(() => {
+        if (toto === 0) {
+            messageManager.write(new Message().build("Tx", ClusterName.GENERAL, CommandGeneral.VERSION));
+            toto = 1;
+        } else {
+            messageManager.write(new Message().build("Tx", ClusterName.BATTERY, CommandBattery.STATUS));
+            toto = 0;
+        }
+    }, 50);
 });
 
-function update() {
+function init() {
+    clusters.forEach((cluster) => {
+        cluster.initialize();
+    })
+    animate();
+}
 
-    if (serialInterface.messageAvailable()) {
-        const frame = serialInterface.popMessage();
-    }
+function update() {
     messageManager.update();
+    canvas.animate();
 }
 
 function animate() {
@@ -72,4 +50,5 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-animate();
+
+init();

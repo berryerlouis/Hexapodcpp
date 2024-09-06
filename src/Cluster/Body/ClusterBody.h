@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Cluster.h"
+#include "../ClusterBase.h"
 #include "../../Bot/Body/BodyInterface.h"
 
 namespace Cluster
@@ -9,10 +9,10 @@ namespace Cluster
     {
         using namespace Bot::Body;
 
-        class ClusterBody : public Cluster {
+        class ClusterBody : public ClusterBase {
         public:
             ClusterBody(BodyInterface &body)
-                : Cluster(BODY)
+                : ClusterBase(BODY)
                   , mBody(body) {
             }
 

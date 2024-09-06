@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Cluster.h"
+#include "../ClusterBase.h"
 #include "../../Component/Battery/BatteryInterface.h"
 
 namespace Cluster
@@ -9,10 +9,10 @@ namespace Cluster
     {
         using namespace Component::Battery;
 
-        class ClusterBattery : public Cluster {
+        class ClusterBattery : public ClusterBase {
         public:
             ClusterBattery(BatteryInterface &battery)
-                : Cluster(BATTERY)
+                : ClusterBase(BATTERY)
                   , mBattery(battery) {
             }
 

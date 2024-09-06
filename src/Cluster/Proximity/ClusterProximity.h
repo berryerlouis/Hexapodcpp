@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Cluster.h"
+#include "../ClusterBase.h"
 #include "../../Component/Proximity/SensorProximityInterface.h"
 
 namespace Cluster
@@ -9,10 +9,10 @@ namespace Cluster
     {
         using namespace Component::Proximity;
 
-        class ClusterProximity : public Cluster {
+        class ClusterProximity : public ClusterBase {
         public:
             ClusterProximity(SensorProximityMultipleInterface &proximity)
-                : Cluster(PROXIMITY)
+                : ClusterBase(PROXIMITY)
                   , mProximity(proximity) {
             }
 
@@ -57,7 +57,7 @@ namespace Cluster
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameDistance(EProximityCommands sensorId, Frame &response) {
+            inline Core::CoreStatus BuildFrameDistance(EProximityCommands sensorId, Frame &response) const {
                 Core::CoreStatus success = response.Build(
                     EClusters::PROXIMITY,
                     sensorId);
@@ -67,7 +67,7 @@ namespace Cluster
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameThreshold(EProximityCommands sensorId, Frame &response) {
+            inline Core::CoreStatus BuildFrameThreshold(EProximityCommands sensorId, Frame &response) const {
                 Core::CoreStatus success = response.Build(
                     EClusters::PROXIMITY,
                     EProximityCommands::SET_THRESHOLD);

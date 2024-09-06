@@ -40,7 +40,7 @@ export class MessageManager {
             // waiting for response : timeout
             else if (this.currentMessagesToSent != null) {
                 this.currentMessagesToSent.message.timeout++;
-                if (this.currentMessagesToSent.message.timeout >= 5) {
+                if (this.currentMessagesToSent.message.timeout >= 10) {
                     this.currentMessagesToSent.cbResponse && this.currentMessagesToSent.cbResponse(this.currentMessagesToSent.message);
                     this.notifyWriteTimeout(this.currentMessagesToSent);
                     this.currentMessagesToSent = null;

@@ -5,9 +5,9 @@
 
 namespace Cluster
 {
-    class Cluster : public ClusterInterface {
+    class ClusterBase : public ClusterInterface {
     public:
-        Cluster(EClusters clusterId)
+        ClusterBase(EClusters clusterId)
             : mClusterId(clusterId) {
         }
 

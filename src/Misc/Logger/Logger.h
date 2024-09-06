@@ -16,7 +16,7 @@
 #define LOG(value)           Misc::Logger::Log->Write( value )
 #else
 #define INIT_LOGGER(uart)
-#define LOG(value)           std::cout << value << std::endl;
+#define LOG(value)           std::cout << value << std::ends;
 #endif
 #else
 #define INIT_LOGGER( uart )
