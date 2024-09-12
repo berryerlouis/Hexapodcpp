@@ -4,8 +4,9 @@ namespace Service
 {
     namespace Control
     {
-        ServiceControl::ServiceControl(ServosInterface &servos)
-            : Service(10U)
+        ServiceControl::ServiceControl(ServosInterface &servos,
+                                       Event::EventListener &eventListener)
+            : Service(10U, eventListener)
               , mStepPca9685(0U)
               , mServosInterface(servos) {
         }
@@ -21,6 +22,10 @@ namespace Service
             if (this->mStepPca9685 == 2U) {
                 this->mStepPca9685 = 0U;
             }
+        }
+
+        void ServiceControl::DispatchEvent(SEvent &event) {
+            (void) event;
         }
     }
 }

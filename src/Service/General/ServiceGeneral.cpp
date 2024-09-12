@@ -4,8 +4,9 @@ namespace Service
 {
     namespace General
     {
-        ServiceGeneral::ServiceGeneral(SoftwareInterface &software)
-            : Service(1U)
+        ServiceGeneral::ServiceGeneral(SoftwareInterface &software,
+                                       Event::EventListener &eventListener)
+            : Service(1U, eventListener)
               , mSoftware(software) {
         }
 
@@ -15,21 +16,10 @@ namespace Service
 
         void ServiceGeneral::Update(const uint64_t currentTime) {
             (void) currentTime;
-            const uint64_t deltaTime = this->GetDeltaTime();
+        }
 
-            if (deltaTime < this->mSoftware.GetMinTime()) {
-                this->mSoftware.SetMinTime(deltaTime);
-                this->mComMediator->SendMessage({
-                    .id = Cluster::EClusters::GENERAL,
-                    .value = static_cast<uint8_t>(Cluster::EGeneralCommands::MIN_EXECUTION_TIME)
-                });
-            } else if (deltaTime > this->mSoftware.GetMaxTime()) {
-                this->mSoftware.SetMaxTime(deltaTime);
-                this->mComMediator->SendMessage({
-                    .id = Cluster::EClusters::GENERAL,
-                    .value = static_cast<uint8_t>(Cluster::EGeneralCommands::MAX_EXECUTION_TIME)
-                });
-            }
+        void ServiceGeneral::DispatchEvent(SEvent &event) {
+            (void) event;
         }
     }
 }

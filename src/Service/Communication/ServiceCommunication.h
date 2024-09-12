@@ -2,7 +2,6 @@
 
 #include "../../Component/Communication/CommunicationInterface.h"
 #include "../../Cluster/Clusters/ClustersInterface.h"
-#include "../../Core/Event/EventMediatorInterface.h"
 #include "../Service.h"
 
 namespace Service
@@ -11,9 +10,10 @@ namespace Service
     {
         using namespace Component::Communication;
 
-        class ServiceCommunication : public Service, public Core::EventMediatorInterface {
+        class ServiceCommunication : public Service {
         public:
-            ServiceCommunication(CommunicationInterface &communication, Clusters::ClustersInterface &clusters);
+            ServiceCommunication(CommunicationInterface &communication, Clusters::ClustersInterface &clusters,
+                                 Event::EventListener &eventListener);
 
             ~ServiceCommunication() = default;
 
@@ -21,7 +21,7 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void SendMessage(Core::Event event) const final override;
+            virtual void DispatchEvent(SEvent &event) final override;
 
         private:
             Clusters::ClustersInterface &mClusters;

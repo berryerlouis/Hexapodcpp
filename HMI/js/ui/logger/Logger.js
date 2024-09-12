@@ -16,12 +16,12 @@ export class Logger {
         this.messageManager = messageManager;
         this.messageManager.addCallbackRead((message) => {
             this.logMessage(message);
-            console.log(message.toString());
+            //console.log(message.toString());
             this.header.incrementRxMessage();
         });
         this.messageManager.addCallbackWrite((message) => {
             this.logMessage(message);
-            console.log(message.toString());
+            //console.log(message.toString());
             this.header.incrementTxMessage();
         });
         this.messageManager.addCallbackWriteTimeout((message) => {

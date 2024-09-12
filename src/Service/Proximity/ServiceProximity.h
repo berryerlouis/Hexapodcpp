@@ -9,9 +9,12 @@ namespace Service
     {
         using namespace Component::Proximity;
 
+        constexpr uint8_t MAX_TIMEOUT_DETECTION = 10U;
+
         class ServiceProximity : public Service, public SensorProximityObserverInterface {
         public:
-            ServiceProximity(SensorProximityMultipleInterface &proximity);
+            ServiceProximity(SensorProximityMultipleInterface &proximity,
+                             Event::EventListener &eventListener);
 
             ~ServiceProximity() = default;
 
@@ -19,12 +22,13 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void Detect(const SensorsId &sensorId) final override;
+            virtual void DispatchEvent(SEvent &event) final override;
 
-            virtual void NoDetect(const SensorsId &sensorId) final override;
+            virtual void Detect(const SensorsId &sensorId, const uint16_t &distance) final override;
 
         protected:
             SensorProximityMultipleInterface &mProximity;
+            uint8_t mTimeoutDetection[NB_SENSORS];
         };
     }
 }

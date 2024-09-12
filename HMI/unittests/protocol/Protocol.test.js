@@ -1,6 +1,5 @@
-import { jest } from '@jest/globals';
-import { Protocol } from '../../js/protocol/Protocol.js';
-import { Clusters, Cluster, Command, ClusterName, CommandGeneral, CommandImu, CommandProximity, CommandServo } from '../../js/protocol/Cluster.js';
+import {Protocol} from '../../js/protocol/Protocol.js';
+import {Clusters} from '../../js/protocol/Cluster.js';
 
 describe('Protocol', () => {
 
@@ -24,7 +23,7 @@ describe('Protocol', () => {
             Protocol.decode("Tx", '<01030301020304>');
         };
         expect(throwedDecode).toThrow(Error);
-        expect(throwedDecode).toThrow("Decoding error! incorect size: <01030301020304>");
+        expect(throwedDecode).toThrow("Decoding error! incorrect size: <01030301020304>");
     });
 
     test('should handle decoding error if malformed frame', () => {

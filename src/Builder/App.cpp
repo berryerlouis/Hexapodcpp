@@ -18,8 +18,7 @@ Gpio triggerRightPin = Gpio({PORT_A, PIN_3}, OUT);
 namespace Builder
 {
     App::App(void)
-        : mStartTime(0UL)
-          , mTick()
+        : mTick()
           , mUart()
           , mTwi(Driver::Twi::EI2cFreq::FREQ_400_KHZ)
           , mAdc(adcPinBattery)
@@ -50,16 +49,19 @@ namespace Builder
           , mClusterServo(mServos)
           , mClusters(mClusterGeneral, mClusterBattery, mClusterBody, mClusterImu, mClusterProximity, mClusterServo)
           , mCommunication(mUart, mClusters, mLedStatus)
-          , mServiceControl(mServos)
-          , mServiceCommunication(mCommunication, mClusters)
-          , mServiceProximity(mSensorProximity)
-          , mServiceOrientation(mMpu9150)
-          , mServiceBattery(mBattery)
-          , mServiceDisplay(mSsd1306, mBattery, mSensorProximity)
-          , mServiceGeneral(mSoftware)
-          , mServices(mServiceGeneral, mServiceControl, mServiceCommunication, mServiceProximity, mServiceOrientation, mServiceBattery, mServiceDisplay) {
+          , mEventListener()
+          , mServiceControl(mServos, mEventListener)
+          , mServiceCommunication(mCommunication, mClusters, mEventListener)
+          , mServiceProximity(mSensorProximity, mEventListener)
+          , mServiceOrientation(mMpu9150, mEventListener)
+          , mServiceBattery(mBattery, mEventListener)
+          , mServiceDisplay(mSsd1306, mEventListener)
+          , mServiceGeneral(mSoftware, mEventListener)
+          , mServices(mTick, mServiceGeneral, mServiceControl, mServiceCommunication, mServiceProximity,
+                      mServiceOrientation, mServiceBattery, mServiceDisplay, mEventListener) {
         INIT_LOGGER(mUart);
     }
+
 
     Core::CoreStatus App::Initialize(void) {
         Core::CoreStatus success = mUart.Initialize();
@@ -70,16 +72,13 @@ namespace Builder
             success = mServices.Initialize();
         }
         if (success == false) {
-            LOG("<error>");
+            printf("<error>");
         }
-        this->mStartTime = this->mTick.GetMs();
         return (success);
     }
 
     void App::Update(const uint64_t currentTime) {
-        (void) currentTime;
-        const uint64_t currentMillis = this->mTick.GetMs() - this->mStartTime;
         mLedBoot.Toggle();
-        mServices.Update(currentMillis);
+        mServices.Update(currentTime);
     }
 }

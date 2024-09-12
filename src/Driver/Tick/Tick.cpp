@@ -31,21 +31,20 @@ namespace Driver
                 ovf0++;
                 }
             );
-            return (static_cast<uint64_t>((ovf0 << 8U) + tcnt0) / TICK_TIMER);
+            return (((ovf0 << 8U) + tcnt0) / TICK_TIMER);
         }
 
         uint64_t Tick::GetMs(void) {
-            uint64_t currentTime = GetUs();
-
+            const uint64_t currentTime = GetUs();
             return (static_cast<uint64_t>(currentTime / 1000.0F));
         }
 
-        void Tick::DelayMs(uint64_t delayMs) {
+        void Tick::DelayMs(const uint64_t delayMs) {
             DelayUs(delayMs * 1000UL);
         }
 
-        void Tick::DelayUs(uint64_t delayUs) {
-            uint64_t timeToWait = GetUs() + delayUs;
+        void Tick::DelayUs(const uint64_t delayUs) {
+            const uint64_t timeToWait = GetUs() + delayUs;
 
             while (GetUs() < timeToWait) {
             }

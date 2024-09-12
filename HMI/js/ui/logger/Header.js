@@ -74,10 +74,10 @@ export class Header {
         this.consoleListButtonClearConsoleList = $('#console-clear-button');
         this.consoleList = $('#console-list');
         this.consoleListButtonClearConsoleList.click(() => {
-            this.consoleList[0].innerHTML = '';
-            this.numberFrameSentRx[0].innerText = 0;
-            this.numberFrameSentTx[0].innerText = 0;
-            this.numberFrameSentTimeout[0].innerText = 0;
+            this.consoleList[0].textContent = '';
+            this.numberFrameSentRx[0].textContent = 0;
+            this.numberFrameSentTx[0].textContent = 0;
+            this.numberFrameSentTimeout[0].textContent = 0;
         });
     }
 
@@ -88,14 +88,14 @@ export class Header {
     }
 
     incrementRxMessage() {
-        this.numberFrameSentRx[0].innerText = parseInt(this.numberFrameSentRx[0].innerText) + 1;
+        this.numberFrameSentRx[0].textContent = parseInt(this.numberFrameSentRx[0].textContent) + 1;
     }
 
     incrementTxMessage() {
-        this.numberFrameSentTx[0].innerText = parseInt(this.numberFrameSentTx[0].innerText) + 1;
+        this.numberFrameSentTx[0].textContent = parseInt(this.numberFrameSentTx[0].textContent) + 1;
     }
 
     incrementMessageTimeout() {
-        this.numberFrameSentTimeout[0].innerText = parseInt(this.numberFrameSentTimeout[0].innerText) + 1;
+        this.numberFrameSentTimeout[0].textContent = parseInt(this.numberFrameSentTimeout[0].textContent) + 1;
     }
 }

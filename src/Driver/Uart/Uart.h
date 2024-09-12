@@ -27,8 +27,8 @@ namespace Driver
 
             virtual uint8_t DataAvailable(void) const final override;
 
-            static Misc::Buffer::Buffer bufferRx;
             static Misc::Buffer::Buffer bufferTx;
+            static Misc::Buffer::Buffer bufferRx;
 
         private:
             EBaudRate mBaudRate;

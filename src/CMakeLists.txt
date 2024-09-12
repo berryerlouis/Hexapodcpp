@@ -6,7 +6,7 @@ if (${TARGET} STREQUAL "gcc")
     add_compile_definitions(GTEST)
     add_compile_definitions(X64)
     add_compile_definitions(DEBUG)
-    add_compile_options(-DF_CPU=${F_CPU} -Wall -Wextra -std=c++17 -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O1 -g)
+    add_compile_options(-DF_CPU=${F_CPU} -Wall -Wextra -std=c++17 -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O0 -g)
 else ()
     # using AVR GCC
     set(F_CPU 20000000UL)
@@ -30,6 +30,8 @@ set(SRC_FILES_SERVICES
         Service/Orientation/ServiceOrientation.cpp
         Service/Proximity/ServiceProximity.cpp
         Service/Services/Services.cpp
+        Service/Event/EventListener.cpp
+        Service/Event/BufferEvent.cpp
 )
 
 set(SRC_FILES_MISC
@@ -86,6 +88,7 @@ set(SRC_FILES_BOT
         Bot/Leg/Leg.cpp
         Bot/Legs/Legs.cpp
 )
+
 
 set(SRC_FILES
         ${SRC_FILES_BUILDER}

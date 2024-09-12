@@ -1,7 +1,7 @@
-import { jest } from '@jest/globals';
-import { Message } from '../../js/protocol/Message.js';
-import { MessageManager } from '../../js/protocol/MessageManager.js';
-import { ClusterName, CommandGeneral } from '../../js/protocol/Cluster.js'
+import {jest} from '@jest/globals';
+import {Message} from '../../js/protocol/Message.js';
+import {MessageManager} from '../../js/protocol/MessageManager.js';
+import {ClusterName, CommandGeneral} from '../../js/protocol/Cluster.js'
 
 
 describe('MessageManager', () => {
@@ -23,13 +23,15 @@ describe('MessageManager', () => {
 
     it('should write a new message if Serial is not initalized correctly', async () => {
         mockSerialInterface.initialized = false;
-        messageManager.write("message", (message) => { });
+        messageManager.write("message", (message) => {
+        });
         expect(messageManager.listMessagesToSent.length).toEqual(1);
     });
 
     it('should write a new message correctly', async () => {
         mockSerialInterface.initialized = true;
-        messageManager.write("message", (message) => { });
+        messageManager.write("message", (message) => {
+        });
         expect(messageManager.listMessagesToSent.length).toEqual(1);
     });
 
@@ -47,28 +49,35 @@ describe('MessageManager', () => {
         mockSerialInterface.initialized = true;
         let msgTx = new Message().build("Tx", ClusterName.GENERAL, CommandGeneral.VERSION);
         let msgRx = new Message().build("Rx", ClusterName.GENERAL, CommandGeneral.VERSION, 2, ["00", "01"]);
-        messageManager.currentMessagesToSent = { message: msgTx, cbResponse: (message) => { } };
+        messageManager.currentMessagesToSent = {
+            message: msgTx, cbResponse: (message) => {
+            }
+        };
         messageManager.read(msgRx);
         expect(messageManager.currentMessagesToSent).toEqual(null);
     });
 
     test('should add callback Specific Command', () => {
-        messageManager.addCallbackNotifyOnSpecificCommand("", "", () => { });
+        messageManager.addCallbackNotifyOnSpecificCommand("", "", () => {
+        });
         expect(messageManager.listOfCallbackNotifyOnSpecificCommand.length).toEqual(1);
     });
 
     test('should add callback Read', () => {
-        messageManager.addCallbackRead(() => { });
+        messageManager.addCallbackRead(() => {
+        });
         expect(messageManager.listOfCallbackRead.length).toEqual(1);
     });
 
     test('should add callback Write', () => {
-        messageManager.addCallbackWrite(() => { });
+        messageManager.addCallbackWrite(() => {
+        });
         expect(messageManager.listOfCallbackWrite.length).toEqual(1);
     });
 
     test('should add callback Write Timeout', () => {
-        messageManager.addCallbackWriteTimeout(() => { });
+        messageManager.addCallbackWriteTimeout(() => {
+        });
         expect(messageManager.listOfCallbackTimeout.length).toEqual(1);
     });
 
@@ -86,7 +95,7 @@ describe('MessageManager', () => {
         messageManager.addCallbackWrite(cbWrite);
         expect(messageManager.listOfCallbackWrite.length).toEqual(1);
         let msg = new Message().build("Tx", ClusterName.GENERAL, CommandGeneral.VERSION);
-        messageManager.notifyWrite({ message: msg });
+        messageManager.notifyWrite({message: msg});
         expect(cbWrite).toHaveBeenCalledWith(msg);
     });
 
@@ -95,7 +104,7 @@ describe('MessageManager', () => {
         messageManager.addCallbackWriteTimeout(cbWriteTimeout);
         expect(messageManager.listOfCallbackTimeout.length).toEqual(1);
         let msg = new Message().build("Tx", ClusterName.GENERAL, CommandGeneral.VERSION);
-        messageManager.notifyWriteTimeout({ message: msg });
+        messageManager.notifyWriteTimeout({message: msg});
         expect(cbWriteTimeout).toHaveBeenCalledWith(msg);
     });
 
@@ -118,8 +127,8 @@ describe('MessageManager', () => {
         messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.GENERAL, CommandGeneral.VERSION, cbSpecific);
         expect(messageManager.listOfCallbackNotifyOnSpecificCommand.length).toEqual(1);
         let msg = new Message();
-        msg.cluster = { name: ClusterName.BATTER };
-        msg.command = { name: CommandGeneral.VERSION };
+        msg.cluster = {name: ClusterName.BATTER};
+        msg.command = {name: CommandGeneral.VERSION};
         messageManager.notifyOnSpecificCommand(msg);
         expect(cbSpecific).not.toHaveBeenCalledWith(msg);
     });
@@ -134,7 +143,7 @@ describe('MessageManager', () => {
         expect(mockSerialInterface.write.mock.calls).toHaveLength(1);
         expect(messageManager.currentMessagesToSent.message).toEqual(msg);
     });
-    
+
     test('should update with message in queue but cant write', () => {
         mockSerialInterface.initialized = true;
         mockSerialInterface.write = jest.fn();
@@ -150,15 +159,14 @@ describe('MessageManager', () => {
         mockSerialInterface.initialized = true;
         let msgTx = new Message().build("Tx", ClusterName.GENERAL, CommandGeneral.VERSION);
         console.error = jest.fn();
-        messageManager.currentMessagesToSent = { message: msgTx, cbResponse: (message) => { } };
-        messageManager.update();
-        expect(messageManager.currentMessagesToSent.message.timeout).toEqual(1);
-        messageManager.update();
-        expect(messageManager.currentMessagesToSent.message.timeout).toEqual(2);
-        messageManager.update();
-        expect(messageManager.currentMessagesToSent.message.timeout).toEqual(3);
-        messageManager.update();
-        expect(messageManager.currentMessagesToSent.message.timeout).toEqual(4);
+        messageManager.currentMessagesToSent = {
+            message: msgTx, cbResponse: (message) => {
+            }
+        };
+        for (let i = 0; i < 9; i++) {
+            messageManager.update();
+            expect(messageManager.currentMessagesToSent.message.timeout).toEqual(i + 1);
+        }
         messageManager.update();
         expect(console.error).toHaveBeenCalledWith('timeout');
         expect(messageManager.currentMessagesToSent).toEqual(null);

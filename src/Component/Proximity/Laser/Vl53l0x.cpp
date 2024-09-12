@@ -12,8 +12,7 @@ namespace Component
 
 
             Vl53l0x::Vl53l0x(Twi::TwiInterface &i2c, Tick::TickInterface &tick, const uint8_t address)
-                : SensorProximityWindow()
-                  , mI2c(i2c)
+                : mI2c(i2c)
                   , mTick(tick)
                   , mAddress(address)
                   , mDistance(0)
@@ -127,15 +126,9 @@ namespace Component
                 (void) currentTime;
 
                 this->mDistance = this->GetDistance();
-                bool detection = this->mDistance != 0U && this->mDistance <= this->mThreshold;
+                const bool detection = this->mDistance != 0U && this->mDistance <= this->mThreshold;
                 if (true == detection) {
-                    if (true == this->Detect()) {
-                        this->Notify(SensorsId::VLX, true);
-                    }
-                } else {
-                    if (true == this->UnDetect()) {
-                        this->Notify(SensorsId::VLX, false);
-                    }
+                    this->Notify(VLX, detection);
                 }
             }
 

@@ -5,9 +5,20 @@ namespace Component
 {
     namespace Communication
     {
+#define REJECT_UNKNOWN_CHARACTER(value) \
+        ((value == 60U || value == 62U) ||  \
+        (value >= 48U && value <= 57U) ||  \
+        (value >= 65U && value <= 70U) ||  \
+        (value >= 97U && value <= 102U))
+
         Communication::Communication(Uart::UartInterface &uart, Clusters::ClustersInterface &clusters,
                                      Led::LedInterface &ledStatus)
-            : mUart(uart), mClusters(clusters), mLedStatus(ledStatus), mBufferRx{0U}, mIndexBufferRx(0U) {
+            : mUart(uart)
+              , mClusters(clusters)
+              , mLedStatus(ledStatus)
+              , mBufferRx{0U}
+              , mIndexBufferRx(0U)
+              , mBeginIncomingFrame(false) {
         }
 
         Core::CoreStatus Communication::Initialize(void) {
@@ -55,7 +66,7 @@ namespace Component
         }
 
         Core::CoreStatus Communication::SendMessage(Frame &message) {
-            uint8_t buffer[50U] = {0U};
+            constexpr char buffer[50U] = {0U};
 
             const size_t size = Protocol::Encode(message, buffer);
 
@@ -67,17 +78,28 @@ namespace Component
         }
 
         bool Communication::ReceivedStringFrame(void) {
-            while (this->mUart.DataAvailable() > 0) {
-                const char rc = this->mUart.Read();
-                if (rc == '<') {
-                    this->mIndexBufferRx = 0U;
-                } else if (rc != '>') {
-                    this->mBufferRx[this->mIndexBufferRx] = rc;
-                    this->mIndexBufferRx++;
+            if (this->mUart.DataAvailable() > 0U) {
+                const uint8_t rc = this->mUart.Read();
+                if (REJECT_UNKNOWN_CHARACTER(rc)) {
+                    if (rc == '<') {
+                        this->mBeginIncomingFrame = true;
+                        this->mIndexBufferRx = 0U;
+                    } else if (rc != '>') {
+                        this->mBufferRx[this->mIndexBufferRx] = rc;
+                        this->mIndexBufferRx++;
+                    } else {
+                        if (this->mBeginIncomingFrame == true) {
+                            this->mBufferRx[this->mIndexBufferRx] = '\0';
+                            return (true);
+                        }
+                        this->mIndexBufferRx = 0U;
+                        this->mBeginIncomingFrame = false;
+                        return (false);
+                    }
                 } else {
-                    this->mBufferRx[this->mIndexBufferRx] = '\0';
-                    this->mIndexBufferRx++;
-                    return (true);
+                    this->mIndexBufferRx = 0U;
+                    this->mBeginIncomingFrame = false;
+                    return (false);
                 }
             }
             return (false);

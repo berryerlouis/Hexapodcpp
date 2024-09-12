@@ -22,7 +22,7 @@ namespace Cluster
 
             static ProtocolStatus Decode(const char *frameBuffer, Frame &frame);
 
-            static uint8_t Encode(const Frame &response, const uint8_t *buffer);
+            static uint8_t Encode(const Frame &response, const char *buffer);
 
         private:
             static uint8_t ConvertHexCharToInt(uint8_t byte);

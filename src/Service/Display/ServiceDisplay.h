@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../../Component/Display/Ssd1306Interface.h"
-#include "../../Component/Proximity/SensorProximityInterface.h"
-#include "../../Component/Battery/BatteryInterface.h"
+#include "../../Component/Battery/BatteryState.h"
+#include "../../Component/Proximity/SensorsId.h"
 #include "../../Misc/Bitmap/Bitmaps.h"
 #include "../Service.h"
 
@@ -10,17 +10,16 @@ namespace Service
 {
     namespace Display
     {
-        using namespace Component::Display;
-        using namespace Component::Proximity;
         using namespace Component::Battery;
+        using namespace Component::Proximity;
+        using namespace Component::Display;
         using namespace Misc::Bitmap;
 
         using namespace Component;
 
-        class ServiceDisplay : public Service, BatteryObserverInterface, SensorProximityObserverInterface {
+        class ServiceDisplay : public Service {
         public:
-            ServiceDisplay(Ssd1306Interface &ssd1306, BatteryInterface &batteryInterface,
-                           SensorProximityMultipleInterface &proximity);
+            ServiceDisplay(Ssd1306Interface &ssd1306, Event::EventListener &eventListener);
 
             ~ServiceDisplay() = default;
 
@@ -28,25 +27,18 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            void DisplayBackground(void);
+            virtual void DispatchEvent(SEvent &event) final override;
+
+            void DisplayBackground(void) const;
 
             void DisplayCommunicationBmp(void);
 
-            void DisplayBatteryLevel(BatteryState state);
+            void DisplayBatteryLevel(const Battery::BatteryState state);
 
-            void DisplayProximitySensor(SensorsId sensor);
+            void DisplayProximitySensor(const Component::Proximity::SensorsId sensorId, const uint16_t distance);
 
-            virtual void UpdatedBatteryState(const BatteryState &batteryState) final override;
-
-            virtual void Detect(const SensorsId &sensorId) final override;
-
-            virtual void NoDetect(const SensorsId &sensorId) final override;
-
-        protected:
+        private:
             Ssd1306Interface &mSsd1306;
-            BatteryInterface &mBatteryInterface;
-            SensorProximityMultipleInterface &mProximity;
-
             Bitmaps::SBitmap mBmpBatteryLevel;
             Bitmaps::SBitmap mBmpCommunication;
             Bitmaps::SBitmap mBmpProximity;

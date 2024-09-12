@@ -5,19 +5,10 @@
   "license": "GPL",
   "type": "module",
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/.bin/jest",
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
     "testcov": "node --experimental-vm-modules node_modules/.bin/jest --coverage"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "transform": {
-      "^.+\\.js$": "babel-jest"
-    }
   },
   "devDependencies": {
     "jest": "^29.7.0"
-  },
-  "dependencies": {
-    "three": "^0.168.0"
   }
 }

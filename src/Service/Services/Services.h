@@ -34,13 +34,15 @@ namespace Service
         class Services : public ServiceInterface {
         public:
             Services(
+                Tick::TickInterface &tick,
                 ServiceGeneral &serviceGeneral,
                 ServiceControl &serviceControl,
                 ServiceCommunication &serviceCommunication,
                 ServiceProximity &serviceProximity,
                 ServiceOrientation &serviceOrientation,
                 ServiceBattery &serviceBattery,
-                ServiceDisplay &serviceDisplay);
+                ServiceDisplay &serviceDisplay,
+                Event::EventListener &eventListener);
 
             ~Services() = default;
 
@@ -49,9 +51,13 @@ namespace Service
             virtual void Update(const uint64_t currentTime) final override;
 
         private:
+            void DispatchEvent(void);
+
             Service *Get(const EServices serviceId);
 
+            Tick::TickInterface &mTick;
             ServiceItem mServices[NB_SERVICES];
+            Event::EventListener &mEventListener;
         };
     }
 }

@@ -5,10 +5,10 @@
 namespace Core
 {
     struct CoreStatus {
-        static const int8_t CORE_ERROR = (-1);
-        static const int8_t CORE_OK = (0);
+        static constexpr int8_t CORE_ERROR = (-1);
+        static constexpr int8_t CORE_OK = (0);
 
-        CoreStatus(int8_t state) : status(state) {
+        CoreStatus(const int8_t state) : status(state) {
         }
 
         operator bool() const {

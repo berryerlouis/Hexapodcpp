@@ -37,12 +37,12 @@ namespace Driver
         }
 
         void Uart::Send(const uint8_t data) {
-            bufferTx.Push(data);
+            Uart::bufferTx.Push(data);
             UCSR0B |= _BV(UDRIE0);
         }
 
         uint8_t Uart::Read(void) {
-            return (Uart::bufferRx.Pop());
+            return Uart::bufferRx.Pop();
         }
 
         uint8_t Uart::DataAvailable(void) const {
@@ -65,16 +65,9 @@ namespace Driver
         ISR(USART0_RX_vect) {
             ISR_EMBEDDED_CODE(
                 volatile uint8_t receivedData = UDR0;
-
-                if ( ( UCSR0A & ( _BV( FE0 ) | _BV( DOR0 ) | _BV( UPE0 ) ) ) == 0 )
-                {
-                if ( ( receivedData == 60 || receivedData == 62 ) ||
-                    ( receivedData >= 48 && receivedData <= 57 ) ||
-                    ( receivedData >= 65 && receivedData <= 70 ) ||
-                    ( receivedData >= 97 && receivedData <= 102 ) )
+                if ( ( UCSR0A & ( _BV( FE0 ) | _BV( DOR0 ) | _BV( UPE0 ) ) ) == 0U )
                 {
                 Uart::bufferRx.Push( receivedData );
-                }
                 }
             );
         }

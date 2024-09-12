@@ -28,14 +28,10 @@ namespace Component
                 return (success);
             }
 
-            virtual void Notify(const SensorsId &sensorId, const bool detection) final override {
+            virtual void Notify(const SensorsId &sensorId, const uint16_t &distance) final override {
                 for (size_t i = 0; i < this->mIndexList; i++) {
                     if (this->mListObserver[i] != nullptr) {
-                        if (true == detection) {
-                            this->mListObserver[i]->Detect(sensorId);
-                        } else {
-                            this->mListObserver[i]->NoDetect(sensorId);
-                        }
+                        this->mListObserver[i]->Detect(sensorId, distance);
                     }
                 }
             }

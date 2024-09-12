@@ -23,6 +23,7 @@
 #include "../Component/Proximity/Ultrasound/Srf05.h"
 #include "../Component/Proximity/Laser/Vl53l0x.h"
 #include "../Component/Communication/Communication.h"
+#include "../Service/Event/EventListener.h"
 #include "../Service/Battery/ServiceBattery.h"
 #include "../Service/Control/ServiceControl.h"
 #include "../Service/Communication/ServiceCommunication.h"
@@ -47,7 +48,6 @@ namespace Builder
         virtual void Update(const uint64_t currentTime) final override;
 
     private:
-        uint64_t mStartTime;
         Driver::Tick::Tick mTick;
         Driver::Uart::Uart mUart;
         Driver::Twi::Twi mTwi;
@@ -82,6 +82,7 @@ namespace Builder
 
         Component::Communication::Communication mCommunication;
 
+        Service::Event::EventListener mEventListener;
         Service::Control::ServiceControl mServiceControl;
         Service::Communication::ServiceCommunication mServiceCommunication;
         Service::Proximity::ServiceProximity mServiceProximity;

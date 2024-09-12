@@ -11,13 +11,15 @@ namespace Service
 
         class ServiceGeneral : public Service {
         public:
-            ServiceGeneral(SoftwareInterface &software);
+            ServiceGeneral(SoftwareInterface &software, Event::EventListener &eventListener);
 
             ~ServiceGeneral() = default;
 
             virtual Core::CoreStatus Initialize(void) final override;
 
             virtual void Update(const uint64_t currentTime) final override;
+
+            virtual void DispatchEvent(SEvent &event) final override;
 
         protected:
             SoftwareInterface &mSoftware;

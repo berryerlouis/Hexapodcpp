@@ -14,5 +14,5 @@ namespace Service
         PROXIMITY = 6U
     };
 
-    static const uint8_t NB_SERVICES = 7U;
+    static constexpr uint8_t NB_SERVICES = 7U;
 }

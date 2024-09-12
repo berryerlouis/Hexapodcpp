@@ -53,7 +53,7 @@ namespace Service
         TEST_F(UT_SRV_BATTERY, UpdatedBatteryState) {
             BatteryState batteryState = BatteryState::WARNING;
             Core::Event event;
-            event.id = ClusterBase::EClusters::BATTERY;
+            event.id = Cluster::EClusters::BATTERY;
             event.value = batteryState;
             EXPECT_CALL(mMockEventMediatorInterface, SendMessage( _ )).Times(1U);
 

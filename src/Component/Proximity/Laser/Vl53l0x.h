@@ -4,7 +4,6 @@
 #include "../../../Driver/Twi/TwiInterface.h"
 #include "../../../Driver/Tick/TickInterface.h"
 #include "../SensorProximityInterface.h"
-#include "../SensorProximityWindow.h"
 
 namespace Component
 {
@@ -14,7 +13,7 @@ namespace Component
         {
             using namespace Driver;
 
-            class Vl53l0x : public SensorProximityInterface, public SensorProximityWindow {
+            class Vl53l0x : public SensorProximityInterface {
             public:
 #define VL53L0X_ADDRESS                                        0x29U ///< I2C address of the VL53L0X module
 

@@ -3,6 +3,7 @@
 #include "../../Component/Battery/BatteryInterface.h"
 #include "../../Component/Battery/BatteryObserverInterface.h"
 #include "../Service.h"
+#include "../Event/EventListener.h"
 
 namespace Service
 {
@@ -12,13 +13,16 @@ namespace Service
 
         class ServiceBattery : public Service, public BatteryObserverInterface {
         public:
-            ServiceBattery(BatteryInterface &batteryInterface);
+            ServiceBattery(BatteryInterface &batteryInterface,
+                           Event::EventListener &eventListener);
 
             ~ServiceBattery() = default;
 
             virtual Core::CoreStatus Initialize(void) final override;
 
             virtual void Update(const uint64_t currentTime) final override;
+
+            virtual void DispatchEvent(SEvent &event) final override;
 
             virtual void UpdatedBatteryState(const BatteryState &batteryState) final override;
 

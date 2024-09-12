@@ -24,7 +24,7 @@ namespace Driver
         }
 
         bool Gpio::Get(void) {
-            return (0U);
+            return (false);
         }
 
         void Gpio::SetInterruptPin(void) {

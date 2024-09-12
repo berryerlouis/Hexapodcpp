@@ -16,7 +16,13 @@
 #define LOG(value)           Misc::Logger::Log->Write( value )
 #else
 #define INIT_LOGGER(uart)
-#define LOG(value)           std::cout << value << std::ends;
+#define LOG(value)           std::cout << value << std::endl;
+/*
+ * printf (const char *__restrict __fmt, ...)
+{
+  return __printf_chk (__USE_FORTIFY_LEVEL - 1, __fmt, __va_arg_pack ());
+}
+ */
 #endif
 #else
 #define INIT_LOGGER( uart )

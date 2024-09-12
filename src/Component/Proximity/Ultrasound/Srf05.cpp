@@ -9,8 +9,7 @@ namespace Component
             Srf05::Srf05(const Cluster::EProximityCommands side, Driver::Gpio::GpioInterface &gpioTrigger,
                          Driver::InputCapture::InputCaptureInterface &gpioEcho, Led::LedInterface &led,
                          Driver::Tick::TickInterface &tick)
-                : SensorProximityWindow()
-                  , mSide(side)
+                : mSide(side)
                   , mGpioTrigger(gpioTrigger)
                   , mGpioEcho(gpioEcho)
                   , mTick(tick)
@@ -28,17 +27,12 @@ namespace Component
                 (void) currentTime;
                 this->SendPulse();
                 const uint16_t distance = this->GetDistance();
-                bool detection = (distance != 0U && distance <= this->mThreshold);
+                const bool detection = (distance != 0U && distance <= this->mThreshold);
                 if (true == detection) {
-                    if (true == this->Detect()) {
-                        this->mLed.On();
-                        this->Notify((SensorsId) mSide, true);
-                    }
+                    this->mLed.On();
+                    this->Notify(static_cast<SensorsId>(mSide), detection);
                 } else {
-                    if (true == this->UnDetect()) {
-                        this->mLed.Off();
-                        this->Notify((SensorsId) mSide, false);
-                    }
+                    this->mLed.Off();
                 }
             }
 
