@@ -44,30 +44,30 @@ namespace Cluster
     }
 
     void Frame::Set1ByteParam(const uint8_t value) {
-        this->SetnBytesParam(1U, &value);
+        this->SetxBytesParam(1U, &value);
     }
 
     void Frame::Set2BytesParam(const uint16_t value) {
-        this->SetnBytesParam(2U, (uint8_t *) &value);
+        this->SetxBytesParam(2U, (uint8_t *) &value);
     }
 
     void Frame::Set3BytesParam(const uint32_t value) {
-        this->SetnBytesParam(3U, (uint8_t *) &value);
+        this->SetxBytesParam(3U, (uint8_t *) &value);
     }
 
     void Frame::Set4BytesParam(const uint32_t value) {
-        this->SetnBytesParam(4U, (uint8_t *) &value);
+        this->SetxBytesParam(4U, (uint8_t *) &value);
     }
 
     void Frame::Set6BytesParam(const uint64_t value) {
-        this->SetnBytesParam(6U, (uint8_t *) &value);
+        this->SetxBytesParam(6U, (uint8_t *) &value);
     }
 
     void Frame::Set8BytesParam(const uint64_t value) {
-        this->SetnBytesParam(8U, (uint8_t *) &value);
+        this->SetxBytesParam(8U, (uint8_t *) &value);
     }
 
-    void Frame::SetnBytesParam(const size_t size, const uint8_t *value) {
+    void Frame::SetxBytesParam(const size_t size, const uint8_t *value) {
         memcpy((void *) &this->params[this->nbParams], value, size);
         this->nbParams += size;
     }
@@ -77,40 +77,22 @@ namespace Cluster
     }
 
     uint16_t Frame::Get2BytesParam(const uint8_t index) const {
-        return static_cast<uint16_t>((static_cast<uint16_t>(this->params[index + 1U]) << 8U)
-                                     | this->params[index]);
+        return PTR_TO_UINT16(&this->params[index]);
     }
 
     uint32_t Frame::Get3BytesParam(const uint8_t index) const {
-        return static_cast<uint32_t>(this->params[index + 2U]) << 16U
-               | static_cast<uint16_t>(static_cast<uint16_t>(this->params[index + 1U]) << 8U)
-               | this->params[index];
+        return PTR_TO_UINT24(&this->params[index]);
     }
 
     uint32_t Frame::Get4BytesParam(const uint8_t index) const {
-        return static_cast<uint32_t>(this->params[index + 3U]) << 24U
-               | static_cast<uint32_t>(this->params[index + 2U]) << 16U
-               | static_cast<uint16_t>(this->params[index + 1U]) << 8U
-               | this->params[index];
+        return PTR_TO_UINT32(&this->params[index]);
     }
 
     uint64_t Frame::Get6BytesParam(const uint8_t index) const {
-        return static_cast<uint64_t>(this->params[index + 5U]) << 40U
-               | static_cast<uint64_t>(this->params[index + 4U]) << 32U
-               | static_cast<uint32_t>(this->params[index + 3U]) << 24U
-               | static_cast<uint32_t>(this->params[index + 2U]) << 16U
-               | static_cast<uint16_t>(this->params[index + 1U]) << 8U
-               | this->params[index];
+        return PTR_TO_UINT56(&this->params[index]);
     }
 
     uint64_t Frame::Get8BytesParam(const uint8_t index) const {
-        return static_cast<uint64_t>(this->params[index + 7U]) << 56U
-               | static_cast<uint64_t>(this->params[index + 6U]) << 48U
-               | static_cast<uint64_t>(this->params[index + 5U]) << 40U
-               | static_cast<uint64_t>(this->params[index + 4U]) << 32U
-               | static_cast<uint32_t>(this->params[index + 3U]) << 24U
-               | static_cast<uint32_t>(this->params[index + 2U]) << 16U
-               | static_cast<uint16_t>(this->params[index + 1U]) << 8U
-               | this->params[index];
+        return PTR_TO_UINT64(&this->params[index]);
     }
 }

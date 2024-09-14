@@ -2,6 +2,7 @@
 
 #include "Constants.h"
 #include "Frame/Frame.h"
+#include "../Misc/Logger/Logger.h"
 
 namespace Cluster
 {

@@ -70,7 +70,7 @@ namespace Bot
             }
         }
 
-        void Leg::SetLegIk(const Misc::Maths::Position3d &position, const Misc::Maths::Position3d &bodyIk,
+        void Leg::SetLegIk(const Position3d &position, const Position3d &bodyIk,
                            const uint16_t travelTime) {
             this->mLegIk.newFootPos.x = this->mFootPosition.x + position.x + bodyIk.x;
             this->mLegIk.newFootPos.y = this->mFootPosition.y + position.y + bodyIk.y;

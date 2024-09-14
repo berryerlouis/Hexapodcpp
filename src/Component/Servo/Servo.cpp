@@ -1,5 +1,5 @@
 #include "Servo.h"
-#include "../../Misc/Maths/Maths.h"
+#include "../../Misc/Maths/Utils.h"
 
 namespace Component
 {
@@ -104,7 +104,7 @@ namespace Component
         void Servo::Update(const uint64_t currentTime) {
             if (this->IsMoving()) {
                 this->mAngle = this->GetAngleFromDeltaTime(currentTime);
-                const uint16_t pwm = Misc::Maths::Map(this->mAngle,
+                const uint16_t pwm = Misc::Utils::Map(this->mAngle,
                                                       Servo::SERVO_ANGLE_MIN,
                                                       Servo::SERVO_ANGLE_MAX,
                                                       Servo::SERVO_PWM_MIN,
@@ -119,7 +119,7 @@ namespace Component
             if (currentTime < endTime) {
                 float deltaTime = 1.0f;
                 deltaTime -= ((endTime - currentTime) / static_cast<float>(this->mSpeed));
-                return (Misc::Maths::Lerp(this->mAngle, this->mTargetAngle + this->mOffset, deltaTime));
+                return (Misc::Utils::Lerp(this->mAngle, this->mTargetAngle + this->mOffset, deltaTime));
             }
             this->mIsMoving = false;
             return (this->mTargetAngle + this->mOffset);

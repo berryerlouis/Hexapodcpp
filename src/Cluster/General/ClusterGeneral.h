@@ -9,58 +9,49 @@ namespace Cluster
     {
         using namespace Component::Software;
 
-        class ClusterGeneral : public ClusterBase {
+        class ClusterGeneral : public ClusterBase, StrategyCluster {
         public:
             ClusterGeneral(SoftwareInterface &software)
-                : ClusterBase(GENERAL)
+                : ClusterBase(GENERAL, this)
                   , mSoftware(software) {
+                this->AddClusterItem({.commandId = EGeneralCommands::VERSION, .expectedSize = 0U});
+                this->AddClusterItem({.commandId = EGeneralCommands::MIN_EXECUTION_TIME, .expectedSize = 1U});
+                this->AddClusterItem({.commandId = EGeneralCommands::MAX_EXECUTION_TIME, .expectedSize = 1U});
+                this->AddClusterItem({.commandId = EGeneralCommands::RESET_EXECUTION_TIME, .expectedSize = 1U});
             }
 
             ~ClusterGeneral() = default;
 
-            inline virtual Core::CoreStatus Execute(Frame &request, Frame &response) final override {
+            virtual Core::CoreStatus ExecuteFrame(const Frame &request, Frame &response) override {
                 Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-
-                if (request.clusterId != this->GetId()) {
-                    return (success);
+                if (request.commandId == EGeneralCommands::VERSION) {
+                    const SoftwareInterface::Version version = this->mSoftware.GetVersion();
+                    success = this->BuildFrameGetVersion(version, response);
+                } else if (request.commandId == EGeneralCommands::MIN_EXECUTION_TIME) {
+                    const uint8_t serviceId = request.params[0U];
+                    success = this->BuildFrameGetMinTime(serviceId, 0, response);
+                } else if (request.commandId == EGeneralCommands::MAX_EXECUTION_TIME) {
+                    const uint8_t serviceId = request.params[0U];
+                    success = this->BuildFrameGetMaxTime(serviceId, 0, response);
+                } else if (request.commandId == EGeneralCommands::RESET_EXECUTION_TIME) {
                 }
-
-                switch (static_cast<EGeneralCommands>(request.commandId)) {
-                    case EGeneralCommands::VERSION:
-                        success = this->BuildFrameGetVersion(response);
-                        break;
-
-                    case EGeneralCommands::MIN_EXECUTION_TIME:
-                        success = this->BuildFrameGetMinTime(response, 0, 0);
-                        break;
-
-                    case EGeneralCommands::MAX_EXECUTION_TIME:
-                        success = this->BuildFrameGetMaxTime(response, 0, 0);
-                        break;
-
-                    case EGeneralCommands::RESET_EXECUTION_TIME:
-                        success = response.Build(EClusters::GENERAL, EGeneralCommands::RESET_EXECUTION_TIME);
-                        break;
-
-                    default:
-                        break;
-                }
-                return (success);
+                return success;
             }
 
-            inline Core::CoreStatus BuildFrameGetVersion(Frame &response) const {
+            inline Core::CoreStatus BuildFrameGetVersion(const SoftwareInterface::Version version,
+                                                         Frame &response) const {
                 const Core::CoreStatus success = response.Build(
                     EClusters::GENERAL,
                     EGeneralCommands::VERSION);
                 if (success) {
-                    SoftwareInterface::Version version = this->mSoftware.GetVersion();
-                    response.SetnBytesParam(2U, reinterpret_cast<uint8_t *>(&version));
+                    response.Set1ByteParam(version.major);
+                    response.Set1ByteParam(version.minor);
                 }
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameGetMinTime(Frame &response, const uint8_t serviceId,
-                                                         const uint16_t deltaTime) const {
+            inline Core::CoreStatus BuildFrameGetMinTime(const uint8_t serviceId, const uint16_t deltaTime,
+                                                         Frame &response) const {
                 const Core::CoreStatus success = response.Build(
                     EClusters::GENERAL,
                     EGeneralCommands::MIN_EXECUTION_TIME);
@@ -71,8 +62,8 @@ namespace Cluster
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameGetMaxTime(Frame &response, const uint8_t serviceId,
-                                                         const uint16_t deltaTime) const {
+            inline Core::CoreStatus BuildFrameGetMaxTime(const uint8_t serviceId, const uint16_t deltaTime,
+                                                         Frame &response) const {
                 const Core::CoreStatus success = response.Build(
                     EClusters::GENERAL,
                     EGeneralCommands::MAX_EXECUTION_TIME);

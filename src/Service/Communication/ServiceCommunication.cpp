@@ -32,13 +32,11 @@ namespace Service
                     const General::ClusterGeneral *clusterGeneral =
                             static_cast<General::ClusterGeneral *>(this->mClusters.GetCluster(EClusters::GENERAL));
                     const uint8_t serviceId = event.params[0U];
-                    const uint16_t deltaTime = static_cast<uint16_t>(
-                                                   static_cast<uint16_t>(event.params[1U]) << 8U)
-                                               | static_cast<uint16_t>(event.params[2U]);
+                    const uint16_t deltaTime = PTR_TO_UINT16(&event.params[1U]);
                     if (event.value == MIN_EXECUTION_TIME) {
-                        clusterGeneral->BuildFrameGetMinTime(response, serviceId, deltaTime);
+                        clusterGeneral->BuildFrameGetMinTime(serviceId, deltaTime, response);
                     } else if (event.value == MAX_EXECUTION_TIME) {
-                        clusterGeneral->BuildFrameGetMaxTime(response, serviceId, deltaTime);
+                        clusterGeneral->BuildFrameGetMaxTime(serviceId, deltaTime, response);
                     }
                     success = true;
                     break;
@@ -48,7 +46,7 @@ namespace Service
                     const Proximity::ClusterProximity *clusterProximity =
                             static_cast<Proximity::ClusterProximity *>(
                                 this->mClusters.GetCluster(EClusters::PROXIMITY));
-                    clusterProximity->BuildFrameDistance(static_cast<EProximityCommands>(event.value), response);
+                    clusterProximity->BuildFrameDistance(static_cast<Proximity::SensorsId>(event.value), response);
                     success = true;
                     break;
                 }
@@ -56,7 +54,8 @@ namespace Service
                 case EServices::BATTERY: {
                     const Battery::ClusterBattery *clusterBattery =
                             static_cast<Battery::ClusterBattery *>(this->mClusters.GetCluster(EClusters::BATTERY));
-                    clusterBattery->BuildFrameState(response);
+                    const uint16_t voltage = PTR_TO_UINT16(&event.params[0U]);
+                    clusterBattery->BuildFrameState(event.value, voltage, response);
                     success = true;
                     break;
                 }

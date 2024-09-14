@@ -24,7 +24,7 @@ namespace Service
 
             virtual void DispatchEvent(SEvent &event) final override;
 
-            virtual void UpdatedBatteryState(const BatteryState &batteryState) final override;
+            virtual void UpdatedBatteryState(const BatteryState &batteryState, const uint16_t voltage) final override;
 
         protected:
             BatteryInterface &mBatteryInterface;

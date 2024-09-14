@@ -26,7 +26,7 @@ namespace Service
             (void) event;
         }
 
-        void ServiceBattery::UpdatedBatteryState(const BatteryState &batteryState) {
+        void ServiceBattery::UpdatedBatteryState(const BatteryState &batteryState, const uint16_t voltage) {
             const SEvent ev(EServices::BATTERY, static_cast<uint8_t>(batteryState));
             this->AddEvent(ev);
         }

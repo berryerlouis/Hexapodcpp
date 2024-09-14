@@ -66,11 +66,11 @@ namespace Service
 
         void ServiceDisplay::DisplayBatteryLevel(const Battery::BatteryState state) {
             if (state == Battery::BatteryState::WARNING) {
-                this->mBmpBatteryLevel.bmp = (uint8_t *) Bitmaps::Battery50;
+                this->mBmpBatteryLevel.bmp = const_cast<uint8_t *>(Bitmaps::Battery50);
             } else if (state == Battery::BatteryState::NOMINAL) {
-                this->mBmpBatteryLevel.bmp = (uint8_t *) Bitmaps::Battery100;
+                this->mBmpBatteryLevel.bmp = const_cast<uint8_t *>(Bitmaps::Battery100);
             } else {
-                this->mBmpBatteryLevel.bmp = (uint8_t *) Bitmaps::Battery0;
+                this->mBmpBatteryLevel.bmp = const_cast<uint8_t *>(Bitmaps::Battery0);
             }
             this->mSsd1306.DrawBitmap(&this->mBmpBatteryLevel, 0, 0, Bitmaps::Color::COLOR_WHITE);
         }
@@ -85,7 +85,7 @@ namespace Service
                         this->mBmpProximity.width,
                         8U);
                 } else {
-                    this->mBmpProximity.bmp = (uint8_t *) Bitmaps::ArrowLeft;
+                    this->mBmpProximity.bmp = const_cast<uint8_t *>(Bitmaps::ArrowLeft);
                     this->mSsd1306.DrawBitmap(
                         &this->mBmpProximity,
                         (SCREEN_WIDTH / 2U) - (this->mBmpProximity.width / 2U) - this->mBmpProximity.width,
@@ -100,7 +100,7 @@ namespace Service
                         this->mBmpProximity.width,
                         8U);
                 } else {
-                    this->mBmpProximity.bmp = (uint8_t *) Bitmaps::ArrowUp;
+                    this->mBmpProximity.bmp = const_cast<uint8_t *>(Bitmaps::ArrowUp);
                     this->mSsd1306.DrawBitmap(
                         &this->mBmpProximity,
                         (SCREEN_WIDTH / 2U) - (this->mBmpProximity.width / 2U),
@@ -115,7 +115,7 @@ namespace Service
                         this->mBmpProximity.width,
                         8U);
                 } else {
-                    this->mBmpProximity.bmp = (uint8_t *) Bitmaps::ArrowRight;
+                    this->mBmpProximity.bmp = const_cast<uint8_t *>(Bitmaps::ArrowRight);
                     this->mSsd1306.DrawBitmap(
                         &this->mBmpProximity,
                         (SCREEN_WIDTH / 2U) + (this->mBmpProximity.width / 2U),

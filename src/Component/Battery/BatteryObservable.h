@@ -28,10 +28,10 @@ namespace Component
                 return (success);
             }
 
-            virtual void Notify(const BatteryState &object) final override {
+            virtual void Notify(const BatteryState &state, const uint16_t voltage) final override {
                 for (size_t i = 0; i < this->mIndexList; i++) {
                     if (this->mListObserver[i] != nullptr) {
-                        this->mListObserver[i]->UpdatedBatteryState(object);
+                        this->mListObserver[i]->UpdatedBatteryState(state, voltage);
                     }
                 }
             }

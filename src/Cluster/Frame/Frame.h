@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "../../Core/Status.h"
+#include "../../Misc/Maths/Utils.h"
 
 namespace Cluster
 {
@@ -33,7 +34,7 @@ namespace Cluster
 
         void Set8BytesParam(const uint64_t value);
 
-        void SetnBytesParam(const size_t size, const uint8_t *value);
+        void SetxBytesParam(const size_t size, const uint8_t *value);
 
         uint8_t Get1ByteParam(const uint8_t index) const;
 

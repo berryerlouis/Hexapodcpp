@@ -26,7 +26,7 @@ namespace Component
 
             virtual Core::CoreStatus Attach(BatteryObserverInterface *observer) final override;
 
-            virtual void Notify(const BatteryState &object) final override;
+            virtual void Notify(const BatteryState &state, const uint16_t voltage) final override;
 
         private:
             uint16_t mVoltage;

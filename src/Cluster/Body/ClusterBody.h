@@ -9,50 +9,36 @@ namespace Cluster
     {
         using namespace Bot::Body;
 
-        class ClusterBody : public ClusterBase {
+        class ClusterBody : public ClusterBase, StrategyCluster {
         public:
             ClusterBody(BodyInterface &body)
-                : ClusterBase(BODY)
+                : ClusterBase(BODY, this)
                   , mBody(body) {
+                this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_LEG_X_Y_Z, .expectedSize = 14U});
             }
 
             ~ClusterBody() = default;
 
-            inline virtual Core::CoreStatus Execute(Frame &request, Frame &response) final override {
+            virtual Core::CoreStatus ExecuteFrame(const Frame &request, Frame &response) override {
                 Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-
-                if (request.clusterId != this->GetId()) {
-                    return (success);
+                if (request.commandId == EBatteryCommands::GET_VOLTAGE) {
+                    const Position3d position =
+                    {
+                        .x = static_cast<int16_t>(request.Get2BytesParam(0U)) / 10.0f,
+                        .y = static_cast<int16_t>(request.Get2BytesParam(2U)) / 10.0f,
+                        .z = static_cast<int16_t>(request.Get2BytesParam(4U)) / 10.0f
+                    };
+                    const Rotation3d rotation =
+                    {
+                        .angleX = static_cast<int16_t>(request.Get2BytesParam(6U)) / 10.0f,
+                        .angleY = static_cast<int16_t>(request.Get2BytesParam(8U)) / 10.0f,
+                        .angleZ = static_cast<int16_t>(request.Get2BytesParam(10U)) / 10.0f
+                    };
+                    const uint16_t travelTime = request.Get2BytesParam(12U);
+                    this->mBody.SetPositionRotation(position, rotation, travelTime);
+                    success = this->BuildFrameSetPosition(response);
                 }
-
-                switch (static_cast<EBodyCommands>(request.commandId)) {
-                    case EBodyCommands::SET_LEG_X_Y_Z:
-
-                        if (request.nbParams == 14U) {
-                            const Position3d position =
-                            {
-                                .x = static_cast<int16_t>(request.Get2BytesParam(0U)) / 10.0f,
-                                .y = static_cast<int16_t>(request.Get2BytesParam(2U)) / 10.0f,
-                                .z = static_cast<int16_t>(request.Get2BytesParam(4U)) / 10.0f
-                            };
-
-                            const Rotation3d rotation =
-                            {
-                                .angleX = static_cast<int16_t>(request.Get2BytesParam(6U)) / 10.0f,
-                                .angleY = static_cast<int16_t>(request.Get2BytesParam(8U)) / 10.0f,
-                                .angleZ = static_cast<int16_t>(request.Get2BytesParam(10U)) / 10.0f
-                            };
-
-                            const uint16_t travelTime = request.Get2BytesParam(12U);
-                            this->mBody.SetPositionRotation(position, rotation, travelTime);
-                            success = this->BuildFrameSetPosition(response);
-                        }
-                        break;
-
-                    default:
-                        break;
-                }
-                return (success);
+                return success;
             }
 
             inline Core::CoreStatus BuildFrameSetPosition(Frame &response) const {

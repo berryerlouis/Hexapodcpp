@@ -20,8 +20,8 @@ namespace Bot
 
             virtual void Update(const uint64_t currentTime) = 0;
 
-            virtual void SetPositionRotation(const Misc::Maths::Position3d &position,
-                                             const Misc::Maths::Rotation3d &rotation, const uint16_t travelTime) = 0;
+            virtual void SetPositionRotation(const Position3d &position,
+                                             const Rotation3d &rotation, const uint16_t travelTime) = 0;
         };
     }
 }

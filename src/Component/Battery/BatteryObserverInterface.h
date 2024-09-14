@@ -12,7 +12,7 @@ namespace Component
 
             ~BatteryObserverInterface() = default;
 
-            virtual void UpdatedBatteryState(const BatteryState &batteryState) = 0;
+            virtual void UpdatedBatteryState(const BatteryState &batteryState, const uint16_t voltage) = 0;
         };
     }
 }

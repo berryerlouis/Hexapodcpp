@@ -30,7 +30,7 @@ namespace Component
                 this->mState = CRITICAL;
             }
             if (state != this->mState) {
-                this->Notify(this->mState);
+                this->Notify(this->mState, this->mVoltage);
             }
         }
 
@@ -46,8 +46,8 @@ namespace Component
             return (this->mObservable.Attach(observer));
         }
 
-        void Battery::Notify(const BatteryState &object) {
-            this->mObservable.Notify(object);
+        void Battery::Notify(const BatteryState &state, const uint16_t voltage) {
+            this->mObservable.Notify(state, voltage);
         }
     }
 }

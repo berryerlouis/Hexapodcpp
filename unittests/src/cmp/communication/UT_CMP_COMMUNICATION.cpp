@@ -118,8 +118,8 @@ namespace Component
 		}
 
 		TEST_F(UT_CMP_COMMUNICATION, Update_Ok_BodySet) {
-			constexpr Misc::Maths::Position3d position = {-5.0, 5.0, -5.0};
-			constexpr Misc::Maths::Rotation3d rotation = {-3.0, 3.0, -2.0};
+			constexpr Misc::Utils::Position3d position = {-5.0, 5.0, -5.0};
+			constexpr Misc::Utils::Rotation3d rotation = {-3.0, 3.0, -2.0};
 			constexpr uint16_t travelTime = 500U;
 
 			const char *bufferRx = "<05000ECEFF3200CEFFE2FF1E00ECFFF401>";
