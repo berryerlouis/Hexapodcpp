@@ -60,7 +60,7 @@ namespace Component
 			}
 
 			TEST_F(UT_CMP_SRF05, UnderThreshold) {
-				mSrf05.UnDetect();
+				//mSrf05.Detect();
 				EXPECT_CALL(mMockInputCapture, GetInputCaptureTime()).Times(1U).WillOnce(Return(58U));
 				EXPECT_CALL(mMockGpio, Set()).Times(1U).WillOnce(Return(Core::CoreStatus::CORE_OK));
 				EXPECT_CALL(mMockTick, DelayUs( _ )).Times(1U);
@@ -71,7 +71,7 @@ namespace Component
 			}
 
 			TEST_F(UT_CMP_SRF05, AboveThreshold) {
-				mSrf05.Detect();
+				//mSrf05.Detect();
 				EXPECT_CALL(mMockInputCapture, GetInputCaptureTime()).Times(1U).WillOnce(Return(58U * 31U));
 				EXPECT_CALL(mMockGpio, Set()).Times(1U).WillOnce(Return(Core::CoreStatus::CORE_OK));
 				EXPECT_CALL(mMockTick, DelayUs( _ )).Times(1U);

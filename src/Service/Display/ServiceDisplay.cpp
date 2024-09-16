@@ -4,7 +4,7 @@ namespace Service
 {
     namespace Display
     {
-        ServiceDisplay::ServiceDisplay(Ssd1306Interface &ssd1306, Event::EventListener &eventListener)
+        ServiceDisplay::ServiceDisplay(Ssd1306Interface &ssd1306, Event::EventListenerInterface &eventListener)
             : Service(5U, eventListener)
               , mSsd1306(ssd1306)
               , mBmpBatteryLevel{.bmp = const_cast<uint8_t *>(Bitmaps::Battery0), .width = 16U, .height = 7U}
@@ -31,7 +31,7 @@ namespace Service
             this->mSsd1306.Update(currentTime);
         }
 
-        void ServiceDisplay::DispatchEvent(SEvent &event) {
+        void ServiceDisplay::DispatchEvent(const SEvent &event) {
             if (event.id == EServices::BATTERY) {
                 this->DisplayBatteryLevel(static_cast<Battery::BatteryState>(event.value));
             } else if (event.id == EServices::PROXIMITY) {

@@ -14,7 +14,7 @@ namespace Service
         class ServiceProximity : public Service, public SensorProximityObserverInterface {
         public:
             ServiceProximity(SensorProximityMultipleInterface &proximity,
-                             Event::EventListener &eventListener);
+                             Event::EventListenerInterface &eventListener);
 
             ~ServiceProximity() = default;
 
@@ -22,7 +22,7 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void DispatchEvent(SEvent &event) final override;
+            virtual void DispatchEvent(const SEvent &event) final override;
 
             virtual void Detect(const SensorsId &sensorId, const uint16_t &distance) final override;
 

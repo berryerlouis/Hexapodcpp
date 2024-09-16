@@ -12,7 +12,7 @@ namespace Service
     {
         ServiceCommunication::ServiceCommunication(CommunicationInterface &communication,
                                                    Clusters::ClustersInterface &clusters,
-                                                   Event::EventListener &eventListener)
+                                                   Event::EventListenerInterface &eventListener)
             : Service(1U, eventListener), mClusters(clusters), mCommunication(communication) {
         }
 
@@ -24,7 +24,7 @@ namespace Service
             this->mCommunication.Update(currentTime);
         }
 
-        void ServiceCommunication::DispatchEvent(SEvent &event) {
+        void ServiceCommunication::DispatchEvent(const SEvent &event) {
             Frame response;
             bool success = false;
             switch (event.id) {
@@ -46,7 +46,9 @@ namespace Service
                     const Proximity::ClusterProximity *clusterProximity =
                             static_cast<Proximity::ClusterProximity *>(
                                 this->mClusters.GetCluster(EClusters::PROXIMITY));
-                    clusterProximity->BuildFrameDistance(static_cast<Proximity::SensorsId>(event.value), response);
+                    const Proximity::SensorsId sensorId = static_cast<Proximity::SensorsId>(event.value);
+                    const uint16_t distance = PTR_TO_UINT16(&event.params[0U]);
+                    clusterProximity->BuildFrameDistance(sensorId, distance, response);
                     success = true;
                     break;
                 }

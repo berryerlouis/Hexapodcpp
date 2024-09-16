@@ -42,7 +42,7 @@ namespace Service
                 ServiceOrientation &serviceOrientation,
                 ServiceBattery &serviceBattery,
                 ServiceDisplay &serviceDisplay,
-                Event::EventListener &eventListener);
+                Event::EventListenerInterface &eventListener);
 
             ~Services() = default;
 
@@ -57,7 +57,7 @@ namespace Service
 
             Tick::TickInterface &mTick;
             ServiceItem mServices[NB_SERVICES];
-            Event::EventListener &mEventListener;
+            Event::EventListenerInterface &mEventListener;
         };
     }
 }

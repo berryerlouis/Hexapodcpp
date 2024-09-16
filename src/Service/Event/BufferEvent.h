@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "EventId.h"
+#include "SEvent.h"
 
 namespace Service
 {

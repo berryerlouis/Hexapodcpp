@@ -11,7 +11,7 @@ namespace Service
 
         class ServiceControl : public Service {
         public:
-            ServiceControl(ServosInterface &servos, Event::EventListener &eventListener);
+            ServiceControl(ServosInterface &servos, Event::EventListenerInterface &eventListener);
 
             ~ServiceControl() = default;
 
@@ -19,7 +19,7 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void DispatchEvent(SEvent &event) final override;
+            virtual void DispatchEvent(const SEvent &event) final override;
 
         protected:
             uint8_t mStepPca9685;

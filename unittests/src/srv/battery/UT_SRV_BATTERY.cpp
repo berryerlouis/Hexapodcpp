@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "../../../mock/cmp/MockBattery.h"
-#include "../../../mock/cor/MockEventMediatorInterface.h"
+#include "../../../mock/srv/MockEventListener.h"
 
 #include "../../../../src/Service/Battery/ServiceBattery.h"
 
@@ -16,9 +16,9 @@ namespace Service
     {
         class UT_SRV_BATTERY : public ::testing::Test {
         protected:
-            UT_SRV_BATTERY() : mMockBattery(),
-                               mMockEventMediatorInterface(),
-                               mServiceBattery(mMockBattery) {
+            UT_SRV_BATTERY() : mMockEventListener(),
+                               mMockBattery(),
+                               mServiceBattery(mMockBattery, mMockEventListener) {
             }
 
             virtual void SetUp() {
@@ -28,7 +28,6 @@ namespace Service
                 EXPECT_CALL(mMockBattery, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
                 EXPECT_CALL(mMockBattery, Attach( _ )).WillOnce(Return(Core::CoreStatus::CORE_OK));
                 EXPECT_TRUE(mServiceBattery.Initialize());
-                mServiceBattery.setMediator(&mMockEventMediatorInterface);
             }
 
             virtual void TearDown() {
@@ -37,8 +36,8 @@ namespace Service
             virtual ~UT_SRV_BATTERY() = default;
 
             /* Mocks */
+            StrictMock<Event::MockEventListener> mMockEventListener;
             StrictMock<Component::Battery::MockBattery> mMockBattery;
-            StrictMock<Core::MockEventMediatorInterface> mMockEventMediatorInterface;
 
             /* Test class */
             ServiceBattery mServiceBattery;
@@ -51,13 +50,13 @@ namespace Service
         }
 
         TEST_F(UT_SRV_BATTERY, UpdatedBatteryState) {
-            BatteryState batteryState = BatteryState::WARNING;
-            Core::Event event;
-            event.id = Cluster::EClusters::BATTERY;
-            event.value = batteryState;
-            EXPECT_CALL(mMockEventMediatorInterface, SendMessage( _ )).Times(1U);
+            constexpr BatteryState batteryState = BatteryState::WARNING;
+            constexpr uint8_t voltage = 10U;
+            constexpr uint8_t arg[1U] = {static_cast<uint8_t>(voltage)};
+            const SEvent ev(BATTERY, batteryState, arg, 1U);
 
-            mServiceBattery.UpdatedBatteryState(batteryState);
+            EXPECT_CALL(mMockEventListener, AddEvent(ev)).Times(1U);
+            mServiceBattery.UpdatedBatteryState(batteryState, 10U);
         }
     }
 }

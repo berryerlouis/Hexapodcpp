@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EventId.h"
+#include "BufferEvent.h"
 
 namespace Service
 {
@@ -12,9 +12,11 @@ namespace Service
         public:
             EventListenerInterface() = default;
 
-            virtual ~EventListenerInterface() = default;
+            ~EventListenerInterface() = default;
 
-            virtual void DispatchEvent(SEvent &event) = 0;
+            virtual void AddEvent(const SEvent &event) = 0;
+
+            virtual bool GetLastEvent(SEvent &event) = 0;
         };
     }
 }

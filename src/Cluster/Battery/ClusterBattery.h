@@ -36,7 +36,7 @@ namespace Cluster
             inline Core::CoreStatus BuildFrameVoltage(const uint16_t voltage, Frame &response) const {
                 const Core::CoreStatus success = response.Build(
                     EClusters::BATTERY,
-                    EBatteryCommands::GET_BAT_STATUS);
+                    EBatteryCommands::GET_VOLTAGE);
                 if (success) {
                     response.Set2BytesParam(voltage);
                 }

@@ -5,7 +5,7 @@ namespace Service
     namespace Orientation
     {
         ServiceOrientation::ServiceOrientation(Mpu9150Interface &imu,
-                                               Event::EventListener &eventListener)
+                                               Event::EventListenerInterface &eventListener)
             : Service(50U, eventListener)
               , mImu(imu) {
         }
@@ -18,7 +18,7 @@ namespace Service
             this->mImu.Update(currentTime);
         }
 
-        void ServiceOrientation::DispatchEvent(SEvent &event) {
+        void ServiceOrientation::DispatchEvent(const SEvent &event) {
             (void) event;
         }
     }

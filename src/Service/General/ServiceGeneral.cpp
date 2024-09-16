@@ -5,7 +5,7 @@ namespace Service
     namespace General
     {
         ServiceGeneral::ServiceGeneral(SoftwareInterface &software,
-                                       Event::EventListener &eventListener)
+                                       Event::EventListenerInterface &eventListener)
             : Service(1U, eventListener)
               , mSoftware(software) {
         }
@@ -18,7 +18,7 @@ namespace Service
             (void) currentTime;
         }
 
-        void ServiceGeneral::DispatchEvent(SEvent &event) {
+        void ServiceGeneral::DispatchEvent(const SEvent &event) {
             (void) event;
         }
     }

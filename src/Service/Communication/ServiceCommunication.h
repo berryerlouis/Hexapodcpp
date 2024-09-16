@@ -13,7 +13,7 @@ namespace Service
         class ServiceCommunication : public Service {
         public:
             ServiceCommunication(CommunicationInterface &communication, Clusters::ClustersInterface &clusters,
-                                 Event::EventListener &eventListener);
+                                 Event::EventListenerInterface &eventListener);
 
             ~ServiceCommunication() = default;
 
@@ -21,7 +21,7 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void DispatchEvent(SEvent &event) final override;
+            virtual void DispatchEvent(const SEvent &event) final override;
 
         private:
             Clusters::ClustersInterface &mClusters;

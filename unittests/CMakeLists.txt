@@ -2,17 +2,17 @@ cmake_minimum_required(VERSION 3.22.1)
 
 # Project name
 project(
-  HexapodcppTest
-  VERSION 0.1
-  DESCRIPTION "Unit test for Hexapodcpp"
-  LANGUAGES CXX)
+        HexapodcppTest
+        VERSION 0.1
+        DESCRIPTION "Unit test for Hexapodcpp"
+        LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include(FetchContent)
 FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+        googletest
+        URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
 )
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -43,22 +43,22 @@ add_subdirectory(src/cmp/srf05)
 add_subdirectory(src/cmp/vl53l0x)
 
 add_subdirectory(src/srv/battery)
-add_subdirectory(src/srv/control)
 add_subdirectory(src/srv/communication)
+add_subdirectory(src/srv/control)
 add_subdirectory(src/srv/display)
 add_subdirectory(src/srv/general)
 add_subdirectory(src/srv/orientation)
 add_subdirectory(src/srv/proximity)
 
 add_executable(
-  HexapodcppTest 
-  ${EXECUTABLES_SRC}
+        HexapodcppTest
+        ${EXECUTABLES_SRC}
 )
 
 target_link_libraries(
-  HexapodcppTest
-  GTest::gtest_main
-  GTest::gmock_main
+        HexapodcppTest
+        GTest::gtest_main
+        GTest::gmock_main
 )
 
 include(GoogleTest)

@@ -3,15 +3,16 @@
 #include "ServiceInterface.h"
 #include "../Cluster/Constants.h"
 #include "../Misc/Logger/Logger.h"
-#include "Event/EventListener.h"
+#include "Event/EventDispatcherInterface.h"
+#include "Event/EventListenerInterface.h"
 #include "Constants.h"
 #include "string.h"
 
 namespace Service
 {
-    class Service : public ServiceInterface {
+    class Service : public ServiceInterface, public Event::EventDispatcherInterface {
     public:
-        Service(const uint64_t updateTime, Event::EventListener &eventListener)
+        Service(const uint64_t updateTime, Event::EventListenerInterface &eventListener)
             : mUpdateTime(updateTime)
               , mDeltaTime(0U)
               , mPreviousTime(0UL)
@@ -85,7 +86,7 @@ namespace Service
             this->mEventListener.AddEvent(event);
         }
 
-        virtual void DispatchEvent(SEvent &event) = 0;
+        virtual void DispatchEvent(const SEvent &event) = 0;
 
     protected:
         uint64_t mUpdateTime;
@@ -95,6 +96,6 @@ namespace Service
         uint64_t mPreviousTime;
         uint16_t mMinDeltaTime;
         uint16_t mMaxDeltaTime;
-        Event::EventListener &mEventListener;
+        Event::EventListenerInterface &mEventListener;
     };
 }

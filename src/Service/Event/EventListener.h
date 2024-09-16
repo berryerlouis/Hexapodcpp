@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BufferEvent.h"
+#include "EventListenerInterface.h"
 
 namespace Service
 {
@@ -8,15 +8,15 @@ namespace Service
     {
 #define MAX_EVENTS 10U
 
-        class EventListener {
+        class EventListener : public EventListenerInterface {
         public:
             EventListener();
 
             ~EventListener() = default;
 
-            void AddEvent(const SEvent &event);
+            virtual void AddEvent(const SEvent &event) final override;
 
-            bool GetLastEvent(SEvent &event);
+            virtual bool GetLastEvent(SEvent &event) final override;
 
         private:
             BufferEvent mEventList;

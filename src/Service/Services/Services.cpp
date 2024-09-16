@@ -14,7 +14,7 @@ namespace Service
             ServiceOrientation &serviceOrientation,
             ServiceBattery &serviceBattery,
             ServiceDisplay &serviceDisplay,
-            Event::EventListener &eventListener)
+            Event::EventListenerInterface &eventListener)
             : mTick(tick)
               , mServices{
                   {GENERAL, &serviceGeneral},

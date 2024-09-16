@@ -78,7 +78,7 @@ namespace Component
 
 			EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::CoreStatus::CORE_OK));
 			EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-			EXPECT_CALL(mMockUart, Send( Matcher <const uint8_t *>( _ ), _ )).Times(1U);
+			EXPECT_CALL(mMockUart, Send( Matcher <const char *>( _ ), _ )).Times(1U);
 			EXPECT_CALL(mMockClusters, GetCluster( GENERAL )).Times(1U);
 
 			for (size_t i = 0; i < strlen(bufferRx); i++) {
@@ -93,7 +93,7 @@ namespace Component
 
 			EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::CoreStatus::CORE_OK));
 			EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-			EXPECT_CALL(mMockUart, Send( Matcher <const uint8_t *>( _ ), _ )).Times(1U);
+			EXPECT_CALL(mMockUart, Send( Matcher <const char *>( _ ), _ )).Times(1U);
 			EXPECT_CALL(mMockClusters, GetCluster( IMU )).Times(1U);
 
 			for (size_t i = 0; i < strlen(bufferRx); i++) {
@@ -108,7 +108,7 @@ namespace Component
 
 			EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::CoreStatus::CORE_OK));
 			EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-			EXPECT_CALL(mMockUart, Send( Matcher <const uint8_t *>( _ ), _ )).Times(1U);
+			EXPECT_CALL(mMockUart, Send( Matcher <const char *>( _ ), _ )).Times(1U);
 
 			for (size_t i = 0; i < strlen(bufferRx); i++) {
 				EXPECT_CALL(mMockUart, DataAvailable()).WillRepeatedly(Return(strlen(bufferRx)));
@@ -118,15 +118,15 @@ namespace Component
 		}
 
 		TEST_F(UT_CMP_COMMUNICATION, Update_Ok_BodySet) {
-			constexpr Misc::Utils::Position3d position = {-5.0, 5.0, -5.0};
-			constexpr Misc::Utils::Rotation3d rotation = {-3.0, 3.0, -2.0};
+			constexpr Misc::Maths::Position3d position = {-5.0, 5.0, -5.0};
+			constexpr Misc::Maths::Rotation3d rotation = {-3.0, 3.0, -2.0};
 			constexpr uint16_t travelTime = 500U;
 
 			const char *bufferRx = "<05000ECEFF3200CEFFE2FF1E00ECFFF401>";
 
 			EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::CoreStatus::CORE_OK));
 			EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-			EXPECT_CALL(mMockUart, Send( Matcher <const uint8_t *>( _ ), _ )).Times(1U);
+			EXPECT_CALL(mMockUart, Send( Matcher <const char *>( _ ), _ )).Times(1U);
 			EXPECT_CALL(mMockClusters, GetCluster( Cluster::EClusters::BODY )).WillOnce(Return(&mClusterBody));
 			EXPECT_CALL(mMockBody, SetPositionRotation( position, rotation, travelTime )).Times(1U);
 

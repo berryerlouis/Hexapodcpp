@@ -19,7 +19,7 @@ namespace Service
 
         class ServiceDisplay : public Service {
         public:
-            ServiceDisplay(Ssd1306Interface &ssd1306, Event::EventListener &eventListener);
+            ServiceDisplay(Ssd1306Interface &ssd1306, Event::EventListenerInterface &eventListener);
 
             ~ServiceDisplay() = default;
 
@@ -27,7 +27,7 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void DispatchEvent(SEvent &event) final override;
+            virtual void DispatchEvent(const SEvent &event) final override;
 
             void DisplayBackground(void) const;
 

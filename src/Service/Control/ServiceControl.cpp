@@ -5,7 +5,7 @@ namespace Service
     namespace Control
     {
         ServiceControl::ServiceControl(ServosInterface &servos,
-                                       Event::EventListener &eventListener)
+                                       Event::EventListenerInterface &eventListener)
             : Service(10U, eventListener)
               , mStepPca9685(0U)
               , mServosInterface(servos) {
@@ -24,7 +24,7 @@ namespace Service
             }
         }
 
-        void ServiceControl::DispatchEvent(SEvent &event) {
+        void ServiceControl::DispatchEvent(const SEvent &event) {
             (void) event;
         }
     }

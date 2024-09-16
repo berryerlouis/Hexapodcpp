@@ -13,6 +13,8 @@ namespace Cluster
     public:
         Frame(void);
 
+        Frame(const uint8_t clusterId, const uint8_t commandId);
+
         ~Frame(void) = default;
 
         void Reset(void);

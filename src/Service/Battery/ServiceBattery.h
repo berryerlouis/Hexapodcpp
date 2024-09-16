@@ -1,9 +1,8 @@
 #pragma once
 
+#include "../Service.h"
 #include "../../Component/Battery/BatteryInterface.h"
 #include "../../Component/Battery/BatteryObserverInterface.h"
-#include "../Service.h"
-#include "../Event/EventListener.h"
 
 namespace Service
 {
@@ -14,7 +13,7 @@ namespace Service
         class ServiceBattery : public Service, public BatteryObserverInterface {
         public:
             ServiceBattery(BatteryInterface &batteryInterface,
-                           Event::EventListener &eventListener);
+                           Event::EventListenerInterface &eventListener);
 
             ~ServiceBattery() = default;
 
@@ -22,7 +21,7 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void DispatchEvent(SEvent &event) final override;
+            virtual void DispatchEvent(const SEvent &event) final override;
 
             virtual void UpdatedBatteryState(const BatteryState &batteryState, const uint16_t voltage) final override;
 

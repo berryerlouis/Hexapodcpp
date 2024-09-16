@@ -6,6 +6,13 @@ namespace Cluster
         Reset();
     }
 
+    Frame::Frame(const uint8_t clusterId, const uint8_t commandId)
+        : clusterId(clusterId)
+          , commandId(commandId)
+          , nbParams(0U)
+          , params{} {
+    }
+
     Core::CoreStatus Frame::Build(const uint8_t clusterId, const uint8_t commandId) {
         if (nbParams > FRAME_MAX_PARAMS) {
             return (Core::CoreStatus::CORE_ERROR);

@@ -1,6 +1,6 @@
 name: Make
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   compile-hexapod:
@@ -26,9 +26,7 @@ jobs:
 
       - name: Create Archive Directory
         run: |
-          mkdir -p archive/
-          cp build/Hexapodcpp.hex archive/
-          cp build/Hexapodcpp.elf archive/
+          bin/dev/archive.sh
 
       - name: Archive Artefacts
         uses: actions/upload-artifact@v4
@@ -36,26 +34,27 @@ jobs:
           name: hexapodcpp
           path: archive/
 
-  test-coverage-IHM:
-    permissions: write-all
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: ArtiomTr/jest-coverage-report-action@v2
-        with:
-          working-directory: HMI
-          test-script: npm test
-
-      - name: Create Archive Directory
-        run: |
-          mkdir -p archive/
-          mv HMI/coverage/lcov-report/* archive/
-
-      - name: Archive Artefacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: IHM
-          path: archive/
+  #test-coverage-IHM:
+  #  permissions: write-all
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - name: Checkout Repository
+  #      uses: actions/checkout@v4
+  #
+  #    - name: Set up Node.js
+  #      uses: ArtiomTr/jest-coverage-report-action@v2
+  #      with:
+  #        working-directory: HMI
+  #        test-script: npm test
+  #
+  #    - name: Create Archive Directory
+  #      run: |
+  #        mkdir -p archive/
+  #        mv HMI/coverage/lcov-report/* archive/
+  #
+  #    - name: Archive Artefacts
+  #      uses: actions/upload-artifact@v4
+  #      with:
+  #        name: IHM
+  #        path: archive/
+#

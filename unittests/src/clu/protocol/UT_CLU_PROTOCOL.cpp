@@ -171,7 +171,7 @@ TEST_F( UT_CLU_PROTOCOL, Encode_Frame )
 		params,
 		2U );
 	char         bufferTx[100U];
-	const size_t size = Protocol::Encode( response, (uint8_t *) bufferTx );
+	const size_t size = Protocol::Encode( response, bufferTx );
 
 	EXPECT_EQ( size, 12U );
 

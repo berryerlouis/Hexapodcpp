@@ -5,7 +5,7 @@ namespace Service
     namespace Battery
     {
         ServiceBattery::ServiceBattery(BatteryInterface &batteryInterface,
-                                       Event::EventListener &eventListener)
+                                       Event::EventListenerInterface &eventListener)
             : Service(100U, eventListener), mBatteryInterface(batteryInterface) {
         }
 
@@ -22,12 +22,13 @@ namespace Service
             this->mBatteryInterface.Update(currentTime);
         }
 
-        void ServiceBattery::DispatchEvent(SEvent &event) {
+        void ServiceBattery::DispatchEvent(const SEvent &event) {
             (void) event;
         }
 
         void ServiceBattery::UpdatedBatteryState(const BatteryState &batteryState, const uint16_t voltage) {
-            const SEvent ev(EServices::BATTERY, static_cast<uint8_t>(batteryState));
+            const uint8_t arg[1U] = {static_cast<uint8_t>(voltage)};
+            const SEvent ev(EServices::BATTERY, static_cast<uint8_t>(batteryState), arg, 1U);
             this->AddEvent(ev);
         }
     }

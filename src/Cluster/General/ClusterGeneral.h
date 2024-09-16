@@ -22,7 +22,7 @@ namespace Cluster
 
             ~ClusterGeneral() = default;
 
-            virtual Core::CoreStatus ExecuteFrame(const Frame &request, Frame &response) override {
+            virtual Core::CoreStatus ExecuteFrame(const Frame &request, Frame &response) final override {
                 Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
                 if (request.commandId == EGeneralCommands::VERSION) {
                     const SoftwareInterface::Version version = this->mSoftware.GetVersion();

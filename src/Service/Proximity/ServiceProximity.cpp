@@ -5,7 +5,7 @@ namespace Service
     namespace Proximity
     {
         ServiceProximity::ServiceProximity(SensorProximityMultipleInterface &proximity,
-                                           Event::EventListener &eventListener)
+                                           Event::EventListenerInterface &eventListener)
             : Service(25, eventListener)
               , mProximity(proximity)
               , mTimeoutDetection{0xFFU, 0xFFU, 0xFFU} {
@@ -50,7 +50,7 @@ namespace Service
         }
 
 
-        void ServiceProximity::DispatchEvent(SEvent &event) {
+        void ServiceProximity::DispatchEvent(const SEvent &event) {
             (void) event;
         }
     }
