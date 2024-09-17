@@ -3,20 +3,23 @@
 #include "../ComponentInterface.h"
 #include "../../Cluster/Frame/Frame.h"
 
-namespace Component {
-namespace Communication {
-using namespace Cluster;
-
-class CommunicationInterface : public ComponentInterface
+namespace Component
 {
-public:
-	CommunicationInterface( void ) = default;
-	~CommunicationInterface()      = default;
+    namespace Communication
+    {
+        using namespace Cluster;
 
-	virtual Core::CoreStatus Initialize( void )       = 0;
-	virtual void Update( const uint64_t currentTime ) = 0;
+        class CommunicationInterface : public ComponentInterface {
+        public:
+            CommunicationInterface(void) = default;
 
-	virtual Core::CoreStatus Send( Frame &message ) = 0;
-};
-}
+            ~CommunicationInterface() = default;
+
+            virtual Core::CoreStatus Initialize(void) = 0;
+
+            virtual void Update(const uint64_t currentTime) = 0;
+
+            virtual Core::CoreStatus SendMessage(Frame &message) = 0;
+        };
+    }
 }

@@ -7,7 +7,7 @@
 #include "../../../mock/cmp/MockSensorProximity.h"
 #include "../../../mock/cmp/MockCommunication.h"
 #include "../../../mock/clu/MockClusters.h"
-#include "../../../mock/cor/MockEventMediatorInterface.h"
+#include "../../../mock/srv/MockEventListener.h"
 
 #include "../../../../src/Cluster/Battery/ClusterBattery.h"
 #include "../../../../src/Cluster/General/ClusterGeneral.h"
@@ -18,92 +18,98 @@ using ::testing::_;
 using ::testing::Return;
 using ::testing::StrictMock;
 
-namespace Service {
-namespace Communication {
-class UT_SRV_COMMUNICATION : public ::testing::Test {
-protected:
-	UT_SRV_COMMUNICATION() :
-		mMockBattery(),
-		mMockSoftware(),
-		mMockSensorProximity(),
-		mMockCommunication(),
-		mClusterBattery( mMockBattery ),
-		mClusterProximity( mMockSensorProximity ),
-		mClusterGeneral( mMockSoftware ),
-		mMockClusters(),
-		mMockEventMediatorInterface(),
-		mServiceCommunication( mMockCommunication, mMockClusters )
+namespace Service
+{
+	using namespace Battery;
+
+	namespace Communication
 	{
+		class UT_SRV_COMMUNICATION : public ::testing::Test {
+		protected:
+			UT_SRV_COMMUNICATION() : mMockBattery(),
+			                         mMockSoftware(),
+			                         mMockSensorProximity(),
+			                         mMockCommunication(),
+			                         mClusterBattery(mMockBattery),
+			                         mClusterProximity(mMockSensorProximity),
+			                         mClusterGeneral(mMockSoftware),
+			                         mMockClusters(),
+			                         mMockEventListener(),
+			                         mServiceCommunication(mMockCommunication, mMockClusters, mMockEventListener) {
+			}
+
+			virtual void SetUp() {
+				EXPECT_CALL(mMockCommunication, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_ERROR));
+				EXPECT_FALSE(mServiceCommunication.Initialize());
+
+				EXPECT_CALL(mMockCommunication, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
+				EXPECT_TRUE(mServiceCommunication.Initialize());
+			}
+
+			virtual void TearDown() {
+			}
+
+			virtual ~UT_SRV_COMMUNICATION() = default;
+
+
+			/* Mocks */
+			StrictMock<Component::Software::MockSoftware> mMockSoftware;
+			StrictMock<Component::Battery::MockBattery> mMockBattery;
+			StrictMock<Component::Proximity::MockSensorProximity> mMockSensorProximity;
+			StrictMock<Component::Communication::MockCommunication> mMockCommunication;
+			Cluster::Battery::ClusterBattery mClusterBattery;
+			Cluster::Proximity::ClusterProximity mClusterProximity;
+			Cluster::General::ClusterGeneral mClusterGeneral;
+			StrictMock<Cluster::Clusters::MockClusters> mMockClusters;
+			StrictMock<Event::MockEventListener> mMockEventListener;
+
+			/* Test class */
+			ServiceCommunication mServiceCommunication;
+		};
+
+		TEST_F(UT_SRV_COMMUNICATION, Initialize_Update) {
+			EXPECT_CALL(mMockCommunication, Update( 12450UL )).Times(1U);
+			mServiceCommunication.Update(12450UL);
+		}
+
+		TEST_F(UT_SRV_COMMUNICATION, DispatchEvent_BatteryState) {
+			constexpr BatteryState batteryState = BatteryState::WARNING;
+			constexpr uint8_t voltage = 10U;
+			constexpr uint8_t arg[1U] = {static_cast<uint8_t>(voltage)};
+			const SEvent ev(BATTERY, batteryState, arg, 1U);
+
+			EXPECT_CALL(mMockClusters, GetCluster( Cluster::EClusters::BATTERY )).
+					WillOnce(Return(&mClusterBattery));
+			EXPECT_CALL(mMockCommunication, SendMessage( _ )).Times(1U).WillOnce(Return(Core::CoreStatus::CORE_OK));
+			mServiceCommunication.DispatchEvent(ev);
+		}
+
+		TEST_F(UT_SRV_COMMUNICATION, DispatchEvent_Distance) {
+			constexpr uint16_t distance = 42U;
+			constexpr uint8_t arg[2U] = {
+				static_cast<uint8_t>(distance >> 8U),
+				static_cast<uint8_t>(distance & 0xFFU)
+			};
+			const SEvent ev(EServices::PROXIMITY, Proximity::SensorsId::SRF_LEFT, arg, 2U);
+
+			EXPECT_CALL(mMockClusters, GetCluster( Cluster::EClusters::PROXIMITY )).
+					WillOnce(Return(&mClusterProximity));
+			EXPECT_CALL(mMockCommunication, SendMessage( _ )).Times(1U).WillOnce(Return(Core::CoreStatus::CORE_OK));
+			mServiceCommunication.DispatchEvent(ev);
+		}
+
+		TEST_F(UT_SRV_COMMUNICATION, DispatchEvent_MaxTime) {
+			constexpr uint16_t distance = 42U;
+			constexpr uint8_t arg[2U] = {
+				static_cast<uint8_t>(distance >> 8U),
+				static_cast<uint8_t>(distance & 0xFFU)
+			};
+			const SEvent ev(EServices::GENERAL, EGeneralCommands::MIN_EXECUTION_TIME, arg, 2U);
+
+			EXPECT_CALL(mMockClusters, GetCluster( Cluster::EClusters::GENERAL )).
+					WillOnce(Return(&mClusterProximity));
+			EXPECT_CALL(mMockCommunication, SendMessage( _ )).Times(1U).WillOnce(Return(Core::CoreStatus::CORE_OK));
+			mServiceCommunication.DispatchEvent(ev);
+		}
 	}
-
-	virtual void SetUp ()
-	{
-		EXPECT_CALL( mMockCommunication, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_ERROR ) );
-		EXPECT_FALSE( mServiceCommunication.Initialize() );
-
-		EXPECT_CALL( mMockCommunication, Initialize() ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-		EXPECT_TRUE( mServiceCommunication.Initialize() );
-		mServiceCommunication.setMediator( &mMockEventMediatorInterface );
-	}
-
-	virtual void TearDown ()
-	{
-	}
-
-	virtual ~UT_SRV_COMMUNICATION() = default;
-
-
-	/* Mocks */
-	StrictMock <Component::Software::MockSoftware> mMockSoftware;
-	StrictMock <Component::Battery::MockBattery> mMockBattery;
-	StrictMock <Component::Proximity::MockSensorProximity> mMockSensorProximity;
-	StrictMock <Component::Communication::MockCommunication> mMockCommunication;
-	Cluster::Battery::ClusterBattery mClusterBattery;
-	Cluster::Proximity::ClusterProximity mClusterProximity;
-	Cluster::General::ClusterGeneral mClusterGeneral;
-	StrictMock <Cluster::Clusters::MockClusters> mMockClusters;
-	StrictMock <Core::MockEventMediatorInterface> mMockEventMediatorInterface;
-
-	/* Test class */
-	ServiceCommunication mServiceCommunication;
-};
-
-TEST_F( UT_SRV_COMMUNICATION, Initialize_Update )
-{
-	EXPECT_CALL( mMockCommunication, Update( 12450UL ) ).Times( 1U );
-
-	mServiceCommunication.Update( 12450UL );
-}
-
-TEST_F( UT_SRV_COMMUNICATION, Initialize_NotifyGeneral_Ok )
-{
-	Core::Event event = { id:Cluster::EClusters::GENERAL, value: Cluster::EGeneralCommands::MIN_EXECUTION_TIME };
-	EXPECT_CALL( mMockClusters, GetCluster( Cluster::EClusters::GENERAL ) ).WillOnce( Return( &mClusterGeneral ) );
-	EXPECT_CALL( mMockSoftware, GetMinTime() ).Times( 1U ).WillOnce( Return( 0UL ) );
-	EXPECT_CALL( mMockCommunication, Send( _ ) ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-
-	mServiceCommunication.Notify( event );
-}
-
-TEST_F( UT_SRV_COMMUNICATION, Initialize_NotifyBattery_Ok )
-{
-	Core::Event event = { id:Cluster::EClusters::BATTERY, value: Cluster::EBatteryCommands::GET_BAT_STATUS };
-	EXPECT_CALL( mMockClusters, GetCluster( Cluster::EClusters::BATTERY ) ).WillOnce( Return( &mClusterBattery ) );
-	EXPECT_CALL( mMockBattery, GetVoltage() ).WillOnce( Return( 10U ) );
-	EXPECT_CALL( mMockBattery, GetState() ).WillOnce( Return( Component::Battery::BatteryState::CRITICAL ) );
-	EXPECT_CALL( mMockCommunication, Send( _ ) ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-
-	mServiceCommunication.Notify( event );
-}
-
-TEST_F( UT_SRV_COMMUNICATION, Initialize_NotifyProximity_Ok )
-{
-	Core::Event event = { id:Cluster::EClusters::PROXIMITY, value: Cluster::EProximityCommands::LASER };
-	EXPECT_CALL( mMockClusters, GetCluster( Cluster::EClusters::PROXIMITY ) ).WillOnce( Return( &mClusterProximity ) );
-	EXPECT_CALL( mMockSensorProximity, GetDistance( Component::Proximity::SensorsId::VLX ) ).WillOnce( Return( 10U ) );
-	EXPECT_CALL( mMockCommunication, Send( _ ) ).Times( 1U ).WillOnce( Return( Core::CoreStatus::CORE_OK ) );
-
-	mServiceCommunication.Notify( event );
-}
-}
 }

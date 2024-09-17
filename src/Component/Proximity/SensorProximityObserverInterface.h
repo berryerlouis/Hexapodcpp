@@ -2,15 +2,17 @@
 
 #include "SensorsId.h"
 
-namespace Component {
-namespace Proximity {
-class SensorProximityObserverInterface {
-public:
-	SensorProximityObserverInterface()  = default;
-	~SensorProximityObserverInterface() = default;
+namespace Component
+{
+    namespace Proximity
+    {
+        class SensorProximityObserverInterface {
+        public:
+            SensorProximityObserverInterface() = default;
 
-	virtual void Detect( const SensorsId &sensorId ) = 0;
-	virtual void NoDetect( const SensorsId &sensorId ) = 0;
-};
-}
+            ~SensorProximityObserverInterface() = default;
+
+            virtual void Detect(const SensorsId &sensorId, const uint16_t &distance) = 0;
+        };
+    }
 }

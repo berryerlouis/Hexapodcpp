@@ -3,14 +3,17 @@
 #include "../Constants.h"
 #include "../ClusterInterface.h"
 
-namespace Cluster {
-namespace Clusters {
-class ClustersInterface {
-public:
-	ClustersInterface()  = default;
-	~ClustersInterface() = default;
+namespace Cluster
+{
+    namespace Clusters
+    {
+        class ClustersInterface {
+        public:
+            ClustersInterface() = default;
 
-	virtual ClusterInterface *GetCluster( const EClusters clusterId ) const = 0;
-};
-}
+            ~ClustersInterface() = default;
+
+            virtual ClusterInterface *GetCluster(const EClusters clusterId) const = 0;
+        };
+    }
 }

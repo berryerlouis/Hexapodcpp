@@ -2,34 +2,40 @@
 
 #include "BodyInterface.h"
 
-namespace Bot {
-namespace Body {
-class Body : public BodyInterface {
-public:
-	struct SBodyIk
-	{
-		float           totalY;
-		float           totalX;
-		float           distBodyCenterFeet;
-		float           angleBodyCenterX;
-		float           rollZ;
-		float           pitchZ;
-		Leg::Position3d bodyIk;
-	};
+namespace Bot
+{
+    namespace Body
+    {
+        class Body : public BodyInterface {
+        public:
+            struct SBodyIk {
+                float totalY;
+                float totalX;
+                float distBodyCenterFeet;
+                float angleBodyCenterX;
+                float rollZ;
+                float pitchZ;
+                Position3d bodyIk;
+            };
 
-	Body( Legs::Legs &legs );
-	~Body() = default;
+            Body(Legs::Legs &legs);
 
-	virtual Core::CoreStatus Initialize( void ) final override;
-	virtual void Update( const uint64_t currentTime ) final override;
+            ~Body() = default;
 
-	virtual void SetPositionRotation( const Position3d &position, const Rotation3d &rotation, const uint16_t travelTime ) final override;
+            virtual Core::CoreStatus Initialize(void) final override;
 
-private:
-	SBodyIk mBodyIk;
-	Legs::Legs &mLegs;
+            virtual void Update(const uint64_t currentTime) final override;
 
-	void SetBodyIk( const Position3d &position, const Rotation3d &rotation, const uint16_t travelTime );
-};
-}
+            virtual void SetPositionRotation(const Position3d &position,
+                                             const Rotation3d &rotation,
+                                             const uint16_t travelTime) final override;
+
+        private:
+            SBodyIk mBodyIk;
+            Legs::Legs &mLegs;
+
+            void SetBodyIk(const Position3d &position, const Rotation3d &rotation,
+                           const uint16_t travelTime);
+        };
+    }
 }

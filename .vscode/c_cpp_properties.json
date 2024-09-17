@@ -5,7 +5,8 @@
             "compilerPath": "/usr/bin/avr-gcc",
             "includePath": [
                 "${workspaceFolder}/*",
-                "${workspaceFolder}/unittests/*"
+                "${workspaceFolder}/unittests/*",
+                "${workspaceFolder}/unittests/build/_deps/googletest-src/googlemock/include"
             ],
             "defines": [
                 "__AVR_ATmega1284P__",

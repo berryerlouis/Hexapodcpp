@@ -42,4 +42,14 @@
  - parity: N
  - stopbit: 1
 
- 
+ ##usbip
+- PS> ```usbipd list```
+- PS> ```usbipd bind --busid 12-4```
+- PS> ```usbipd attach --wsl --busid 12-4```
+- PS> ```usbipd detach --busid 12-4```
+
+- WSL> ```lsusb```
+- WSL> ```sudo modprobe cp210x```
+- WSL> ```sudo chmod a+rw /dev/ttyUSB0```
+- WSL> ```sudo dmesg```
+     

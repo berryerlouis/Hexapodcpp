@@ -3,20 +3,26 @@
 #include "../../Component/Software/SoftwareInterface.h"
 #include "../Service.h"
 
-namespace Service {
-namespace General {
-using namespace Component::Software;
+namespace Service
+{
+    namespace General
+    {
+        using namespace Component::Software;
 
-class ServiceGeneral : public Service {
-public:
-	ServiceGeneral( SoftwareInterface &software );
-	~ServiceGeneral() = default;
+        class ServiceGeneral : public Service {
+        public:
+            ServiceGeneral(SoftwareInterface &software, Event::EventListenerInterface &eventListener);
 
-	virtual Core::CoreStatus Initialize( void ) final override;
-	virtual void Update( const uint64_t currentTime ) final override;
+            ~ServiceGeneral() = default;
 
-protected:
-	SoftwareInterface &mSoftware;
-};
-}
+            virtual Core::CoreStatus Initialize(void) final override;
+
+            virtual void Update(const uint64_t currentTime) final override;
+
+            virtual void DispatchEvent(const SEvent &event) final override;
+
+        protected:
+            SoftwareInterface &mSoftware;
+        };
+    }
 }

@@ -1,63 +1,56 @@
 #include "InputCapture.h"
 #include "../Isr.h"
 
-namespace Driver {
-namespace InputCapture {
-static InputCapture *inputCapture[2U]  = {};
-static uint8_t       inputCaptureIndex = 0U;
-
-InputCapture::InputCapture( Gpio::GpioInterface &gpio, Tick::TickInterface &tick )
-	: mGpio( gpio )
-	, mTick( tick )
-	, mState( false )
-	, mStartTime( 0UL )
-	, mDelay( 0UL )
+namespace Driver
 {
-}
+    namespace InputCapture
+    {
+        static InputCapture *inputCapture[2U] = {};
+        static uint8_t inputCaptureIndex = 0U;
 
-Core::CoreStatus InputCapture::Initialize ( void )
-{
-	PCICR  |= _BV( PCIE0 );
-	PCMSK0 |= _BV( ( this->mGpio.GetPin() ) );
-	inputCapture[inputCaptureIndex] = this;
-	inputCaptureIndex++;
+        InputCapture::InputCapture(Gpio::GpioInterface &gpio, Tick::TickInterface &tick)
+            : mGpio(gpio)
+              , mTick(tick)
+              , mState(false)
+              , mStartTime(0UL)
+              , mDelay(0UL) {
+        }
 
-	return ( Core::CoreStatus::CORE_OK );
-}
+        Core::CoreStatus InputCapture::Initialize(void) {
+            PCICR |= _BV(PCIE0);
+            PCMSK0 |= _BV(( this->mGpio.GetPin() ));
+            inputCapture[inputCaptureIndex] = this;
+            inputCaptureIndex++;
 
-void InputCapture::Update ( const uint64_t currentTime )
-{
-	(void) currentTime;
-}
+            return (Core::CoreStatus::CORE_OK);
+        }
 
-uint64_t InputCapture::GetInputCaptureTime ( void )
-{
-	return ( this->mDelay );
-}
+        void InputCapture::Update(const uint64_t currentTime) {
+            (void) currentTime;
+        }
 
-void InputCapture::EdgeChange ( void )
-{
-	int state = this->mGpio.Get();
+        uint64_t InputCapture::GetInputCaptureTime(void) {
+            return (this->mDelay);
+        }
 
-	if ( state != this->mState && state == true )
-	{
-		this->mStartTime = this->mTick.GetUs();
-	}
-	else if ( state != this->mState && state == false )
-	{
-		this->mDelay = this->mTick.GetUs() - this->mStartTime;
-	}
-	this->mState = state;
-}
+        void InputCapture::EdgeChange(void) {
+            int state = this->mGpio.Get();
 
-ISR( PCINT0_vect )
-{
-	ISR_EMBEDDED_CODE(
-		for ( size_t i = 0U; i < inputCaptureIndex; i++ )
-			{
-				inputCapture[i]->EdgeChange();
-			}
-		);
-}
-}
+            if (state != this->mState && state == true) {
+                this->mStartTime = this->mTick.GetUs();
+            } else if (state != this->mState && state == false) {
+                this->mDelay = this->mTick.GetUs() - this->mStartTime;
+            }
+            this->mState = state;
+        }
+
+        ISR(PCINT0_vect) {
+            ISR_EMBEDDED_CODE(
+                for ( size_t i = 0U; i < inputCaptureIndex; i++ )
+                {
+                inputCapture[i]->EdgeChange();
+                }
+            );
+        }
+    }
 }

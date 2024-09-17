@@ -1,91 +1,75 @@
 #include "Uart.h"
 #include "../Isr.h"
 
-namespace Driver {
-namespace Uart {
-Misc::Buffer::Buffer Uart::bufferRx;
-Misc::Buffer::Buffer Uart::bufferTx;
-
-Uart::Uart( const EBaudRate & baud ) : mBaudRate( baud )
+namespace Driver
 {
-}
+    namespace Uart
+    {
+        Misc::Buffer::Buffer Uart::bufferRx;
+        Misc::Buffer::Buffer Uart::bufferTx;
 
-Core::CoreStatus Uart::Initialize ( void )
-{
-	const uint16_t ubrr = ( F_CPU / ( this->mBaudRate * 8.0 ) ) - 1;
+        Uart::Uart(const EBaudRate &baud) : mBaudRate(baud) {
+        }
 
-	UBRR0  = ubrr;
-	UCSR0A = _BV( U2X0 );
-	UCSR0B = _BV( TXEN0 ) | _BV( RXEN0 ) | _BV( RXCIE0 );
-	UCSR0C = _BV( UCSZ01 ) | _BV( UCSZ00 );
+        Core::CoreStatus Uart::Initialize(void) {
+            const uint16_t ubrr = (F_CPU / (this->mBaudRate * 8.0)) - 1;
 
-	return ( Core::CoreStatus::CORE_OK );
-}
+            UBRR0 = ubrr;
+            UCSR0A = _BV(U2X0);
+            UCSR0B = _BV(TXEN0) | _BV(RXEN0) | _BV(RXCIE0);
+            UCSR0C = _BV(UCSZ01) | _BV(UCSZ00);
 
-void Uart::Update ( const uint64_t currentTime )
-{
-	(void) currentTime;
-}
+            return (Core::CoreStatus::CORE_OK);
+        }
 
-void Uart::Send ( const char *data, const size_t len )
-{
-	Send( (uint8_t *) data, len );
-}
+        void Uart::Update(const uint64_t currentTime) {
+            (void) currentTime;
+        }
 
-void Uart::Send ( const uint8_t *data, const size_t len )
-{
-	for ( size_t i = 0U; i < len; ++i )
-	{
-		Send( data[i] );
-	}
-}
+        void Uart::Send(const char *data, const size_t len) {
+            Send((uint8_t *) data, len);
+        }
 
-void Uart::Send ( const uint8_t data )
-{
-	bufferTx.Push( data );
-	UCSR0B |= _BV( UDRIE0 );
-}
+        void Uart::Send(const uint8_t *data, const size_t len) {
+            for (size_t i = 0U; i < len; ++i) {
+                Send(data[i]);
+            }
+        }
 
-uint8_t Uart::Read ( void )
-{
-	return ( Uart::bufferRx.Pop() );
-}
+        void Uart::Send(const uint8_t data) {
+            Uart::bufferTx.Push(data);
+            UCSR0B |= _BV(UDRIE0);
+        }
 
-uint8_t Uart::DataAvailable ( void ) const
-{
-	return ( Uart::bufferRx.GetLength() );
-}
+        uint8_t Uart::Read(void) {
+            return Uart::bufferRx.Pop();
+        }
 
-ISR( USART0_UDRE_vect )
-{
-	ISR_EMBEDDED_CODE(
-		if ( Uart::bufferTx.GetLength() > 0U )
-			{
-				UDR0 = Uart::bufferTx.Pop();
-			}
-		else
-			{
-				UCSR0B &= ~_BV( UDRIE0 );
-			}
-		);
-}
+        uint8_t Uart::DataAvailable(void) const {
+            return (Uart::bufferRx.GetLength());
+        }
 
-ISR( USART0_RX_vect )
-{
-	ISR_EMBEDDED_CODE(
-		volatile uint8_t receivedData = UDR0;
+        ISR(USART0_UDRE_vect) {
+            ISR_EMBEDDED_CODE(
+                if ( Uart::bufferTx.GetLength() > 0U )
+                {
+                UDR0 = Uart::bufferTx.Pop();
+                }
+                else
+                {
+                UCSR0B &= ~_BV( UDRIE0 );
+                }
+            );
+        }
 
-		if ( ( UCSR0A & ( _BV( FE0 ) | _BV( DOR0 ) | _BV( UPE0 ) ) ) == 0 )
-			{
-				if ( ( receivedData == 60 || receivedData == 62 ) ||
-					  ( receivedData >= 48 && receivedData <= 57 ) ||
-					  ( receivedData >= 65 && receivedData <= 70 ) ||
-					  ( receivedData >= 97 && receivedData <= 102 ) )
-				{
-					Uart::bufferRx.Push( receivedData );
-				}
-			}
-		);
-}
-}
+        ISR(USART0_RX_vect) {
+            ISR_EMBEDDED_CODE(
+                volatile uint8_t receivedData = UDR0;
+                if ( ( UCSR0A & ( _BV( FE0 ) | _BV( DOR0 ) | _BV( UPE0 ) ) ) == 0U )
+                {
+                Uart::bufferRx.Push( receivedData );
+                }
+            );
+        }
+    }
 }

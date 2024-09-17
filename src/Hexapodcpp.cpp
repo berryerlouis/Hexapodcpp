@@ -1,29 +1,31 @@
+#ifndef GTEST
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
-#include "App/App.h"
+#endif
+#include "Builder/App.h"
 
-using namespace App;
+using namespace Builder;
 
-App::App robot;
+Builder::App robot;
 
-int main ( void )
-{
-	//hexapod initialization
-	if ( robot.Initialize() )
-	{
-		//enable ITs
-		sei();
+int main(void) {
+    //hexapod initialization
+    if (robot.Initialize()) {
+        //enable ITs
+#ifndef GTEST
+        sei();
+        wdt_enable(WDTO_15MS);
+#endif
+        while (true) {
+#ifndef GTEST
+            wdt_reset();
+#endif
+            //hexapod loop update
+            robot.Update(0UL);
+        }
+    }
 
-		wdt_enable( WDTO_15MS );
-		while ( true )
-		{
-			wdt_reset();
-			//hexapod loop update
-			robot.Update( 0UL );
-		}
-	}
-
-	return ( -1 );
+    return (-1);
 }
 
 /*

@@ -1,34 +1,25 @@
 #include "ServiceGeneral.h"
-#include "../../Misc/Logger/Logger.h"
 
-namespace Service {
-namespace General {
-ServiceGeneral::ServiceGeneral( SoftwareInterface &software )
-	: Service( 1U )
-	, mSoftware( software )
+namespace Service
 {
-}
+    namespace General
+    {
+        ServiceGeneral::ServiceGeneral(SoftwareInterface &software,
+                                       Event::EventListenerInterface &eventListener)
+            : Service(1U, eventListener)
+              , mSoftware(software) {
+        }
 
-Core::CoreStatus ServiceGeneral::Initialize ( void )
-{
-	return ( this->mSoftware.Initialize() );;
-}
+        Core::CoreStatus ServiceGeneral::Initialize(void) {
+            return (this->mSoftware.Initialize());
+        }
 
-void ServiceGeneral::Update ( const uint64_t currentTime )
-{
-	const uint64_t previousTime = this->GetPreviousTime();
-	uint64_t       delta        = currentTime - previousTime;
+        void ServiceGeneral::Update(const uint64_t currentTime) {
+            (void) currentTime;
+        }
 
-	if ( delta < this->mSoftware.GetMinTime() )
-	{
-		this->mSoftware.SetMinTime( delta );
-		this->mMediator->Notify( { id: Cluster::EClusters::GENERAL, value: (uint8_t) Cluster::EGeneralCommands::MIN_EXECUTION_TIME } );
-	}
-	else if ( delta > this->mSoftware.GetMaxTime() )
-	{
-		this->mSoftware.SetMaxTime( delta );
-		this->mMediator->Notify( { id: Cluster::EClusters::GENERAL, value: (uint8_t) Cluster::EGeneralCommands::MAX_EXECUTION_TIME } );
-	}
-}
-}
+        void ServiceGeneral::DispatchEvent(const SEvent &event) {
+            (void) event;
+        }
+    }
 }

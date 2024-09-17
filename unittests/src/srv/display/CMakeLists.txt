@@ -1,12 +1,12 @@
 set(
-  SRC_FILES 
-  ../src/Misc/Bitmap/Bitmaps.cpp 
-  ../src/Service/Display/ServiceDisplay.cpp
+        SRC_FILES
+        ../src/Misc/Bitmap/Bitmaps.cpp
+        ../src/Service/Display/ServiceDisplay.cpp
 )
 set(
-  TEST_FILE 
-  src/srv/display/UT_SRV_DISPLAY.cpp
+        TEST_FILE
+        src/srv/display/UT_SRV_DISPLAY.cpp
 
 )
-set(UT_SRV_DISPLAY ${SRC_FILES} ${TEST_FILE} )
+set(UT_SRV_DISPLAY ${SRC_FILES} ${TEST_FILE})
 set(EXECUTABLES_SRC ${EXECUTABLES_SRC} ${UT_SRV_DISPLAY} PARENT_SCOPE)

@@ -1,10 +1,10 @@
 set(
-  SRC_FILES 
-  ../src/Component/Led/Led.cpp 
+        SRC_FILES
+        ../src/Component/Led/Led.cpp
 )
 set(
-  TEST_FILE 
-  src/cmp/led/UT_CMP_LED.cpp
+        TEST_FILE
+        src/cmp/led/UT_CMP_LED.cpp
 )
-set(UT_CMP_LED ${SRC_FILES} ${TEST_FILE} )
+set(UT_CMP_LED ${SRC_FILES} ${TEST_FILE})
 set(EXECUTABLES_SRC ${EXECUTABLES_SRC} ${UT_CMP_LED} PARENT_SCOPE)

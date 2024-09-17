@@ -2,15 +2,18 @@
 
 #include "Constants.h"
 #include "Frame/Frame.h"
+#include "../Misc/Logger/Logger.h"
 
-namespace Cluster {
-class ClusterInterface
+namespace Cluster
 {
-public:
-	ClusterInterface()  = default;
-	~ClusterInterface() = default;
+    class ClusterInterface {
+    public:
+        ClusterInterface() = default;
 
-	virtual Core::CoreStatus Execute( Frame &request, Frame &response ) = 0;
-	virtual EClusters GetId( void ) = 0;
-};
+        ~ClusterInterface() = default;
+
+        virtual Core::CoreStatus Execute(Frame &request, Frame &response) = 0;
+
+        virtual EClusters GetId(void) = 0;
+    };
 }

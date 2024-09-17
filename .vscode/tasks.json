@@ -45,7 +45,7 @@
             }
         },
         {
-            "label": "Test",
+            "label": "Test Cpp",
             "type": "shell",
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -56,6 +56,36 @@
             "command": "bin/dev/test.sh",
             "problemMatcher": [
                 "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "Test Js",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/HMI/"
+            },
+            "command": "npm run test",
+            "problemMatcher": [
+                "$jshint"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "Test and cover Js",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/HMI/"
+            },
+            "command": "npm run testcov",
+            "problemMatcher": [
+                "$jshint"
             ],
             "group": {
                 "kind": "build",

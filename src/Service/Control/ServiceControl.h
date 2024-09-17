@@ -3,21 +3,27 @@
 #include "../../Component/Servos/ServosInterface.h"
 #include "../Service.h"
 
-namespace Service {
-namespace Control {
-using namespace Component::Servos;
+namespace Service
+{
+    namespace Control
+    {
+        using namespace Component::Servos;
 
-class ServiceControl : public Service {
-public:
-	ServiceControl( ServosInterface &servos );
-	~ServiceControl() = default;
+        class ServiceControl : public Service {
+        public:
+            ServiceControl(ServosInterface &servos, Event::EventListenerInterface &eventListener);
 
-	virtual Core::CoreStatus Initialize( void ) final override;
-	virtual void Update( const uint64_t currentTime ) final override;
+            ~ServiceControl() = default;
 
-protected:
-	uint8_t mStepPca9685;
-	ServosInterface &mServosInterface;
-};
-}
+            virtual Core::CoreStatus Initialize(void) final override;
+
+            virtual void Update(const uint64_t currentTime) final override;
+
+            virtual void DispatchEvent(const SEvent &event) final override;
+
+        protected:
+            uint8_t mStepPca9685;
+            ServosInterface &mServosInterface;
+        };
+    }
 }

@@ -6,36 +6,44 @@
 #include "../../../Driver/Tick/TickInterface.h"
 #include "../../Led/LedInterface.h"
 #include "../SensorProximityInterface.h"
-#include "../SensorProximityWindow.h"
 
-namespace Component {
-namespace Proximity {
-namespace Ultrasound {
-class Srf05 : public SensorProximityInterface, public SensorProximityWindow {
-public:
-	static const uint64_t ECHO_TIMEOUT       = 30000U;
-	static const uint16_t DISTANCE_THRESHOLD = 30U;
+namespace Component
+{
+    namespace Proximity
+    {
+        namespace Ultrasound
+        {
+            class Srf05 : public SensorProximityInterface {
+            public:
+                static constexpr uint64_t ECHO_TIMEOUT = 30000U;
+                static constexpr uint16_t DISTANCE_THRESHOLD = 30U;
 
-	Srf05( const Cluster::EProximityCommands side, Driver::Gpio::GpioInterface &gpioTrigger, Driver::InputCapture::InputCaptureInterface &gpioEcho, Led::LedInterface &led, Driver::Tick::TickInterface &tick );
-	~Srf05() = default;
+                Srf05(const Cluster::EProximityCommands side, Driver::Gpio::GpioInterface &gpioTrigger,
+                      Driver::InputCapture::InputCaptureInterface &gpioEcho, Led::LedInterface &led,
+                      Driver::Tick::TickInterface &tick);
 
-	Core::CoreStatus Initialize( void ) final override;
-	void Update( const uint64_t currentTime ) final override;
+                ~Srf05() = default;
 
-	void SendPulse( void );
-	virtual uint16_t GetDistance( void ) final override;
-	virtual uint16_t GetThreshold( void ) final override;
-	virtual Core::CoreStatus SetThreshold( const uint16_t threshold ) final override;
+                Core::CoreStatus Initialize(void) final override;
 
-private:
+                void Update(const uint64_t currentTime) final override;
 
-	Cluster::EProximityCommands mSide;
-	Driver::Gpio::GpioInterface &mGpioTrigger;
-	Driver::InputCapture::InputCaptureInterface &mGpioEcho;
-	Driver::Tick::TickInterface &mTick;
-	Led::LedInterface &mLed;
-	uint16_t mThreshold;
-};
-}
-}
+                void SendPulse(void);
+
+                virtual uint16_t GetDistance(void) final override;
+
+                virtual uint16_t GetThreshold(void) final override;
+
+                virtual Core::CoreStatus SetThreshold(const uint16_t threshold) final override;
+
+            private:
+                Cluster::EProximityCommands mSide;
+                Driver::Gpio::GpioInterface &mGpioTrigger;
+                Driver::InputCapture::InputCaptureInterface &mGpioEcho;
+                Driver::Tick::TickInterface &mTick;
+                Led::LedInterface &mLed;
+                uint16_t mThreshold;
+            };
+        }
+    }
 }
