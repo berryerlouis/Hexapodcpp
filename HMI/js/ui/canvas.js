@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import Hexapod from '../hexapod/hexapod.js'
-import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import Hexapod from './hexapod/hexapod.js'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 
 export default class Canvas {
@@ -43,11 +44,8 @@ export default class Canvas {
 
     addGround() {
         // ground
-        const mesh = new THREE.Mesh(new THREE.PlaneGeometry(20000, 20000), new THREE.MeshPhongMaterial({
-            color: 0x999999,
-            depthWrite: false
-        }));
-        mesh.rotation.x = -Math.PI / 2;
+        const mesh = new THREE.Mesh(new THREE.PlaneGeometry(20000, 20000), new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false }));
+        mesh.rotation.x = - Math.PI / 2;
         this.scene.add(mesh);
 
         // ground grid
@@ -59,17 +57,15 @@ export default class Canvas {
 
     drawObstacleLeft(dist) {
         hexapod.head.srfLeft = dist;
-        this.robot.drawObstacleLeft();
+        this.robot.drawObstacle();
     }
-
     drawObstacleCenter(dist) {
         hexapod.head.vlx = dist;
-        this.robot.drawObstacleCenter();
+        this.robot.drawObstacle();
     }
-
     drawObstacleRight(dist) {
         hexapod.head.srfRight = dist;
-        this.robot.drawObstacleRight();
+        this.robot.drawObstacle();
     }
 
     moveLeg(legId, coxa, femur, tibia) {

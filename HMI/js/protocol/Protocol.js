@@ -1,42 +1,56 @@
-import {Clusters} from './Cluster.js'
-import {Message} from './Message.js'
+import { Clusters } from './Cluster.js'
+import { Message } from './Message.js'
 
 export class Protocol {
 
-    static decode(direction, data) {
+    static NO_ERROR = 'OK';
+    static ERROR = 'KO';
+
+    constructor() {
+    }
+
+    static decode(data) {
         if (data.substring(0, 1) === "<" && data.substring(data.length - 1) === ">") {
             const raw = data;
-            // remove '<' and '>'
+            let frame = new Message();
+            frame.raw = data;
+
             data = data.substring(1);
             data = data.substring(0, data.length - 1);
 
-            const cluster = Clusters.getClusterByCode(data.substring(0, 2));
+            frame.cluster = Clusters.findClusterByCode(data.substring(0, 2));
+            if (!frame.cluster) {
+                throw ('Cluster not found!');
+            }
+            data = data.substring(2);
+            frame.command = Clusters.findCommandByCode(frame.cluster, data.substring(0, 2));
+            if (!frame.command) {
+                throw ('Command not found!');
+            }
+            data = data.substring(2);
+            frame.size = parseInt(data.substring(0, 2), 16);
+            if (!frame.size == undefined) {
+                throw ('Size not found!');
+            }
             data = data.substring(2);
 
-            const command = Clusters.getCommandByCode(cluster, data.substring(0, 2));
-            data = data.substring(2);
-
-            const size = parseInt(data.substring(0, 2), 16);
-            data = data.substring(2);
-
-            let params = null;
-            if (size > 0) {
-                params = [];
+            if (frame.size > 0) {
+                frame.params = [];
             }
 
-            for (let index = 0; index < size; index++) {
-                params.push(data.substring(0, 2));
+            for (let index = 0; index < frame.size; index++) {
+                frame.params.push(data.substring(0, 2));
                 data = data.substring(2);
-            }
-            ;
+            };
 
             if (data.length > 0) {
-                throw new Error(`Decoding error! incorrect size: ${raw}`);
+                throw ('Decoding error! : ' + raw);
             }
 
-            return new Message().build(direction, cluster.name, command.name, size, params);
-        } else {
-            throw new Error(`Should starts and ends with "<" and ">": ${data}`);
+            return frame;
+        }
+        else {
+            throw ('Should starts and ends with "<" and ">"!');
         }
     }
 
