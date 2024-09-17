@@ -9,7 +9,7 @@ import {ClusterBattery} from "./ui/clusters/battery/ClusterBattery.js";
 import {ClusterGeneral} from "./ui/clusters/general/ClusterGeneral.js";
 import Canvas from "./ui/Canvas.js";
 
-const canvas = new Canvas(window.innerWidth, window.innerHeight - document.body.children[0].children[0].clientHeight);
+const canvas = new Canvas(window.innerWidth, window.innerHeight - document.body.children[0].children[0].clientHeight - document.body.children[2].children[0].clientHeight);
 const serialInterface = new SerialInterface();
 const messageManager = new MessageManager(serialInterface);
 const logger = new Logger(messageManager);

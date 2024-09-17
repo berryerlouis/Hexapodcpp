@@ -8,10 +8,10 @@ const TIBIA_LENGTH = 127.0;
 
 export default class Leg extends THREE.Group {
 
-    constructor(leg) {
+    constructor(name, leg) {
         super();
 
-        this.name = "Leg";
+        this.name = "leg-" + name;
         this.position.x = leg.position.x;
         this.position.y = hexapod.y + leg.position.y + 5;
         this.position.z = leg.position.z;
@@ -26,7 +26,7 @@ export default class Leg extends THREE.Group {
         this.groupTibia.name = "Tibia";
 
         //Coxa servo
-        let coxaServo = new Servo(
+        let coxaServo = new Servo("coxa-" + this.name,
             {
                 x: 0,
                 y: 0,
@@ -37,7 +37,7 @@ export default class Leg extends THREE.Group {
                 y: 0,
                 z: 0
             });
-        let femurServo = new Servo(
+        let femurServo = new Servo("femur-" + this.name,
             {
                 x: this.position.x > 0 ? 25.4 : -25.4,
                 y: 0,
@@ -48,7 +48,7 @@ export default class Leg extends THREE.Group {
                 y: 0,
                 z: 0
             });
-        let tibiaServo = new Servo(
+        let tibiaServo = new Servo("tibia-" + this.name,
             {
                 x: this.position.x > 0 ? -90 : 90,
                 y: -40,
@@ -63,7 +63,7 @@ export default class Leg extends THREE.Group {
 
         //femur
         let geometry1 = new THREE.BoxGeometry(110.4, 1.5, 20);
-        let material = new THREE.MeshBasicMaterial({ color: "darkgray" });
+        let material = new THREE.MeshBasicMaterial({color: "darkgray"});
         const femur = new THREE.Mesh(geometry1, material);
         femur.position.x = femurServo.getAxe().position.x;
         femur.position.y = femurServo.getAxe().position.y - 30;
@@ -75,7 +75,7 @@ export default class Leg extends THREE.Group {
 
         //tibia
         let geometry2 = new THREE.BoxGeometry(125, 1.5, 20);
-        material = new THREE.MeshBasicMaterial({ color: "darkgray" });
+        material = new THREE.MeshBasicMaterial({color: "darkgray"});
         const tibia = new THREE.Mesh(geometry2, material);
         tibia.position.x = tibiaServo.getAxe().position.x;
         tibia.position.y = tibiaServo.getAxe().position.y;
@@ -107,9 +107,9 @@ export default class Leg extends THREE.Group {
 
 
     moveServo(servoId, angle) {
-        if (servoId == 0) this.moveCoxa(angle);
-        if (servoId == 1) this.moveFemur(angle);
-        if (servoId == 2) this.moveTibia(angle);
+        if (servoId === 0) this.moveCoxa(angle);
+        if (servoId === 1) this.moveFemur(angle);
+        if (servoId === 2) this.moveTibia(angle);
     }
 
 

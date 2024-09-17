@@ -10,5 +10,8 @@
   },
   "devDependencies": {
     "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "three": "^0.168.0"
   }
 }
