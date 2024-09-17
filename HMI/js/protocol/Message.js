@@ -1,37 +1,48 @@
-import { Clusters } from './Cluster.js'
-import { Protocol } from './Protocol.js'
+import {Clusters} from './Cluster.js'
+import {Protocol} from './Protocol.js'
+import {MessageSizeError} from './MessageError.js';
 
 export class Message {
+    date;
+    direction;
     params;
     cluster;
     command;
     size;
-    params;
     raw;
     index;
+    timeout;
 
-    constructor() {
-        this.index = 0;
-    }
+    build(direction, clusterName, commandName, size = 0, params = null) {
+        this.direction = direction;
+        this.cluster = Clusters.getClusterByName(clusterName);
+        this.command = Clusters.getCommandByName(this.cluster, commandName);
+        this.timeout = 0;
 
-    build(cluster = undefined, command = undefined, size = 0, params = null) {
+        if ((params != null && params.length !== size) || (params == null && size !== 0)) {
+            throw new MessageSizeError(`Message with size ${size} doesn't expect the lenght of params ${params?.length}!`);
+        } else {
 
-        this.cluster = Clusters.findClusterByName(cluster);
-        this.command = Clusters.findCommandByName(command);
-        this.size = size;
-        this.params = params;
-        this.index = 0;
-        this.raw = Protocol.encode(this.cluster, this.command, this.size, this.params);
+            this.size = size;
+            this.params = params;
+            this.index = 0;
+            this.raw = Protocol.encode(this.cluster, this.command, this.size, this.params);
+        }
         return this;
     }
 
-    toString(direction) {
+    setDate() {
         let date = new Date();
-        return new Date(date.toString().split('GMT')[0] + ' UTC').toISOString().replace('T', ' ').replace('000Z', date.getMilliseconds().toString().padStart(3, '0')) +
-            '\t' + direction +
-            '\t' + this.raw +
-            '\t' + this.cluster.name +
-            '\t' + this.command.name;
+        this.date = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().replace('T', ' ').replace('Z', ' ');
+    }
+
+    toString() {
+        let ret = this.date;
+        ret += '\t' + this.direction;
+        ret += '\t' + this.raw;
+        ret += '\t' + this.cluster.name;
+        ret += '\t' + this.command.name;
+        return ret;
     }
 
     fetchInt8U() {
@@ -39,13 +50,17 @@ export class Message {
         if (this.index + 1 <= this.size) {
             num = parseInt(this.params[this.index], 16);
             this.index++;
+        } else {
+            throw new MessageSizeError(`Already expect the lenght of params ${this.size}!`);
         }
         return num;
     }
 
     fetchInt8S() {
         let num = this.fetchInt8U();
-        if (num & 0x80) { num = -(0x100 - num); }
+        if (num & 0x80) {
+            num = -(0x100 - num);
+        }
         return num;
     }
 
@@ -56,13 +71,17 @@ export class Message {
                 this.params[this.index + 1] +
                 this.params[this.index], 16);
             this.index += 2;
+        } else {
+            throw new MessageSizeError(`Already expect the lenght of params ${this.size}!`);
         }
         return num;
     }
 
     fetchInt16S() {
         let num = this.fetchInt16U();
-        if (num & 0x8000) { num = -(0x10000 - num); }
+        if (num & 0x8000) {
+            num = -(0x10000 - num);
+        }
         return num;
     }
 
@@ -74,6 +93,8 @@ export class Message {
                 this.params[this.index + 1] +
                 this.params[this.index], 16);
             this.index += 3;
+        } else {
+            throw new MessageSizeError(`Already expect the lenght of params ${this.size}!`);
         }
         return num;
     }
@@ -87,13 +108,18 @@ export class Message {
                 this.params[this.index + 1] +
                 this.params[this.index], 16);
             this.index += 4;
+        } else {
+            throw new MessageSizeError(`Already expect the lenght of params ${this.size}!`);
         }
         return num;
     }
 
     fetchInt32S() {
         let num = this.fetchInt32U();
-        if (num & 0x800000) { num = -(0x1000000 - num); }
+        const buf = Buffer.from([0x01, 0x00, 0x00, 0x00, 0x00]);
+        if (num & 0x80000000) {
+            num = -(buf.readUIntBE(0, 5) - num);
+        }
         return num;
     }
 
@@ -110,6 +136,8 @@ export class Message {
                 this.params[this.index + 1] +
                 this.params[this.index], 16);
             this.index += 8;
+        } else {
+            throw new MessageSizeError(`Already expect the lenght of params ${this.size}!`);
         }
         return num;
     }
