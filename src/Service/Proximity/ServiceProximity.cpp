@@ -14,9 +14,9 @@ namespace Service
         Core::CoreStatus ServiceProximity::Initialize(void) {
             Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
             if (this->mProximity.Initialize()) {
-                this->mProximity.Attach(this);
                 success = Core::CoreStatus::CORE_OK;
             }
+            this->mProximity.Attach(this);
             return (success);
         }
 
@@ -29,21 +29,15 @@ namespace Service
                 } else if (this->mTimeoutDetection[i] == MAX_TIMEOUT_DETECTION) {
                     this->mTimeoutDetection[i] = 0xFFU;
                     const uint16_t distance = this->mProximity.GetDistance(static_cast<SensorsId>(i));
-                    const uint8_t arg[2U] = {
-                        static_cast<uint8_t>(distance >> 8U),
-                        static_cast<uint8_t>(distance & 0xFFU)
-                    };
+                    const uint8_t arg[2U] = UINT16_TO_ARRAY(distance);
                     const SEvent ev(EServices::PROXIMITY, static_cast<uint8_t>(i), arg, 2U);
                     this->AddEvent(ev);
                 }
             }
         }
 
-        void ServiceProximity::Detect(const SensorsId &sensorId, const uint16_t &distance) {
-            const uint8_t arg[2U] = {
-                static_cast<uint8_t>(distance >> 8U),
-                static_cast<uint8_t>(distance & 0xFFU)
-            };
+        void ServiceProximity::Detect(const SensorsId &sensorId, const uint16_t distance) {
+            const uint8_t arg[2U] = UINT16_TO_ARRAY(distance);
             const SEvent ev(EServices::PROXIMITY, static_cast<uint8_t>(sensorId), arg, 2U);
             this->AddEvent(ev);
             this->mTimeoutDetection[sensorId] = 0U;

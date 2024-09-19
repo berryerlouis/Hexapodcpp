@@ -1,4 +1,5 @@
 import {ClusterName, CommandBattery} from "../../../protocol/Cluster.js";
+import {clusters} from "../../../clusters/db.js";
 
 export class ClusterBattery {
     constructor(messageManager) {
@@ -11,6 +12,9 @@ export class ClusterBattery {
             if (message.size > 0) {
                 let state = message.fetchInt8U();
                 let voltage = message.fetchInt16U() / 100;
+
+                clusters['BATTERY'].VOLTAGE = voltage;
+                clusters['BATTERY'].STATUS = state;
                 if (state === 0) {
                     $('#hexapod-battery-status').removeClass('bi-battery');
                     $('#hexapod-battery-status').removeClass('bi-battery-half');

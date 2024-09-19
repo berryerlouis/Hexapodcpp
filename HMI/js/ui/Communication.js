@@ -1,9 +1,10 @@
 import SerialInterface from '../protocol/Serial.js'
-import { Message } from '../protocol/Message.js'
+import {Message} from '../protocol/Message.js'
 import * as Cluters from '../protocol/Cluster.js';
 
 export default class Communication {
     consoleList = undefined;
+
     constructor(console, canvas) {
         this.uiCanvas = canvas;
         this.uiConsole = console;
@@ -24,21 +25,18 @@ export default class Communication {
                         this.currentSentMessage = null;
                         this.timeout = 0;
                         this.uiConsole.log("RESET", frame, false)
-                    }
-                    else if (frame.raw == "<ffff0101>") {
+                    } else if (frame.raw == "<ffff0101>") {
                         this.currentSentMessage = null;
                         this.timeout = 0;
-                        this.uiConsole.log("ERROR", { raw }, false)
-                    }
-                    else {
+                        this.uiConsole.log("ERROR", {raw}, false)
+                    } else {
                         if (this.currentSentMessage
                             && ((frame.cluster.code == this.currentSentMessage.cluster.code)
                                 && (frame.command.code == this.currentSentMessage.command.code))) {
                             this.currentSentMessage = null;
                             this.timeout = 0;
                             this.uiConsole.log("RX", frame, true)
-                        }
-                        else {
+                        } else {
                             this.uiConsole.log("RX", frame, false)
                         }
                         this.executeMessage(frame);
@@ -50,8 +48,7 @@ export default class Communication {
                     this.currentSentMessage = this.messages.pop();
                     this.serialInterface.write(this.currentSentMessage.raw);
                     this.uiConsole.log("TX", this.currentSentMessage, false)
-                }
-                else if (this.currentSentMessage != null) {
+                } else if (this.currentSentMessage != null) {
                     this.timeout++;
                     if (this.timeout > 20) {
                         this.uiConsole.log("TIMEOUT", this.currentSentMessage, false)
@@ -101,51 +98,44 @@ export default class Communication {
                         }
                     }
                 }
-            }
-            else if (message.cluster.name === Cluters.ClusterName.IMU) {
+            } else if (message.cluster.name === Cluters.ClusterName.IMU) {
                 if (message.command.name === Cluters.CommandImu.ACC) {
                     if (message.size !== 0) {
                         $('#accel-x').text(message.fetchInt16S());
                         $('#accel-y').text(message.fetchInt16S());
                         $('#accel-z').text(message.fetchInt16S());
                     }
-                }
-                else if (message.command.name === Cluters.CommandImu.GYR) {
+                } else if (message.command.name === Cluters.CommandImu.GYR) {
                     if (message.size !== 0) {
                         $('#gyro-x').text(message.fetchInt16S());
                         $('#gyro-y').text(message.fetchInt16S());
                         $('#gyro-z').text(message.fetchInt16S());
                     }
-                }
-                else if (message.command.name === Cluters.CommandImu.MAG) {
+                } else if (message.command.name === Cluters.CommandImu.MAG) {
                     if (message.size !== 0) {
                         $('#mag-x').text(message.fetchInt16S());
                         $('#mag-y').text(message.fetchInt16S());
                         $('#mag-z').text(message.fetchInt16S());
                     }
                 }
-            }
-            else if (message.cluster.name === Cluters.ClusterName.PROXIMITY) {
+            } else if (message.cluster.name === Cluters.ClusterName.PROXIMITY) {
                 if (message.command.name === Cluters.CommandProximity.US_LEFT) {
                     if (message.size > 1) {
                         let distance = message.fetchInt16U();
                         this.uiCanvas.drawObstacleLeft(distance);
                     }
-                }
-                else if (message.command.name === Cluters.CommandProximity.LAZER) {
+                } else if (message.command.name === Cluters.CommandProximity.LASER) {
                     if (message.size > 1) {
                         let distance = message.fetchInt16U();
                         this.uiCanvas.drawObstacleCenter(distance / 10);
                     }
-                }
-                else if (message.command.name === Cluters.CommandProximity.US_RIGHT) {
+                } else if (message.command.name === Cluters.CommandProximity.US_RIGHT) {
                     if (message.size > 1) {
                         let distance = message.fetchInt16U();
                         this.uiCanvas.drawObstacleRight(distance);
                     }
                 }
-            }
-            else if (message.cluster.name === Cluters.ClusterName.GENERAL) {
+            } else if (message.cluster.name === Cluters.ClusterName.GENERAL) {
                 if (message.command.name === Cluters.CommandGeneral.VERSION) {
                     if (message.size > 0) {
                         let major = message.fetchInt8U();
@@ -153,8 +143,7 @@ export default class Communication {
                         $('#hexapod-version').text(major + '.' + minor);
                     }
                 }
-            }
-            else if (message.cluster.name === Cluters.ClusterName.BATTERY) {
+            } else if (message.cluster.name === Cluters.ClusterName.BATTERY) {
                 if (message.command.name === Cluters.CommandBattery.STATUS) {
                     if (message.size > 0) {
                         let state = message.fetchInt8U();
@@ -164,20 +153,17 @@ export default class Communication {
                             $('#hexapod-battery-status').removeClass('bi-battery-half');
                             $('#hexapod-battery-status').addClass('bi-battery-full');
                             $('#hexapod-battery-status').attr('style', "color: rgb(50, 223, 27);");
-                        }
-                        else if (state == 1) {
+                        } else if (state == 1) {
                             $('#hexapod-battery-status').removeClass('bi-battery');
                             $('#hexapod-battery-status').removeClass('bi-battery-full');
                             $('#hexapod-battery-status').addClass('bi-battery-half');
                             $('#hexapod-battery-status').attr('style', "color: rgb(223, 135, 27);");
-                        }
-                        else if (state == 2) {
+                        } else if (state == 2) {
                             $('#hexapod-battery-status').removeClass('bi-battery-full');
                             $('#hexapod-battery-status').removeClass('bi-battery-half');
                             $('#hexapod-battery-status').addClass('bi-battery');
                             $('#hexapod-battery-status').attr('style', "color: rgb(223, 27, 27);");
-                        }
-                        else {
+                        } else {
                             $('#hexapod-battery-status').removeClass('bi-battery-full');
                             $('#hexapod-battery-status').removeClass('bi-battery-half');
                             $('#hexapod-battery-status').addClass('bi-battery');
@@ -187,8 +173,7 @@ export default class Communication {
                     }
                 }
             }
-        }
-        catch {
+        } catch {
             console.error(message.raw)
         }
     }

@@ -8,6 +8,7 @@ import {Command} from './ui/Command.js'
 import {ClusterBattery} from "./ui/clusters/battery/ClusterBattery.js";
 import {ClusterGeneral} from "./ui/clusters/general/ClusterGeneral.js";
 import Canvas from "./ui/Canvas.js";
+import {ClusterProximity} from "./ui/clusters/proximity/ClusterProximity.js";
 
 const canvas = new Canvas(window.innerWidth, window.innerHeight - document.body.children[0].children[0].clientHeight - document.body.children[2].children[0].clientHeight);
 const serialInterface = new SerialInterface();
@@ -17,7 +18,8 @@ const treeview = new Treeview(messageManager);
 const menu = new Command();
 const cluBattery = new ClusterBattery(messageManager);
 const cluGeneral = new ClusterGeneral(messageManager);
-const clusters = [cluBattery, cluGeneral];
+const cluProximity = new ClusterProximity(messageManager);
+const clusters = [cluBattery, cluGeneral, cluProximity];
 
 $('#connect-button').click(async () => {
     await serialInterface.init(navigator);
@@ -30,7 +32,7 @@ $('#connect-button').click(async () => {
             messageManager.write(new Message().build("Tx", ClusterName.BATTERY, CommandBattery.STATUS));
             toto = 0;
         }
-    }, 50);
+    }, 5000);
 });
 
 function init() {

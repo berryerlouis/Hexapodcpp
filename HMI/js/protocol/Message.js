@@ -1,4 +1,4 @@
-import {Clusters} from './Cluster.js'
+import Clusters from './Cluster.js'
 import {Protocol} from './Protocol.js'
 import {MessageSizeError} from './MessageError.js';
 
@@ -20,7 +20,7 @@ export class Message {
         this.timeout = 0;
 
         if ((params != null && params.length !== size) || (params == null && size !== 0)) {
-            throw new MessageSizeError(`Message with size ${size} doesn't expect the lenght of params ${params?.length}!`);
+            throw new MessageSizeError(`Message with size ${size} doesn't expect the length of params ${params?.length}!`);
         } else {
 
             this.size = size;

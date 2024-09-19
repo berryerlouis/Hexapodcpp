@@ -49,7 +49,7 @@ namespace Cluster
     };
 
 
-    class ClusterBase : public ClusterInterface {
+    class  ClusterBase : public ClusterInterface {
     public:
         ClusterBase(const EClusters clusterId, StrategyCluster *strategyCluster)
             : mClusterId(clusterId)

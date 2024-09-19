@@ -1,4 +1,4 @@
-import { ClusterNotFoundError, CommandNotFoundError } from './ClusterError.js';
+import {ClusterNotFoundError, CommandNotFoundError} from './ClusterError.js';
 
 class ClusterName {
     static GENERAL = 'GENERAL';
@@ -21,6 +21,7 @@ class Cluster {
 class Command {
     code;
     name;
+
     constructor(name, code) {
         this.name = name;
         this.code = code;
@@ -36,6 +37,7 @@ class ClusterCommandGeneric extends Command {
 class CommandGeneric {
     static GENERIC = 'GENERIC';
 }
+
 const CommandGeneral = {
     VERSION: 'VERSION',
     MIN_EXECUTION_TIME: 'MIN_EXECUTION_TIME',
@@ -59,7 +61,7 @@ const CommandBody = {
 const CommandProximity = {
     US_LEFT: 'US_LEFT',
     US_RIGHT: 'US_RIGHT',
-    LAZER: 'LAZER',
+    LASER: 'LASER',
     SET_THRESHOLD: 'SET_THRESHOLD'
 };
 
@@ -84,6 +86,7 @@ const CommandServo = {
     SET_REVERSE: 'SET_REVERSE',
     SAVE: 'SAVE'
 };
+
 
 export default class Clusters {
     static clusters = [
@@ -112,7 +115,7 @@ export default class Clusters {
             [
                 new Command(CommandProximity.US_LEFT, '00'),
                 new Command(CommandProximity.US_RIGHT, '01'),
-                new Command(CommandProximity.LAZER, '02'),
+                new Command(CommandProximity.LASER, '02'),
                 new Command(CommandProximity.SET_THRESHOLD, '03')
             ]
         ),
@@ -196,8 +199,18 @@ export default class Clusters {
     }
 
 
-
 }
 
 
-export { Clusters, Cluster, Command, ClusterName, CommandGeneral, CommandImu, CommandProximity, CommandBattery, CommandBody, CommandServo };
+export {
+    Clusters,
+    Cluster,
+    Command,
+    ClusterName,
+    CommandGeneral,
+    CommandImu,
+    CommandProximity,
+    CommandBattery,
+    CommandBody,
+    CommandServo
+};

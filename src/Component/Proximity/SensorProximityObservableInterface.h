@@ -14,7 +14,7 @@ namespace Component
 
             virtual Core::CoreStatus Attach(SensorProximityObserverInterface *observer) = 0;
 
-            virtual void Notify(const SensorsId &sensorId, const uint16_t &distance) = 0;
+            virtual void Notify(const SensorsId &sensorId, const uint16_t distance) = 0;
         };
     }
 }

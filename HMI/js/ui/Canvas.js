@@ -1,6 +1,9 @@
 import * as THREE from 'three';
-import Hexapod from '../hexapod/hexapod.js'
+import Hexapod from './hexapod/hexapod.js'
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+//import Stats from 'stats.js'
+import RayCasting from "./raycasting/RayCasting.js";
+import Controls from "./gui/Controls.js";
 
 
 export default class Canvas {
@@ -9,6 +12,9 @@ export default class Canvas {
         this.canvas = $("#myCanvas")[0];
         this.width = width;
         this.height = height;
+
+        //this.stats = Stats();
+        //document.body.appendChild(this.stats.dom)
 
         this.scene = new THREE.Scene();
         this.scene.name = 'scene';
@@ -33,38 +39,40 @@ export default class Canvas {
 
         this.scene.add(this.groupBody);
         this.addGround();
-        this.raycaster = new THREE.Raycaster();
-        this.pointer = null;
 
-        window.addEventListener('mousemove', this.onPointerMove.bind(this));
-    }
+        this.guiControls = new Controls();
+        this.hexapodFolder = this.guiControls.addFolder(this.guiControls.gui, 'Hexapod');
 
-    onPointerMove(event) {
-        let pointer = new THREE.Vector2();
-        pointer.x = (event.clientX / this.width) * 2 - 1;
-        pointer.y = -((event.clientY - document.body.children[0].children[0].clientHeight) / this.height) * 2 + 1;
-
-        this.raycaster.setFromCamera(pointer, this.camera);
-
-        // calculate objects intersecting the picking ray
-        const intersects = this.raycaster.intersectObjects(this.scene.children);
-
-        for (let i = 0; i < intersects.length; i++) {
-            if (intersects[i].object.name !== "mesh") {
-                let name = intersects[i].object.name;
-                if (intersects[i].object.parent) {
-                    name = intersects[i].object.parent.name;
-                    for (const child of intersects[i].object.parent.children) {
-                        child.material.color.set('darkgray');
-                    }
-                } else {
-                    intersects[i].object.material.color.set(0xff0000);
+        this.raycasting = new RayCasting(this.scene, this.camera, this.width, this.height, (memberClicked) => {
+            console.log(memberClicked);
+            hexapod[memberClicked] = {
+                position: {
+                    x: 80 / 2,
+                    y: 0,
+                    z: 150 / 2
+                },
+                rotation: {
+                    x: 0,
+                    y: -Math.PI / 5,
+                    z: 0
                 }
-                console.log(name)
-            }
+            };/*
+            this.membersFolder = this.guiControls.addFolder(this.hexapodFolder, 'Members');
+            this.memberFolder = this.guiControls.addFolder(this.membersFolder, memberClicked);
+            let memberPositionFolder = this.guiControls.addFolder(this.memberFolder, 'position');
+            let memberRotationFolder = this.guiControls.addFolder(this.memberFolder, 'rotation');
 
-        }
-
+            let memberPositionX = memberPositionFolder.add(hexapod[memberClicked].position, 'x').min(-100).max(100);
+            memberPositionFolder.add(hexapod[memberClicked].position, 'y').min(-100).max(100);
+            memberPositionFolder.add(hexapod[memberClicked].position, 'z').min(-100).max(100);
+            memberPositionX.onFinishChange(function (value) {
+                console.log('position.' + this.property + ' changed to:', value);
+            });
+            memberRotationFolder.add(hexapod[memberClicked].rotation, 'x').min(-Math.PI).max(Math.PI);
+            memberRotationFolder.add(hexapod[memberClicked].rotation, 'y').min(-Math.PI).max(Math.PI);
+            memberRotationFolder.add(hexapod[memberClicked].rotation, 'z').min(-Math.PI).max(Math.PI);
+*/
+        });
     }
 
     addLights() {
@@ -122,9 +130,7 @@ export default class Canvas {
     }
 
     animate() {
-        if (this.pointer) {
-        }
-
+        this.guiControls.updateDisplay();
         this.renderer.render(this.scene, this.camera);
     }
 

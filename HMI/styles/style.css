@@ -99,9 +99,14 @@ body {
 }
 
 .node-treeview1:not(.node-disabled):hover {
-        background-color: #F5F5F5;
+    background-color: #F5F5F5;
 }
 
+#gui {
+    position: absolute;
+    top: 78px;
+    left: 0px;
+}
 
 /*
 background-color: #2c6729;

@@ -21,7 +21,7 @@ int main(void) {
             wdt_reset();
 #endif
             //hexapod loop update
-            robot.Update(0UL);
+            robot.Update(0U);
         }
     }
 

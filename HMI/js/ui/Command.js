@@ -1,4 +1,3 @@
-
 export class Command {
     constructor() {
         this.button = $('#open-command');
@@ -11,7 +10,7 @@ export class Command {
         this.button.click(async () => {
             this.menu.show();
         });
-        this.menu.show();
+        //this.menu.show();
 
     }
 

@@ -72,7 +72,7 @@ namespace Builder
             success = mServices.Initialize();
         }
         if (success == false) {
-            printf("<error>");
+            LOG("<error>");
         }
         return (success);
     }

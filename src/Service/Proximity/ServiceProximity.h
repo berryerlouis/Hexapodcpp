@@ -24,7 +24,7 @@ namespace Service
 
             virtual void DispatchEvent(const SEvent &event) final override;
 
-            virtual void Detect(const SensorsId &sensorId, const uint16_t &distance) final override;
+            virtual void Detect(const SensorsId &sensorId, const uint16_t distance) final override;
 
         protected:
             SensorProximityMultipleInterface &mProximity;

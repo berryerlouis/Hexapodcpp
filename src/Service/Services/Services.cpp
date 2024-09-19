@@ -1,3 +1,6 @@
+#ifndef GTEST
+#include <avr/interrupt.h>
+#endif
 #include "Services.h"
 #include "../../Misc/Logger/Logger.h"
 
@@ -33,7 +36,12 @@ namespace Service
             for (const ServiceItem item: this->mServices) {
                 success = item.service->Initialize();
                 if (!success) {
+                    char serviceIdStr[2U] = {0U};
                     LOG("error");
+                    LOG(itoa(item.serviceId,serviceIdStr,10U));
+#ifndef GTEST
+                    sei();
+#endif
                 }
             }
             return (success);

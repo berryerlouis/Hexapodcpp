@@ -19,8 +19,6 @@ namespace Driver
 
             virtual void Send(const char *data, const size_t len) final override;
 
-            virtual void Send(const uint8_t *data, const size_t len) final override;
-
             virtual void Send(const uint8_t data) final override;
 
             virtual uint8_t Read(void) final override;

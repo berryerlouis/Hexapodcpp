@@ -1,7 +1,7 @@
-import { Message } from '../../js/protocol/Message';
-import { ClusterNotFoundError, CommandNotFoundError } from '../../js/protocol/ClusterError.js';
-import { MessageSizeError } from '../../js/protocol/MessageError.js';
-import { ClusterName, CommandGeneral } from '../../js/protocol/Cluster';
+import {Message} from '../../js/protocol/Message';
+import {ClusterNotFoundError, CommandNotFoundError} from '../../js/protocol/ClusterError.js';
+import {MessageSizeError} from '../../js/protocol/MessageError.js';
+import {ClusterName, CommandGeneral} from '../../js/protocol/Cluster';
 
 describe('Message', () => {
     let message;
