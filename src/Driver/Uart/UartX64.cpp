@@ -26,13 +26,6 @@ namespace Driver
             std::cout << std::endl;
         }
 
-        void Uart::Send(const uint8_t *data, const size_t len) {
-            for (size_t i = 0; i < len; ++i) {
-                std::cout << static_cast<int>(data[i]) << ' ';
-            }
-            std::cout << std::endl;
-        }
-
         void Uart::Send(const uint8_t data) {
             std::cout << data << std::endl;
             (void) data;

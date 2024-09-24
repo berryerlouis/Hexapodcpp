@@ -36,9 +36,10 @@ namespace Service
             for (const ServiceItem item: this->mServices) {
                 success = item.service->Initialize();
                 if (!success) {
-                    char serviceIdStr[2U] = {0U};
+#ifdef DEBUG
                     LOG("error");
-                    LOG(itoa(item.serviceId,serviceIdStr,10U));
+                    LOG(reinterpret_cast<const char *>(item.serviceId+0x30U));
+#endif
 #ifndef GTEST
                     sei();
 #endif
