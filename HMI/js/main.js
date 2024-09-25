@@ -1,44 +1,55 @@
 import {SerialInterface} from './protocol/Serial.js'
 import {MessageManager} from './protocol/MessageManager.js'
-import {ClusterName, CommandBattery, CommandGeneral} from './protocol/Cluster.js'
+import {ClusterName, CommandBattery, CommandGeneral, CommandServo} from './protocol/Cluster.js'
 import {Message} from './protocol/Message.js'
 import {Logger} from './ui/logger/Logger.js'
 import {Treeview} from './ui/treeview/Treeview.js'
 import {Command} from './ui/Command.js'
-import {ClusterBattery} from "./ui/clusters/battery/ClusterBattery.js";
-import {ClusterGeneral} from "./ui/clusters/general/ClusterGeneral.js";
 import Canvas from "./ui/Canvas.js";
-import {ClusterProximity} from "./ui/clusters/proximity/ClusterProximity.js";
+import {DatabaseManager} from "./clusters/DatabaseManager.js";
 
-const canvas = new Canvas(window.innerWidth, window.innerHeight - document.body.children[0].children[0].clientHeight - document.body.children[2].children[0].clientHeight);
+
 const serialInterface = new SerialInterface();
 const messageManager = new MessageManager(serialInterface);
 const logger = new Logger(messageManager);
 const treeview = new Treeview(messageManager);
+const databaseManager = new DatabaseManager(messageManager);
 const menu = new Command();
-const cluBattery = new ClusterBattery(messageManager);
-const cluGeneral = new ClusterGeneral(messageManager);
-const cluProximity = new ClusterProximity(messageManager);
-const clusters = [cluBattery, cluGeneral, cluProximity];
+const canvas = new Canvas(
+    window.innerWidth,
+    window.innerHeight - document.body.children[0].children[0].clientHeight - document.body.children[2].children[0].clientHeight,
+    messageManager
+);
 
 $('#connect-button').click(async () => {
     await serialInterface.init(navigator);
+
+
+    for (let i = 0; i < 18; i++) {
+        messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_ANGLE, 1, [i.toString(16)]));
+        messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_MIN, 1, [i.toString(16)]));
+        messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_MAX, 1, [i.toString(16)]));
+        messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_OFFSET, 1, [i.toString(16)]));
+        messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_REVERSE, 1, [i.toString(16)]));
+        messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_STATE, 1, [i.toString(16)]));
+    }
+
     let toto = 0;
     setInterval(() => {
         if (toto === 0) {
             messageManager.write(new Message().build("Tx", ClusterName.GENERAL, CommandGeneral.VERSION));
-            toto = 1;
-        } else {
+            toto++;
+        } else if (toto === 1) {
             messageManager.write(new Message().build("Tx", ClusterName.BATTERY, CommandBattery.STATUS));
+            toto = 0;
+        } else if (toto === 2) {
+
             toto = 0;
         }
     }, 5000);
 });
 
 function init() {
-    clusters.forEach((cluster) => {
-        cluster.initialize();
-    })
     animate();
 }
 

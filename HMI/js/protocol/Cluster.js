@@ -156,7 +156,7 @@ export default class Clusters {
 
     static getClusterByNameOrCode(identifier, isCode = false) {
         const clusterFound = Clusters.clusters.find(cluster =>
-            isCode ? cluster.code === identifier : cluster.name === identifier
+            isCode ? cluster.code.toLowerCase() === identifier.toLowerCase() : cluster.name.toLowerCase() === identifier.toLowerCase()
         );
         if (!clusterFound) {
             throw new ClusterNotFoundError(`Cluster with ${isCode ? 'code' : 'name'} "${identifier}" not found`);
@@ -182,7 +182,7 @@ export default class Clusters {
 
     static getCommandByName(cluster, commandName) {
         const commands = Clusters.getClusterByNameOrCode(cluster.name).commands;
-        const commandFound = commands.find(cmd => cmd.name === commandName);
+        const commandFound = commands.find(cmd => cmd.name.toLowerCase() === commandName.toLowerCase());
         if (!commandFound) {
             throw new CommandNotFoundError(`Command with name "${commandName}" not found`);
         }
@@ -191,7 +191,7 @@ export default class Clusters {
 
     static getCommandByCode(cluster, commandCode) {
         const commands = Clusters.getClusterByNameOrCode(cluster.name).commands;
-        const commandFound = commands.find(cmd => cmd.code === commandCode);
+        const commandFound = commands.find(cmd => cmd.code.toLowerCase() === commandCode.toLowerCase());
         if (!commandFound) {
             throw new CommandNotFoundError(`Command with code "${commandCode}" not found`);
         }

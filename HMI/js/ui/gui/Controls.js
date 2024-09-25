@@ -3,11 +3,11 @@ import ClusterCommand from "./ClusterCommand.js";
 
 export default class Controls {
 
-    constructor() {
+    constructor(messageManager) {
 
         this.gui = new GUI();
         this.gui.domElement.id = 'gui';
-        this.clusterCommands = new ClusterCommand(this);
+        this.clusterCommands = new ClusterCommand(this, messageManager);
 
     }
 

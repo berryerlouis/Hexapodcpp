@@ -6,7 +6,7 @@ import drawBody from './body.js'
 export default class Hexapod {
 
     constructor(groupBody) {
-
+        this.name = 'Hexapod';
         this.groupBody = groupBody;
         this.initBody();
         this.initHead();

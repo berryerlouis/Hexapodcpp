@@ -37,8 +37,9 @@ namespace Service
                 success = item.service->Initialize();
                 if (!success) {
 #ifdef DEBUG
+                    const char serviceId[2U] = {static_cast<const char>(item.serviceId + 0x30U),' '};
                     LOG("error");
-                    LOG(reinterpret_cast<const char *>(item.serviceId+0x30U));
+                    LOG(serviceId);
 #endif
 #ifndef GTEST
                     sei();

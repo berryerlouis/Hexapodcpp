@@ -10,7 +10,7 @@ export default class RayCasting {
         this.raycaster = new THREE.Raycaster();
         this.selectedMesh = null;
         this.cbMemberClicked = cbMemberClicked;
-        window.addEventListener('click', this.onPointerMove.bind(this));
+        window.addEventListener('mousedown', this.onPointerMove.bind(this));
     }
 
     onPointerMove(event) {

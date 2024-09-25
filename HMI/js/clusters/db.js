@@ -1,4 +1,4 @@
-export let clusters = {
+export let clustersDatabase = {
     GENERAL: {
         VERSION: "",
         MIN_EXECUTION_TIME: {
@@ -25,7 +25,6 @@ export let clusters = {
         }
     },
     IMU: {
-        ALL: 0,
         ACC: {x: 0, y: 0, z: 0},
         GYR: {x: 0, y: 0, z: 0},
         MAG: {x: 0, y: 0, z: 0},
@@ -38,20 +37,24 @@ export let clusters = {
         SET_THRESHOLD: 0,
     },
     SERVO: {
-        GET_ALL: 0,
-        GET_ANGLE: 0,
-        SET_ANGLE: 0,
-        GET_MIN: 0,
-        SET_MIN: 0,
-        GET_MAX: 0,
-        SET_MAX: 0,
-        GET_OFFSET: 0,
-        SET_OFFSET: 0,
-        GET_STATE: 0,
-        SET_STATE: 0,
-        GET_REVERSE: 0,
-        SET_REVERSE: 0,
-        SAVE: 0,
+        0: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
+        1: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
+        2: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
+        3: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
+        4: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
+        5: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
+        6: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
+        7: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
+        8: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
+        9: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
+        10: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
+        11: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
+        12: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
+        13: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
+        14: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
+        15: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
+        16: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
+        17: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
     },
     BATTERY: {
         VOLTAGE: 0.0,
@@ -62,6 +65,7 @@ export let clusters = {
         ROTATION: {x: 0, y: 0, z: 0}
     }
 };
+
 
 export let services = [
     'BATTERY',

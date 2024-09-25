@@ -49,7 +49,7 @@ namespace Cluster
                 return success;
             }
 
-            inline Core::CoreStatus BuildFrameAll(const Vector3 acc, const Vector3 gyr, const Vector3 mag,
+            inline Core::CoreStatus BuildFrameAll(const Vector3 &acc, const Vector3 &gyr, const Vector3 &mag,
                                                   const uint16_t temp, Frame &response) const {
                 const Core::CoreStatus success = response.Build(
                     EClusters::IMU,
@@ -63,7 +63,7 @@ namespace Cluster
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameAcc(const Vector3 acc, Frame &response) const {
+            inline Core::CoreStatus BuildFrameAcc(const Vector3 &acc, Frame &response) const {
                 const Core::CoreStatus success = response.Build(
                     EClusters::IMU,
                     EImuCommands::ACC);
@@ -73,7 +73,7 @@ namespace Cluster
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameGyr(const Vector3 gyr, Frame &response) const {
+            inline Core::CoreStatus BuildFrameGyr(const Vector3 &gyr, Frame &response) const {
                 const Core::CoreStatus success = response.Build(
                     EClusters::IMU,
                     EImuCommands::GYR);
@@ -83,7 +83,7 @@ namespace Cluster
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameMag(const Vector3 mag, Frame &response) const {
+            inline Core::CoreStatus BuildFrameMag(const Vector3 &mag, Frame &response) const {
                 const Core::CoreStatus success = response.Build(
                     EClusters::IMU,
                     EImuCommands::MAG);
