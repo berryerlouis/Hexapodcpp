@@ -56,7 +56,8 @@ export default class Hexapod {
         this.groupBody.add(...this.sensors);
     }
 
-    drawObstacleLeft() {
+    drawObstacleLeft(distance) {
+        hexapod.head.srfLeft = distance;
         this.sensors[0].position.x = 0
         this.sensors[0].position.z = -50 - hexapod.body.height / 2 - 8
         if (-hexapod.head.srfLeft * 10 < -100) {
@@ -66,13 +67,15 @@ export default class Hexapod {
         }
     }
 
-    drawObstacleCenter() {
+    drawObstacleCenter(distance) {
+        hexapod.head.vlx = distance;
         this.sensors[1].position.x = 0
         this.sensors[1].position.z = -50 - hexapod.body.height / 2 - 8
         this.sensors[1].translateZ(-hexapod.head.vlx * 10)
     }
 
-    drawObstacleRight() {
+    drawObstacleRight(distance) {
+        hexapod.head.srfRight = distance;
         this.sensors[2].position.x = 0
         this.sensors[2].position.z = -50 - hexapod.body.height / 2 - 8
         if (-hexapod.head.srfRight * 10 < -100) {
@@ -87,6 +90,6 @@ export default class Hexapod {
     }
 
     moveServo(servoId, angle) {
-        this.legs[parseInt(servoId / 3)].moveServo(servoId % 3, angle)
+        this.legs[parseInt(servoId / 3)].moveServo(servoId % 3, angle - 90)
     }
 }

@@ -28,8 +28,20 @@ body {
     background-color: #32ac32;
 }
 
+.console-direction-rx-nack {
+    background-color: #eb0e0e;
+}
+
+.console-direction-rx-async {
+    background-color: #cf8e38;
+}
+
 .console-direction-tx {
     background-color: #323eac;
+}
+
+.console-direction-tx-timeout {
+    background-color: #f701ff;
 }
 
 .console-number-messages-rx {
@@ -42,18 +54,6 @@ body {
 
 .console-number-messages-timeout {
     color: #f701ff;
-}
-
-.console-direction-rx-nack {
-    background-color: #eb0e0e;
-}
-
-.console-direction-rx-async {
-    background-color: #cf8e38;
-}
-
-.console-direction-rx-timeout {
-    background-color: #f701ff;
 }
 
 .console-direction-rx-reset {

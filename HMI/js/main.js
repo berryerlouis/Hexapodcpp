@@ -7,19 +7,22 @@ import {Treeview} from './ui/treeview/Treeview.js'
 import {Command} from './ui/Command.js'
 import Canvas from "./ui/Canvas.js";
 import {DatabaseManager} from "./clusters/DatabaseManager.js";
+import Hexapod from "./ui/hexapod/hexapod.js";
+import Controls from "./ui/gui/Controls.js";
 
 
 const serialInterface = new SerialInterface();
 const messageManager = new MessageManager(serialInterface);
 const logger = new Logger(messageManager);
 const treeview = new Treeview(messageManager);
-const databaseManager = new DatabaseManager(messageManager);
 const menu = new Command();
 const canvas = new Canvas(
     window.innerWidth,
-    window.innerHeight - document.body.children[0].children[0].clientHeight - document.body.children[2].children[0].clientHeight,
-    messageManager
+    window.innerHeight - document.body.children[0].children[0].clientHeight - document.body.children[2].children[0].clientHeight
 );
+const robot = new Hexapod(canvas.groupBody);
+const guiControls = new Controls(messageManager, robot);
+const databaseManager = new DatabaseManager(messageManager, robot);
 
 $('#connect-button').click(async () => {
     await serialInterface.init(navigator);
@@ -41,12 +44,12 @@ $('#connect-button').click(async () => {
             toto++;
         } else if (toto === 1) {
             messageManager.write(new Message().build("Tx", ClusterName.BATTERY, CommandBattery.STATUS));
-            toto = 0;
+            toto = 2;
         } else if (toto === 2) {
-
+            messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_ALL));
             toto = 0;
         }
-    }, 5000);
+    }, 1000);
 });
 
 function init() {
@@ -61,6 +64,7 @@ function update() {
 function animate() {
     update();
     requestAnimationFrame(animate);
+    guiControls.updateDisplay();
 }
 
 

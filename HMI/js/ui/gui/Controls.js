@@ -3,12 +3,14 @@ import ClusterCommand from "./ClusterCommand.js";
 
 export default class Controls {
 
-    constructor(messageManager) {
+    constructor(messageManager, robot) {
 
+        this.robot = robot;
         this.gui = new GUI();
         this.gui.domElement.id = 'gui';
-        this.clusterCommands = new ClusterCommand(this, messageManager);
+        new ClusterCommand(this, messageManager, robot);
 
+        this.addFolder(this.gui, 'Hexapod');
     }
 
     updateDisplay() {

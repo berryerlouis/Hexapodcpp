@@ -127,7 +127,7 @@ describe('MessageManager', () => {
         messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.GENERAL, CommandGeneral.VERSION, cbSpecific);
         expect(messageManager.listOfCallbackNotifyOnSpecificCommand.length).toEqual(1);
         let msg = new Message();
-        msg.cluster = {name: ClusterName.BATTER};
+        msg.cluster = {name: ClusterName};
         msg.command = {name: CommandGeneral.VERSION};
         messageManager.notifyOnSpecificCommand(msg);
         expect(cbSpecific).not.toHaveBeenCalledWith(msg);
@@ -155,10 +155,10 @@ describe('MessageManager', () => {
         expect(messageManager.currentMessagesToSent).toEqual(null);
     });
 
-    it('should timeout a new message doesn t found', async () => {
+    test('should timeout a new message does not found', async () => {
         mockSerialInterface.initialized = true;
         let msgTx = new Message().build("Tx", ClusterName.GENERAL, CommandGeneral.VERSION);
-        console.error = jest.fn();
+        console.warn = jest.fn();
         messageManager.currentMessagesToSent = {
             message: msgTx, cbResponse: (message) => {
             }
@@ -168,11 +168,12 @@ describe('MessageManager', () => {
             expect(messageManager.currentMessagesToSent.message.timeout).toEqual(i + 1);
         }
         messageManager.update();
-        expect(console.error).toHaveBeenCalledWith('timeout');
-        expect(messageManager.currentMessagesToSent).toEqual(null);
+        expect(console.warn).toHaveBeenCalledTimes(1);
+        expect(messageManager.currentMessagesToSent.message.retry).toEqual(1);
+        expect(messageManager.currentMessagesToSent).not.toEqual(null);
     });
 
-    test('should update with message in queue if Serial is not initalized correctly', () => {
+    test('should update with message in queue if Serial is not initialized correctly', () => {
         mockSerialInterface.initialized = false;
         messageManager.write(new Message().build("Tx", ClusterName.GENERAL, CommandGeneral.VERSION));
         messageManager.update();
@@ -183,7 +184,7 @@ describe('MessageManager', () => {
         messageManager.update();
     });
 
-    test('should update without message in queue if Serial is not initalized correctly', () => {
+    test('should update without message in queue if Serial is not initialized correctly', () => {
         mockSerialInterface.initialized = false;
         messageManager.update();
     });

@@ -1,9 +1,10 @@
 import {ClusterName, CommandServo} from "../../protocol/Cluster.js";
 
 export class ClusterServo {
-    constructor(messageManager, databaseManager) {
+    constructor(messageManager, databaseManager, robot) {
         this.messageManager = messageManager;
         this.databaseManager = databaseManager;
+        this.robot = robot;
         this.initialize()
     }
 
@@ -11,11 +12,13 @@ export class ClusterServo {
         this.messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.SERVO, CommandServo.GET_ALL, (message) => {
             if (message.size === 18) {
                 for (let i = 0; i < 18; i++) {
+                    let angle = message.fetchInt8U();
+                    this.robot.moveServo(i, angle);
                     this.databaseManager.updateDb({
                         cluster: 'SERVO',
                         command: i,
                         item: 'angle',
-                        value: message.fetchInt8U()
+                        value: angle
                     });
                 }
             }
@@ -23,11 +26,14 @@ export class ClusterServo {
 
         this.messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.SERVO, CommandServo.GET_ANGLE, (message) => {
             if (message.size === 2) {
+                let servoId = message.fetchInt8U();
+                let angle = message.fetchInt8U();
+                this.robot.moveServo(servoId, angle);
                 this.databaseManager.updateDb({
                     cluster: 'SERVO',
-                    command: message.fetchInt8U(),
+                    command: servoId,
                     item: 'angle',
-                    value: message.fetchInt8U()
+                    value: angle
                 });
             }
         });

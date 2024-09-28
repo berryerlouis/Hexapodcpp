@@ -1,19 +1,14 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import RayCasting from "./raycasting/RayCasting.js";
-import Controls from "./gui/Controls.js";
-import Hexapod from "./hexapod/hexapod.js";
 
 
 export default class Canvas {
 
-    constructor(width, height, messageManager) {
+    constructor(width, height) {
         this.canvas = $("#myCanvas")[0];
         this.width = width;
         this.height = height;
-
-        //this.stats = Stats();
-        //document.body.appendChild(this.stats.dom)
 
         this.scene = new THREE.Scene();
         this.scene.name = 'scene';
@@ -32,13 +27,9 @@ export default class Canvas {
         this.addLights();
 
         this.groupBody = new THREE.Group();
-        this.robot = new Hexapod(this.groupBody);
 
         this.scene.add(this.groupBody);
         this.addGround();
-
-        this.guiControls = new Controls(messageManager);
-        this.hexapodFolder = this.guiControls.addFolder(this.guiControls.gui, 'Hexapod');
 
         this.raycasting = new RayCasting(this.scene, this.camera, this.width, this.height, (memberClicked) => {
             console.log(memberClicked);
@@ -127,7 +118,6 @@ export default class Canvas {
     }
 
     animate() {
-        this.guiControls.updateDisplay();
         this.renderer.render(this.scene, this.camera);
     }
 

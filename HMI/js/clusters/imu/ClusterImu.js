@@ -1,9 +1,10 @@
 import {ClusterName, CommandImu} from "../../protocol/Cluster.js";
 
 export class ClusterImu {
-    constructor(messageManager, databaseManager) {
+    constructor(messageManager, databaseManager, robot) {
         this.messageManager = messageManager;
         this.databaseManager = databaseManager;
+        this.robot = robot;
         this.initialize()
     }
 

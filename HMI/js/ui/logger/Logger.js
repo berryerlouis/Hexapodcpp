@@ -1,4 +1,5 @@
 import {Header} from './Header.js';
+import {CodeCommandNack} from "../../protocol/Cluster.js";
 
 export class Logger {
     constructor(messageManager) {
@@ -6,26 +7,23 @@ export class Logger {
         this.consoleList = $('#console-list');
         this.header = new Header(messageManager);
         this.initMessageManagerCallbacks(messageManager);
-
-        this.consoleList.click(() => {
-            this.stopScroll = (this.stopScroll === false);
-        });
     }
 
     initMessageManagerCallbacks(messageManager) {
         this.messageManager = messageManager;
         this.messageManager.addCallbackRead((message) => {
             this.logMessage(message);
-            //console.log(message.toString());
+            this.header.incrementRxMessage();
+        });
+        this.messageManager.addCallbackReadAsync((message) => {
+            this.logMessage(message, true);
             this.header.incrementRxMessage();
         });
         this.messageManager.addCallbackWrite((message) => {
             this.logMessage(message);
-            //console.log(message.toString());
             this.header.incrementTxMessage();
         });
         this.messageManager.addCallbackWriteTimeout((message) => {
-            console.warn(message.toString());
             this.header.incrementMessageTimeout();
             let itemLog = this.getLastTxMessage(message);
             this.setMessageAsTimeout(itemLog);
@@ -33,16 +31,16 @@ export class Logger {
     }
 
     setMessageAsTimeout(itemLog) {
-        itemLog.childNodes[0].childNodes[1].childNodes[0].className = itemLog.childNodes[0].childNodes[1].childNodes[0].className.replace('-tx', '-rx-timeout');
+        itemLog.childNodes[0].childNodes[1].childNodes[0].className = itemLog.childNodes[0].childNodes[1].childNodes[0].className.replace('-tx', '-tx-timeout');
     }
 
     getLastTxMessage(message) {
         return Array.from(this.consoleList[0].children).find((msg) => msg.message === message);
     }
 
-    logMessage(message) {
-        if (this.consoleList[0].children.length >= 250) {
-            this.consoleList[0].children[this.consoleList[0].children.length - 1].remove();
+    logMessage(message, async = false) {
+        if (this.consoleList[0].children.length >= 2500) {
+            this.consoleList[0].children[0].remove();
         }
 
         let itemLog = document.createElement("li");
@@ -51,7 +49,7 @@ export class Logger {
         itemLogRow.className = "row w-100";
 
         const itemLogDate = this.setDate(message);
-        const itemLogDirection = this.setDirection(message);
+        const itemLogDirection = this.setDirection(message, async);
         const itemLogMessage = this.setMessage(message);
         const itemLogCluster = this.setCluster(message);
         const itemLogCommand = this.setCommand(message);
@@ -66,6 +64,17 @@ export class Logger {
         itemLog.appendChild(itemLogRow);
         itemLog.message = message;
         this.consoleList.prepend(itemLog);
+
+        //this.updateScrollView();
+
+    }
+
+    updateScrollView() {
+        if ((this.console.prop("scrollHeight") - this.console.prop("scrollTop")) < 25) {
+            this.console.animate({scrollTop: this.console.prop("scrollHeight") + this.console.prop("offsetHeight")}, 100);
+        } else {
+            this.console.animate({scrollTop: this.console.prop("scrollHeight") + this.console.prop("offsetHeight")}, 1);
+        }
     }
 
     setDate(message) {
@@ -78,11 +87,16 @@ export class Logger {
         return itemLogDate;
     }
 
-    setDirection(message) {
+    setDirection(message, async) {
         const itemLogDirection = document.createElement("div");
         itemLogDirection.className = "col-1 px-0";
         const itemLogDirectionSpan = document.createElement("span");
-        itemLogDirectionSpan.className = "console-direction" + (message.direction === "Rx" ? "-rx" : "-tx") + " badge badge-pill";
+        itemLogDirectionSpan.className = "console-direction"
+            + (message.direction === "Rx" ? "-rx" : "-tx")
+            + (async ? "-async" : "")
+            + (message.command.code === CodeCommandNack ? "-nack" : "")
+            + " badge badge-pill"
+            + ((!async && message.direction === "Rx") ? " ms-2" : "");
         itemLogDirectionSpan.innerText = message.direction;
         itemLogDirection.appendChild(itemLogDirectionSpan);
         return itemLogDirection;

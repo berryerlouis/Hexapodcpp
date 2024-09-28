@@ -1,3 +1,5 @@
+import {CodeCommandNack} from "./Cluster.js";
+
 export class MessageManager {
     constructor(serialInterface) {
         this.serialInterface = serialInterface;
@@ -5,6 +7,7 @@ export class MessageManager {
         this.currentMessagesToSent = null;
         this.listOfCallbackNotifyOnSpecificCommand = [];
         this.listOfCallbackRead = [];
+        this.listOfCallbackReadAsync = [];
         this.listOfCallbackWrite = [];
         this.listOfCallbackTimeout = [];
         this.serialInterface.addCallbackRead(this.read.bind(this));
@@ -16,14 +19,25 @@ export class MessageManager {
 
     read(message) {
         message.setDate();
-        if ((this.currentMessagesToSent != null) &&
-            (message.cluster.code === this.currentMessagesToSent.message.cluster.code) &&
-            (message.command.code === this.currentMessagesToSent.message.command.code)) {
-            this.currentMessagesToSent.cbResponse && this.currentMessagesToSent.cbResponse(message);
-            this.currentMessagesToSent = null;
+        let asyncMessageIncoming = true;
+        if (this.currentMessagesToSent) {
+            if (message.cluster.code === this.currentMessagesToSent.message.cluster.code) {
+                asyncMessageIncoming = false;
+                if (message.command.code === this.currentMessagesToSent.message.command.code) {
+                    this.currentMessagesToSent.cbResponse && this.currentMessagesToSent.cbResponse(message);
+                    this.currentMessagesToSent = null;
+                } else if (message.command.code === CodeCommandNack) {
+                    this.currentMessagesToSent.cbResponse && this.currentMessagesToSent.cbResponse(message);
+                    this.currentMessagesToSent = null;
+                }
+            }
         }
         this.notifyOnSpecificCommand(message);
-        this.notifyRead(message);
+        if (asyncMessageIncoming) {
+            this.notifyReadAsync(message);
+        } else {
+            this.notifyRead(message);
+        }
     }
 
     update() {
@@ -43,8 +57,16 @@ export class MessageManager {
                 if (this.currentMessagesToSent.message.timeout >= 10) {
                     this.currentMessagesToSent.cbResponse && this.currentMessagesToSent.cbResponse(this.currentMessagesToSent.message);
                     this.notifyWriteTimeout(this.currentMessagesToSent);
-                    this.currentMessagesToSent = null;
-                    console.error("timeout");
+
+                    //retry
+                    this.currentMessagesToSent.message.retry++;
+                    if (this.currentMessagesToSent.message.retry < 5) {
+                        this.listMessagesToSent.unshift(this.currentMessagesToSent);
+                        console.warn(this.currentMessagesToSent.message.toString() + " Message timeout retry number (" + this.currentMessagesToSent.message.retry + ")");
+                    } else {
+                        console.error(this.currentMessagesToSent.message.toString() + " Timeout removed");
+                        this.currentMessagesToSent = null
+                    }
                 }
             }
         }
@@ -56,6 +78,10 @@ export class MessageManager {
 
     addCallbackRead(cb) {
         this.listOfCallbackRead.push(cb);
+    }
+
+    addCallbackReadAsync(cb) {
+        this.listOfCallbackReadAsync.push(cb);
     }
 
     addCallbackWrite(cb) {
@@ -78,6 +104,13 @@ export class MessageManager {
 
     notifyRead(message) {
         this.listOfCallbackRead.forEach(function (cb) {
+            message.index = 0;
+            cb(message);
+        });
+    }
+
+    notifyReadAsync(message) {
+        this.listOfCallbackReadAsync.forEach(function (cb) {
             message.index = 0;
             cb(message);
         });

@@ -7,6 +7,7 @@ class ClusterName {
     static SERVO = 'SERVO';
     static BATTERY = 'BATTERY';
     static BODY = 'BODY';
+    static GENERIC = 'GENERIC';
 }
 
 
@@ -14,7 +15,7 @@ class Cluster {
     constructor(name, code, commands) {
         this.name = name;
         this.code = code;
-        this.commands = [...commands, new ClusterCommandGeneric()];
+        this.commands = [...commands, new Command(CommandNack.NACK, CodeCommandNack)];
     }
 }
 
@@ -28,14 +29,10 @@ class Command {
     }
 }
 
-class ClusterCommandGeneric extends Command {
-    constructor() {
-        super(CommandGeneric.GENERIC, 'FF');
-    }
-}
+const CodeCommandNack = 'FF';
 
-class CommandGeneric {
-    static GENERIC = 'GENERIC';
+class CommandNack {
+    static NACK = 'NACK';
 }
 
 const CommandGeneral = {
@@ -135,7 +132,7 @@ export default class Clusters {
                 new Command(CommandServo.SET_STATE, '0A'),
                 new Command(CommandServo.GET_REVERSE, '0B'),
                 new Command(CommandServo.SET_REVERSE, '0C'),
-                new Command(CommandServo.SAVE, '0D'),
+                new Command(CommandServo.SAVE, '0D')
             ]
         ),
         new Cluster(
@@ -207,6 +204,7 @@ export {
     Cluster,
     Command,
     ClusterName,
+    CodeCommandNack,
     CommandGeneral,
     CommandImu,
     CommandProximity,

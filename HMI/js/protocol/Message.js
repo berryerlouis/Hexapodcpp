@@ -12,12 +12,14 @@ export class Message {
     raw;
     index;
     timeout;
+    retry;
 
     build(direction, clusterName, commandName, size = 0, params = null) {
         this.direction = direction;
         this.cluster = Clusters.getClusterByName(clusterName);
         this.command = Clusters.getCommandByName(this.cluster, commandName);
         this.timeout = 0;
+        this.retry = 0;
 
         if ((params != null && params.length !== size) || (params == null && size !== 0)) {
             throw new MessageSizeError(`Message with size ${size} doesn't expect the length of params ${params?.length}!`);

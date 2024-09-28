@@ -44,8 +44,11 @@ namespace Cluster
                 if (request.commandId == EServoCommands::SET_ANGLE) {
                     const uint8_t servoId = request.params[0U];
                     const uint8_t angle = request.params[1U];
-                    this->mServosInterface.GetServo(servoId).SetAngle(angle);
-                    return this->BuildFrameSetAngle(servoId, angle, response);
+                    if (this->mServosInterface.GetServo(servoId).SetAngle(angle) == true) {
+                        const uint8_t angleServo = this->mServosInterface.GetServo(servoId).GetAngle();
+                        return this->BuildFrameSetAngle(servoId, angleServo, response);
+                    }
+                    return this->BuildFrameNack(response);
                 }
                 if (request.commandId == EServoCommands::GET_MIN) {
                     const uint8_t servoId = request.params[0U];

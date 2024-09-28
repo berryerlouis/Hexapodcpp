@@ -59,7 +59,7 @@ const hexapod =
                     z: 0
                 }
             },
-            legRR: {
+            legFR: {
                 position: {
                     x: 80 / 2,
                     y: 0,
@@ -83,7 +83,7 @@ const hexapod =
                     z: 0
                 }
             },
-            legFR: {
+            legRR: {
                 position: {
                     x: 80 / 2,
                     y: 0,

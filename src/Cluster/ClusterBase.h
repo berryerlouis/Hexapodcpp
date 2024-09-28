@@ -49,7 +49,7 @@ namespace Cluster
     };
 
 
-    class  ClusterBase : public ClusterInterface {
+    class ClusterBase : public ClusterInterface {
     public:
         ClusterBase(const EClusters clusterId, StrategyCluster *strategyCluster)
             : mClusterId(clusterId)
@@ -68,7 +68,15 @@ namespace Cluster
         }
 
         virtual EClusters GetId(void) {
-            return (mClusterId);
+            return (this->mClusterId);
+        }
+
+        virtual Core::CoreStatus BuildFrameNack(Frame &response) {
+            response.clusterId = this->mClusterId;
+            response.commandId = static_cast<uint8_t>(GENERIC);
+            response.nbParams = 1U;
+            response.params[0] = false;
+            return (Core::CoreStatus::CORE_OK);
         }
 
     protected:

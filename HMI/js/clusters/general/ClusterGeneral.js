@@ -2,9 +2,10 @@ import {ClusterName, CommandGeneral} from "../../protocol/Cluster.js";
 import {services} from "../db.js";
 
 export class ClusterGeneral {
-    constructor(messageManager, databaseManager) {
+    constructor(messageManager, databaseManager, robot) {
         this.messageManager = messageManager;
         this.databaseManager = databaseManager;
+        this.robot = robot;
         this.initialize()
     }
 
@@ -18,7 +19,7 @@ export class ClusterGeneral {
                     command: 'VERSION',
                     value: major + '.' + minor
                 });
-                $('#hexapod-version').text(major + '.' + minor);
+                $('#hexapod-version')[0].innerText = major + '.' + minor;
             }
         });
         this.messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.GENERAL, CommandGeneral.MIN_EXECUTION_TIME, (message) => {

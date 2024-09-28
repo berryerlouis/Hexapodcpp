@@ -58,11 +58,12 @@ export let clustersDatabase = {
     },
     BATTERY: {
         VOLTAGE: 0.0,
-        STATUS: 0,
+        STATUS: 255,
     },
     BODY: {
         POSITION: {x: 0, y: 0, z: 0},
-        ROTATION: {x: 0, y: 0, z: 0}
+        ROTATION: {x: 0, y: 0, z: 0},
+        DELAY: 1000,
     }
 };
 

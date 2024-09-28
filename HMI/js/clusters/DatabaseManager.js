@@ -6,13 +6,13 @@ import {ClusterServo} from "./servo/ClusterServo.js";
 import {clustersDatabase} from "./db.js"
 
 export class DatabaseManager {
-    constructor(messageManager) {
+    constructor(messageManager, robot) {
         this.messageManager = messageManager;
-        this.cluBattery = new ClusterBattery(messageManager, this);
-        this.cluGeneral = new ClusterGeneral(messageManager, this);
-        this.cluProximity = new ClusterProximity(messageManager, this);
-        this.clusterImu = new ClusterImu(messageManager, this);
-        this.clusterServo = new ClusterServo(messageManager, this);
+        this.cluBattery = new ClusterBattery(messageManager, this, robot);
+        this.cluGeneral = new ClusterGeneral(messageManager, this, robot);
+        this.cluProximity = new ClusterProximity(messageManager, this, robot);
+        this.clusterImu = new ClusterImu(messageManager, this, robot);
+        this.clusterServo = new ClusterServo(messageManager, this, robot);
         this.clusters = [
             this.cluBattery,
             this.cluGeneral,
