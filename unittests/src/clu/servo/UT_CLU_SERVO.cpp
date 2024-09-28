@@ -104,7 +104,8 @@ namespace Cluster
             request.Set1ByteParam(angle);
             Component::Servo::MockServo mockServo;
             Component::Servo::Servo servo(mMockPca9685, mMockTick, servoId, 11U);
-            EXPECT_CALL(mMockServos, GetServo( servoId )).WillOnce(ReturnRef(servo));
+            servo.SetEnable(true);
+            EXPECT_CALL(mMockServos, GetServo( servoId )).Times(2U).WillRepeatedly(ReturnRef(servo));
 
             success = mClusterServo.ExecuteFrame(request, response);
 
