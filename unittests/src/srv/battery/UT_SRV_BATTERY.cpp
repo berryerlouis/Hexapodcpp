@@ -23,6 +23,7 @@ namespace Service
 
             virtual void SetUp() {
                 EXPECT_CALL(mMockBattery, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_ERROR));
+                EXPECT_CALL(mMockBattery, Attach( _ )).WillOnce(Return(Core::CoreStatus::CORE_OK));
                 EXPECT_FALSE(mServiceBattery.Initialize());
 
                 EXPECT_CALL(mMockBattery, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
@@ -52,8 +53,11 @@ namespace Service
         TEST_F(UT_SRV_BATTERY, UpdatedBatteryState) {
             constexpr BatteryState batteryState = BatteryState::WARNING;
             constexpr uint8_t voltage = 10U;
-            constexpr uint8_t arg[1U] = {static_cast<uint8_t>(voltage)};
-            const SEvent ev(BATTERY, batteryState, arg, 1U);
+            constexpr uint8_t arg[2U] = {
+                static_cast<uint8_t>(voltage >> 8U),
+                static_cast<uint8_t>(voltage & 0xFFU)
+            };
+            const SEvent ev(BATTERY, batteryState, arg, 2U);
 
             EXPECT_CALL(mMockEventListener, AddEvent(ev)).Times(1U);
             mServiceBattery.UpdatedBatteryState(batteryState, 10U);

@@ -1,0 +1,17 @@
+{
+  "name": "hexapod-hmi-vanilla-js",
+  "description": "Learn how to test your JavaScript.",
+  "version": "1.0.0",
+  "license": "GPL",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
+    "testcov": "node --trace-warnings --experimental-vm-modules ./node_modules/jest/bin/jest.js --coverage"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "three": "^0.168.0"
+  }
+}

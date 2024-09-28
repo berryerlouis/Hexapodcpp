@@ -49,7 +49,7 @@ export default class Console {
         this.consoleButtonSend.click(() => {
             const parsedFrame = Protocol.decode(this.frameToSend.val(), this.showError.bind(this));
             if (parsedFrame) {
-                this.cbSendRawMessage && this.cbSendRawMessage(parsedFrame);
+                this.cbSendRawMessage && this.cbSendRawMessage(parsedFrame.cluster.name, parsedFrame.command.name);
             }
         });
 
@@ -103,7 +103,7 @@ export default class Console {
                     </div>`;
             consoleItem += `<div class="col-4">`
             if (message.size && message.size > 0) {
-                consoleItem += `<span class="console-param badge badge-pill text-wrap">(` + message.size + ') [';
+                consoleItem += `<span class="console-param badge badge-pill text-wrap ms-3">(` + message.size + ') [';
                 for (let index = 0; index < message.params?.length; index++) {
                     let intData = parseInt(message.params[index], 16);
                     consoleItem += '0x' + intData.toString(16).padStart(2, "0").toUpperCase();
@@ -112,17 +112,16 @@ export default class Console {
                 consoleItem += `]</span>`;
             }
             consoleItem += `</div></div></li>`;
+            if (obj == "RESET")
+                consoleItem.classList.add('console-direction-rx-reset');
+            if (obj == "ERROR")
+                consoleItem.classList.add('console-direction-rx-nack');
             this.consoleList.append(consoleItem);
-            if (this.consoleList[0].children.length > 500) {
-                this.consoleList[0].children[0].remove();
-            }
+            /*if (this.consoleList[0].children.length > 500) {
+                this.consoleList[0].children.pop();
+            }*/
             if (this.stopScroll == false)
                 this.consoleList[0].parentElement.scrollTop = this.consoleList[0].parentElement.scrollHeight;
-
-            if (obj == "RESET")
-                this.consoleList[0].children[this.consoleList[0].children.length - 1].classList.add('console-direction-rx-reset');
-            if (obj == "ERROR")
-                this.consoleList[0].children[this.consoleList[0].children.length - 1].classList.add('console-direction-rx-nack');
         }
         else {
             for (let index = this.consoleList[0].children.length - 1; index != 0; index--) {

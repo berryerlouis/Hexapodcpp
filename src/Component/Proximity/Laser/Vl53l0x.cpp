@@ -128,7 +128,7 @@ namespace Component
                 this->mDistance = this->GetDistance();
                 const bool detection = this->mDistance != 0U && this->mDistance <= this->mThreshold;
                 if (true == detection) {
-                    this->Notify(VLX, detection);
+                    this->Notify(VLX, this->mDistance);
                 }
             }
 

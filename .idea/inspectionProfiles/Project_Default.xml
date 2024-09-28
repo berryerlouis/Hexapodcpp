@@ -9,6 +9,7 @@
     <inspection_tool class="CppEnforceNestedNamespacesStyle" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppEnforceOverridingDestructorStyle" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="CppEnforceOverridingFunctionStyle" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="CppHiddenFunction" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppHidingFunction" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppNonExplicitConvertingConstructor" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppPolymorphicClassWithNonVirtualPublicDestructor" enabled="false" level="WARNING" enabled_by_default="false" />

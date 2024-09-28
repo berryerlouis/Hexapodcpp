@@ -19,8 +19,6 @@ namespace Driver
 
             virtual void Send(const char *data, const size_t len) = 0;
 
-            virtual void Send(const uint8_t *data, const size_t len) = 0;
-
             virtual void Send(const uint8_t data) = 0;
 
             virtual uint8_t Read(void) = 0;

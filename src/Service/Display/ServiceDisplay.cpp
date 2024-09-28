@@ -35,9 +35,7 @@ namespace Service
             if (event.id == EServices::BATTERY) {
                 this->DisplayBatteryLevel(static_cast<Battery::BatteryState>(event.value));
             } else if (event.id == EServices::PROXIMITY) {
-                const uint16_t distance = static_cast<uint16_t>(
-                                              static_cast<uint16_t>(event.params[0U]) << 8U)
-                                          | static_cast<uint16_t>(event.params[1U]);
+                const uint16_t distance = PTR_TO_UINT16(&event.params[0U]);
                 this->DisplayProximitySensor(static_cast<Proximity::SensorsId>(event.value), distance);
             }
         }

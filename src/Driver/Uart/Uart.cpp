@@ -27,10 +27,6 @@ namespace Driver
         }
 
         void Uart::Send(const char *data, const size_t len) {
-            Send((uint8_t *) data, len);
-        }
-
-        void Uart::Send(const uint8_t *data, const size_t len) {
             for (size_t i = 0U; i < len; ++i) {
                 Send(data[i]);
             }

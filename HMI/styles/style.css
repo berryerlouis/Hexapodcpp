@@ -11,48 +11,101 @@ body {
     font-size: 14px;
     max-height: 33vh;
 }
+
 #console .list-group-item:hover {
     background-color: #a4cce7;
 }
 
-.console-date { 
+.console-date {
     background-color: #18415c;
 }
+
 .console-direction {
     background-color: #18415c;
 }
+
 .console-direction-rx {
     background-color: #32ac32;
 }
-.console-number-rx {
-    color: #32ac32;
-}
+
 .console-direction-rx-nack {
     background-color: #eb0e0e;
 }
+
 .console-direction-rx-async {
     background-color: #cf8e38;
 }
-.console-direction-rx-timeout {
+
+.console-direction-tx {
+    background-color: #323eac;
+}
+
+.console-direction-tx-timeout {
     background-color: #f701ff;
 }
-.console-number-rx-timeout {
+
+.console-number-messages-rx {
+    color: #32ac32;
+}
+
+.console-number-messages-tx {
+    color: #6c56bd;
+}
+
+.console-number-messages-timeout {
     color: #f701ff;
 }
+
 .console-direction-rx-reset {
     background-color: #5a01ff;
 }
+
 .console-raw {
     background-color: #2175ad;
 }
+
 .console-cluster {
     background-color: #454ea3;
 }
+
 .console-command {
     background-color: #2d777c;
 }
+
 .console-param {
     background-color: #86804b;
+}
+
+.treeview .list-group-item {
+    cursor: pointer
+}
+
+.treeview span.indent {
+    margin-left: 10px;
+    margin-right: 10px
+}
+
+.treeview span.icon {
+    width: 12px;
+    margin-right: 5px
+}
+
+.treeview .node-disabled {
+    color: silver;
+    cursor: not-allowed
+}
+
+.node-treeview1 {
+}
+
+.node-treeview1:not(.node-disabled):hover {
+    background-color: #F5F5F5;
+}
+
+#gui {
+    position: absolute;
+    top: 78px;
+    left: 0px;
 }
 
 /*

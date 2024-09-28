@@ -30,7 +30,7 @@ namespace Component
                 const bool detection = (distance != 0U && distance <= this->mThreshold);
                 if (true == detection) {
                     this->mLed.On();
-                    this->Notify(static_cast<SensorsId>(mSide), detection);
+                    this->Notify(static_cast<SensorsId>(mSide), distance);
                 } else {
                     this->mLed.Off();
                 }
@@ -52,7 +52,7 @@ namespace Component
             }
 
             uint16_t Srf05::GetDistance(void) {
-                return ((uint16_t) ((this->mGpioEcho.GetInputCaptureTime() / 58.0F)));
+                return static_cast<uint16_t>((this->mGpioEcho.GetInputCaptureTime() / 58.0F));
             }
         }
     }

@@ -30,7 +30,7 @@ namespace Driver
 
         uint16_t Adc::Read() {
             this->StartConversion();
-            return ((uint16_t) (100.0 * ADC_VOLT(Adc::sAdcValue / BRIDGE_DIVIDER)));
+            return static_cast<uint16_t>(100.0 * ADC_VOLT(Adc::sAdcValue / BRIDGE_DIVIDER));
         }
 
         ISR(ADC_vect) {

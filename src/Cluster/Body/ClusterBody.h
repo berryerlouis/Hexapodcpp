@@ -21,7 +21,7 @@ namespace Cluster
 
             virtual Core::CoreStatus ExecuteFrame(const Frame &request, Frame &response) override {
                 Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-                if (request.commandId == EBatteryCommands::GET_VOLTAGE) {
+                if (request.commandId == EBodyCommands::SET_LEG_X_Y_Z) {
                     const Position3d position =
                     {
                         .x = static_cast<int16_t>(request.Get2BytesParam(0U)) / 10.0f,

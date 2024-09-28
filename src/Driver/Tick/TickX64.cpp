@@ -6,7 +6,7 @@ namespace Driver
 {
     namespace Tick
     {
-        uint64_t start = 0;
+        uint64_t start;
         std::chrono::time_point<std::chrono::system_clock> now;
 
         Tick::Tick(void) {
@@ -14,19 +14,19 @@ namespace Driver
             start = GetMs();
         }
 
-        uint64_t Tick::GetUs(void) { return 0UL; }
+        uint64_t Tick::GetUs(void) { return 0; }
 
         uint64_t Tick::GetMs(void) {
-            const auto duration = now.time_since_epoch();
+            auto duration = now.time_since_epoch();
             now = std::chrono::system_clock::now();
             return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() - start;
         }
 
-        void Tick::DelayMs(const uint64_t delayMs) {
+        void Tick::DelayMs(uint64_t delayMs) {
             (void) delayMs;
         }
 
-        void Tick::DelayUs(const uint64_t delayUs) {
+        void Tick::DelayUs(uint64_t delayUs) {
             (void) delayUs;
         }
     }

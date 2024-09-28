@@ -16,7 +16,7 @@ namespace Service
             : mUpdateTime(updateTime)
               , mDeltaTime(0U)
               , mPreviousTime(0UL)
-              , mMinDeltaTime(0UL)
+              , mMinDeltaTime(1000UL)
               , mMaxDeltaTime(0UL)
               , mEventListener(eventListener) {
         }
@@ -30,14 +30,20 @@ namespace Service
         }
 
         void SetNewUpdateTime(const uint64_t currentTime, const EServices serviceId) {
-            this->mDeltaTime = currentTime - this->mPreviousTime;
+            this->mDeltaTime = abs(static_cast<uint16_t>(currentTime - this->mPreviousTime - this->mUpdateTime));
+
+            if (this->mPreviousTime == 0U) {
+                this->mDeltaTime = 0U;
+                this->mPreviousTime = currentTime;
+                return;
+            }
             this->mPreviousTime = currentTime;
             if (this->mDeltaTime < this->mMinDeltaTime) {
                 this->SetMinTime(this->mDeltaTime);
                 const uint8_t arg[3U] = {
                     static_cast<uint8_t>(serviceId),
-                    static_cast<uint8_t>(this->mDeltaTime >> 8),
-                    static_cast<uint8_t>(this->mDeltaTime & 0xFF)
+                    static_cast<uint8_t>(this->mDeltaTime & 0xFFU),
+                    static_cast<uint8_t>(this->mDeltaTime >> 8U)
                 };
                 const SEvent ev(EServices::GENERAL, MIN_EXECUTION_TIME, arg, 3U);
                 this->AddEvent(ev);
@@ -45,8 +51,8 @@ namespace Service
                 this->SetMaxTime(this->mDeltaTime);
                 const uint8_t arg[3U] = {
                     static_cast<uint8_t>(serviceId),
-                    static_cast<uint8_t>(this->mDeltaTime >> 8),
-                    static_cast<uint8_t>(this->mDeltaTime & 0xFF)
+                    static_cast<uint8_t>(this->mDeltaTime & 0xFFU),
+                    static_cast<uint8_t>(this->mDeltaTime >> 8U)
                 };
                 const SEvent ev(EServices::GENERAL, MAX_EXECUTION_TIME, arg, 3U);
                 this->AddEvent(ev);

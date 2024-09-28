@@ -1,2 +1,4 @@
 #directories
 build
+HMI/node_modules
+HMI/coverage

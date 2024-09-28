@@ -24,6 +24,7 @@ namespace Service
 
 			virtual void SetUp() {
 				EXPECT_CALL(mMockSensorProximity, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_ERROR));
+				EXPECT_CALL(mMockSensorProximity, Attach( _ )).WillOnce(Return(Core::CoreStatus::CORE_OK));
 				EXPECT_FALSE(mServiceProximity.Initialize());
 
 				EXPECT_CALL(mMockSensorProximity, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));

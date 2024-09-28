@@ -21,7 +21,7 @@ namespace Component
         void Battery::Update(const uint64_t currentTime) {
             (void) currentTime;
             this->mVoltage = this->mAdc.Read();
-            BatteryState state = this->mState;
+            const BatteryState state = this->mState;
             if (this->mVoltage >= NOMINAL_LEVEL) {
                 this->mState = NOMINAL;
             } else if (this->mVoltage >= WARNING_LEVEL) {

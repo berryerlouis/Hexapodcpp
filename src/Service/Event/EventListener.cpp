@@ -10,6 +10,9 @@ namespace Service
         }
 
         void EventListener::AddEvent(const SEvent &event) {
+            if (this->mEventList.IsFull()) {
+                LOG("FULL LISTENER");
+            }
             this->mEventList.Push(event);
         }
 

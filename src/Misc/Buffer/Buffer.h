@@ -6,7 +6,7 @@ namespace Misc
 {
     namespace Buffer
     {
-        const uint8_t BUFFER_MAX_SIZE = 100U;
+        constexpr uint8_t BUFFER_MAX_SIZE = 250U;
 
         class Buffer {
         public:

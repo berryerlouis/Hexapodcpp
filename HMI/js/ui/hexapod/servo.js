@@ -3,9 +3,9 @@ import * as THREE from 'three';
 
 export default class Servo extends THREE.Group {
 
-    constructor(servoPosition, servoRotation) {
+    constructor(name, servoPosition, servoRotation) {
         super();
-        this.name = "Servo";
+        this.name = "servo-" + name;
         this.position.x = servoPosition.x;
         this.position.y = servoPosition.y + hexapod.body.servo.depth / 2;
         this.position.z = servoPosition.z + hexapod.body.servo.height / 2;
@@ -15,13 +15,13 @@ export default class Servo extends THREE.Group {
 
         //draw servo body
         let geometry = new THREE.BoxGeometry(hexapod.body.servo.width, hexapod.body.servo.height, hexapod.body.servo.depth);
-        let material = new THREE.MeshBasicMaterial({ color: hexapod.body.servo.color });
+        let material = new THREE.MeshBasicMaterial({color: hexapod.body.servo.color});
         this.servoBody = new THREE.Mesh(geometry, material);
         this.servoBody.name = "Servo";
 
         //draw axe
         geometry = new THREE.CylinderGeometry(hexapod.body.servo.axe.radius, hexapod.body.servo.axe.radius, hexapod.body.servo.axe.height, 12);
-        material = new THREE.MeshBasicMaterial({ color: hexapod.body.servo.axe.color });
+        material = new THREE.MeshBasicMaterial({color: hexapod.body.servo.axe.color});
         this.axe = new THREE.Mesh(geometry, material);
         this.axe.name = "Axe";
         this.axe.translateY(hexapod.body.servo.height / 2 - hexapod.body.servo.axe.height / 2 + 8);

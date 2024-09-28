@@ -12,7 +12,7 @@ namespace Component
 
             ~SensorProximityObserverInterface() = default;
 
-            virtual void Detect(const SensorsId &sensorId, const uint16_t &distance) = 0;
+            virtual void Detect(const SensorsId &sensorId, const uint16_t distance) = 0;
         };
     }
 }
