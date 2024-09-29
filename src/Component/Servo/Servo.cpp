@@ -97,14 +97,13 @@ namespace Component
                 this->mMax = REVERSE_ANGLE(this->mMin);
                 this->mMin = REVERSE_ANGLE(this->mMax);
             }
-            this->mAngle += this->mOffset;
             return (Core::CoreStatus::CORE_OK);
         }
 
         void Servo::Update(const uint64_t currentTime) {
             if (this->IsMoving()) {
                 this->mAngle = this->GetAngleFromDeltaTime(currentTime);
-                const uint16_t pwm = Misc::Utils::Map(this->mAngle,
+                const uint16_t pwm = Misc::Utils::Map(this->mAngle + this->mOffset,
                                                       Servo::SERVO_ANGLE_MIN,
                                                       Servo::SERVO_ANGLE_MAX,
                                                       Servo::SERVO_PWM_MIN,
@@ -119,10 +118,10 @@ namespace Component
             if (currentTime < endTime) {
                 float deltaTime = 1.0f;
                 deltaTime -= ((endTime - currentTime) / static_cast<float>(this->mSpeed));
-                return (Misc::Utils::Lerp(this->mAngle, this->mTargetAngle + this->mOffset, deltaTime));
+                return (Misc::Utils::Lerp(this->mAngle, this->mTargetAngle, deltaTime));
             }
             this->mIsMoving = false;
-            return (this->mTargetAngle + this->mOffset);
+            return (this->mTargetAngle);
         }
 
         bool Servo::IsMoving(void) {
@@ -138,9 +137,8 @@ namespace Component
                     this->mTargetAngle = REVERSE_ANGLE(angle);
                 }
                 // Instant move
-                if ((travelTime == 0U) &&
-                    (static_cast<int8_t>(this->mTargetAngle + this->mOffset) >= 0)) {
-                    this->mAngle = this->mTargetAngle + this->mOffset;
+                if (travelTime == 0U) {
+                    this->mAngle = this->mTargetAngle;
                     this->mIsMoving = true;
                 } else {
                     this->mIsMoving = true;
@@ -154,7 +152,10 @@ namespace Component
         }
 
         uint8_t Servo::GetAngle(void) const {
-            return (this->mAngle - this->mOffset);
+            if (true == this->mReverse) {
+                return (REVERSE_ANGLE(this->mAngle));
+            }
+            return (this->mAngle);
         }
 
         bool Servo::SetMin(const uint8_t angle) {
@@ -183,7 +184,6 @@ namespace Component
 
         bool Servo::SetOffset(const int8_t angle) {
             this->mOffset = angle;
-            this->mIsMoving = true;
             return (true);
         }
 

@@ -40,7 +40,8 @@ export class Logger {
 
     logMessage(message, async = false) {
         if (this.consoleList[0].children.length >= 2500) {
-            this.consoleList[0].children[0].remove();
+            this.consoleList[0].children[this.consoleList[0].children.length - 1].remove();
+            //this.consoleList[0].children[0].remove();
         }
 
         let itemLog = document.createElement("li");
@@ -93,7 +94,7 @@ export class Logger {
         const itemLogDirectionSpan = document.createElement("span");
         itemLogDirectionSpan.className = "console-direction"
             + (message.direction === "Rx" ? "-rx" : "-tx")
-            + (async ? "-async" : "")
+            + ((async && message.command.code !== CodeCommandNack) ? "-async" : "")
             + (message.command.code === CodeCommandNack ? "-nack" : "")
             + " badge badge-pill"
             + ((!async && message.direction === "Rx") ? " ms-2" : "");

@@ -1,4 +1,5 @@
 import {ClusterName, CommandServo} from "../../protocol/Cluster.js";
+import {clustersDatabase} from "../db.js";
 
 export class ClusterServo {
     constructor(messageManager, databaseManager, robot) {
@@ -13,14 +14,34 @@ export class ClusterServo {
             if (message.size === 18) {
                 for (let i = 0; i < 18; i++) {
                     let angle = message.fetchInt8U();
-                    this.robot.moveServo(i, angle);
                     this.databaseManager.updateDb({
                         cluster: 'SERVO',
                         command: i,
                         item: 'angle',
                         value: angle
                     });
+                    if (clustersDatabase[ClusterName.SERVO][i]['reverse']) {
+                        angle = (((angle - 90) * -1) + 90);
+                    }
+                    this.robot.moveServo(i, angle);
                 }
+            }
+        });
+
+        this.messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.SERVO, CommandServo.SET_ANGLE, (message) => {
+            if (message.size === 2) {
+                let servoId = message.fetchInt8U();
+                let angle = message.fetchInt8U();
+                this.databaseManager.updateDb({
+                    cluster: 'SERVO',
+                    command: servoId,
+                    item: 'angle',
+                    value: angle
+                });
+                if (clustersDatabase[ClusterName.SERVO][servoId]['reverse']) {
+                    angle = (((angle - 90) * -1) + 90);
+                }
+                this.robot.moveServo(servoId, angle);
             }
         });
 
@@ -28,13 +49,16 @@ export class ClusterServo {
             if (message.size === 2) {
                 let servoId = message.fetchInt8U();
                 let angle = message.fetchInt8U();
-                this.robot.moveServo(servoId, angle);
                 this.databaseManager.updateDb({
                     cluster: 'SERVO',
                     command: servoId,
                     item: 'angle',
                     value: angle
                 });
+                if (clustersDatabase[ClusterName.SERVO][servoId]['reverse']) {
+                    angle = (((angle - 90) * -1) + 90);
+                }
+                this.robot.moveServo(servoId, angle);
             }
         });
 

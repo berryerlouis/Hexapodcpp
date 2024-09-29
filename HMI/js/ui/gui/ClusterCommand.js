@@ -15,6 +15,9 @@ export default class ClusterCommand {
     constructor(guiControls, messageManager, robot) {
         ClusterCommand.messageManager = messageManager;
         ClusterCommand.robot = robot;
+
+        this.initCallbacks();
+
         this.guiControls = guiControls;
 
         let clusterFolder;
@@ -60,7 +63,7 @@ export default class ClusterCommand {
             commandName = i;
 
             let commandFolder = this.guiControls.addFolder(clusterFolder, commandName);
-            commandFolder.add(command[i], 'angle').min(0).max(180).step(1).onChange(function (value) {
+            commandFolder.add(command[i], 'angle').min(0).max(180).step(1).onFinishChange(function (value) {
                 sendCommand(ClusterName.SERVO, CommandServo.SET_ANGLE, 2, [getIndexServo(this.domElement), value.toString(16)]);
                 //ClusterCommand.robot.moveServo(getIndexServo(this.domElement), value - 90);
             });
@@ -71,7 +74,7 @@ export default class ClusterCommand {
                 sendCommand(ClusterName.SERVO, CommandServo.SET_MAX, 2, [getIndexServo(this.domElement), value.toString(16)]);
             });
             commandFolder.add(command[i], 'offset').min(-90).max(90).step(1).onFinishChange(function (value) {
-                sendCommand(ClusterName.SERVO, CommandServo.SET_OFFSET, 2, [getIndexServo(this.domElement), value.toString(16)]);
+                sendCommand(ClusterName.SERVO, CommandServo.SET_OFFSET, 2, [getIndexServo(this.domElement), (0xFF & value).toString(16)]);
             });
             commandFolder.add(command[i], 'reverse').onFinishChange(function (value) {
                 sendCommand(ClusterName.SERVO, CommandServo.SET_REVERSE, 2, [getIndexServo(this.domElement), value ? '01' : '00']);
@@ -171,6 +174,34 @@ export default class ClusterCommand {
         } else {
             addCommand(command, commandName);
         }
+    }
+
+    initCallbacks() {
+
+        ClusterCommand.messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.SERVO, CommandServo.GET_MIN, (message) => {
+            if (message.size === 2) {
+                let servoId = message.fetchInt8U();
+                this.guiControls.gui.__folders["Commands"].__folders['SERVO'].__folders[servoId].__controllers[0].__min = message.fetchInt8U();
+            }
+        });
+        ClusterCommand.messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.SERVO, CommandServo.SET_MIN, (message) => {
+            if (message.size === 2) {
+                let servoId = message.fetchInt8U();
+                this.guiControls.gui.__folders["Commands"].__folders['SERVO'].__folders[servoId].__controllers[0].__min = message.fetchInt8U();
+            }
+        });
+        ClusterCommand.messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.SERVO, CommandServo.SET_MAX, (message) => {
+            if (message.size === 2) {
+                let servoId = message.fetchInt8U();
+                this.guiControls.gui.__folders["Commands"].__folders['SERVO'].__folders[servoId].__controllers[0].__max = message.fetchInt8U();
+            }
+        });
+        ClusterCommand.messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.SERVO, CommandServo.GET_MAX, (message) => {
+            if (message.size === 2) {
+                let servoId = message.fetchInt8U();
+                this.guiControls.gui.__folders["Commands"].__folders['SERVO'].__folders[servoId].__controllers[0].__max = message.fetchInt8U();
+            }
+        });
     }
 }
 
