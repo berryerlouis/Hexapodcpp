@@ -17,5 +17,7 @@ namespace Cluster
         virtual EClusters GetId(void) = 0;
 
         virtual Core::CoreStatus BuildFrameNack(Frame &response) = 0;
+
+        virtual Core::CoreStatus BuildFrameNack(Frame &response, const Core::CoreStatus error) = 0;
     };
 }

@@ -31,13 +31,13 @@ namespace Component
                 this->mLedStatus.On();
                 Frame request;
                 Frame response;
-                const Protocol::ProtocolStatus parsedStatus = Protocol::Decode(this->mBufferRx, request);
-                if (parsedStatus == Protocol::ProtocolStatus::NO_ERROR) {
+                const Core::CoreStatus parsedStatus = Protocol::Decode(this->mBufferRx, request);
+                if (parsedStatus == Core::CoreStatus::CORE_OK) {
                     uint8_t frameClusterID = request.clusterId;
                     const auto cluster = this->mClusters.GetCluster(static_cast<EClusters>(frameClusterID));
 
                     if (cluster != nullptr) {
-                        if (true == cluster->Execute(request, response)) {
+                        if (cluster->Execute(request, response) == Core::CoreStatus::CORE_OK) {
                             this->SendMessage(response);
                         } else {
                             response.clusterId = request.clusterId;

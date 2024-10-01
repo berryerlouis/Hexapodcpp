@@ -33,9 +33,9 @@ namespace Component
 
 			virtual void SetUp() {
 				EXPECT_CALL(mMockLed, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_ERROR));
-				EXPECT_FALSE(mCommunication.Initialize());
+				EXPECT_EQ(Core::CoreStatus::CORE_ERROR, mCommunication.Initialize());
 				EXPECT_CALL(mMockLed, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-				EXPECT_TRUE(mCommunication.Initialize());
+				EXPECT_EQ(Core::CoreStatus::CORE_OK, mCommunication.Initialize());
 			}
 
 			virtual void TearDown() {

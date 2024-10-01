@@ -1,7 +1,5 @@
 import {SerialInterface} from './protocol/Serial.js'
 import {MessageManager} from './protocol/MessageManager.js'
-import {ClusterName, CommandBattery, CommandGeneral, CommandServo} from './protocol/Cluster.js'
-import {Message} from './protocol/Message.js'
 import {Logger} from './ui/logger/Logger.js'
 import {Treeview} from './ui/treeview/Treeview.js'
 import {Command} from './ui/Command.js'
@@ -9,6 +7,9 @@ import Canvas from "./ui/Canvas.js";
 import {DatabaseManager} from "./clusters/DatabaseManager.js";
 import Hexapod from "./ui/hexapod/hexapod.js";
 import Controls from "./ui/gui/Controls.js";
+import Walk from "./ui/walk/Walk.js";
+import {Message} from "./protocol/Message.js";
+import {ClusterName, CommandBattery, CommandGeneral, CommandServo} from "./protocol/Cluster.js";
 
 
 const serialInterface = new SerialInterface();
@@ -23,33 +24,18 @@ const canvas = new Canvas(
 const robot = new Hexapod(canvas.groupBody);
 const guiControls = new Controls(messageManager, robot);
 const databaseManager = new DatabaseManager(messageManager, robot);
+const walk = new Walk(messageManager);
 
 $('#connect-button').click(async () => {
     await serialInterface.init(navigator);
-
-
-    for (let i = 0; i < 18; i++) {
-        messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_ANGLE, 1, [i.toString(16)]));
-        messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_MIN, 1, [i.toString(16)]));
-        messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_MAX, 1, [i.toString(16)]));
-        messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_OFFSET, 1, [i.toString(16)]));
-        messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_REVERSE, 1, [i.toString(16)]));
-        messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_STATE, 1, [i.toString(16)]));
-    }
-
+    walk.init();
+    messageManager.write(new Message().build("Tx", ClusterName.GENERAL, CommandGeneral.VERSION));
+    messageManager.write(new Message().build("Tx", ClusterName.BATTERY, CommandBattery.STATUS));
+    walk.init();
     let toto = 0;
     setInterval(() => {
-        if (toto === 0) {
-            messageManager.write(new Message().build("Tx", ClusterName.GENERAL, CommandGeneral.VERSION));
-            toto++;
-        } else if (toto === 1) {
-            messageManager.write(new Message().build("Tx", ClusterName.BATTERY, CommandBattery.STATUS));
-            toto = 2;
-        } else if (toto === 2) {
-            messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_ALL));
-            toto = 0;
-        }
-    }, 1000);
+        messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_ALL));
+    }, 100);
 });
 
 function init() {

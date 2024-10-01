@@ -40,10 +40,10 @@ namespace Service
 
 			virtual void SetUp() {
 				EXPECT_CALL(mMockCommunication, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_ERROR));
-				EXPECT_FALSE(mServiceCommunication.Initialize());
+				EXPECT_EQ(Core::CoreStatus::CORE_ERROR, mServiceCommunication.Initialize());
 
 				EXPECT_CALL(mMockCommunication, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-				EXPECT_TRUE(mServiceCommunication.Initialize());
+				EXPECT_EQ(Core::CoreStatus::CORE_OK, mServiceCommunication.Initialize());
 			}
 
 			virtual void TearDown() {

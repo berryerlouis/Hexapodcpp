@@ -25,10 +25,10 @@ namespace Service
 
 			virtual void SetUp() {
 				EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_ERROR));
-				EXPECT_FALSE(mServiceControl.Initialize());
+				EXPECT_EQ(Core::CoreStatus::CORE_ERROR, mServiceControl.Initialize());
 
 				EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-				EXPECT_TRUE(mServiceControl.Initialize());
+				EXPECT_EQ(Core::CoreStatus::CORE_OK, mServiceControl.Initialize());
 			}
 
 			virtual void TearDown() {
@@ -58,7 +58,7 @@ namespace Service
 
 			mServiceControl.Update(0UL);
 
-			EXPECT_TRUE(success);
+			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 		}
 
 		TEST_F(UT_SRV_CONTROL, Update_2Times_Ok) {
@@ -76,7 +76,7 @@ namespace Service
 			mServiceControl.Update(0UL);
 			mServiceControl.Update(0UL);
 
-			EXPECT_TRUE(success);
+			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 		}
 	}
 }

@@ -13,6 +13,7 @@ namespace Cluster
         public:
             ClusterBody(BodyInterface &body)
                 : ClusterBase(BODY, this)
+                  , StrategyCluster(NB_COMMANDS_BODY)
                   , mBody(body) {
                 this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_LEG_X_Y_Z, .expectedSize = 14U});
             }
@@ -35,18 +36,18 @@ namespace Cluster
                         .angleZ = static_cast<int16_t>(request.Get2BytesParam(10U)) / 10.0f
                     };
                     const uint16_t travelTime = request.Get2BytesParam(12U);
-                    this->mBody.SetPositionRotation(position, rotation, travelTime);
-                    success = this->BuildFrameSetPosition(response);
+                    const uint32_t successMove = this->mBody.SetPositionRotation(position, rotation, travelTime);
+                    success = this->BuildFrameSetPosition(response, successMove);
                 }
                 return success;
             }
 
-            inline Core::CoreStatus BuildFrameSetPosition(Frame &response) const {
+            inline Core::CoreStatus BuildFrameSetPosition(Frame &response, const uint32_t successMove) const {
                 const Core::CoreStatus success = response.Build(
                     EClusters::BODY,
                     EBodyCommands::SET_LEG_X_Y_Z);
-                if (success) {
-                    response.Set1ByteParam(true);
+                if (success == Core::CoreStatus::CORE_OK) {
+                    response.Set4BytesParam(successMove);
                 }
                 return (success);
             }

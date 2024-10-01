@@ -35,7 +35,7 @@ namespace Service
             Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
             for (const ServiceItem item: this->mServices) {
                 success = item.service->Initialize();
-                if (!success) {
+                if (success != Core::CoreStatus::CORE_OK) {
 #ifdef DEBUG
                     const char serviceId[2U] = {static_cast<const char>(item.serviceId + 0x30U), ' '};
                     LOG("error");
@@ -54,7 +54,7 @@ namespace Service
 
             for (const ServiceItem item: this->mServices) {
                 const uint64_t currentMillis = this->mTick.GetMs();
-                if (item.service->NeedUpdate(currentMillis)) {
+                if (item.service->NeedUpdate(currentMillis) == Core::CoreStatus::CORE_OK) {
                     item.service->Update(currentMillis);
                     item.service->SetNewUpdateTime(currentMillis, item.serviceId);
                 }

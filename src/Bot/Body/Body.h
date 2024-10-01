@@ -26,16 +26,16 @@ namespace Bot
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void SetPositionRotation(const Position3d &position,
-                                             const Rotation3d &rotation,
-                                             const uint16_t travelTime) final override;
+            virtual uint32_t SetPositionRotation(const Position3d &position,
+                                                 const Rotation3d &rotation,
+                                                 const uint16_t travelTime) final override;
 
         private:
             SBodyIk mBodyIk;
             Legs::Legs &mLegs;
 
-            void SetBodyIk(const Position3d &position, const Rotation3d &rotation,
-                           const uint16_t travelTime);
+            uint32_t SetBodyIk(const Position3d &position, const Rotation3d &rotation,
+                               const uint16_t travelTime);
         };
     }
 }

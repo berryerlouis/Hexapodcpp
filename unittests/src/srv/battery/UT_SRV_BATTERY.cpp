@@ -24,11 +24,11 @@ namespace Service
             virtual void SetUp() {
                 EXPECT_CALL(mMockBattery, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_ERROR));
                 EXPECT_CALL(mMockBattery, Attach( _ )).WillOnce(Return(Core::CoreStatus::CORE_OK));
-                EXPECT_FALSE(mServiceBattery.Initialize());
+                EXPECT_EQ(Core::CoreStatus::CORE_ERROR, mServiceBattery.Initialize());
 
                 EXPECT_CALL(mMockBattery, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
                 EXPECT_CALL(mMockBattery, Attach( _ )).WillOnce(Return(Core::CoreStatus::CORE_OK));
-                EXPECT_TRUE(mServiceBattery.Initialize());
+                EXPECT_EQ(Core::CoreStatus::CORE_OK, mServiceBattery.Initialize());
             }
 
             virtual void TearDown() {

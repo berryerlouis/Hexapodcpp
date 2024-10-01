@@ -25,10 +25,10 @@ namespace Service
 
 			virtual void SetUp() {
 				EXPECT_CALL(mMockMpu9150, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_ERROR));
-				EXPECT_FALSE(mServiceOrientation.Initialize());
+				EXPECT_EQ(Core::CoreStatus::CORE_ERROR, mServiceOrientation.Initialize());
 
 				EXPECT_CALL(mMockMpu9150, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-				EXPECT_TRUE(mServiceOrientation.Initialize());
+				EXPECT_EQ(Core::CoreStatus::CORE_OK, mServiceOrientation.Initialize());
 			}
 
 			virtual void TearDown() {
@@ -55,7 +55,7 @@ namespace Service
 
 			mServiceOrientation.Update(0UL);
 
-			EXPECT_TRUE(success);
+			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 		}
 	}
 }

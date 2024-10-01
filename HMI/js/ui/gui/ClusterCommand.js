@@ -91,17 +91,17 @@ export default class ClusterCommand {
             function () {
                 sendCommandBody();
             },
-            -90,
-            90,
-            1);
+            -30,
+            30,
+            5);
         this.addClusterManyCommands(clusterFolder, ClusterName.BODY, 'ROTATION',
             ['x', 'y', 'z'],
             function () {
                 sendCommandBody();
             },
-            -90,
-            90,
-            1);
+            -30,
+            30,
+            5);
         this.addClusterSimpleCommand(clusterFolder, ClusterName.BODY, 'DELAY',
             undefined,
             function () {
@@ -178,6 +178,7 @@ export default class ClusterCommand {
 
     initCallbacks() {
 
+        //update the slider angle min and max
         ClusterCommand.messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.SERVO, CommandServo.GET_MIN, (message) => {
             if (message.size === 2) {
                 let servoId = message.fetchInt8U();

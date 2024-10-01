@@ -13,6 +13,7 @@ namespace Cluster
         public:
             ClusterServo(ServosInterface &servos)
                 : ClusterBase(SERVO, this)
+                  , StrategyCluster(NB_COMMANDS_SERVO)
                   , mServosInterface(servos) {
                 this->AddClusterItem((ClusterItem){.commandId = EServoCommands::GET_ALL, .expectedSize = 0U});
                 this->AddClusterItem((ClusterItem){.commandId = EServoCommands::GET_ANGLE, .expectedSize = 1U});
@@ -27,12 +28,13 @@ namespace Cluster
                 this->AddClusterItem((ClusterItem){.commandId = EServoCommands::SET_STATE, .expectedSize = 2U});
                 this->AddClusterItem((ClusterItem){.commandId = EServoCommands::GET_REVERSE, .expectedSize = 1U});
                 this->AddClusterItem((ClusterItem){.commandId = EServoCommands::SET_REVERSE, .expectedSize = 2U});
+                this->AddClusterItem((ClusterItem){.commandId = EServoCommands::GET_STATE_PCA, .expectedSize = 1U});
+                this->AddClusterItem((ClusterItem){.commandId = EServoCommands::GET_STATE_PCA, .expectedSize = 2U});
             }
 
             ~ClusterServo() = default;
 
             virtual Core::CoreStatus ExecuteFrame(const Frame &request, Frame &response) override {
-                Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
                 if (request.commandId == EServoCommands::GET_ALL) {
                     return BuildFrameAllAngle(response);
                 }
@@ -44,11 +46,12 @@ namespace Cluster
                 if (request.commandId == EServoCommands::SET_ANGLE) {
                     const uint8_t servoId = request.params[0U];
                     const uint8_t angle = request.params[1U];
-                    if (this->mServosInterface.GetServo(servoId).SetAngle(angle) == true) {
+                    const Core::CoreStatus success = this->mServosInterface.GetServo(servoId).SetAngle(angle);
+                    if (success == Core::CoreStatus::CORE_OK) {
                         const uint8_t angleServo = this->mServosInterface.GetServo(servoId).GetAngle();
                         return this->BuildFrameSetAngle(servoId, angleServo, response);
                     }
-                    return this->BuildFrameNack(response);
+                    return this->BuildFrameNack(response, success);
                 }
                 if (request.commandId == EServoCommands::GET_MIN) {
                     const uint8_t servoId = request.params[0U];
@@ -105,14 +108,25 @@ namespace Cluster
                     this->mServosInterface.GetServo(servoId).SetReverse(reversed);
                     return this->BuildFrameSetReverse(servoId, reversed, response);
                 }
-                return success;
+                if (request.commandId == EServoCommands::GET_STATE_PCA) {
+                    const uint8_t servoId = request.params[0U];
+                    const bool state = this->mServosInterface.GetServo(servoId).IsEnablePca();
+                    return this->BuildFrameGetStatePca(servoId, state, response);
+                }
+                if (request.commandId == EServoCommands::SET_STATE_PCA) {
+                    const uint8_t servoId = request.params[0U];
+                    const bool state = request.params[1U];
+                    this->mServosInterface.GetServo(servoId).SetEnablePca(state);
+                    return this->BuildFrameSetStatePca(servoId, state, response);
+                }
+                return Core::CoreStatus::CORE_ERROR;
             }
 
             inline Core::CoreStatus BuildFrameAllAngle(Frame &response) const {
                 const Core::CoreStatus success = response.Build(
                     EClusters::SERVO,
                     EServoCommands::GET_ALL);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     uint8_t params[NB_SERVOS] = {0U};
                     for (size_t servoId = 0U; servoId < NB_SERVOS; servoId++) {
                         params[servoId] = this->mServosInterface.GetServo(servoId).GetAngle();
@@ -127,7 +141,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::SERVO,
                     EServoCommands::GET_ANGLE);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set1ByteParam(servoId);
                     response.Set1ByteParam(angle);
                 }
@@ -139,7 +153,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::SERVO,
                     EServoCommands::SET_ANGLE);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set1ByteParam(servoId);
                     response.Set1ByteParam(angle);
                 }
@@ -151,7 +165,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::SERVO,
                     EServoCommands::GET_MIN);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set1ByteParam(servoId);
                     response.Set1ByteParam(angle);
                 }
@@ -163,7 +177,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::SERVO,
                     EServoCommands::SET_MIN);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set1ByteParam(servoId);
                     response.Set1ByteParam(angle);
                 }
@@ -175,7 +189,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::SERVO,
                     EServoCommands::GET_MAX);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set1ByteParam(servoId);
                     response.Set1ByteParam(angle);
                 }
@@ -187,7 +201,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::SERVO,
                     EServoCommands::SET_MAX);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set1ByteParam(servoId);
                     response.Set1ByteParam(angle);
                 }
@@ -199,7 +213,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::SERVO,
                     EServoCommands::GET_OFFSET);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set1ByteParam(servoId);
                     response.Set1ByteParam(angle);
                 }
@@ -211,7 +225,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::SERVO,
                     EServoCommands::SET_OFFSET);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set1ByteParam(servoId);
                     response.Set1ByteParam(angle);
                 }
@@ -223,20 +237,19 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::SERVO,
                     EServoCommands::GET_STATE);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set1ByteParam(servoId);
                     response.Set1ByteParam(state);
                 }
                 return (success);
             }
 
-
             inline Core::CoreStatus BuildFrameSetState(const uint8_t servoId, const bool state,
                                                        Frame &response) const {
                 const Core::CoreStatus success = response.Build(
                     EClusters::SERVO,
                     EServoCommands::SET_STATE);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set1ByteParam(servoId);
                     response.Set1ByteParam(state);
                 }
@@ -248,7 +261,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::SERVO,
                     EServoCommands::GET_REVERSE);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set1ByteParam(servoId);
                     response.Set1ByteParam(reversed);
                 }
@@ -260,9 +273,33 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::SERVO,
                     EServoCommands::SET_REVERSE);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set1ByteParam(servoId);
                     response.Set1ByteParam(reversed);
+                }
+                return (success);
+            }
+
+            inline Core::CoreStatus BuildFrameGetStatePca(const uint8_t servoId, const bool state,
+                                                          Frame &response) const {
+                const Core::CoreStatus success = response.Build(
+                    EClusters::SERVO,
+                    EServoCommands::GET_STATE_PCA);
+                if (success == Core::CoreStatus::CORE_OK) {
+                    response.Set1ByteParam(servoId);
+                    response.Set1ByteParam(state);
+                }
+                return (success);
+            }
+
+            inline Core::CoreStatus BuildFrameSetStatePca(const uint8_t servoId, const bool state,
+                                                          Frame &response) const {
+                const Core::CoreStatus success = response.Build(
+                    EClusters::SERVO,
+                    EServoCommands::GET_STATE_PCA);
+                if (success == Core::CoreStatus::CORE_OK) {
+                    response.Set1ByteParam(servoId);
+                    response.Set1ByteParam(state);
                 }
                 return (success);
             }

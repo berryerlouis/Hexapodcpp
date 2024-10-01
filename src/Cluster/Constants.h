@@ -27,14 +27,20 @@ namespace Cluster
         RESET_EXECUTION_TIME
     };
 
+#define NB_COMMANDS_GENERAL 5U
+
     enum EBatteryCommands {
         GET_VOLTAGE = 0x00U,
         GET_BAT_STATUS,
     };
 
+#define NB_COMMANDS_BATTERY 2U
+
     enum EBodyCommands {
         SET_LEG_X_Y_Z = 0,
     };
+
+#define NB_COMMANDS_BODY 1U
 
     enum EImuCommands {
         ALL,
@@ -43,6 +49,8 @@ namespace Cluster
         MAG,
         TMP
     };
+
+#define NB_COMMANDS_IMU 5U
 
     enum EServoCommands {
         GET_ALL = 0,
@@ -58,8 +66,11 @@ namespace Cluster
         SET_STATE,
         GET_REVERSE,
         SET_REVERSE,
-        SAVE,
+        GET_STATE_PCA,
+        SET_STATE_PCA,
     };
+
+#define NB_COMMANDS_SERVO 15U
 
     enum EProximityCommands {
         US_LEFT,
@@ -67,4 +78,6 @@ namespace Cluster
         LASER,
         SET_THRESHOLD,
     };
+
+#define NB_COMMANDS_PROXIMITY 4U
 }

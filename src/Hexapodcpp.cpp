@@ -10,7 +10,7 @@ Builder::App robot;
 
 int main(void) {
     //hexapod initialization
-    if (robot.Initialize()) {
+    if (robot.Initialize() == Core::CoreStatus::CORE_OK) {
         //enable ITs
 #ifndef GTEST
         sei();

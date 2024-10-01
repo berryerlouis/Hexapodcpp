@@ -13,6 +13,7 @@ namespace Cluster
         public:
             ClusterProximity(SensorProximityMultipleInterface &proximity)
                 : ClusterBase(PROXIMITY, this)
+                  , StrategyCluster(NB_COMMANDS_PROXIMITY)
                   , mProximity(proximity) {
                 this->AddClusterItem((ClusterItem){.commandId = EProximityCommands::US_LEFT, .expectedSize = 0U});
                 this->AddClusterItem((ClusterItem){.commandId = EProximityCommands::US_RIGHT, .expectedSize = 0U});
@@ -50,7 +51,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::PROXIMITY,
                     sensorId);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set2BytesParam(distance);
                 }
                 return (success);
@@ -61,7 +62,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::PROXIMITY,
                     EProximityCommands::SET_THRESHOLD);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set1ByteParam(sensorId);
                     response.Set2BytesParam(threshold);
                 }

@@ -41,6 +41,10 @@ namespace Component
             virtual bool IsEnable(void) = 0;
 
             virtual bool IsMoving(void) = 0;
+
+            virtual void SetEnablePca(const bool enable) = 0;
+
+            virtual bool IsEnablePca(void) = 0;
         };
     }
 }

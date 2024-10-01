@@ -29,11 +29,11 @@ namespace Bot
                        servos.GetServo(9),
                        servos.GetServo(10),
                        servos.GetServo(11))
-              , mLegs{&mLegFL, &mLegML, &mLegRL, &mLegFR, &mLegMR, &mLegRR} {
+              , mLegs{mLegFL, mLegML, mLegRL, mLegFR, mLegMR, mLegRR} {
         }
 
-        Leg::Leg &Legs::GetLeg(const uint8_t legId) const {
-            return (*this->mLegs[legId]);
+        Leg::Leg Legs::GetLeg(const uint8_t legId) const {
+            return (this->mLegs[legId]);
         }
     }
 }

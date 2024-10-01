@@ -13,6 +13,7 @@ namespace Cluster
         public:
             ClusterBattery(BatteryInterface &battery)
                 : ClusterBase(BATTERY, this)
+                  , StrategyCluster(NB_COMMANDS_BATTERY)
                   , mBattery(battery) {
                 this->AddClusterItem({.commandId = EBatteryCommands::GET_VOLTAGE, .expectedSize = 0U});
                 this->AddClusterItem({.commandId = EBatteryCommands::GET_BAT_STATUS, .expectedSize = 0U});
@@ -37,7 +38,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::BATTERY,
                     EBatteryCommands::GET_VOLTAGE);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set2BytesParam(voltage);
                 }
                 return (success);
@@ -48,7 +49,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::BATTERY,
                     EBatteryCommands::GET_BAT_STATUS);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set1ByteParam(state);
                     response.Set2BytesParam(voltage);
                 }

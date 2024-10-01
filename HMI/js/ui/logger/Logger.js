@@ -31,7 +31,9 @@ export class Logger {
     }
 
     setMessageAsTimeout(itemLog) {
-        itemLog.childNodes[0].childNodes[1].childNodes[0].className = itemLog.childNodes[0].childNodes[1].childNodes[0].className.replace('-tx', '-tx-timeout');
+        if (!itemLog.childNodes[0].childNodes[1].childNodes[0].className.includes('-tx-timeout')) {
+            itemLog.childNodes[0].childNodes[1].childNodes[0].className = itemLog.childNodes[0].childNodes[1].childNodes[0].className.replace('-tx', '-tx-timeout');
+        }
     }
 
     getLastTxMessage(message) {

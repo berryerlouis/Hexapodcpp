@@ -10,10 +10,7 @@ namespace Service
         }
 
         Core::CoreStatus ServiceBattery::Initialize(void) {
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-            if (this->mBatteryInterface.Initialize()) {
-                success = Core::CoreStatus::CORE_OK;
-            }
+            const Core::CoreStatus success = this->mBatteryInterface.Initialize();
             this->mBatteryInterface.Attach(this);
             return (success);
         }

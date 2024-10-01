@@ -14,7 +14,7 @@ export class MessageManager {
     }
 
     write(message, cbResponse) {
-        this.listMessagesToSent.push({message, cbResponse});
+        this.listMessagesToSent.unshift({message, cbResponse});
     }
 
     read(message) {

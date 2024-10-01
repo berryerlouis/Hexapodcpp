@@ -75,7 +75,7 @@ namespace Cluster
     }
 
     void Frame::SetxBytesParam(const size_t size, const uint8_t *value) {
-        memcpy((void *) &this->params[this->nbParams], value, size);
+        memcpy(&this->params[this->nbParams], value, size);
         this->nbParams += size;
     }
 

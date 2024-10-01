@@ -49,7 +49,7 @@ TEST_F( UT_CMP_MPU9150, Initialize_Ok )
 
 	success = mMpu9150.Initialize();
 
-	EXPECT_TRUE( success );
+	EXPECT_EQ( success, Core::CoreStatus::CORE_OK );
 }
 
 TEST_F( UT_CMP_MPU9150, Update_Ok )
@@ -65,7 +65,7 @@ TEST_F( UT_CMP_MPU9150, Update_Ok )
 	success = mMpu9150.Initialize();
 	mMpu9150.Update( 0UL );
 
-	EXPECT_TRUE( success );
+	EXPECT_EQ( success, Core::CoreStatus::CORE_OK );
 }
 }
 }

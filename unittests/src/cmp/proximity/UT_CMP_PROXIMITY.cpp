@@ -52,7 +52,7 @@ TEST_F( UT_CMP_PROXIMITY, Initialize_Ok )
 
 	success = mSensorProximity.Initialize();
 
-	EXPECT_TRUE( success );
+	EXPECT_EQ( success, Core::CoreStatus::CORE_OK );
 }
 
 TEST_F( UT_CMP_PROXIMITY, Update_Ok )
@@ -70,7 +70,7 @@ TEST_F( UT_CMP_PROXIMITY, Update_Ok )
 	success = mSensorProximity.Initialize();
 
 	mSensorProximity.Update( 0UL );
-	EXPECT_TRUE( success );
+	EXPECT_EQ( success, Core::CoreStatus::CORE_OK );
 }
 
 TEST_F( UT_CMP_PROXIMITY, Update2Times_Ok )
@@ -89,7 +89,7 @@ TEST_F( UT_CMP_PROXIMITY, Update2Times_Ok )
 
 	mSensorProximity.Update( 0UL );
 	mSensorProximity.Update( 0UL );
-	EXPECT_TRUE( success );
+	EXPECT_EQ( success, Core::CoreStatus::CORE_OK );
 }
 
 TEST_F( UT_CMP_PROXIMITY, GetDistance_Ok )
@@ -110,7 +110,7 @@ TEST_F( UT_CMP_PROXIMITY, GetDistance_Ok )
 	{
 		mSensorProximity.GetDistance( (SensorsId) sensorId );
 	}
-	EXPECT_TRUE( success );
+	EXPECT_EQ( success, Core::CoreStatus::CORE_OK );
 }
 
 TEST_F( UT_CMP_PROXIMITY, SetThreshold_Ok )
@@ -130,9 +130,9 @@ TEST_F( UT_CMP_PROXIMITY, SetThreshold_Ok )
 
 	for ( size_t sensorId = 0U; sensorId < SensorProximity::NB_SENSORS; sensorId++ )
 	{
-		EXPECT_TRUE( mSensorProximity.SetThreshold( (SensorsId) sensorId, threshold ) );
+		EXPECT_EQ(Core::CoreStatus::CORE_OK, mSensorProximity.SetThreshold( static_cast<SensorsId>(sensorId), threshold ));
 	}
-	EXPECT_TRUE( success );
+	EXPECT_EQ( success, Core::CoreStatus::CORE_OK );
 }
 }
 }

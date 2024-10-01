@@ -54,7 +54,7 @@ namespace Cluster
             EXPECT_EQ(response.clusterId, 0U);
             EXPECT_EQ(response.commandId, 0U);
             EXPECT_EQ(response.nbParams, 0U);
-            EXPECT_FALSE(success);
+            EXPECT_EQ(success, Core::CoreStatus::CORE_ERROR);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameAllAngle_Ok) {
@@ -71,7 +71,7 @@ namespace Cluster
             EXPECT_EQ(response.clusterId, SERVO);
             EXPECT_EQ(response.commandId, EServoCommands::GET_ALL);
             EXPECT_EQ(response.nbParams, 18U);
-            EXPECT_TRUE(success);
+            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameGetAngle_Ok) {
@@ -91,7 +91,7 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], 11U);
-            EXPECT_TRUE(success);
+            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameSetAngle_Ok) {
@@ -106,6 +106,7 @@ namespace Cluster
             Component::Servo::Servo servo(mMockPca9685, mMockTick, servoId, 11U);
             servo.SetEnable(true);
             EXPECT_CALL(mMockServos, GetServo( servoId )).Times(2U).WillRepeatedly(ReturnRef(servo));
+            EXPECT_CALL(mMockTick, GetMs()).Times(1U);
 
             success = mClusterServo.ExecuteFrame(request, response);
 
@@ -114,7 +115,7 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], 11U);
-            EXPECT_TRUE(success);
+            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
         }
 
 
@@ -136,7 +137,7 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], 11U);
-            EXPECT_TRUE(success);
+            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameSetMin_Ok) {
@@ -158,7 +159,7 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], 11U);
-            EXPECT_TRUE(success);
+            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameGetMax_Ok) {
@@ -178,7 +179,7 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], 120U);
-            EXPECT_TRUE(success);
+            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameSetMax_Ok) {
@@ -200,7 +201,7 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], 11U);
-            EXPECT_TRUE(success);
+            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameGetOffset_Ok) {
@@ -220,7 +221,7 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], 11U);
-            EXPECT_TRUE(success);
+            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameSetOffset_Ok) {
@@ -242,7 +243,7 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], offset);
-            EXPECT_TRUE(success);
+            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameSetState_Ok) {
@@ -263,7 +264,7 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], true);
-            EXPECT_TRUE(success);
+            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
         }
     }
 }

@@ -7,17 +7,17 @@ namespace Cluster
         Protocol::Protocol() {
         }
 
-        Protocol::ProtocolStatus Protocol::Decode(const char *frameBuffer, Frame &frame) {
+        Core::CoreStatus Protocol::Decode(const char *frameBuffer, Frame &frame) {
             if (frameBuffer == nullptr) {
-                return (ERROR_NULL_BUFFER);
+                return (Core::CoreStatus::CORE_ERROR_NULLPTR);
             }
-            uint8_t frameLength = strlen(frameBuffer);
+            const uint8_t frameLength = strlen(frameBuffer);
 
             if (frameLength >= 6U && frameLength % 2U == 0U) {
                 for (size_t i = 0U; i < frameLength; i++) {
                     if (Protocol::ConvertHexCharToInt(frameBuffer[i]) == 0xFFU) {
                         // char is invalid
-                        return (ERROR_CHAR_INVALID);
+                        return (Core::CoreStatus::CORE_ERROR_ARGUMENT);
                     }
                 }
 
@@ -29,22 +29,21 @@ namespace Cluster
                                      frameBuffer[5U]);
 
                 if (frame.nbParams == 0U && frameLength == 6U) {
-                    return (NO_ERROR);
+                    return (Core::CoreStatus::CORE_OK);
                 } else if ((frame.nbParams * 2U) + 6U == frameLength) {
                     for (size_t i = 0U; i < frame.nbParams * 2U; i += 2U) {
                         frame.params[i / 2U] = Protocol::ConvertHexCharToInt(frameBuffer[6 + i]) * 16U +
                                                Protocol::ConvertHexCharToInt(frameBuffer[7U + i]);
                     }
 
-                    return (NO_ERROR);
-                } else {
-                    // wrong param size
-                    return (ERROR_SIZE_PARAMS);
+                    return (Core::CoreStatus::CORE_OK);
                 }
-            } else {
-                // frameLength is not or less than 6 bytes
-                return (ERROR_LENGHT);
+
+                // wrong param size
+                return (Core::CoreStatus::CORE_ERROR_OVERLOAD);
             }
+            // frameLength is not or less than 6 bytes
+            return (Core::CoreStatus::CORE_ERROR_SIZE);
         }
 
         uint8_t Protocol::Encode(const Frame &response, const char *buffer) {
@@ -66,7 +65,7 @@ namespace Cluster
             return (strlen(buffer));
         }
 
-        uint8_t Protocol::ConvertHexCharToInt(uint8_t byte) {
+        uint8_t Protocol::ConvertHexCharToInt(const uint8_t byte) {
             if ((byte >= '0') && (byte <= '9')) {
                 return (byte - '0');
             }

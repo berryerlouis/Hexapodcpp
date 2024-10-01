@@ -15,6 +15,7 @@ namespace Cluster
         public:
             ClusterImu(Mpu9150Interface &imu)
                 : ClusterBase(IMU, this)
+                  , StrategyCluster(NB_COMMANDS_IMU)
                   , mImu(imu) {
                 this->AddClusterItem((ClusterItem){.commandId = EImuCommands::ALL, .expectedSize = 0U});
                 this->AddClusterItem((ClusterItem){.commandId = EImuCommands::ACC, .expectedSize = 0U});
@@ -54,7 +55,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::IMU,
                     EImuCommands::ALL);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.SetxBytesParam(6U, (uint8_t *) &acc);
                     response.SetxBytesParam(6U, (uint8_t *) &gyr);
                     response.SetxBytesParam(6U, (uint8_t *) &mag);
@@ -67,7 +68,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::IMU,
                     EImuCommands::ACC);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.SetxBytesParam(6U, (uint8_t *) &acc);
                 }
                 return (success);
@@ -77,7 +78,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::IMU,
                     EImuCommands::GYR);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.SetxBytesParam(6U, (uint8_t *) &gyr);
                 }
                 return (success);
@@ -87,7 +88,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::IMU,
                     EImuCommands::MAG);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.SetxBytesParam(6U, (uint8_t *) &mag);
                 }
                 return (success);
@@ -97,7 +98,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::IMU,
                     EImuCommands::TMP);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set2BytesParam(temp);
                 }
                 return (success);

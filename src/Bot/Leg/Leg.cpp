@@ -70,8 +70,8 @@ namespace Bot
             }
         }
 
-        void Leg::SetLegIk(const Position3d &position, const Position3d &bodyIk,
-                           const uint16_t travelTime) {
+        uint8_t Leg::SetLegIk(const Position3d &position, const Position3d &bodyIk,
+                              const uint16_t travelTime) {
             this->mLegIk.newFootPos.x = this->mFootPosition.x + position.x + bodyIk.x;
             this->mLegIk.newFootPos.y = this->mFootPosition.y + position.y + bodyIk.y;
             this->mLegIk.newFootPos.z = this->mFootPosition.z + position.z + bodyIk.z;
@@ -119,9 +119,12 @@ namespace Bot
             }
             this->mLegIk.coxaIk += 90;
             this->mLegIk.coxaIk = static_cast<uint16_t>(this->mLegIk.coxaIk) % 360;
-            this->mCoxa.SetAngle(static_cast<uint8_t>(this->mLegIk.coxaIk), travelTime);
-            this->mFemur.SetAngle(static_cast<uint8_t>(this->mLegIk.femurIk), travelTime);
-            this->mTibia.SetAngle(static_cast<uint8_t>(this->mLegIk.tibiaIk), travelTime);
+            uint8_t success = 0U;
+            success = this->mCoxa.SetAngle(static_cast<uint8_t>(this->mLegIk.coxaIk), travelTime) << 0U;
+            success |= this->mFemur.SetAngle(static_cast<uint8_t>(this->mLegIk.femurIk), travelTime) << 3U;
+            success |= this->mTibia.SetAngle(static_cast<uint8_t>(this->mLegIk.tibiaIk), travelTime) << 6U;
+
+            return success;
         }
     }
 }

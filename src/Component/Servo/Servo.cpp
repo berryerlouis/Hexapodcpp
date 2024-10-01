@@ -21,7 +21,8 @@ namespace Component
               , mMax(SERVO_ANGLE_MAX)
               , mReverse(false)
               , mEnable(false)
-              , mIsMoving(false) {
+              , mIsMoving(false)
+              , mEnablePca(false) {
         }
 
         Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
@@ -38,7 +39,8 @@ namespace Component
               , mMax(SERVO_ANGLE_MAX)
               , mReverse(false)
               , mEnable(false)
-              , mIsMoving(false) {
+              , mIsMoving(false)
+              , mEnablePca(false) {
         }
 
         Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
@@ -55,7 +57,8 @@ namespace Component
               , mMax(SERVO_ANGLE_MAX)
               , mReverse(false)
               , mEnable(false)
-              , mIsMoving(false) {
+              , mIsMoving(false)
+              , mEnablePca(false) {
         }
 
         Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
@@ -72,7 +75,8 @@ namespace Component
               , mMax(max)
               , mReverse(false)
               , mEnable(false)
-              , mIsMoving(false) {
+              , mIsMoving(false)
+              , mEnablePca(false) {
         }
 
         Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
@@ -89,7 +93,8 @@ namespace Component
               , mMax(max)
               , mReverse(reverse)
               , mEnable(false)
-              , mIsMoving(false) {
+              , mIsMoving(false)
+              , mEnablePca(false) {
         }
 
         Core::CoreStatus Servo::Initialize(void) {
@@ -108,7 +113,9 @@ namespace Component
                                                       Servo::SERVO_ANGLE_MAX,
                                                       Servo::SERVO_PWM_MIN,
                                                       Servo::SERVO_PWM_MAX);
-                this->mPca9685.SetPwm(this->mServoId, pwm);
+                if (true == this->mEnablePca) {
+                    this->mPca9685.SetPwm(this->mServoId, pwm);
+                }
             }
         }
 
@@ -130,8 +137,8 @@ namespace Component
 
         Core::CoreStatus Servo::SetAngle(const uint8_t angle, const uint16_t travelTime) {
             if ((true == this->mEnable) &&
-                (angle >= this->mMin + this->mOffset) &&
-                (angle <= this->mMax + this->mOffset)) {
+                (angle >= this->mMin) &&
+                (angle <= this->mMax)) {
                 this->mTargetAngle = angle;
                 if (true == this->mReverse) {
                     this->mTargetAngle = REVERSE_ANGLE(angle);
@@ -139,15 +146,19 @@ namespace Component
                 // Instant move
                 if (travelTime == 0U) {
                     this->mAngle = this->mTargetAngle;
-                    this->mIsMoving = true;
-                } else {
-                    this->mIsMoving = true;
-                    this->mSpeed = travelTime;
-                    this->mStartTime = this->mTick.GetMs();
                 }
+                this->mSpeed = travelTime;
+                this->mStartTime = this->mTick.GetMs();
+                this->mIsMoving = true;
                 return (Core::CoreStatus::CORE_OK);
             }
             this->mIsMoving = false;
+            if (false == this->mEnable)
+                return (Core::CoreStatus::CORE_ERROR_SIZE);
+            if (angle < this->mMin)
+                return (Core::CoreStatus::CORE_ERROR_MIN);
+            if (angle > this->mMax)
+                return (Core::CoreStatus::CORE_ERROR_MAX);
             return (Core::CoreStatus::CORE_ERROR);
         }
 
@@ -205,6 +216,14 @@ namespace Component
 
         bool Servo::IsEnable(void) {
             return (this->mEnable);
+        }
+
+        void Servo::SetEnablePca(const bool enable) {
+            this->mEnablePca = enable;
+        }
+
+        bool Servo::IsEnablePca(void) {
+            return (this->mEnablePca);
         }
     }
 }
