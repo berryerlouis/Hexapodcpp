@@ -48,7 +48,8 @@ const CommandImu = {
     ACC: 'ACC',
     GYR: 'GYR',
     MAG: 'MAG',
-    TMP: 'TMP'
+    TMP: 'TMP',
+    ROULIS: 'ROULIS',
 };
 
 const CommandBody = {
@@ -104,7 +105,8 @@ export default class Clusters {
                 new Command(CommandImu.ACC, '01'),
                 new Command(CommandImu.GYR, '02'),
                 new Command(CommandImu.MAG, '03'),
-                new Command(CommandImu.TMP, '04')
+                new Command(CommandImu.TMP, '04'),
+                new Command(CommandImu.ROULIS, '05')
             ]
         ),
         new Cluster(

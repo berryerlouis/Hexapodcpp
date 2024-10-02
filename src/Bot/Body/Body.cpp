@@ -44,7 +44,7 @@ namespace Bot
                                           ->mBodyIk.distBodyCenterFeet) - this->mBodyIk.totalY;
                 this->mBodyIk.bodyIk.z = this->mBodyIk.rollZ + this->mBodyIk.pitchZ;
                 const uint8_t successServos = leg.SetLegIk(position, this->mBodyIk.bodyIk, travelTime);
-                success |= successServos << (legId * 8U);
+                success |= successServos << (legId * 3U);
             }
             return success;
         }

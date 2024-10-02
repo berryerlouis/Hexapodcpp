@@ -29,7 +29,7 @@ namespace Builder
           , mInputCaptureLeft(echoLeftPin, mTick)
           , mInputCaptureRight(echoRightPin, mTick)
           , mBattery(mAdc)
-          , mMpu9150(mTwi)
+          , mMpu9150(mTwi, mTick)
           , mSrf05Left(Cluster::EProximityCommands::US_LEFT, triggerLeftPin, mInputCaptureLeft, mLedLeft, mTick)
           , mSrf05Right(Cluster::EProximityCommands::US_RIGHT, triggerRightPin, mInputCaptureRight, mLedRight, mTick)
           , mVl53l0x(mTwi, mTick)
@@ -65,13 +65,13 @@ namespace Builder
 
     Core::CoreStatus App::Initialize(void) {
         Core::CoreStatus success = mUart.Initialize();
-        if (success == true) {
+        if (success == Core::CoreStatus::CORE_OK) {
             success = mTwi.Initialize();
         }
-        if (success == true) {
+        if (success == Core::CoreStatus::CORE_OK) {
             success = mServices.Initialize();
         }
-        if (success == false) {
+        if (success != Core::CoreStatus::CORE_OK) {
             LOG("<error>");
         }
         return (success);

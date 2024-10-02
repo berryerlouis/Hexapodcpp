@@ -66,6 +66,7 @@ set(SRC_FILES_COMPONENT
         Component/Battery/Battery.cpp
         Component/Communication/Communication.cpp
         Component/Display/Ssd1306.cpp
+        Component/Imu/Ahrs.cpp
         Component/Imu/Mpu9150.cpp
         Component/Led/Led.cpp
         Component/Proximity/Laser/Vl53l0x.cpp

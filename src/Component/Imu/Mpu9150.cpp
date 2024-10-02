@@ -6,23 +6,22 @@ namespace Component
     {
 #define NB_SAMPLES    20
 
-        Mpu9150::Mpu9150(Twi::TwiInterface &i2c, const uint8_t address)
+        Mpu9150::Mpu9150(Twi::TwiInterface &i2c, Tick::TickInterface &tick, const uint8_t address)
             : mI2c(i2c)
+              , mTick(tick)
               , mAddress(address)
               , mAddressMag(AK8963_I2C_ADDRESS)
               , mAccOffset{0, 0, 0}
               , mGyrOffset{0, 0, 0}
               , mMagOffset{0, 0, 0}
-              , mAccOffsetIndex(0U)
-              , mGyrOffsetIndex(0U)
-              , mMagOffsetIndex(0U)
-              , mAccOffsetMoy{0, 0, 0}
-              , mGyrOffsetMoy{0, 0, 0}
-              , mMagOffsetMoy{0, 0, 0}
               , mAcc{0, 0, 0}
               , mGyr{0, 0, 0}
               , mMag{0, 0, 0}
-              , mTmp(0U) {
+              , mMagRate(0U)
+              , mTmp(0U)
+              , mLastLoopTime(0U)
+              , mAhrs()
+              , mYawPitchRoll{0, 0, 0} {
         }
 
         Core::CoreStatus Mpu9150::Initialize(void) {
@@ -43,7 +42,7 @@ namespace Component
                 // }
                 // setSleepEnabled
                 this->mI2c.ReadRegister(this->mAddress, (uint8_t) ERegister::PWR_MGMT_1, reg);
-                reg &= ~(1 << (uint8_t) ERegister::PWR1_SLEEP_BIT);
+                reg &= ~(1 << ERegister::PWR1_SLEEP_BIT);
                 this->mI2c.WriteRegister(this->mAddress, (uint8_t) ERegister::PWR_MGMT_1, reg);
 
                 this->mI2c.WriteRegister(this->mAddress, (uint8_t) ERegister::I2C_MST_CTRL, 0x40);
@@ -70,7 +69,7 @@ namespace Component
 
                 // setFullScaleGyroRange
                 this->mI2c.ReadRegister(this->mAddress, (uint8_t) ERegister::GYRO_CONFIG, reg);
-                reg |= (ERegisterGyro::GYRO_FS_2000 << 3U);
+                reg |= (ERegisterGyro::GYRO_FS_250 << 3U);
                 this->mI2c.WriteRegister(this->mAddress, (uint8_t) ERegister::GYRO_CONFIG, reg);
 
                 // setFullScaleAccelRange
@@ -80,7 +79,7 @@ namespace Component
 
                 // setBandWidthLowPassFilter
                 this->mI2c.ReadRegister(this->mAddress, (uint8_t) ERegister::CONFIG, reg);
-                reg |= ERegisterAccel::DLPF_BW_10;
+                reg |= ERegisterAccel::DLPF_BW_20;
                 this->mI2c.WriteRegister(this->mAddress, (uint8_t) ERegister::CONFIG, reg);
                 success = Core::CoreStatus::CORE_OK;
             }
@@ -89,77 +88,68 @@ namespace Component
 
         void Mpu9150::Update(const uint64_t currentTime) {
             (void) currentTime;
-            UpdateAcc();
-            UpdateGyr();
-            UpdateMag();
-            UpdateTemp();
+            this->UpdateTemp();
+            Vector3F acc = this->UpdateAcc();
+            Vector3F gyr = this->UpdateGyr();
+            Vector3F mag = {0, 0, 0};
+            if (this->mMagRate++ == 10U) {
+                this->mMagRate = 0U;
+                mag = this->UpdateMag();
+            }
+
+            const uint64_t now = this->mTick.GetUs();
+            const uint64_t deltaTime = ((now - this->mLastLoopTime) / 1000000.0F);
+            this->mLastLoopTime = now;
+
+            this->mAhrs.MadgwickQuaternionUpdate(acc, gyr, mag, deltaTime);
+            this->mAhrs.GetYawPitchRoll(this->mYawPitchRoll);
         }
 
-        Vector3 Mpu9150::UpdateAcc(void) {
-            if (this->mI2c.ReadRegisters(this->mAddress, (uint8_t) ERegister::ACCEL_XOUT_H, (uint8_t *) &this->mAcc,
+        Vector3F Mpu9150::UpdateAcc(void) {
+            Vector3 cmp;
+            if (this->mI2c.ReadRegisters(this->mAddress, ERegister::ACCEL_XOUT_H,
+                                         reinterpret_cast<uint8_t *>(&cmp),
                                          6U)) {
-                this->mAcc.x = (int16_t) ((this->mAcc.x << 8) | ((this->mAcc.x >> 8) & 0xFF)) - mAccOffset.x;
-                this->mAcc.y = (int16_t) ((this->mAcc.y << 8) | ((this->mAcc.y >> 8) & 0xFF)) - mAccOffset.y;
-                this->mAcc.z = (int16_t) ((this->mAcc.z << 8) | ((this->mAcc.z >> 8) & 0xFF)) - mAccOffset.z +
-                               ERegisterAccel::ACCEL_1G_16G;
+                this->mAcc.x = static_cast<int16_t>((cmp.x << 8U) | ((cmp.x >> 8) & 0xFF)) - mAccOffset.x;
+                this->mAcc.y = static_cast<int16_t>((cmp.y << 8U) | ((cmp.y >> 8) & 0xFF)) - mAccOffset.y;
+                this->mAcc.z = static_cast<int16_t>((cmp.z << 8U) | ((cmp.z >> 8) & 0xFF)) - mAccOffset.z;
             }
-
-            if (mAccOffsetIndex < NB_SAMPLES) {
-                mAccOffsetMoy.x += this->mAcc.x;
-                mAccOffsetMoy.y += this->mAcc.y;
-                mAccOffsetMoy.z += this->mAcc.z;
-
-                if (mAccOffsetIndex == NB_SAMPLES - 1U) {
-                    mAccOffset.x = mAccOffsetMoy.x / NB_SAMPLES;
-                    mAccOffset.y = mAccOffsetMoy.y / NB_SAMPLES;
-                    mAccOffset.z = mAccOffsetMoy.z / NB_SAMPLES;
-                }
-                mAccOffsetIndex++;
-            }
+            this->mAcc.x = (this->mAcc.x * 2.0F) / 32768.0F;
+            this->mAcc.y = (this->mAcc.y * 2.0F) / 32768.0F;
+            this->mAcc.z = (this->mAcc.z * 2.0F) / 32768.0F;
             return (this->mAcc);
         }
 
-        Vector3 Mpu9150::UpdateGyr(void) {
-            if (this->mI2c.ReadRegisters(this->mAddress, (uint8_t) ERegister::GYRO_XOUT_H, (uint8_t *) &this->mGyr,
+        Vector3F Mpu9150::UpdateGyr(void) {
+            Vector3 cmp;
+            if (this->mI2c.ReadRegisters(this->mAddress, ERegister::GYRO_XOUT_H,
+                                         reinterpret_cast<uint8_t *>(&cmp),
                                          6U)) {
-                this->mGyr.x = (int16_t) ((this->mGyr.x << 8) | ((this->mGyr.x >> 8) & 0xFF)) - mGyrOffset.x;
-                this->mGyr.y = (int16_t) ((this->mGyr.y << 8) | ((this->mGyr.y >> 8) & 0xFF)) - mGyrOffset.y;
-                this->mGyr.z = (int16_t) ((this->mGyr.z << 8) | ((this->mGyr.z >> 8) & 0xFF)) - mGyrOffset.z;
+                this->mGyr.x = static_cast<int16_t>((cmp.x << 8U) | ((cmp.x >> 8) & 0xFF)) - mGyrOffset.x;
+                this->mGyr.y = static_cast<int16_t>((cmp.y << 8U) | ((cmp.y >> 8) & 0xFF)) - mGyrOffset.y;
+                this->mGyr.z = static_cast<int16_t>((cmp.z << 8U) | ((cmp.z >> 8) & 0xFF)) - mGyrOffset.z;
             }
 
-            if (mGyrOffsetIndex < NB_SAMPLES) {
-                mGyrOffsetMoy.x += this->mGyr.x;
-                mGyrOffsetMoy.y += this->mGyr.y;
-                mGyrOffsetMoy.z += this->mGyr.z;
-
-                if (mGyrOffsetIndex == NB_SAMPLES - 1U) {
-                    mGyrOffset.x = mGyrOffsetMoy.x / NB_SAMPLES;
-                    mGyrOffset.y = mGyrOffsetMoy.y / NB_SAMPLES;
-                    mGyrOffset.z = mGyrOffsetMoy.z / NB_SAMPLES;
-                }
-                mGyrOffsetIndex++;
-            }
+            this->mGyr.x = this->mGyr.x * 250.0F / 32768.0F;
+            this->mGyr.y = this->mGyr.y * 250.0F / 32768.0F;
+            this->mGyr.z = this->mGyr.z * 250.0F / 32768.0F;
             return (this->mGyr);
         }
 
-        Vector3 Mpu9150::UpdateMag(void) {
-            if (this->mI2c.ReadRegisters(this->mAddress, (uint8_t) ERegisterMag::XOUT_L, (uint8_t *) &this->mMag, 6U)) {
-                this->mMag.x = -mMagOffset.x;
-                this->mMag.y = -mMagOffset.y;
-                this->mMag.z = -mMagOffset.z;
-            }
+        Vector3F Mpu9150::UpdateMag(void) {
+            Vector3 cmp;
+            if (this->mI2c.ReadRegisters(this->mAddress, ERegisterMag::XOUT_L,
+                                         reinterpret_cast<uint8_t *>(&cmp),
+                                         6U)) {
+                this->mMag.x = static_cast<int16_t>((cmp.x << 8U) | ((cmp.x >> 8) & 0xFF)) - mMagOffset.x;
+                this->mMag.y = static_cast<int16_t>((cmp.y << 8U) | ((cmp.y >> 8) & 0xFF)) - mMagOffset.y;
+                this->mMag.z = static_cast<int16_t>((cmp.z << 8U) | ((cmp.z >> 8) & 0xFF)) - mMagOffset.z;
 
-            if (mMagOffsetIndex < NB_SAMPLES) {
-                mMagOffsetMoy.x += this->mMag.x;
-                mMagOffsetMoy.y += this->mMag.y;
-                mMagOffsetMoy.z += this->mMag.z;
-
-                if (mMagOffsetIndex == NB_SAMPLES - 1U) {
-                    mMagOffset.x = mMagOffsetMoy.x / NB_SAMPLES;
-                    mMagOffset.y = mMagOffsetMoy.y / NB_SAMPLES;
-                    mMagOffset.z = mMagOffsetMoy.z / NB_SAMPLES;
-                }
-                mMagOffsetIndex++;
+                this->mMag.x = this->mMag.x * 10.0F * 1229.0F / 4096.0F + 18.0F;
+                // milliGauss (1229 microTesla per 2^12 bits, 10 mG per microTesla)
+                this->mMag.y = this->mMag.y * 10.0F * 1229.0F / 4096.0F + 70.0F;
+                // apply calibration offsets in mG that correspond to your environment and magnetometer
+                this->mMag.z = this->mMag.z * 10.0F * 1229.0F / 4096.0F + 270.0F;
             }
             return (this->mMag);
         }
@@ -170,8 +160,8 @@ namespace Component
 
             this->mI2c.ReadRegister(this->mAddress, (uint8_t) ERegister::TEMP_OUT_H, tmpH);
             this->mI2c.ReadRegister(this->mAddress, (uint8_t) ERegister::TEMP_OUT_L, tmpL);
-            this->mTmp = (int16_t) ((tmpH << 8) | ((tmpL >> 8) & 0xFF));
-            this->mTmp = (this->mTmp / 340.0) + 35U;
+            this->mTmp = static_cast<int16_t>((tmpH << 8U) | ((tmpL >> 8) & 0xFF));
+            this->mTmp = (this->mTmp / 340.0F) + 35U;
             return (this->mTmp);
         }
     }

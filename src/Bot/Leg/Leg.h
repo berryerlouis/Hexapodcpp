@@ -44,7 +44,7 @@ namespace Bot
             ~Leg() = default;
 
 
-            uint8_t SetLegIk(const Position3d &position, const Position3d &bodyIk, const uint16_t travelTime);
+            Core::CoreStatus SetLegIk(const Position3d &position, const Position3d &bodyIk, const uint16_t travelTime);
 
         public:
             float mBodyCenterOffsetX;

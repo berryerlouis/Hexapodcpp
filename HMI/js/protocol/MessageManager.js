@@ -32,6 +32,11 @@ export class MessageManager {
                 }
             }
         }
+
+        if (this.currentMessagesToSent && asyncMessageIncoming === true) {
+            this.currentMessagesToSent.message.timeout = 0;
+        }
+
         this.notifyOnSpecificCommand(message);
         if (asyncMessageIncoming) {
             this.notifyReadAsync(message);

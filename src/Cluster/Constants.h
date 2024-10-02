@@ -47,10 +47,11 @@ namespace Cluster
         ACC,
         GYR,
         MAG,
-        TMP
+        TMP,
+        YAW_PITCH_ROLL
     };
 
-#define NB_COMMANDS_IMU 5U
+#define NB_COMMANDS_IMU 6U
 
     enum EServoCommands {
         GET_ALL = 0,

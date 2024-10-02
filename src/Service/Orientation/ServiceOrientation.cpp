@@ -6,7 +6,7 @@ namespace Service
     {
         ServiceOrientation::ServiceOrientation(Mpu9150Interface &imu,
                                                Event::EventListenerInterface &eventListener)
-            : Service(50U, eventListener)
+            : Service(10U, eventListener)
               , mImu(imu) {
         }
 

@@ -38,7 +38,20 @@ export class ClusterImu {
                 this.databaseManager.updateDb({
                     cluster: 'IMU',
                     command: 'ACC',
-                    value: {x: message.fetchInt16S(), y: message.fetchInt16S(), z: message.fetchInt16S()}
+                    item: 'x',
+                    value: message.fetchInt16S()
+                });
+                this.databaseManager.updateDb({
+                    cluster: 'IMU',
+                    command: 'ACC',
+                    item: 'y',
+                    value: message.fetchInt16S()
+                });
+                this.databaseManager.updateDb({
+                    cluster: 'IMU',
+                    command: 'ACC',
+                    item: 'z',
+                    value: message.fetchInt16S()
                 });
             }
         });
@@ -47,7 +60,20 @@ export class ClusterImu {
                 this.databaseManager.updateDb({
                     cluster: 'IMU',
                     command: 'GYR',
-                    value: {x: message.fetchInt16S(), y: message.fetchInt16S(), z: message.fetchInt16S()}
+                    item: 'x',
+                    value: message.fetchInt16S()
+                });
+                this.databaseManager.updateDb({
+                    cluster: 'IMU',
+                    command: 'GYR',
+                    item: 'y',
+                    value: message.fetchInt16S()
+                });
+                this.databaseManager.updateDb({
+                    cluster: 'IMU',
+                    command: 'GYR',
+                    item: 'z',
+                    value: message.fetchInt16S()
                 });
             }
         });
@@ -66,6 +92,15 @@ export class ClusterImu {
                     cluster: 'IMU',
                     command: 'TMP',
                     value: message.fetchInt16U()
+                });
+            }
+        });
+        this.messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.IMU, CommandImu.ROULIS, (message) => {
+            if (message.size > 0) {
+                this.databaseManager.updateDb({
+                    cluster: 'IMU',
+                    command: 'ROULIS',
+                    value: message.fetchInt16S()
                 });
             }
         });

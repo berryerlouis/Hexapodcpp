@@ -32,5 +32,18 @@ namespace Misc
             int16_t y;
             int16_t z;
         };
+
+
+        struct Vector3F {
+            float x;
+            float y;
+            float z;
+        };
+
+        struct Position3D {
+            float yaw;
+            float pitch;
+            float roll;
+        };
     }
 }

@@ -19,13 +19,15 @@ namespace Component
 
             virtual void Update(const uint64_t currentTime) = 0;
 
-            virtual Vector3 ReadAcc(void) = 0;
+            virtual Vector3F ReadAcc(void) = 0;
 
-            virtual Vector3 ReadGyr(void) = 0;
+            virtual Vector3F ReadGyr(void) = 0;
 
-            virtual Vector3 ReadMag(void) = 0;
+            virtual Vector3F ReadMag(void) = 0;
 
             virtual int16_t ReadTemp(void) = 0;
+
+            virtual Position3D ReadYawPitchRoll(void) = 0;
         };
     }
 }
