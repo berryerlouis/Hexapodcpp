@@ -46,7 +46,7 @@ export class Treeview {
 
             let itemClusterButton = document.createElement("div");
             itemClusterButton.innerText = cluster.name.capitalize();
-            ;
+
             itemClusterButton.setAttribute('type', 'button');
             itemClusterButton.setAttribute('data-bs-toggle', 'collapse');
             itemClusterButton.setAttribute('data-bs-target', '#treeview-list-cluster-' + cluster.name);

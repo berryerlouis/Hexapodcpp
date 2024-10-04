@@ -10,7 +10,7 @@ namespace Driver
         class Adc : public AdcInterface {
         public:
 #define BRIDGE_DIVIDER    (float) ( 0.2F )
-#define ADC_STEP          (float) ( 5.0 / 1024 )
+#define ADC_STEP          (float) ( 2.56F / 1024.0F )
 #define ADC_VOLT( ADC_VALUE )    (float) ( ADC_STEP * ADC_VALUE )
 
             Adc(Gpio::GpioInterface &gpio);

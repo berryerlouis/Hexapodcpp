@@ -29,7 +29,7 @@ export let clustersDatabase = {
         GYR: {x: 0, y: 0, z: 0},
         MAG: {x: 0, y: 0, z: 0},
         TMP: 0,
-        ROULIS: 0,
+        YAWPITCHROLL: {x: 0, y: 0, z: 0},
     },
     PROXIMITY: {
         US_LEFT: 0,

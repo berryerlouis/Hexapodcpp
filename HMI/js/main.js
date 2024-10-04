@@ -9,7 +9,7 @@ import Hexapod from "./ui/hexapod/hexapod.js";
 import Controls from "./ui/gui/Controls.js";
 import Walk from "./ui/walk/Walk.js";
 import {Message} from "./protocol/Message.js";
-import {ClusterName, CommandBattery, CommandGeneral, CommandImu} from "./protocol/Cluster.js";
+import {ClusterName, CommandBattery, CommandGeneral, CommandImu, CommandServo} from "./protocol/Cluster.js";
 
 
 const serialInterface = new SerialInterface();
@@ -34,10 +34,9 @@ $('#connect-button').click(async () => {
     walk.init();
     let toto = 0;
     setInterval(() => {
-        messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.ROULIS));
-        messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.ACC));
-        messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.GYR));
-        //messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_ALL));
+        messageManager.write(new Message().build("Tx", ClusterName.BATTERY, CommandBattery.STATUS));
+        messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.YAWPITCHROLL));
+        messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_ALL));
     }, 1000);
 });
 

@@ -31,7 +31,7 @@ namespace Component
         void Ahrs::MadgwickQuaternionUpdate(Vector3F &acc,
                                             Vector3F &gyr,
                                             Vector3F &mag,
-                                            const uint64_t deltaTime) {
+                                            const float deltaTime) {
             float q1 = this->mQuaternion[0U];
             float q2 = this->mQuaternion[1U];
             float q3 = this->mQuaternion[2U];
@@ -64,6 +64,11 @@ namespace Component
             const float q3q3 = q3 * q3;
             const float q3q4 = q3 * q4;
             const float q4q4 = q4 * q4;
+
+            // convert to radian gyrometer measurement
+            gyr.x *= M_PI / 180.0F;
+            gyr.y *= M_PI / 180.0F;
+            gyr.z *= M_PI / 180.0F;
 
             // Normalise accelerometer measurement
             norm = sqrt(acc.x * acc.x + acc.y * acc.y + acc.z * acc.z);

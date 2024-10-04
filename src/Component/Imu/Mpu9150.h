@@ -121,16 +121,16 @@ namespace Component
 
             void Update(const uint64_t currentTime);
 
-            inline virtual Vector3F ReadAcc(void) final override {
-                return (this->mAcc);
+            inline virtual Vector3 ReadAcc(void) final override {
+                return (this->mAccRaw);
             }
 
-            inline virtual Vector3F ReadGyr(void) final override {
-                return (this->mGyr);
+            inline virtual Vector3 ReadGyr(void) final override {
+                return (this->mGyrRaw);
             }
 
-            inline virtual Vector3F ReadMag(void) final override {
-                return (this->mMag);
+            inline virtual Vector3 ReadMag(void) final override {
+                return (this->mMagRaw);
             }
 
             inline virtual int16_t ReadTemp(void) final override {
@@ -142,13 +142,15 @@ namespace Component
             }
 
         private:
-            Vector3F UpdateAcc(void);
+            Vector3 UpdateAcc(void);
 
-            Vector3F UpdateGyr(void);
+            Vector3 UpdateGyr(void);
 
-            Vector3F UpdateMag(void);
+            Vector3 UpdateMag(void);
 
             int16_t UpdateTemp(void);
+
+            bool IsDataReady(void) const;
 
             struct ERegisterAccel {
                 static constexpr uint8_t ACCEL_FS_2 = 0x00;
@@ -208,6 +210,9 @@ namespace Component
             Vector3 mAccOffset;
             Vector3 mGyrOffset;
             Vector3 mMagOffset;
+            Vector3 mAccRaw;
+            Vector3 mGyrRaw;
+            Vector3 mMagRaw;
             Vector3F mAcc;
             Vector3F mGyr;
             Vector3F mMag;

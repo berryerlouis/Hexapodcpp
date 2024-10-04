@@ -16,7 +16,7 @@ namespace Component
             void MadgwickQuaternionUpdate(Vector3F &acc,
                                           Vector3F &gyr,
                                           Vector3F &mag,
-                                          const uint64_t deltaTime);
+                                          const float deltaTime);
 
             void GetYawPitchRoll(Position3D &ypr) const;
 

@@ -82,7 +82,20 @@ export class ClusterImu {
                 this.databaseManager.updateDb({
                     cluster: 'IMU',
                     command: 'MAG',
-                    value: {x: message.fetchInt16S(), y: message.fetchInt16S(), z: message.fetchInt16S()}
+                    item: 'x',
+                    value: message.fetchInt16S()
+                });
+                this.databaseManager.updateDb({
+                    cluster: 'IMU',
+                    command: 'MAG',
+                    item: 'y',
+                    value: message.fetchInt16S()
+                });
+                this.databaseManager.updateDb({
+                    cluster: 'IMU',
+                    command: 'MAG',
+                    item: 'z',
+                    value: message.fetchInt16S()
                 });
             }
         });
@@ -95,11 +108,24 @@ export class ClusterImu {
                 });
             }
         });
-        this.messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.IMU, CommandImu.ROULIS, (message) => {
+        this.messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.IMU, CommandImu.YAWPITCHROLL, (message) => {
             if (message.size > 0) {
                 this.databaseManager.updateDb({
                     cluster: 'IMU',
-                    command: 'ROULIS',
+                    command: 'YAWPITCHROLL',
+                    item: 'x',
+                    value: message.fetchInt16S()
+                });
+                this.databaseManager.updateDb({
+                    cluster: 'IMU',
+                    command: 'YAWPITCHROLL',
+                    item: 'y',
+                    value: message.fetchInt16S()
+                });
+                this.databaseManager.updateDb({
+                    cluster: 'IMU',
+                    command: 'YAWPITCHROLL',
+                    item: 'z',
                     value: message.fetchInt16S()
                 });
             }
