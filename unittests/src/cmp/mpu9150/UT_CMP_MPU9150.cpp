@@ -47,6 +47,8 @@ namespace Component
 
 			EXPECT_CALL(mMockTwi, ReadRegister( Mpu9150::MPU9150_I2C_ADDRESS, Mpu9150::ERegister::WHO_AM_I, _ )).
 					WillOnce(DoAll(SetArgReferee<2U>(Mpu9150::MPU9150_I2C_ADDRESS - 1), Return(true)));
+			EXPECT_CALL(mMockTwi, ReadRegister( Mpu9150::AK8963_I2C_ADDRESS, 0, _ )).
+					WillOnce(DoAll(SetArgReferee<2U>(0x48U), Return(true)));
 
 			success = mMpu9150.Initialize();
 
@@ -63,6 +65,8 @@ namespace Component
 
 			EXPECT_CALL(mMockTwi, ReadRegister( Mpu9150::MPU9150_I2C_ADDRESS, Mpu9150::ERegister::WHO_AM_I, _ )).
 					WillOnce(DoAll(SetArgReferee<2U>(Mpu9150::MPU9150_I2C_ADDRESS - 1), Return(true)));
+			EXPECT_CALL(mMockTwi, ReadRegister( Mpu9150::AK8963_I2C_ADDRESS, 0, _ )).
+					WillOnce(DoAll(SetArgReferee<2U>(0x48U), Return(true)));
 
 			success = mMpu9150.Initialize();
 			mMpu9150.Update(0UL);

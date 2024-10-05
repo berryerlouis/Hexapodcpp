@@ -28,8 +28,11 @@ export let clustersDatabase = {
         ACC: {x: 0, y: 0, z: 0},
         GYR: {x: 0, y: 0, z: 0},
         MAG: {x: 0, y: 0, z: 0},
-        TMP: 0,
+        TMP: "0",
         YAWPITCHROLL: {x: 0, y: 0, z: 0},
+        PRESSURE: "0",
+        ALTITUDE: "0",
+        TMPBAR: "0"
     },
     PROXIMITY: {
         US_LEFT: 0,
@@ -58,7 +61,7 @@ export let clustersDatabase = {
         17: {angle: 0, min: 0, max: 180, offset: 0, reverse: false, state: false},
     },
     BATTERY: {
-        VOLTAGE: 0.0,
+        VOLTAGE: "0",
         STATUS: 255,
     },
     BODY: {

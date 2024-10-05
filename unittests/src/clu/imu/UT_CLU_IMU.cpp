@@ -1,6 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "../../../mock/cmp/MockBarometer.h"
 #include "../../../mock/cmp/MockMpu9150.h"
 #include "../../../../src/Cluster/Imu/ClusterImu.h"
 #include "../../../../src/Misc/Maths/Geometry.h"
@@ -16,7 +17,8 @@ namespace Cluster
 		class UT_CLU_IMU : public ::testing::Test {
 		protected:
 			UT_CLU_IMU() : mMockMpu9150(),
-			               mClusterImu(mMockMpu9150) {
+			               mMockBarometer(),
+			               mClusterImu(mMockMpu9150, mMockBarometer) {
 			}
 
 			virtual void SetUp() {
@@ -29,6 +31,7 @@ namespace Cluster
 
 			/* Mocks */
 			StrictMock<Component::Imu::MockMpu9150> mMockMpu9150;
+			StrictMock<Component::Barometer::MockBarometer> mMockBarometer;
 
 			/* Test class */
 			ClusterImu mClusterImu;

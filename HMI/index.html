@@ -45,16 +45,30 @@
                 <div class="col-3">
                     Hexapod version : <span id="hexapod-version">xx.xx</span>
                 </div>
-                <div class="col-3">
+                <div class="col-1">
                     <button class="btn btn-secondary " id="open-command" type="button">
                         <i class="bi bi-tools"></i>
                     </button>
                 </div>
-                <div class="col-3">
-                    Battery : <span id="hexapod-battery-voltage">xx.xxV</span>
-                    <i class="bi bi-battery fs-4 px-3" id="hexapod-battery-status"></i>
+                <div class="col-6 d-flex align-items-center justify-content-around">
+                    <div class="d-flex align-items-center justify-content-around">
+                        <span id="hexapod-battery-voltage">xx.xx V</span>
+                        <i class="bi bi-battery fs-4 px-3" id="hexapod-battery-status"></i>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-around">
+                        <span id="hexapod-pressure">xx.xx Pa</span>
+                        <i class="bi bi-speedometer2 fs-4 px-3"></i>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-around">
+                        <span id="hexapod-temperature">xx.xx °C</span>
+                        <i class="bi bi-thermometer fs-4 px-3"></i>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-around">
+                        <span id="hexapod-altitude">xxx m</span>
+                        <i class="bi bi-airplane-engines fs-4 px-3"></i>
+                    </div>
                 </div>
-                <div class="col-3">
+                <div class="col-2">
                     <div class="d-flex w-100 justify-content-end py-3">
                         <button class="btn btn-light" id="connect-button" type="button">Connect</button>
                     </div>
@@ -64,7 +78,7 @@
     </div>
     <div id="gui"></div>
     <div id="myCanvas"></div>
-    </div>
+    <div id="myCompass"></div>
 </div>
 <div class="position-fixed start-0 p-3" style="z-index: 11; top: 10%; ">
     <div aria-atomic="true" aria-live="assertive" class="toast hide" data-bs-autohide="false" id="command-menu"

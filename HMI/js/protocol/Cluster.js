@@ -50,6 +50,9 @@ const CommandImu = {
     MAG: 'MAG',
     TMP: 'TMP',
     YAWPITCHROLL: 'YAWPITCHROLL',
+    PRESSURE: 'PRESSURE',
+    ALTITUDE: 'ALTITUDE',
+    TMPBAR: 'TMPBAR'
 };
 
 const CommandBody = {
@@ -106,7 +109,10 @@ export default class Clusters {
                 new Command(CommandImu.GYR, '02'),
                 new Command(CommandImu.MAG, '03'),
                 new Command(CommandImu.TMP, '04'),
-                new Command(CommandImu.YAWPITCHROLL, '05')
+                new Command(CommandImu.YAWPITCHROLL, '05'),
+                new Command(CommandImu.PRESSURE, '06'),
+                new Command(CommandImu.ALTITUDE, '07'),
+                new Command(CommandImu.TMPBAR, '08')
             ]
         ),
         new Cluster(

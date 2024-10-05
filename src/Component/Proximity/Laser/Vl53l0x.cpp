@@ -108,7 +108,7 @@ namespace Component
                             this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSTEM_SEQUENCE_CONFIG, 0x02);
 
                             if (this->PerformSingleRefCalibration(0x00) == true) {
-                                // "restore the previous Sequence Config"UT_CMP_COMMUNICATION.cpp:70
+                                // restore the previous Sequence Config
                                 this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSTEM_SEQUENCE_CONFIG, 0xE8);
                                 this->SetVcselPulsePeriod(VcselPeriodPreRange, 18);
                                 this->SetVcselPulsePeriod(VcselPeriodFinalRange, 14);

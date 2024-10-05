@@ -63,6 +63,7 @@ set(SRC_FILES_DRIVER_X64
 )
 
 set(SRC_FILES_COMPONENT
+        Component/Barometer/Barometer.cpp
         Component/Battery/Battery.cpp
         Component/Communication/Communication.cpp
         Component/Display/Ssd1306.cpp

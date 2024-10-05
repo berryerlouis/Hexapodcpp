@@ -31,6 +31,7 @@ export default class Canvas {
         this.scene.add(this.groupBody);
         this.addGround();
 
+
         this.raycasting = new RayCasting(this.scene, this.camera, this.width, this.height, (memberClicked) => {
             console.log(memberClicked);
             hexapod[memberClicked] = {

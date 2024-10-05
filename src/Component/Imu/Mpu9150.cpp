@@ -32,11 +32,6 @@ namespace Component
             uint8_t reg = 0x00U;
             Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-            //reset
-            this->mI2c.ReadRegister(this->mAddress, ERegister::PWR_MGMT_1, reg);
-            reg |= (1U << 7U);
-            this->mI2c.WriteRegister(this->mAddress, ERegister::PWR_MGMT_1, reg);
-
             // check device
             this->mI2c.ReadRegister(this->mAddress, ERegister::WHO_AM_I, whoAmI);
 
@@ -79,11 +74,10 @@ namespace Component
 
                 this->mI2c.WriteRegister(this->mAddress, ERegister::INT_PIN_CFG, 0x02);
                 this->mI2c.ReadRegister(this->mAddressMag, ERegisterMag::WHO_AM_I, whoAmI);
-                if (whoAmI == 0U) {
+                if (whoAmI == 0x48U) {
                     this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x01);
                     success = Core::CoreStatus::CORE_OK;
                 }
-                success = Core::CoreStatus::CORE_OK;
             }
             return (success);
         }
@@ -117,7 +111,7 @@ namespace Component
                 this->mAccRaw.z = ((this->mAccRaw.z << 8U) | ((this->mAccRaw.z >> 8) & 0xFF)) - mAccOffset.z;
                 //+ (32768.0F / 2.0F);
             }
-            this->mAcc.x = (-this->mAccRaw.x * 2.0F) / 32768.0F;
+            this->mAcc.x = (this->mAccRaw.x * 2.0F) / 32768.0F;
             this->mAcc.y = (-this->mAccRaw.y * 2.0F) / 32768.0F;
             this->mAcc.z = (-this->mAccRaw.z * 2.0F) / 32768.0F;
             return (this->mAccRaw);
@@ -148,9 +142,9 @@ namespace Component
                 this->mMagRaw.y = ((this->mMagRaw.y << 8U) | ((this->mMagRaw.y >> 8) & 0xFF)) - mMagOffset.y;
                 this->mMagRaw.z = ((this->mMagRaw.z << 8U) | ((this->mMagRaw.z >> 8) & 0xFF)) - mMagOffset.z;
 
-                this->mMag.x = -this->mMagRaw.x * 10.0F * 1229.0F / 4096.0F;
+                this->mMag.x = this->mMagRaw.x * 10.0F * 1229.0F / 4096.0F;
                 this->mMag.y = -this->mMagRaw.y * 10.0F * 1229.0F / 4096.0F;
-                this->mMag.z = -this->mMagRaw.z * 10.0F * 1229.0F / 4096.0F;
+                this->mMag.z = this->mMagRaw.z * 10.0F * 1229.0F / 4096.0F;
 
                 this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x01);
             }

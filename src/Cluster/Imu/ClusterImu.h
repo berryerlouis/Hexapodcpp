@@ -2,6 +2,7 @@
 
 
 #include "../ClusterBase.h"
+#include "../../Component/Barometer/BarometerInterface.h"
 #include "../../Component/Imu/Mpu9150Interface.h"
 #include "../../Misc/Maths/Geometry.h"
 
@@ -10,19 +11,24 @@ namespace Cluster
     namespace Imu
     {
         using namespace Component::Imu;
+        using namespace Component::Barometer;
 
         class ClusterImu : public ClusterBase, StrategyCluster {
         public:
-            ClusterImu(Mpu9150Interface &imu)
+            ClusterImu(Mpu9150Interface &imu, BarometerInterface &barometer)
                 : ClusterBase(IMU, this)
                   , StrategyCluster(NB_COMMANDS_IMU)
-                  , mImu(imu) {
+                  , mImu(imu)
+                  , mBarometer(barometer) {
                 this->AddClusterItem((ClusterItem){.commandId = EImuCommands::ALL, .expectedSize = 0U});
                 this->AddClusterItem((ClusterItem){.commandId = EImuCommands::ACC, .expectedSize = 0U});
                 this->AddClusterItem((ClusterItem){.commandId = EImuCommands::GYR, .expectedSize = 0U});
                 this->AddClusterItem((ClusterItem){.commandId = EImuCommands::MAG, .expectedSize = 0U});
                 this->AddClusterItem((ClusterItem){.commandId = EImuCommands::TMP, .expectedSize = 0U});
                 this->AddClusterItem((ClusterItem){.commandId = EImuCommands::YAW_PITCH_ROLL, .expectedSize = 0U});
+                this->AddClusterItem((ClusterItem){.commandId = EImuCommands::PRESSURE, .expectedSize = 0U});
+                this->AddClusterItem((ClusterItem){.commandId = EImuCommands::ALTITUDE, .expectedSize = 0U});
+                this->AddClusterItem((ClusterItem){.commandId = EImuCommands::TMP_BAR, .expectedSize = 0U});
             }
 
             ~ClusterImu() = default;
@@ -50,6 +56,15 @@ namespace Cluster
                 } else if (request.commandId == EImuCommands::YAW_PITCH_ROLL) {
                     const Position3D ypr = this->mImu.ReadYawPitchRoll();
                     success = this->BuildFrameYawPitchRoll(ypr, response);
+                } else if (request.commandId == EImuCommands::PRESSURE) {
+                    const int32_t pressure = this->mBarometer.GetPressure();
+                    success = this->BuildFramePressure(pressure, response);
+                } else if (request.commandId == EImuCommands::ALTITUDE) {
+                    const uint16_t seaLevel = this->mBarometer.GetAltitude();
+                    success = this->BuildFrameSeaLevel(seaLevel, response);
+                } else if (request.commandId == EImuCommands::TMP_BAR) {
+                    const int16_t temp = this->mBarometer.GetTemp();
+                    success = this->BuildFrameTmpBar(temp, response);
                 }
                 return success;
             }
@@ -122,8 +137,39 @@ namespace Cluster
                 return (success);
             }
 
+            inline Core::CoreStatus BuildFramePressure(const int32_t pressure, Frame &response) const {
+                const Core::CoreStatus success = response.Build(
+                    EClusters::IMU,
+                    EImuCommands::PRESSURE);
+                if (success == Core::CoreStatus::CORE_OK) {
+                    response.Set4BytesParam(pressure);
+                }
+                return (success);
+            }
+
+            inline Core::CoreStatus BuildFrameSeaLevel(const uint16_t seaLevel, Frame &response) const {
+                const Core::CoreStatus success = response.Build(
+                    EClusters::IMU,
+                    EImuCommands::ALTITUDE);
+                if (success == Core::CoreStatus::CORE_OK) {
+                    response.Set2BytesParam(seaLevel);
+                }
+                return (success);
+            }
+
+            inline Core::CoreStatus BuildFrameTmpBar(const int16_t temp, Frame &response) const {
+                const Core::CoreStatus success = response.Build(
+                    EClusters::IMU,
+                    EImuCommands::TMP_BAR);
+                if (success == Core::CoreStatus::CORE_OK) {
+                    response.Set2BytesParam(temp);
+                }
+                return (success);
+            }
+
         private:
             Mpu9150Interface &mImu;
+            BarometerInterface &mBarometer;
         };
     }
 }

@@ -44,7 +44,7 @@ namespace Component
 
 
 		TEST_F(UT_CMP_BATTERY, GetStateAfterUpdateCritical) {
-			EXPECT_CALL(mMockAdc, Read()).WillOnce(Return(74U));
+			EXPECT_CALL(mMockAdc, Read()).WillOnce(Return(740U));
 
 			mBattery.Update(0UL);
 			BatteryState state = mBattery.GetState();
@@ -53,7 +53,7 @@ namespace Component
 		}
 
 		TEST_F(UT_CMP_BATTERY, GetStateAfterUpdateWarning) {
-			EXPECT_CALL(mMockAdc, Read()).WillOnce(Return(79U));
+			EXPECT_CALL(mMockAdc, Read()).WillOnce(Return(799U));
 
 			mBattery.Update(0UL);
 			BatteryState state = mBattery.GetState();
@@ -62,7 +62,7 @@ namespace Component
 		}
 
 		TEST_F(UT_CMP_BATTERY, GetStateAfterUpdateNominal) {
-			EXPECT_CALL(mMockAdc, Read()).WillOnce(Return(90U));
+			EXPECT_CALL(mMockAdc, Read()).WillOnce(Return(900U));
 
 			mBattery.Update(0UL);
 			BatteryState state = mBattery.GetState();
@@ -71,7 +71,7 @@ namespace Component
 		}
 
 		TEST_F(UT_CMP_BATTERY, GetStateAfterUpdateNominalTwice) {
-			EXPECT_CALL(mMockAdc, Read()).WillRepeatedly(Return(90U));
+			EXPECT_CALL(mMockAdc, Read()).WillRepeatedly(Return(900U));
 
 			mBattery.Update(0UL);
 			mBattery.Update(0UL);

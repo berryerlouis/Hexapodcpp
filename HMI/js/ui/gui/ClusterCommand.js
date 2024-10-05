@@ -39,6 +39,9 @@ export default class ClusterCommand {
         this.addClusterManyCommands(clusterFolder, ClusterName.IMU, CommandImu.MAG, ['x', 'y', 'z']);
         this.addClusterSimpleCommand(clusterFolder, ClusterName.IMU, CommandImu.TMP);
         this.addClusterManyCommands(clusterFolder, ClusterName.IMU, CommandImu.YAWPITCHROLL, ['x', 'y', 'z']);
+        this.addClusterSimpleCommand(clusterFolder, ClusterName.IMU, CommandImu.PRESSURE);
+        this.addClusterSimpleCommand(clusterFolder, ClusterName.IMU, CommandImu.ALTITUDE);
+        this.addClusterSimpleCommand(clusterFolder, ClusterName.IMU, CommandImu.TMPBAR);
 
 
         //ClusterName.PROXIMITY

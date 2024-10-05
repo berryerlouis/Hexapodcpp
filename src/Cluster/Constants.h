@@ -48,10 +48,13 @@ namespace Cluster
         GYR,
         MAG,
         TMP,
-        YAW_PITCH_ROLL
+        YAW_PITCH_ROLL,
+        PRESSURE,
+        ALTITUDE,
+        TMP_BAR
     };
 
-#define NB_COMMANDS_IMU 6U
+#define NB_COMMANDS_IMU 9U
 
     enum EServoCommands {
         GET_ALL = 0,

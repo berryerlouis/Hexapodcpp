@@ -12,6 +12,21 @@ body {
     max-height: 33vh;
 }
 
+#gui {
+    position: absolute;
+    top: 78px;
+    left: 0px;
+}
+
+#myCompass {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    top: 78px;
+    right: 0px;
+    z-index: 1000;
+}
+
 #console .list-group-item:hover {
     background-color: #a4cce7;
 }
@@ -102,11 +117,6 @@ body {
     background-color: #F5F5F5;
 }
 
-#gui {
-    position: absolute;
-    top: 78px;
-    left: 0px;
-}
 
 /*
 background-color: #2c6729;
