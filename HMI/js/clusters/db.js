@@ -29,10 +29,13 @@ export let clustersDatabase = {
         GYR: {x: 0, y: 0, z: 0},
         MAG: {x: 0, y: 0, z: 0},
         TMP: "0",
-        YAWPITCHROLL: {x: 0, y: 0, z: 0},
+        YAWPITCHROLL: {yaw: 0, pitch: 0, roll: 0},
         PRESSURE: "0",
         ALTITUDE: "0",
-        TMPBAR: "0"
+        TMPBAR: "0",
+        CALIB_MAG_MIN: {x: 0, y: 0, z: 0},
+        CALIB_MAG_MAX: {x: 0, y: 0, z: 0},
+        STARTSTOPMAGCALIB: false,
     },
     PROXIMITY: {
         US_LEFT: 0,

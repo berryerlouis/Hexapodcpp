@@ -33,6 +33,7 @@ namespace Service
 
         Core::CoreStatus Services::Initialize(void) {
             Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+
             for (const ServiceItem item: this->mServices) {
                 success = item.service->Initialize();
                 if (success != Core::CoreStatus::CORE_OK) {
@@ -41,18 +42,15 @@ namespace Service
                     LOG("error");
                     LOG(serviceId);
 #endif
-#ifndef GTEST
-                    sei();
-#endif
                 }
             }
             return (success);
         }
 
         void Services::Update(const uint64_t currentTime) {
-            (void) currentTime;
-
+            ServiceCommunication *com = (ServiceCommunication *) this->Get(COMMUNICATION);
             for (const ServiceItem item: this->mServices) {
+	            com->Update(currentTime);
                 const uint64_t currentMillis = this->mTick.GetMs();
                 if (item.service->NeedUpdate(currentMillis) == Core::CoreStatus::CORE_OK) {
                     item.service->Update(currentMillis);

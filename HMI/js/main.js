@@ -8,9 +8,9 @@ import {DatabaseManager} from "./clusters/DatabaseManager.js";
 import Hexapod from "./ui/hexapod/hexapod.js";
 import Controls from "./ui/gui/Controls.js";
 import Walk from "./ui/walk/Walk.js";
-import {Message} from "./protocol/Message.js";
-import {ClusterName, CommandBattery, CommandGeneral, CommandImu, CommandServo} from "./protocol/Cluster.js";
 import Compass from "./ui/Compass.js";
+import {ClusterName, CommandBattery, CommandGeneral, CommandImu, CommandServo} from "./protocol/Cluster.js";
+import {Message} from "./protocol/Message.js";
 
 
 const serialInterface = new SerialInterface();

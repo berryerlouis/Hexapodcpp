@@ -43,8 +43,7 @@ namespace Driver
             Write(reg);
             RepeatedStart(address);
             data = (uint16_t) ((uint16_t) ReadAck() << 8U);
-            data |= ReadAck();
-            ReadNack();
+            data |= ReadNack();
             Stop();
             return (true);
         }
@@ -55,8 +54,7 @@ namespace Driver
             RepeatedStart(address);
             data = (uint32_t) ((uint32_t) ReadAck() << 16U);
             data |= (uint32_t) ((uint32_t) ReadAck() << 8U);
-            data |= ReadAck();
-            ReadNack();
+            data |= ReadNack();
             Stop();
             return (true);
         }
@@ -68,8 +66,7 @@ namespace Driver
             data = (uint32_t) ((uint32_t) ReadAck() << 24U);
             data |= (uint32_t) ((uint32_t) ReadAck() << 16U);
             data |= (uint32_t) ((uint32_t) ReadAck() << 8U);
-            data |= ReadAck();
-            ReadNack();
+            data |= ReadNack();
             Stop();
             return (true);
         }
@@ -79,11 +76,10 @@ namespace Driver
             Write(reg);
             RepeatedStart(address);
 
-            for (size_t i = 0U; i < length; i++) {
+            for (size_t i = 0U; i < length - 1U; i++) {
                 data[i] = ReadAck();
             }
-
-            ReadNack();
+			data[length - 1U] = ReadNack();
             Stop();
             return (true);
         }

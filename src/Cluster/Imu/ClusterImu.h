@@ -29,6 +29,10 @@ namespace Cluster
                 this->AddClusterItem((ClusterItem){.commandId = EImuCommands::PRESSURE, .expectedSize = 0U});
                 this->AddClusterItem((ClusterItem){.commandId = EImuCommands::ALTITUDE, .expectedSize = 0U});
                 this->AddClusterItem((ClusterItem){.commandId = EImuCommands::TMP_BAR, .expectedSize = 0U});
+                this->AddClusterItem((ClusterItem){
+                    .commandId = EImuCommands::START_STOP_MAG_CALIB, .expectedSize = 1U
+                });
+                this->AddClusterItem((ClusterItem){.commandId = EImuCommands::CALIB_MAG_MIN_MAX, .expectedSize = 1U});
             }
 
             ~ClusterImu() = default;
@@ -65,6 +69,14 @@ namespace Cluster
                 } else if (request.commandId == EImuCommands::TMP_BAR) {
                     const int16_t temp = this->mBarometer.GetTemp();
                     success = this->BuildFrameTmpBar(temp, response);
+                } else if (request.commandId == EImuCommands::CALIB_MAG_MIN_MAX) {
+                    const bool min = request.Get1ByteParam(0U);
+                    const Vector3F calib = this->mImu.ReadCalibrationMag(min);
+                    success = this->BuildFrameCalibMag(min, calib, response);
+                } else if (request.commandId == EImuCommands::START_STOP_MAG_CALIB) {
+                    const bool start = request.Get1ByteParam(0U);
+                    this->mImu.StartCalibrationMag(start);
+                    success = this->BuildFrameStartCalibMag(response);
                 }
                 return success;
             }
@@ -165,6 +177,23 @@ namespace Cluster
                     response.Set2BytesParam(temp);
                 }
                 return (success);
+            }
+
+            inline Core::CoreStatus BuildFrameCalibMag(const bool min, const Vector3F &calib, Frame &response) const {
+                const Core::CoreStatus success = response.Build(
+                    EClusters::IMU,
+                    EImuCommands::YAW_PITCH_ROLL);
+                if (success == Core::CoreStatus::CORE_OK) {
+                    response.Set1ByteParam(min);
+                    response.SetxBytesParam(12U, (uint8_t *) &calib);
+                }
+                return (success);
+            }
+
+            inline Core::CoreStatus BuildFrameStartCalibMag(Frame &response) const {
+                return response.Build(
+                    EClusters::IMU,
+                    EImuCommands::START_STOP_MAG_CALIB);
             }
 
         private:

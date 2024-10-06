@@ -157,20 +157,20 @@ export class ClusterImu {
                 this.databaseManager.updateDb({
                     cluster: 'IMU',
                     command: 'YAWPITCHROLL',
-                    item: 'x',
+                    item: 'roll',
                     value: message.fetchInt16S()
                 });
                 this.databaseManager.updateDb({
                     cluster: 'IMU',
                     command: 'YAWPITCHROLL',
-                    item: 'y',
+                    item: 'pitch',
                     value: message.fetchInt16S()
                 });
                 let angle = message.fetchInt16S();
                 this.databaseManager.updateDb({
                     cluster: 'IMU',
                     command: 'YAWPITCHROLL',
-                    item: 'z',
+                    item: 'yaw',
                     value: angle
                 });
                 this.compass.rotate(angle);
@@ -208,6 +208,41 @@ export class ClusterImu {
                     value: val
                 });
                 this.temperatureHMI[0].innerText = val;
+            }
+        });
+        this.messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.IMU, CommandImu.CALIB_MAG_MIN_MAX, (message) => {
+            if (message.size > 0) {
+                let min = message.fetchInt8U();
+                let x = (message.fetchInt32S() / 100).toFixed(2);
+                let y = (message.fetchInt32S() / 100).toFixed(2);
+                let z = (message.fetchInt32S() / 100).toFixed(2);
+                this.databaseManager.updateDb({
+                    cluster: 'IMU',
+                    command: min === 0 ? 'CALIB_MAG_MIN' : 'CALIB_MAG_MAX',
+                    item: 'x',
+                    value: x
+                });
+                this.databaseManager.updateDb({
+                    cluster: 'IMU',
+                    command: min === 0 ? 'CALIB_MAG_MIN' : 'CALIB_MAG_MAX',
+                    item: 'y',
+                    value: y
+                });
+                this.databaseManager.updateDb({
+                    cluster: 'IMU',
+                    command: min === 0 ? 'CALIB_MAG_MIN' : 'CALIB_MAG_MAX',
+                    item: 'z',
+                    value: z
+                });
+            }
+        });
+        this.messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.IMU, CommandImu.START_STOP_MAG_CALIB, (message) => {
+            if (message.size > 0) {
+                this.databaseManager.updateDb({
+                    cluster: 'IMU',
+                    command: 'STARTSTOPMAGCALIB',
+                    value: message.fetchInt8U() === 1
+                });
             }
         });
     }

@@ -141,10 +141,29 @@ namespace Component
                 return (this->mYawPitchRoll);
             }
 
+            inline virtual void StartCalibrationMag(const bool enable) {
+                this->mStartMagCalib = enable;
+				if(enable == false)
+				{
+					this->mMagOffset.x = (this->mMagCalibMax.x - this->mMagCalibMin.x) / 2U;
+					this->mMagOffset.y = (this->mMagCalibMax.y - this->mMagCalibMin.y) / 2U;
+					this->mMagOffset.z = (this->mMagCalibMax.z - this->mMagCalibMin.z) / 2U;
+				}
+            }
+
+            inline virtual Vector3F ReadCalibrationMag(const bool min) {
+                if (min == true) {
+                    return this->mMagCalibMin;
+                }
+                return this->mMagCalibMax;
+            }
+
         private:
             Vector3 UpdateAcc(void);
 
             Vector3 UpdateGyr(void);
+
+            void AdjustingMag(void);
 
             Vector3 UpdateMag(void);
 
@@ -209,14 +228,17 @@ namespace Component
             const uint8_t mAddressMag;
             Vector3 mAccOffset;
             Vector3 mGyrOffset;
-            Vector3 mMagOffset;
+            Vector3F mMagOffset;
+            Vector3F mMagBias;
+            bool mStartMagCalib;
+            Vector3F mMagCalibMin;
+            Vector3F mMagCalibMax;
             Vector3 mAccRaw;
             Vector3 mGyrRaw;
             Vector3 mMagRaw;
             Vector3F mAcc;
             Vector3F mGyr;
             Vector3F mMag;
-            uint8_t mMagRate;
             uint8_t mTmp;
             uint64_t mLastLoopTime;
             Ahrs mAhrs;

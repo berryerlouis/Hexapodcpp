@@ -47,7 +47,7 @@ namespace Cluster
         }
 
         uint8_t Protocol::Encode(const Frame &response, const char *buffer) {
-            if (buffer == nullptr || response.nbParams == 0) {
+            if (buffer == nullptr) {
                 return (0U);
             }
             const uint8_t *params = response.params;

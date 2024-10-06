@@ -41,6 +41,7 @@ namespace Cluster
                 if (this->mClusterCommands[i].commandId == request.commandId
                     && this->mClusterCommands[i].expectedSize == request.nbParams) {
                     success = this->ExecuteFrame(request, response);
+					break;
                 }
             }
             return success;

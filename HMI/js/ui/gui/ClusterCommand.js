@@ -38,10 +38,12 @@ export default class ClusterCommand {
         this.addClusterManyCommands(clusterFolder, ClusterName.IMU, CommandImu.GYR, ['x', 'y', 'z']);
         this.addClusterManyCommands(clusterFolder, ClusterName.IMU, CommandImu.MAG, ['x', 'y', 'z']);
         this.addClusterSimpleCommand(clusterFolder, ClusterName.IMU, CommandImu.TMP);
-        this.addClusterManyCommands(clusterFolder, ClusterName.IMU, CommandImu.YAWPITCHROLL, ['x', 'y', 'z']);
+        this.addClusterManyCommands(clusterFolder, ClusterName.IMU, CommandImu.YAWPITCHROLL, ['yaw', 'pitch', 'roll']);
         this.addClusterSimpleCommand(clusterFolder, ClusterName.IMU, CommandImu.PRESSURE);
         this.addClusterSimpleCommand(clusterFolder, ClusterName.IMU, CommandImu.ALTITUDE);
         this.addClusterSimpleCommand(clusterFolder, ClusterName.IMU, CommandImu.TMPBAR);
+        this.addClusterManyCommands(clusterFolder, ClusterName.IMU, "CALIB_MAG_MIN", ['x', 'y', 'z']);
+        this.addClusterManyCommands(clusterFolder, ClusterName.IMU, "CALIB_MAG_MAX", ['x', 'y', 'z']);
 
 
         //ClusterName.PROXIMITY

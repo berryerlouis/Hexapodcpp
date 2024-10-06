@@ -52,7 +52,9 @@ const CommandImu = {
     YAWPITCHROLL: 'YAWPITCHROLL',
     PRESSURE: 'PRESSURE',
     ALTITUDE: 'ALTITUDE',
-    TMPBAR: 'TMPBAR'
+    TMPBAR: 'TMPBAR',
+    CALIB_MAG_MIN_MAX: 'CALIBMAGMINMAX',
+    START_STOP_MAG_CALIB: 'STARTSTOPMAGCALIB',
 };
 
 const CommandBody = {
@@ -112,7 +114,9 @@ export default class Clusters {
                 new Command(CommandImu.YAWPITCHROLL, '05'),
                 new Command(CommandImu.PRESSURE, '06'),
                 new Command(CommandImu.ALTITUDE, '07'),
-                new Command(CommandImu.TMPBAR, '08')
+                new Command(CommandImu.TMPBAR, '08'),
+                new Command(CommandImu.CALIB_MAG_MIN_MAX, '09'),
+                new Command(CommandImu.START_STOP_MAG_CALIB, '0A')
             ]
         ),
         new Cluster(

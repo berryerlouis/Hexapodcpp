@@ -9,6 +9,10 @@ using namespace Builder;
 Builder::App robot;
 
 int main(void) {
+	#ifndef GTEST
+	cli();
+	wdt_disable();
+	#endif
     //hexapod initialization
     if (robot.Initialize() == Core::CoreStatus::CORE_OK) {
         //enable ITs

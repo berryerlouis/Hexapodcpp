@@ -174,9 +174,6 @@
     <Compile Include="Component\Barometer\BarometerInterface.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Driver\AdcInterface.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="Driver\Adc\Adc.cpp">
       <SubType>compile</SubType>
     </Compile>

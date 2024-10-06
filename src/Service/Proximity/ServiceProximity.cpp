@@ -14,7 +14,7 @@ namespace Service
         Core::CoreStatus ServiceProximity::Initialize(void) {
             Core::CoreStatus success = this->mProximity.Initialize();
             this->mProximity.Attach(this);
-            return (success);
+            return (Core::CoreStatus::CORE_OK);
         }
 
         void ServiceProximity::Update(const uint64_t currentTime) {

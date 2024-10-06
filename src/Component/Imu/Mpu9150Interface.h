@@ -28,6 +28,10 @@ namespace Component
             virtual int16_t ReadTemp(void) = 0;
 
             virtual Position3D ReadYawPitchRoll(void) = 0;
+
+            virtual void StartCalibrationMag(const bool enable) = 0;
+
+            virtual Vector3F ReadCalibrationMag(const bool min) = 0;
         };
     }
 }

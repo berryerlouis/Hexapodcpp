@@ -51,10 +51,12 @@ namespace Cluster
         YAW_PITCH_ROLL,
         PRESSURE,
         ALTITUDE,
-        TMP_BAR
+        TMP_BAR,
+		CALIB_MAG_MIN_MAX,
+		START_STOP_MAG_CALIB,
     };
 
-#define NB_COMMANDS_IMU 9U
+#define NB_COMMANDS_IMU 11U
 
     enum EServoCommands {
         GET_ALL = 0,
