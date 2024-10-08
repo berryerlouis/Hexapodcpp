@@ -48,9 +48,8 @@ namespace Service
         }
 
         void Services::Update(const uint64_t currentTime) {
-            ServiceCommunication *com = (ServiceCommunication *) this->Get(COMMUNICATION);
+            (void) currentTime;
             for (const ServiceItem item: this->mServices) {
-	            com->Update(currentTime);
                 const uint64_t currentMillis = this->mTick.GetMs();
                 if (item.service->NeedUpdate(currentMillis) == Core::CoreStatus::CORE_OK) {
                     item.service->Update(currentMillis);

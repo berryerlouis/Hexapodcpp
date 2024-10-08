@@ -78,7 +78,7 @@ namespace Component
         }
 
         bool Communication::ReceivedStringFrame(void) {
-            while (this->mUart.DataAvailable() > 0U) {
+            if (this->mUart.DataAvailable() > 0U) {
                 const uint8_t rc = this->mUart.Read();
                 if (REJECT_UNKNOWN_CHARACTER(rc)) {
                     if (rc == '<') {
