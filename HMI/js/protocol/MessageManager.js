@@ -33,10 +33,6 @@ export class MessageManager {
             }
         }
 
-        if (this.currentMessagesToSent && asyncMessageIncoming === true) {
-            this.currentMessagesToSent.message.timeout = 0;
-        }
-
         this.notifyOnSpecificCommand(message);
         if (asyncMessageIncoming) {
             this.notifyReadAsync(message);
@@ -61,7 +57,6 @@ export class MessageManager {
                 this.currentMessagesToSent.message.timeout++;
                 if (this.currentMessagesToSent.message.timeout >= 10) {
                     this.currentMessagesToSent.cbResponse && this.currentMessagesToSent.cbResponse(this.currentMessagesToSent.message);
-                    this.notifyWriteTimeout(this.currentMessagesToSent);
 
                     //retry
                     this.currentMessagesToSent.message.retry++;
@@ -69,6 +64,7 @@ export class MessageManager {
                         this.listMessagesToSent.unshift(this.currentMessagesToSent);
                         console.warn(this.currentMessagesToSent.message.toString() + " Message timeout retry number (" + this.currentMessagesToSent.message.retry + ")");
                     } else {
+                        this.notifyWriteTimeout(this.currentMessagesToSent);
                         console.error(this.currentMessagesToSent.message.toString() + " Timeout removed");
                         this.currentMessagesToSent = null
                     }

@@ -23,12 +23,12 @@ export default class Compass {
         this.scene.background = new THREE.Color(0x505050);
         this.addLights();
 
-        const geometr = new THREE.SphereGeometry(30, 32, 16);
+        const geometr = new THREE.SphereGeometry(60, 32, 16);
         const materia = new THREE.MeshBasicMaterial({color: 0x00ff00});
         this.spere = new THREE.Mesh(geometr, materia);
         this.scene.add(this.spere);
 
-        const geometry = new THREE.SphereGeometry(30, 32, 16, -Math.PI / 2 - Math.PI / 16, Math.PI / 8, 0, Math.PI);
+        const geometry = new THREE.SphereGeometry(60, 32, 16, -Math.PI / 2 - Math.PI / 16, Math.PI / 8, 0, Math.PI);
         const material = new THREE.MeshBasicMaterial({color: 0xff0000});
         this.north = new THREE.Mesh(geometry, material);
         this.scene.add(this.north);

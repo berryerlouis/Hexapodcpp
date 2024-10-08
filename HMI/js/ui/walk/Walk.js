@@ -8,7 +8,7 @@ export default class Walk {
     }
 
     init() {
-        /*for (let i = 0; i < 18; i++) {
+        for (let i = 0; i < 18; i++) {
             this.messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_ANGLE, 1, [i.toString(16)]));
             this.messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_MIN, 1, [i.toString(16)]));
             this.messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_MAX, 1, [i.toString(16)]));
@@ -17,7 +17,7 @@ export default class Walk {
             this.messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_STATE, 1, [i.toString(16)]));
             this.messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.SET_STATE, 2, [i.toString(16), "01"]));
             this.messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.SET_ANGLE, 2, [i.toString(16), (90).toString(16)]));
-        }*/
+        }
 
 
         /*this.step = 0;

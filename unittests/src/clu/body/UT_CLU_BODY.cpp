@@ -54,12 +54,12 @@ namespace Cluster
 			Frame response;
 			uint8_t params[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-			EXPECT_CALL(mBodyMock, SetPositionRotation( _, _, _ )).Times(1U);
-			request.Build(BODY, EBodyCommands::SET_LEG_X_Y_Z, params, 14U);
+			EXPECT_CALL(mBodyMock, SetBodyPositionRotation( _, _, _ )).Times(1U);
+			request.Build(BODY, EBodyCommands::SET_BODY_POS_ROT, params, 14U);
 			success = mClusterBody.ExecuteFrame(request, response);
 
 			EXPECT_EQ(response.clusterId, BODY);
-			EXPECT_EQ(response.commandId, EBodyCommands::SET_LEG_X_Y_Z);
+			EXPECT_EQ(response.commandId, EBodyCommands::SET_BODY_POS_ROT);
 			EXPECT_EQ(response.nbParams, 4U);
 			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 		}
@@ -68,7 +68,7 @@ namespace Cluster
 			Frame response;
 			mClusterBody.BuildFrameSetPosition(response, 0);
 			EXPECT_EQ(response.clusterId, BODY);
-			EXPECT_EQ(response.commandId, EBodyCommands::SET_LEG_X_Y_Z);
+			EXPECT_EQ(response.commandId, EBodyCommands::SET_BODY_POS_ROT);
 			EXPECT_EQ(response.nbParams, 4U);
 		}
 	}

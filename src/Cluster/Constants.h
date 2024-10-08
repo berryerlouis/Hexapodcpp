@@ -37,10 +37,12 @@ namespace Cluster
 #define NB_COMMANDS_BATTERY 2U
 
     enum EBodyCommands {
-        SET_LEG_X_Y_Z = 0,
+        SET_BODY_POS_ROT = 0x00U,
+        SET_LEG_POS_ROT,
+        SET_WALK_STATUS
     };
 
-#define NB_COMMANDS_BODY 1U
+#define NB_COMMANDS_BODY 3U
 
     enum EImuCommands {
         ALL,
@@ -52,8 +54,8 @@ namespace Cluster
         PRESSURE,
         ALTITUDE,
         TMP_BAR,
-		CALIB_MAG_MIN_MAX,
-		START_STOP_MAG_CALIB,
+        CALIB_MAG_MIN_MAX,
+        START_STOP_MAG_CALIB,
     };
 
 #define NB_COMMANDS_IMU 11U

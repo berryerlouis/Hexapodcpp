@@ -36,6 +36,7 @@ set(SRC_FILES_SERVICES
         Service/Services/Services.cpp
         Service/Event/EventListener.cpp
         Service/Event/BufferEvent.cpp
+        Service/Body/ServiceBody.cpp
 )
 
 set(SRC_FILES_MISC
@@ -93,6 +94,7 @@ set(SRC_FILES_BOT
         Bot/Body/Body.cpp
         Bot/Leg/Leg.cpp
         Bot/Legs/Legs.cpp
+        Bot/Walk/Walk.cpp
 )
 
 

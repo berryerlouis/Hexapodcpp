@@ -41,7 +41,7 @@ export class Logger {
     }
 
     logMessage(message, async = false) {
-        if (this.consoleList[0].children.length >= 2500) {
+        if (this.consoleList[0].children.length >= 500) {
             this.consoleList[0].children[this.consoleList[0].children.length - 1].remove();
             //this.consoleList[0].children[0].remove();
         }

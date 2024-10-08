@@ -128,7 +128,7 @@ namespace Component
 			EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::CoreStatus::CORE_OK));
 			EXPECT_CALL(mMockUart, Send( Matcher <const char *>( _ ), _ )).Times(1U);
 			EXPECT_CALL(mMockClusters, GetCluster( Cluster::EClusters::BODY )).WillOnce(Return(&mClusterBody));
-			EXPECT_CALL(mMockBody, SetPositionRotation( position, rotation, travelTime )).Times(1U);
+			EXPECT_CALL(mMockBody, SetBodyPositionRotation( position, rotation, travelTime )).Times(1U);
 
 			for (size_t i = 0; i < strlen(bufferRx); i++) {
 				EXPECT_CALL(mMockUart, DataAvailable()).WillRepeatedly(Return(strlen(bufferRx)));

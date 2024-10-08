@@ -27,10 +27,14 @@ export class DatabaseManager {
     }
 
     updateDb = ({cluster, command, item, value}) => {
-        if (item) {
-            clustersDatabase[cluster][command][item] = value;
-            return;
+        try {
+            if (item) {
+                clustersDatabase[cluster][command][item] = value;
+                return;
+            }
+            clustersDatabase[cluster][command] = value;
+        } catch (e) {
+            console.error(e);
         }
-        clustersDatabase[cluster][command] = value;
     };
 }

@@ -6,7 +6,7 @@ namespace Service
     {
         ServiceControl::ServiceControl(ServosInterface &servos,
                                        Event::EventListenerInterface &eventListener)
-            : Service(10U, eventListener)
+            : Service(20U, eventListener)
               , mStepPca9685(0U)
               , mServosInterface(servos) {
         }

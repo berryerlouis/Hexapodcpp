@@ -8,7 +8,8 @@ export let clustersDatabase = {
             DISPLAY: 0,
             GENERAL: 0,
             ORIENTATION: 0,
-            PROXIMITY: 0
+            PROXIMITY: 0,
+            BODY: 0
         },
         MAX_EXECUTION_TIME: {
             BATTERY: 0,
@@ -17,7 +18,8 @@ export let clustersDatabase = {
             DISPLAY: 0,
             GENERAL: 0,
             ORIENTATION: 0,
-            PROXIMITY: 0
+            PROXIMITY: 0,
+            BODY: 0
         },
         INSTANT_EXECUTION_TIME: 0,
         RESET_EXECUTION_TIME: function () {
@@ -71,6 +73,14 @@ export let clustersDatabase = {
         POSITION: {x: 0, y: 0, z: 0},
         ROTATION: {x: 0, y: 0, z: 0},
         DELAY: 1000,
+        LEG: {
+            0: {x: 0, y: 0, z: 0},
+            1: {x: 0, y: 0, z: 0},
+            2: {x: 0, y: 0, z: 0},
+            3: {x: 0, y: 0, z: 0},
+            4: {x: 0, y: 0, z: 0},
+            5: {x: 0, y: 0, z: 0},
+        }
     }
 };
 
@@ -82,5 +92,6 @@ export let services = [
     'DISPLAY',
     'GENERAL',
     'ORIENTATION',
-    'PROXIMITY'
+    'PROXIMITY',
+    'BODY'
 ];

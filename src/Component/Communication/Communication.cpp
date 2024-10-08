@@ -65,8 +65,8 @@ namespace Component
             }
         }
 
+        constexpr char buffer[50U] = {0U};
         Core::CoreStatus Communication::SendMessage(Frame &message) {
-            constexpr char buffer[50U] = {0U};
 
             const size_t size = Protocol::Encode(message, buffer);
 
@@ -79,7 +79,7 @@ namespace Component
 
         bool Communication::ReceivedStringFrame(void) {
             if (this->mUart.DataAvailable() > 0U) {
-                const uint8_t rc = this->mUart.Read();
+                const volatile uint8_t rc = this->mUart.Read();
                 if (REJECT_UNKNOWN_CHARACTER(rc)) {
                     if (rc == '<') {
                         this->mBeginIncomingFrame = true;
@@ -88,18 +88,16 @@ namespace Component
                         this->mBufferRx[this->mIndexBufferRx] = rc;
                         this->mIndexBufferRx++;
                     } else {
-                        if (this->mBeginIncomingFrame == true) {
+                        if (this->mBeginIncomingFrame == true && this->mIndexBufferRx > 0U) {
                             this->mBufferRx[this->mIndexBufferRx] = '\0';
                             return (true);
                         }
                         this->mIndexBufferRx = 0U;
                         this->mBeginIncomingFrame = false;
-                        return (false);
                     }
                 } else {
                     this->mIndexBufferRx = 0U;
                     this->mBeginIncomingFrame = false;
-                    return (false);
                 }
             }
             return (false);

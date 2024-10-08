@@ -158,7 +158,7 @@ namespace Component
             int8_t adjustMagValues[3U] = {0, 0, 0};
             this->mI2c.ReadRegisters(this->mAddressMag, ERegisterMag::ASAX,
                                      reinterpret_cast<uint8_t *>(&adjustMagValues), 3U);
-            this->mMagBias.x = -(((adjustMagValues[0U] - 128.0F) / 256.0F) + 1.0F) * 4912.0f / 32760.0f;
+            this->mMagBias.x = (((adjustMagValues[0U] - 128.0F) / 256.0F) + 1.0F) * 4912.0f / 32760.0f;
             this->mMagBias.y = (((adjustMagValues[1U] - 128.0F) / 256.0F) + 1.0F) * 4912.0f / 32760.0f;
             this->mMagBias.z = -(((adjustMagValues[2U] - 128.0F) / 256.0F) + 1.0F) * 4912.0f / 32760.0f;
         }

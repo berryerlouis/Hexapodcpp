@@ -9,16 +9,16 @@ using namespace Builder;
 Builder::App robot;
 
 int main(void) {
-	#ifndef GTEST
-	cli();
-	wdt_disable();
-	#endif
+#ifndef GTEST
+    cli();
+    wdt_disable();
+#endif
     //hexapod initialization
     if (robot.Initialize() == Core::CoreStatus::CORE_OK) {
         //enable ITs
 #ifndef GTEST
         sei();
-        wdt_enable(WDTO_15MS);
+        wdt_enable(WDTO_2S);
 #endif
         while (true) {
 #ifndef GTEST

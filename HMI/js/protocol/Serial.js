@@ -57,9 +57,9 @@ export class SerialInterface {
 
     async write(message) {
         if (this.writer) {
-            let date = new Date();
-            date = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().replace('T', ' ').replace('Z', ' ');
-            console.log(date + " => " + message.raw)
+            //let date = new Date();
+            //date = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().replace('T', ' ').replace('Z', ' ');
+            //console.log(date + " => " + message.raw)
             await this.writer.write(message.raw);
             this.notifyWrite(message);
             return true;
@@ -104,12 +104,12 @@ export class SerialInterface {
             const raw = this.buffer.substring(startIndex, endIndex);
 
             if (raw.length > 0) {
-                try {
-                    let frame = Protocol.decode("Rx", raw);
-                    this.notifyRead(frame);
-                } catch (msg) {
-                    console.error(`Decoding error: "${raw}"\n"${msg}"`);
-                }
+                //try {
+                let frame = Protocol.decode("Rx", raw);
+                this.notifyRead(frame);
+                //} catch (msg) {
+                //console.error(`Decoding error: "${raw}"\n"${msg}"`);
+                //}
                 this.buffer = this.buffer.substring(endIndex);
             }
         }
@@ -127,9 +127,9 @@ export class SerialInterface {
                     }
 
                     if (value) {
-                        let date = new Date();
-                        date = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().replace('T', ' ').replace('Z', ' ');
-                        console.log(date + " => " + value)
+                        //let date = new Date();
+                        //date = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().replace('T', ' ').replace('Z', ' ');
+                        //console.log(date + " => " + value)
                         this.catchIncomingMessage(value.replace('\n', ''));
                     }
                 }

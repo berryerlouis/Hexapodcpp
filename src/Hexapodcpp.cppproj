@@ -165,6 +165,12 @@
     <ExternalMakeFilePath>C:\Users\Louis\Desktop\HexapodCpp\GccApplication1\CMakeLists.txt</ExternalMakeFilePath>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Bot\Walk\Walk.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Bot\Walk\Walk.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Component\Barometer\Barometer.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -510,6 +516,12 @@
     <Compile Include="Service\Battery\ServiceBattery.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Service\Body\ServiceBody.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Body\ServiceBody.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Service\Communication\ServiceCommunication.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -588,6 +600,7 @@
     <Folder Include="Bot\Body\" />
     <Folder Include="Bot\Leg\" />
     <Folder Include="Bot\Legs\" />
+    <Folder Include="Bot\Walk" />
     <Folder Include="Builder\" />
     <Folder Include="Cluster\" />
     <Folder Include="Cluster\Battery\" />
@@ -633,6 +646,7 @@
     <Folder Include="Service\Display\" />
     <Folder Include="Service\Event\" />
     <Folder Include="Service\General\" />
+    <Folder Include="Service\Body" />
     <Folder Include="Service\Orientation\" />
     <Folder Include="Service\Proximity\" />
     <Folder Include="Service\Services\" />

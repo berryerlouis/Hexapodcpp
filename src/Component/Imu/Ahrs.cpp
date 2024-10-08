@@ -23,7 +23,7 @@ namespace Component
                 this->mQuaternion[0] * this->mQuaternion[0] - this->mQuaternion[1] * this->mQuaternion[1] - this->
                 mQuaternion[2] * this->mQuaternion[2] + this->mQuaternion[3] * this->mQuaternion[3]);
 
-            ypr.yaw *= 180.0F / M_PI - 2.76F;
+            ypr.yaw *= 180.0F / M_PI + 2.06F;
             //2° 47' E  ± 0° 22 Declination Chirens declination_offset = degrees   minutes / 60
             ypr.pitch *= 180.0F / M_PI;
             ypr.roll *= 180.0F / M_PI;

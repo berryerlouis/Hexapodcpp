@@ -95,13 +95,13 @@ namespace Service
         virtual void DispatchEvent(const SEvent &event) = 0;
 
     protected:
-        uint64_t mUpdateTime;
-        uint16_t mDeltaTime;
+        volatile uint64_t mUpdateTime;
+        volatile uint16_t mDeltaTime;
 
     private:
-        uint64_t mPreviousTime;
-        uint16_t mMinDeltaTime;
-        uint16_t mMaxDeltaTime;
+        volatile uint64_t mPreviousTime;
+        volatile uint16_t mMinDeltaTime;
+        volatile uint16_t mMaxDeltaTime;
         Event::EventListenerInterface &mEventListener;
     };
 }

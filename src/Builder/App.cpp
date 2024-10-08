@@ -56,10 +56,11 @@ namespace Builder
           , mServiceProximity(mSensorProximity, mEventListener)
           , mServiceOrientation(mMpu9150, mBarometer, mEventListener)
           , mServiceBattery(mBattery, mEventListener)
+          , mServiceBody(mBody, mEventListener)
           , mServiceDisplay(mSsd1306, mEventListener)
           , mServiceGeneral(mSoftware, mEventListener)
           , mServices(mTick, mServiceGeneral, mServiceControl, mServiceCommunication, mServiceProximity,
-                      mServiceOrientation, mServiceBattery, mServiceDisplay, mEventListener) {
+                      mServiceOrientation, mServiceBattery, mServiceDisplay, mServiceBody, mEventListener) {
         INIT_LOGGER(mUart);
     }
 
@@ -80,6 +81,6 @@ namespace Builder
 
     void App::Update(const uint64_t currentTime) {
         mLedBoot.Toggle();
-        mServices.Update(currentTime);
+        mServices.Update(mTick.GetMs());
     }
 }

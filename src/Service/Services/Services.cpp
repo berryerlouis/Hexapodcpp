@@ -17,6 +17,7 @@ namespace Service
             ServiceOrientation &serviceOrientation,
             ServiceBattery &serviceBattery,
             ServiceDisplay &serviceDisplay,
+            ServiceBody &serviceBody,
             Event::EventListenerInterface &eventListener)
             : mTick(tick)
               , mServices{
@@ -26,7 +27,8 @@ namespace Service
                   {COMMUNICATION, &serviceCommunication},
                   {ORIENTATION, &serviceOrientation},
                   {BATTERY, &serviceBattery},
-                  {DISPLAY, &serviceDisplay}
+                  {DISPLAY, &serviceDisplay},
+                  {BODY, &serviceBody}
               }
               , mEventListener(eventListener) {
         }
@@ -48,12 +50,10 @@ namespace Service
         }
 
         void Services::Update(const uint64_t currentTime) {
-            (void) currentTime;
             for (const ServiceItem item: this->mServices) {
-                const uint64_t currentMillis = this->mTick.GetMs();
-                if (item.service->NeedUpdate(currentMillis) == Core::CoreStatus::CORE_OK) {
-                    item.service->Update(currentMillis);
-                    item.service->SetNewUpdateTime(currentMillis, item.serviceId);
+                if (item.service->NeedUpdate(currentTime) == Core::CoreStatus::CORE_OK) {
+                    item.service->Update(currentTime);
+                    item.service->SetNewUpdateTime(currentTime, item.serviceId);
                 }
             }
             this->DispatchEvent();

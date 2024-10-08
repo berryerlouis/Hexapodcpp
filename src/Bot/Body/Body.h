@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BodyInterface.h"
+#include "../Walk/Walk.h"
 
 namespace Bot
 {
@@ -26,13 +27,20 @@ namespace Bot
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual uint32_t SetPositionRotation(const Position3d &position,
-                                                 const Rotation3d &rotation,
-                                                 const uint16_t travelTime) final override;
+            virtual void UpdateWalkStatus(const EWalkStatus status) final override;
+
+            virtual uint32_t SetBodyPositionRotation(const Position3d &position,
+                                                     const Rotation3d &rotation,
+                                                     const uint16_t travelTime) final override;
+
+            virtual uint32_t SetLegPositionRotation(const uint8_t &legId,
+                                                    const Position3d &position,
+                                                    const uint16_t travelTime) final override;
 
         private:
             SBodyIk mBodyIk;
             Legs::Legs &mLegs;
+            Walk::Walk mWalk;
 
             uint32_t SetBodyIk(const Position3d &position, const Rotation3d &rotation,
                                const uint16_t travelTime);

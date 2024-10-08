@@ -26,6 +26,7 @@
 #include "../Component/Communication/Communication.h"
 #include "../Service/Event/EventListener.h"
 #include "../Service/Battery/ServiceBattery.h"
+#include "../Service/Body/ServiceBody.h"
 #include "../Service/Control/ServiceControl.h"
 #include "../Service/Communication/ServiceCommunication.h"
 #include "../Service/Display/ServiceDisplay.h"
@@ -90,6 +91,7 @@ namespace Builder
         Service::Proximity::ServiceProximity mServiceProximity;
         Service::Orientation::ServiceOrientation mServiceOrientation;
         Service::Battery::ServiceBattery mServiceBattery;
+        Service::Body::ServiceBody mServiceBody;
         Service::Display::ServiceDisplay mServiceDisplay;
         Service::General::ServiceGeneral mServiceGeneral;
         Service::Services::Services mServices;

@@ -30,7 +30,6 @@ const walk = new Walk(messageManager);
 
 $('#connect-button').click(async () => {
     await serialInterface.init(navigator);
-    walk.init();
     messageManager.write(new Message().build("Tx", ClusterName.GENERAL, CommandGeneral.VERSION));
     messageManager.write(new Message().build("Tx", ClusterName.BATTERY, CommandBattery.STATUS));
     messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.PRESSURE));
@@ -40,20 +39,23 @@ $('#connect-button').click(async () => {
     messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_ALL));
     walk.init();
     let toto = 0;
-    setInterval(() => {
-        messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_ALL));
-    }, 500);
 
-    setInterval(() => {
-        messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.ALL));
-        messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.YAWPITCHROLL));
-    }, 1000);
+    setTimeout(() => {
+        setInterval(() => {
+            messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_ALL));
+        }, 100);
 
-    setInterval(() => {
-        messageManager.write(new Message().build("Tx", ClusterName.BATTERY, CommandBattery.STATUS));
-        messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.PRESSURE));
-        messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.ALTITUDE));
-        messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.TMPBAR));
+        /*setInterval(() => {
+            messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.ALL));
+            messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.YAWPITCHROLL));
+        }, 1000);
+
+        setInterval(() => {
+            messageManager.write(new Message().build("Tx", ClusterName.BATTERY, CommandBattery.STATUS));
+            messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.PRESSURE));
+            messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.ALTITUDE));
+            messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.TMPBAR));
+        }, 10000);*/
     }, 10000);
 });
 

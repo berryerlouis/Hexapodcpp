@@ -29,8 +29,8 @@ export default class ClusterCommand {
         //ClusterName.GENERAL
         clusterFolder = this.guiControls.addFolder(this.commandsFolder, ClusterName.GENERAL);
         this.addClusterSimpleCommand(clusterFolder, ClusterName.GENERAL, CommandGeneral.VERSION);
-        this.addClusterManyCommands(clusterFolder, ClusterName.GENERAL, CommandGeneral.MIN_EXECUTION_TIME, ['BATTERY', 'CONTROL', 'COMMUNICATION', 'DISPLAY', 'GENERAL', 'ORIENTATION', 'PROXIMITY']);
-        this.addClusterManyCommands(clusterFolder, ClusterName.GENERAL, CommandGeneral.MAX_EXECUTION_TIME, ['BATTERY', 'CONTROL', 'COMMUNICATION', 'DISPLAY', 'GENERAL', 'ORIENTATION', 'PROXIMITY']);
+        this.addClusterManyCommands(clusterFolder, ClusterName.GENERAL, CommandGeneral.MIN_EXECUTION_TIME, ['BATTERY', 'CONTROL', 'COMMUNICATION', 'DISPLAY', 'GENERAL', 'ORIENTATION', 'PROXIMITY', 'BODY']);
+        this.addClusterManyCommands(clusterFolder, ClusterName.GENERAL, CommandGeneral.MAX_EXECUTION_TIME, ['BATTERY', 'CONTROL', 'COMMUNICATION', 'DISPLAY', 'GENERAL', 'ORIENTATION', 'PROXIMITY', 'BODY']);
 
         //ClusterName.IMU
         clusterFolder = this.guiControls.addFolder(this.commandsFolder, ClusterName.IMU);
@@ -117,15 +117,44 @@ export default class ClusterCommand {
             1000,
             10000,
             100);
+        command = clustersDatabase[ClusterName.BODY]["LEG"];
+        let LegFolder = this.guiControls.addFolder(clusterFolder, "LEG");
+        for (let i = 0; i < 6; i++) {
+            commandName = i;
 
+            let commandFolder = this.guiControls.addFolder(LegFolder, commandName);
+            commandFolder.add(command[i], 'x').min(-30).max(30).step(1).onFinishChange(function (value) {
+                sendCommandLeg(getIndexLeg(this.domElement))
+            });
+            commandFolder.add(command[i], 'y').min(-30).max(30).step(1).onFinishChange(function (value) {
+                sendCommandLeg(getIndexLeg(this.domElement))
+            });
+            commandFolder.add(command[i], 'z').min(-30).max(30).step(1).onFinishChange(function (value) {
+                sendCommandLeg(getIndexLeg(this.domElement))
+            });
+        }
+
+        function getIndexLeg(domElement) {
+            return parseInt(domElement.parentElement.parentElement.parentElement.textContent.replace('xyz', '')).toString(16);
+        }
 
         function getIndexServo(domElement) {
             return parseInt(domElement.parentElement.parentElement.parentElement.textContent.replace('angleminmaxoffsetreversestate', '')).toString(16);
         }
 
+        function sendCommandLeg(indexLeg) {
+            let command = clustersDatabase['BODY']['LEG'];
+            sendCommand(ClusterName.BODY, CommandBody.SET_LEG_X_Y_Z, 9, [
+                ...hexStringToArray((indexLeg & 0xFF).toString(16).padStart(2, '0'))
+                , ...hexStringToArray((command[indexLeg].x & 0xFFFF).toString(16).padStart(4, '0'))
+                , ...hexStringToArray((command[indexLeg].y & 0xFFFF).toString(16).padStart(4, '0'))
+                , ...hexStringToArray((command[indexLeg].z & 0xFFFF).toString(16).padStart(4, '0'))
+                , ...hexStringToArray((command['DELAY'] & 0xFFFF).toString(16).padStart(4, '0'))]);
+        }
+
         function sendCommandBody() {
             let command = clustersDatabase['BODY'];
-            sendCommand(ClusterName.BODY, CommandBody.SET_X_Y_Z, 14, [
+            sendCommand(ClusterName.BODY, CommandBody.SET_BODY_X_Y_Z, 14, [
                 ...hexStringToArray((command['POSITION'].x & 0xFFFF).toString(16).padStart(4, '0'))
                 , ...hexStringToArray((command['POSITION'].y & 0xFFFF).toString(16).padStart(4, '0'))
                 , ...hexStringToArray((command['POSITION'].z & 0xFFFF).toString(16).padStart(4, '0'))
