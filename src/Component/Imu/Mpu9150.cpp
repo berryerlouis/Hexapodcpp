@@ -13,7 +13,7 @@ namespace Component
               , mAddressMag(AK8963_I2C_ADDRESS)
               , mAccOffset{0, 0, 0}
               , mGyrOffset{0, -0, -0}
-              , mMagOffset{91,144,139.5}
+              , mMagOffset{40.0F, 177.5F, -101.5F}
               , mMagBias{0, 0, 0}
               , mStartMagCalib(false)
               , mMagCalibMin{100000, 100000, 100000}
@@ -102,15 +102,6 @@ namespace Component
                 const uint64_t now = this->mTick.GetUs();
                 const float deltaTime = ((now - this->mLastLoopTime) / 1000000.0F);
                 this->mLastLoopTime = now;
-                //this->mYawPitchRoll.yaw = -1 * (atan2(this->mMag.y, this->mMag.x) * 180) / M_PI;
-                // Apply magnetic declination to convert magnetic heading
-                // to geographic heading
-                //this->mYawPitchRoll.yaw = - 2.76F;
-
-                // Convert heading to 0..360 degrees
-                /*if (this->mYawPitchRoll.yaw < 0) {
-                    this->mYawPitchRoll.yaw = 360;
-                }*/
                 this->mAhrs.MadgwickQuaternionUpdate(this->mAcc, this->mGyr, this->mMag, deltaTime);
                 this->mAhrs.GetYawPitchRoll(this->mYawPitchRoll);
 
@@ -182,9 +173,15 @@ namespace Component
                 if ((abs(this->mMagRaw.x) + abs(this->mMagRaw.y) + abs(this->mMagRaw.z)) >= 4912.0) {
                     return (this->mMagRaw);
                 }
-                this->mMag.x = /*this->mMagBias.x * */(this->mMagRaw.x - this->mMagOffset.x);
-                this->mMag.y = /*this->mMagBias.y * */(this->mMagRaw.y - this->mMagOffset.y);
-                this->mMag.z = /*this->mMagBias.z * */(this->mMagRaw.z - this->mMagOffset.z);
+				if (this->mStartMagCalib == false) {
+					this->mMag.y = this->mMagBias.x * (this->mMagRaw.x - this->mMagOffset.x);
+					this->mMag.x = this->mMagBias.y * (this->mMagRaw.y - this->mMagOffset.y);
+					this->mMag.z = this->mMagBias.z * (this->mMagRaw.z - this->mMagOffset.z);
+				} else {
+					this->mMag.y = this->mMagRaw.x;
+					this->mMag.x = this->mMagRaw.y;
+					this->mMag.z = this->mMagRaw.z;
+				}
 
                 this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x01);
             }
