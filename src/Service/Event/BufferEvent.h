@@ -8,7 +8,7 @@ namespace Service
 {
     namespace Event
     {
-        constexpr size_t BUFFER_MAX_SIZE = 10U;
+        constexpr size_t BUFFER_MAX_SIZE = 30U;
 
         class BufferEvent {
         public:

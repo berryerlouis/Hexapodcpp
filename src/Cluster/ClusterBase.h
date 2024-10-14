@@ -37,13 +37,14 @@ namespace Cluster
 
         Core::CoreStatus Execute(const Frame &request, Frame &response) {
             Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-            for (size_t i = 0; i < this->mClusterCommandSize; i++) {
-                if (this->mClusterCommands[i].commandId == request.commandId
-                    && this->mClusterCommands[i].expectedSize == request.nbParams) {
-                    success = this->ExecuteFrame(request, response);
-					break;
-                }
-            }
+			const uint8_t cmdId = request.commandId;
+			if(cmdId < this->mClusterCommandSize)
+			{
+				if(this->mClusterCommands[cmdId].expectedSize == request.nbParams)
+				{
+					success = this->ExecuteFrame(request, response);
+				}
+			}
             return success;
         }
 

@@ -26,11 +26,11 @@ namespace Driver
             return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() - start;
         }
 
-        void Tick::DelayMs(uint64_t delayMs) {
+        void Tick::DelayMs(const uint64_t delayMs) {
             (void) delayMs;
         }
 
-        void Tick::DelayUs(uint64_t delayUs) {
+        void Tick::DelayUs(const uint64_t delayUs) {
             (void) delayUs;
         }
     }

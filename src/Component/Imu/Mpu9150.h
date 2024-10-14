@@ -158,7 +158,9 @@ namespace Component
                 return this->mMagCalibMax;
             }
 
-        private:
+        private:		
+			void UpdateAll(void);
+			
             Vector3 UpdateAcc(void);
 
             Vector3 UpdateGyr(void);
@@ -243,6 +245,7 @@ namespace Component
             uint64_t mLastLoopTime;
             Ahrs mAhrs;
             Position3D mYawPitchRoll;
+			bool mDoComputation;
         };
     }
 }

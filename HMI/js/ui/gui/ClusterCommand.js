@@ -133,6 +133,14 @@ export default class ClusterCommand {
                 sendCommandLeg(getIndexLeg(this.domElement))
             });
         }
+        this.addClusterManyCommands(clusterFolder, ClusterName.BODY, "LEG", ['DELAY'],
+            undefined,
+            function () {
+                sendCommandBody();
+            },
+            1000,
+            10000,
+            100);
 
         function getIndexLeg(domElement) {
             return parseInt(domElement.parentElement.parentElement.parentElement.textContent.replace('xyz', '')).toString(16);

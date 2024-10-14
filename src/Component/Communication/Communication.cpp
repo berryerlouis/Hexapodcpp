@@ -5,18 +5,13 @@ namespace Component
 {
     namespace Communication
     {
-#define REJECT_UNKNOWN_CHARACTER(value) \
-        ((value == 60U || value == 62U) ||  \
-        (value >= 48U && value <= 57U) ||  \
-        (value >= 65U && value <= 70U) ||  \
-        (value >= 97U && value <= 102U))
-
         Communication::Communication(Uart::UartInterface &uart, Clusters::ClustersInterface &clusters,
                                      Led::LedInterface &ledStatus)
             : mUart(uart)
               , mClusters(clusters)
               , mLedStatus(ledStatus)
               , mBufferRx{0U}
+              , mBufferTx{0U}
               , mIndexBufferRx(0U)
               , mBeginIncomingFrame(false) {
         }
@@ -31,71 +26,74 @@ namespace Component
                 this->mLedStatus.On();
                 Frame request;
                 Frame response;
-                const Core::CoreStatus parsedStatus = Protocol::Decode(this->mBufferRx, request);
+                const Core::CoreStatus parsedStatus = Protocol::Decode(const_cast<const char *>(this->mBufferRx),
+                                                                       request);
                 if (parsedStatus == Core::CoreStatus::CORE_OK) {
-                    uint8_t frameClusterID = request.clusterId;
-                    const auto cluster = this->mClusters.GetCluster(static_cast<EClusters>(frameClusterID));
-
-                    if (cluster != nullptr) {
-                        if (cluster->Execute(request, response) == Core::CoreStatus::CORE_OK) {
-                            this->SendMessage(response);
-                        } else {
-                            response.clusterId = request.clusterId;
-                            response.commandId = static_cast<uint8_t>(GENERIC);
-                            response.nbParams = 1U;
-                            response.params[0] = false;
-                            this->SendMessage(response);
+                    bool success = false;
+                    const uint8_t frameClusterID = request.clusterId;
+                    if (frameClusterID < NB_CLUSTERS) {
+                        const auto cluster = this->mClusters.GetCluster(static_cast<EClusters>(frameClusterID));
+                        if (cluster != nullptr) {
+                            if (cluster->Execute(request, response) == Core::CoreStatus::CORE_OK) {
+                                success = true;
+                            }
                         }
-                        response.Reset();
-                    } else {
-                        response.clusterId = request.clusterId;
+                    }
+                    if (success == false) {
+                        response.clusterId = frameClusterID;
                         response.commandId = static_cast<uint8_t>(GENERIC);
                         response.nbParams = 1U;
                         response.params[0] = false;
-                        this->SendMessage(response);
                     }
                 } else {
                     response.clusterId = 0xFFU;
                     response.commandId = static_cast<uint8_t>(GENERIC);
                     response.nbParams = 1U;
                     response.params[0] = parsedStatus;
-                    this->SendMessage(response);
                 }
+                this->SendMessage(response);
                 this->mLedStatus.Off();
             }
         }
 
-        constexpr char buffer[50U] = {0U};
         Core::CoreStatus Communication::SendMessage(Frame &message) {
-
-            const size_t size = Protocol::Encode(message, buffer);
-
+            const size_t size = Protocol::Encode(message, const_cast<char *>(this->mBufferTx));
             if (size != 0) {
-                this->mUart.Send(buffer, size);
+                this->mUart.Send(const_cast<const char *>(this->mBufferTx), size);
                 return (Core::CoreStatus::CORE_OK);
             }
             return (Core::CoreStatus::CORE_ERROR);
         }
 
         bool Communication::ReceivedStringFrame(void) {
-            if (this->mUart.DataAvailable() > 0U) {
+            uint8_t nbData = this->mUart.DataAvailable();
+            while (nbData > 0U) {
+                nbData--;
                 const volatile uint8_t rc = this->mUart.Read();
-                if (REJECT_UNKNOWN_CHARACTER(rc)) {
-                    if (rc == '<') {
-                        this->mBeginIncomingFrame = true;
-                        this->mIndexBufferRx = 0U;
-                    } else if (rc != '>') {
-                        this->mBufferRx[this->mIndexBufferRx] = rc;
-                        this->mIndexBufferRx++;
-                    } else {
-                        if (this->mBeginIncomingFrame == true && this->mIndexBufferRx > 0U) {
-                            this->mBufferRx[this->mIndexBufferRx] = '\0';
-                            return (true);
+                if (rc == '<') {
+                    this->mBeginIncomingFrame = true;
+                    this->mIndexBufferRx = 0U;
+                } else if (rc != '>') {
+                    if ((rc >= 48U && rc <= 57U) || (rc >= 65U && rc <= 70U)) {
+                        if (this->mIndexBufferRx < sizeof(this->mBufferRx) - 1) {
+                            this->mBufferRx[this->mIndexBufferRx++] = rc;
+                        } else {
+                            this->mIndexBufferRx = 0U;
+                            this->mBeginIncomingFrame = false;
                         }
+                    } else {
                         this->mIndexBufferRx = 0U;
                         this->mBeginIncomingFrame = false;
                     }
                 } else {
+                    if (this->mBeginIncomingFrame == true &&
+                        this->mIndexBufferRx >= 6U &&
+                        (this->mIndexBufferRx & 0x01U) == 0U) {
+                        this->mBufferRx[this->mIndexBufferRx] = '\0';
+                        this->mIndexBufferRx = 0U;
+                        this->mBeginIncomingFrame = false;
+                        return (true);
+                    }
                     this->mIndexBufferRx = 0U;
                     this->mBeginIncomingFrame = false;
                 }

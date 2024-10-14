@@ -178,7 +178,7 @@ export class ClusterImu {
         });
         this.messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.IMU, CommandImu.PRESSURE, (message) => {
             if (message.size > 0) {
-                let val = message.fetchInt32U() + ' pa';
+                let val = (message.fetchInt32U() / 10).toFixed(1) + ' pa';
                 this.databaseManager.updateDb({
                     cluster: 'IMU',
                     command: 'PRESSURE',

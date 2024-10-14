@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "Uart.h"
 #include <stdio.h>
 #include <iostream>
@@ -6,8 +8,8 @@ namespace Driver
 {
     namespace Uart
     {
-        //Misc::Buffer::Buffer<uint8_t> Uart::bufferRx;
-        //Misc::Buffer::Buffer<uint8_t> Uart::bufferTx;
+        uint8_t nbData = 0U;
+        const char *data = "<030000>";
 
         Uart::Uart(const EBaudRate &baud) : mBaudRate(baud) {
         }
@@ -22,21 +24,23 @@ namespace Driver
         }
 
         void Uart::Send(const char *data, const size_t len) {
-            std::cout.write(data, len);
-            std::cout << std::endl;
+            std::cout.write(data, len) << std::endl;
         }
 
         void Uart::Send(const uint8_t data) {
             std::cout << data << std::endl;
-            (void) data;
         }
 
         uint8_t Uart::Read(void) {
-            return 0U;
+            nbData++;
+            if (nbData == strlen(data)) {
+                nbData = 0;
+            }
+            return data[nbData];
         }
 
         uint8_t Uart::DataAvailable(void) const {
-            return 0U;
+            return strlen(data);
         }
     }
 }

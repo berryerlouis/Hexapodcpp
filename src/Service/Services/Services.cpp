@@ -50,13 +50,16 @@ namespace Service
         }
 
         void Services::Update(const uint64_t currentTime) {
-            for (const ServiceItem item: this->mServices) {
-                if (item.service->NeedUpdate(currentTime) == Core::CoreStatus::CORE_OK) {
-                    item.service->Update(currentTime);
-                    item.service->SetNewUpdateTime(currentTime, item.serviceId);
-                }
+            static size_t itemIndex = 0U;
+            const ServiceItem &item = this->mServices[itemIndex];
+            if (item.service->NeedUpdate(currentTime) == Core::CoreStatus::CORE_OK) {
+                item.service->Update(currentTime);
+                item.service->SetNewUpdateTime(this->mTick.GetMs(), item.serviceId);
+                this->DispatchEvent();
             }
-            this->DispatchEvent();
+            if (++itemIndex == NB_SERVICES - 1U) {
+                itemIndex = 0U;
+            }
         }
 
         Service *Services::Get(const EServices serviceId) {

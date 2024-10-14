@@ -104,12 +104,12 @@ export class SerialInterface {
             const raw = this.buffer.substring(startIndex, endIndex);
 
             if (raw.length > 0) {
-                //try {
-                let frame = Protocol.decode("Rx", raw);
-                this.notifyRead(frame);
-                //} catch (msg) {
-                //console.error(`Decoding error: "${raw}"\n"${msg}"`);
-                //}
+                try {
+                    let frame = Protocol.decode("Rx", raw);
+                    this.notifyRead(frame);
+                } catch (msg) {
+                    console.error(`Decoding error: "${raw}"\n"${msg}"`);
+                }
                 this.buffer = this.buffer.substring(endIndex);
             }
         }

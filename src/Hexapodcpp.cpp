@@ -18,7 +18,7 @@ int main(void) {
         //enable ITs
 #ifndef GTEST
         sei();
-        wdt_enable(WDTO_2S);
+        wdt_enable(WDTO_15MS);
 #endif
         while (true) {
 #ifndef GTEST

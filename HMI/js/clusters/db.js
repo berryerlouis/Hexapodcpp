@@ -80,6 +80,7 @@ export let clustersDatabase = {
             3: {x: 0, y: 0, z: 0},
             4: {x: 0, y: 0, z: 0},
             5: {x: 0, y: 0, z: 0},
+            DELAY: 1000,
         }
     }
 };

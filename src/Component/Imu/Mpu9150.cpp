@@ -1,4 +1,7 @@
 #include "Mpu9150.h"
+#ifndef GTEST
+#include <avr/interrupt.h>
+#endif
 
 namespace Component
 {
@@ -27,7 +30,8 @@ namespace Component
               , mTmp(0U)
               , mLastLoopTime(0U)
               , mAhrs()
-              , mYawPitchRoll{0, 0, 0} {
+              , mYawPitchRoll{0, 0, 0}
+              , mDoComputation(false) {
         }
 
         Core::CoreStatus Mpu9150::Initialize(void) {
@@ -79,7 +83,6 @@ namespace Component
                 this->mI2c.ReadRegister(this->mAddressMag, ERegisterMag::WHO_AM_I, whoAmI);
                 if (whoAmI == 0x48U) {
                     this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x0F);
-                    this->mTick.DelayMs(1000);
                     this->AdjustingMag();
                     this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x01);
                     success = Core::CoreStatus::CORE_OK;
@@ -90,21 +93,21 @@ namespace Component
 
         void Mpu9150::Update(const uint64_t currentTime) {
             (void) currentTime;
+            static float deltaTime;
             if (this->mStartMagCalib == false) {
-                if (this->IsDataReady() == true) {
-                    this->UpdateTemp();
-                    this->UpdateAcc();
-                    this->UpdateGyr();
+                if (this->IsDataReady() == true && this->mDoComputation == false) {
+                    this->UpdateAll();
+                    this->UpdateMag();
+
+                    const uint64_t now = this->mTick.GetUs();
+                    deltaTime = ((now - this->mLastLoopTime) / 1000000.0F);
+                    this->mLastLoopTime = now;
+                    this->mDoComputation = true;
+                } else {
+                    this->mAhrs.MadgwickQuaternionUpdate(this->mAcc, this->mGyr, this->mMag, deltaTime);
+                    this->mAhrs.GetYawPitchRoll(this->mYawPitchRoll);
+                    this->mDoComputation = false;
                 }
-				
-                this->UpdateMag();
-
-                const uint64_t now = this->mTick.GetUs();
-                const float deltaTime = ((now - this->mLastLoopTime) / 1000000.0F);
-                this->mLastLoopTime = now;
-                this->mAhrs.MadgwickQuaternionUpdate(this->mAcc, this->mGyr, this->mMag, deltaTime);
-                this->mAhrs.GetYawPitchRoll(this->mYawPitchRoll);
-
             } else {
                 this->UpdateMag();
                 if (this->mMag.x < this->mMagCalibMin.x) {
@@ -125,10 +128,32 @@ namespace Component
             }
         }
 
+        void Mpu9150::UpdateAll(void) {
+            uint8_t allSensors[14U] = {0};
+            if (this->mI2c.ReadRegisters(this->mAddress, ERegister::ACCEL_XOUT_H,
+                                         reinterpret_cast<uint8_t *>(&allSensors), 14U)) {
+                this->mAccRaw.x = ((allSensors[0U] << 8U) | ((allSensors[1U]) & 0xFF)) - mAccOffset.x;
+                this->mAccRaw.y = ((allSensors[2U] << 8U) | ((allSensors[3U]) & 0xFF)) - mAccOffset.y;
+                this->mAccRaw.z = ((allSensors[4U] << 8U) | ((allSensors[5U]) & 0xFF)) - mAccOffset.z;
+                this->mAcc.x = (-this->mAccRaw.x * 2.0F) / 32768.0F;
+                this->mAcc.y = (this->mAccRaw.y * 2.0F) / 32768.0F;
+                this->mAcc.z = (-this->mAccRaw.z * 2.0F) / 32768.0F;
+
+                this->mTmp = static_cast<int16_t>((allSensors[6U] << 8U) | ((allSensors[7U] >> 8) & 0xFF));
+                this->mTmp = (this->mTmp / 340.0F) + 35U;
+
+                this->mGyrRaw.x = ((allSensors[8U] << 8U) | ((allSensors[9U]) & 0xFF)) - mGyrOffset.x;
+                this->mGyrRaw.y = -((allSensors[10U] << 8U) | ((allSensors[11U]) & 0xFF)) - mGyrOffset.y;
+                this->mGyrRaw.z = ((allSensors[12U] << 8U) | ((allSensors[13U]) & 0xFF)) - mGyrOffset.z;
+                this->mGyr.x = -(this->mGyrRaw.x * 250.0F) / 32768.0F;
+                this->mGyr.y = (this->mGyrRaw.y * 250.0F) / 32768.0F;
+                this->mGyr.z = -(this->mGyrRaw.z * 250.0F) / 32768.0F;
+            }
+        }
+
         Vector3 Mpu9150::UpdateAcc(void) {
             if (this->mI2c.ReadRegisters(this->mAddress, ERegister::ACCEL_XOUT_H,
-                                         reinterpret_cast<uint8_t *>(&this->mAccRaw),
-                                         6U)) {
+                                         reinterpret_cast<uint8_t *>(&this->mAccRaw), 6U)) {
                 this->mAccRaw.x = ((this->mAccRaw.x << 8U) | ((this->mAccRaw.x >> 8) & 0xFF)) - mAccOffset.x;
                 this->mAccRaw.y = ((this->mAccRaw.y << 8U) | ((this->mAccRaw.y >> 8) & 0xFF)) - mAccOffset.y;
                 this->mAccRaw.z = ((this->mAccRaw.z << 8U) | ((this->mAccRaw.z >> 8) & 0xFF)) - mAccOffset.z;
@@ -141,8 +166,7 @@ namespace Component
 
         Vector3 Mpu9150::UpdateGyr(void) {
             if (this->mI2c.ReadRegisters(this->mAddress, ERegister::GYRO_XOUT_H,
-                                         reinterpret_cast<uint8_t *>(&this->mGyrRaw),
-                                         6U)) {
+                                         reinterpret_cast<uint8_t *>(&this->mGyrRaw), 6U)) {
                 this->mGyrRaw.x = ((this->mGyrRaw.x << 8U) | ((this->mGyrRaw.x >> 8) & 0xFF)) - mGyrOffset.x;
                 this->mGyrRaw.y = -((this->mGyrRaw.y << 8U) | ((this->mGyrRaw.y >> 8) & 0xFF)) - mGyrOffset.y;
                 this->mGyrRaw.z = ((this->mGyrRaw.z << 8U) | ((this->mGyrRaw.z >> 8) & 0xFF)) - mGyrOffset.z;
@@ -173,15 +197,15 @@ namespace Component
                 if ((abs(this->mMagRaw.x) + abs(this->mMagRaw.y) + abs(this->mMagRaw.z)) >= 4912.0) {
                     return (this->mMagRaw);
                 }
-				if (this->mStartMagCalib == false) {
-					this->mMag.y = this->mMagBias.x * (this->mMagRaw.x - this->mMagOffset.x);
-					this->mMag.x = this->mMagBias.y * (this->mMagRaw.y - this->mMagOffset.y);
-					this->mMag.z = this->mMagBias.z * (this->mMagRaw.z - this->mMagOffset.z);
-				} else {
-					this->mMag.y = this->mMagRaw.x;
-					this->mMag.x = this->mMagRaw.y;
-					this->mMag.z = this->mMagRaw.z;
-				}
+                if (this->mStartMagCalib == false) {
+                    this->mMag.y = this->mMagBias.x * (this->mMagRaw.x - this->mMagOffset.x);
+                    this->mMag.x = this->mMagBias.y * (this->mMagRaw.y - this->mMagOffset.y);
+                    this->mMag.z = this->mMagBias.z * (this->mMagRaw.z - this->mMagOffset.z);
+                } else {
+                    this->mMag.y = this->mMagRaw.x;
+                    this->mMag.x = this->mMagRaw.y;
+                    this->mMag.z = this->mMagRaw.z;
+                }
 
                 this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x01);
             }

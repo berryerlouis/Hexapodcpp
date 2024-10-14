@@ -12,7 +12,7 @@ namespace Service
         }
 
         Core::CoreStatus ServiceProximity::Initialize(void) {
-            Core::CoreStatus success = this->mProximity.Initialize();
+            /*Core::CoreStatus success = */this->mProximity.Initialize();
             this->mProximity.Attach(this);
             return (Core::CoreStatus::CORE_OK);
         }

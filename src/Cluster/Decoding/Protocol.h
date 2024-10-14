@@ -14,7 +14,7 @@ namespace Cluster
 
             static Core::CoreStatus Decode(const char *frameBuffer, Frame &frame);
 
-            static uint8_t Encode(const Frame &response, const char *buffer);
+            static uint8_t Encode(const Frame &response, char *buffer);
 
         private:
             static uint8_t ConvertHexCharToInt(const uint8_t byte);

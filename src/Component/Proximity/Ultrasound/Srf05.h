@@ -28,7 +28,7 @@ namespace Component
 
                 void Update(const uint64_t currentTime) final override;
 
-                void SendPulse(void);
+                void SendPulse(void) const;
 
                 virtual uint16_t GetDistance(void) final override;
 

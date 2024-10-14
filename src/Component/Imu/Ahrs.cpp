@@ -93,15 +93,12 @@ namespace Component
             _2q1mz = 2.0F * q1 * mag.z;
             _2q2mx = 2.0F * q2 * mag.x;
             hx = mag.x * q1q1 - _2q1my * q4 + _2q1mz * q3 + mag.x * q2q2 + _2q2 * mag.y * q3 + _2q2 * mag.z * q4 - mag.x
-                 * q3q3 - mag.x *
-                 q4q4;
+                 * q3q3 - mag.x * q4q4;
             hy = _2q1mx * q4 + mag.y * q1q1 - _2q1mz * q2 + _2q2mx * q3 - mag.y * q2q2 + mag.y * q3q3 + _2q3 * mag.z *
-                 q4 - mag.y *
-                 q4q4;
+                 q4 - mag.y * q4q4;
             _2bx = sqrt(hx * hx + hy * hy);
             _2bz = -_2q1mx * q3 + _2q1my * q2 + mag.z * q1q1 + _2q2mx * q4 - mag.z * q2q2 + _2q3 * mag.y * q4 - mag.z *
-                   q3q3 + mag.z *
-                   q4q4;
+                   q3q3 + mag.z * q4q4;
             _4bx = 2.0F * _2bx;
             _4bz = 2.0F * _2bz;
 
@@ -144,6 +141,7 @@ namespace Component
             q3 += qDot3 * deltaTime;
             q4 += qDot4 * deltaTime;
             norm = sqrt(q1 * q1 + q2 * q2 + q3 * q3 + q4 * q4); // normalise quaternion
+            if (norm == 0.0F) return; // handle NaN
             norm = 1.0F / norm;
             this->mQuaternion[0U] = q1 * norm;
             this->mQuaternion[1U] = q2 * norm;

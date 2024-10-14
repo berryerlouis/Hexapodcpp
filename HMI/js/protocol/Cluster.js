@@ -59,7 +59,8 @@ const CommandImu = {
 
 const CommandBody = {
     SET_BODY_X_Y_Z: 'SET_BODY_X_Y_Z',
-    SET_LEG_X_Y_Z: 'SET_LEG_X_Y_Z'
+    SET_LEG_X_Y_Z: 'SET_LEG_X_Y_Z',
+    SET_WALK_STATUS: 'SET_WALK_STATUS'
 };
 
 const CommandProximity = {
@@ -159,7 +160,8 @@ export default class Clusters {
             ClusterName.BODY, '05',
             [
                 new Command(CommandBody.SET_BODY_X_Y_Z, '00'),
-                new Command(CommandBody.SET_LEG_X_Y_Z, '01')
+                new Command(CommandBody.SET_LEG_X_Y_Z, '01'),
+                new Command(CommandBody.SET_WALK_STATUS, '02')
             ]
         )
     ];

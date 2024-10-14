@@ -10,7 +10,7 @@ namespace Cluster
         : clusterId(clusterId)
           , commandId(commandId)
           , nbParams(0U)
-          , params{} {
+          , params{0U} {
     }
 
     Core::CoreStatus Frame::Build(const uint8_t clusterId, const uint8_t commandId) {
@@ -35,7 +35,7 @@ namespace Cluster
                 this->commandId = commandId;
                 this->nbParams = nbParams;
 
-                memset((void *) this->params, 0U, FRAME_MAX_PARAMS);
+                memset((void *) &this->params[nbParams], 0U, FRAME_MAX_PARAMS);
                 memcpy((void *) this->params, params, nbParams);
                 success = Core::CoreStatus::CORE_OK;
             }

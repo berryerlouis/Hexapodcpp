@@ -19,8 +19,6 @@ namespace Driver
             virtual void DelayMs(const uint64_t delayMs) final override;
 
             virtual void DelayUs(const uint64_t delayUs) final override;
-
-            static volatile uint64_t tick;
         };
     }
 }

@@ -80,7 +80,9 @@ namespace Builder
     }
 
     void App::Update(const uint64_t currentTime) {
+        (void) currentTime;
         mLedBoot.Toggle();
-        mServices.Update(mTick.GetMs());
+        const uint64_t currentTime1 = mTick.GetMs();
+        mServices.Update(currentTime1);
     }
 }

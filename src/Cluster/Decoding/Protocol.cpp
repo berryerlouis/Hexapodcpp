@@ -14,28 +14,17 @@ namespace Cluster
             const uint8_t frameLength = strlen(frameBuffer);
 
             if (frameLength >= 6U && frameLength % 2U == 0U) {
-                for (size_t i = 0U; i < frameLength; i++) {
-                    if (Protocol::ConvertHexCharToInt(frameBuffer[i]) == 0xFFU) {
-                        // char is invalid
-                        return (Core::CoreStatus::CORE_ERROR_ARGUMENT);
-                    }
-                }
-
-                frame.clusterId = Protocol::ConvertHexCharToInt(frameBuffer[0U]) * 16U + Protocol::ConvertHexCharToInt(
-                                      frameBuffer[1U]);
-                frame.commandId = Protocol::ConvertHexCharToInt(frameBuffer[2U]) * 16U + Protocol::ConvertHexCharToInt(
-                                      frameBuffer[3U]);
-                frame.nbParams = Protocol::ConvertHexCharToInt(frameBuffer[4U]) * 16U + Protocol::ConvertHexCharToInt(
-                                     frameBuffer[5U]);
+                sscanf(frameBuffer, "%02x%02x%02x",
+                       (unsigned int *) &frame.clusterId,
+                       (unsigned int *) &frame.commandId,
+                       (unsigned int *) &frame.nbParams);
 
                 if (frame.nbParams == 0U && frameLength == 6U) {
                     return (Core::CoreStatus::CORE_OK);
                 } else if ((frame.nbParams * 2U) + 6U == frameLength) {
                     for (size_t i = 0U; i < frame.nbParams * 2U; i += 2U) {
-                        frame.params[i / 2U] = Protocol::ConvertHexCharToInt(frameBuffer[6 + i]) * 16U +
-                                               Protocol::ConvertHexCharToInt(frameBuffer[7U + i]);
+                        sscanf(&frameBuffer[6U + i], "%02x", (unsigned int *) &frame.params[i / 2U]);
                     }
-
                     return (Core::CoreStatus::CORE_OK);
                 }
 
@@ -46,7 +35,7 @@ namespace Cluster
             return (Core::CoreStatus::CORE_ERROR_SIZE);
         }
 
-        uint8_t Protocol::Encode(const Frame &response, const char *buffer) {
+        uint8_t Protocol::Encode(const Frame &response, char *buffer) {
             if (buffer == nullptr) {
                 return (0U);
             }
@@ -55,27 +44,22 @@ namespace Cluster
             const uint8_t cluster = response.clusterId;
             const uint8_t command = response.commandId;
 
-            uint8_t length = sprintf(const_cast<char *>(buffer), "<%02x%02x%02x", cluster, command, size);
+            uint8_t length = snprintf(const_cast<char *>(buffer), 8U, "<%02X%02X%02X", cluster, command, size);
 
             for (size_t i = 0U; i < size; i++) {
-                length += sprintf(const_cast<char *>(&buffer[length]), "%02x", params[i]);
+                length += snprintf(const_cast<char *>(&buffer[length]), 3U, "%02X", params[i]);
             }
 
-            sprintf(const_cast<char *>(&buffer[length]), ">");
-            return (strlen(buffer));
+            buffer[length] = '>';
+            return (length + 1U);
         }
 
         uint8_t Protocol::ConvertHexCharToInt(const uint8_t byte) {
             if ((byte >= '0') && (byte <= '9')) {
                 return (byte - '0');
             }
-
             if ((byte >= 'A') && (byte <= 'F')) {
                 return (byte + 10U - 'A');
-            }
-
-            if ((byte >= 'a') && (byte <= 'f')) {
-                return (byte + 10U - 'a');
             }
             return (0xFFU);
         }

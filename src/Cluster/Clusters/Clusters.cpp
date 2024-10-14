@@ -16,7 +16,7 @@ namespace Cluster
 
         ClusterInterface *Clusters::GetCluster(const EClusters clusterId) const {
             for (ClusterInterface *cluster: mClusters) {
-                if (cluster->GetId() == clusterId) {
+                if (cluster != nullptr && cluster->GetId() == clusterId) {
                     return (cluster);
                 }
             }

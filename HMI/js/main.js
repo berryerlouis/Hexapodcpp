@@ -43,9 +43,10 @@ $('#connect-button').click(async () => {
     setTimeout(() => {
         setInterval(() => {
             messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_ALL));
-        }, 100);
+            messageManager.write(new Message().build("Tx", ClusterName.GENERAL, CommandGeneral.VERSION));
+        }, 50);
 
-        /*setInterval(() => {
+        setInterval(() => {
             messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.ALL));
             messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.YAWPITCHROLL));
         }, 1000);
@@ -55,8 +56,8 @@ $('#connect-button').click(async () => {
             messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.PRESSURE));
             messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.ALTITUDE));
             messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.TMPBAR));
-        }, 10000);*/
-    }, 10000);
+        }, 10000);
+    }, 1000);
 });
 
 function init() {

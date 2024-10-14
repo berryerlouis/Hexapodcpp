@@ -35,7 +35,8 @@ namespace Component
             Uart::UartInterface &mUart;
             Clusters::ClustersInterface &mClusters;
             Led::LedInterface &mLedStatus;
-            char mBufferRx[100U];
+            volatile char mBufferRx[50U];
+            volatile char mBufferTx[50U];
             uint8_t mIndexBufferRx;
             bool mBeginIncomingFrame;
         };
