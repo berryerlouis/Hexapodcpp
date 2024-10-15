@@ -34,7 +34,7 @@ namespace Driver
         }
 
         void InputCapture::EdgeChange(void) {
-            int state = this->mGpio.Get();
+            const int state = this->mGpio.Get();
 
             if (state != this->mState && state == true) {
                 this->mStartTime = this->mTick.GetUs();

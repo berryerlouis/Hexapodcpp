@@ -14,4 +14,10 @@ namespace Bot
     };
 
     static constexpr uint8_t NB_LEGS = 6U;
+
+    enum EWalkStatus {
+        PLAY = 0x00U,
+        PAUSE,
+        STOP,
+    };
 }

@@ -40,7 +40,7 @@ namespace Component
             this->mPca9685Right.Initialize();
 
             for (size_t servoId = 0U; servoId < NB_SERVOS; servoId++) {
-                if (this->mServos[servoId]->Initialize()) {
+                if (this->mServos[servoId]->Initialize() == Core::CoreStatus::CORE_OK) {
                     success++;
                 } else {
                     break;

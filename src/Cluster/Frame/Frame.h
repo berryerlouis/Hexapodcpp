@@ -7,7 +7,7 @@
 
 namespace Cluster
 {
-#define FRAME_MAX_PARAMS    50U
+#define FRAME_MAX_PARAMS    20U
 
     struct Frame {
     public:

@@ -17,7 +17,7 @@ export class SerialInterface {
             const filters = [{usbVendorId: 0x10C4, usbProductId: 0xEA60}];
             try {
                 this.port = await nav.serial.requestPort({filters});
-                await this.port.open({baudRate: 115200});
+                await this.port.open({baudRate: 500000});
 
                 const textEncoder = new TextEncoderStream();
                 this.writableStreamClosed = textEncoder.readable.pipeTo(this.port.writable);
@@ -57,6 +57,9 @@ export class SerialInterface {
 
     async write(message) {
         if (this.writer) {
+            //let date = new Date();
+            //date = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().replace('T', ' ').replace('Z', ' ');
+            //console.log(date + " => " + message.raw)
             await this.writer.write(message.raw);
             this.notifyWrite(message);
             return true;
@@ -124,6 +127,9 @@ export class SerialInterface {
                     }
 
                     if (value) {
+                        //let date = new Date();
+                        //date = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().replace('T', ' ').replace('Z', ' ');
+                        //console.log(date + " => " + value)
                         this.catchIncomingMessage(value.replace('\n', ''));
                     }
                 }

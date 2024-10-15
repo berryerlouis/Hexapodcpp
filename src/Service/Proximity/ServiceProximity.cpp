@@ -6,18 +6,15 @@ namespace Service
     {
         ServiceProximity::ServiceProximity(SensorProximityMultipleInterface &proximity,
                                            Event::EventListenerInterface &eventListener)
-            : Service(25, eventListener)
+            : Service(25U, eventListener)
               , mProximity(proximity)
               , mTimeoutDetection{0xFFU, 0xFFU, 0xFFU} {
         }
 
         Core::CoreStatus ServiceProximity::Initialize(void) {
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-            if (this->mProximity.Initialize()) {
-                success = Core::CoreStatus::CORE_OK;
-            }
+            /*Core::CoreStatus success = */this->mProximity.Initialize();
             this->mProximity.Attach(this);
-            return (success);
+            return (Core::CoreStatus::CORE_OK);
         }
 
         void ServiceProximity::Update(const uint64_t currentTime) {

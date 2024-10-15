@@ -17,6 +17,13 @@ namespace Driver
             (void) currentTime;
         }
 
+        bool Twi::SendCommand(const uint8_t address, const uint8_t command) {
+            (void) address;
+            (void) command;
+            return (true);
+        }
+
+
         bool Twi::ReadRegister(const uint8_t address, const uint8_t reg, uint8_t &data) {
             (void) address;
             (void) reg;
@@ -29,6 +36,13 @@ namespace Driver
             (void) reg;
             (void) data;
             return (true);
+        }
+
+        bool Twi::ReadRegister24Bits(const uint8_t address, const uint8_t reg, uint32_t &data) {
+            (void) address;
+            (void) reg;
+            (void) data;
+            return true;
         }
 
         bool Twi::ReadRegister32Bits(const uint8_t address, const uint8_t reg, uint32_t &data) {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../Component/Imu/Mpu9150Interface.h"
+#include "../../Component/Barometer/Barometer.h"
 #include "../Service.h"
 
 namespace Service
@@ -8,10 +9,12 @@ namespace Service
     namespace Orientation
     {
         using namespace Component::Imu;
+        using namespace Component::Barometer;
 
         class ServiceOrientation : public Service {
         public:
-            ServiceOrientation(Mpu9150Interface &imu, Event::EventListenerInterface &eventListener);
+            ServiceOrientation(Mpu9150Interface &imu, BarometerInterface &barometer,
+                               Event::EventListenerInterface &eventListener);
 
             ~ServiceOrientation() = default;
 
@@ -23,6 +26,7 @@ namespace Service
 
         protected:
             Mpu9150Interface &mImu;
+            BarometerInterface &mBarometer;
         };
     }
 }

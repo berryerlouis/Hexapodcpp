@@ -9,8 +9,6 @@ export default class Controls {
         this.gui = new GUI();
         this.gui.domElement.id = 'gui';
         new ClusterCommand(this, messageManager, robot);
-
-        this.addFolder(this.gui, 'Hexapod');
     }
 
     updateDisplay() {

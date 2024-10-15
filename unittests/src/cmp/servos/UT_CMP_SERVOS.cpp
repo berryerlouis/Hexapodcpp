@@ -29,7 +29,7 @@ namespace Component
                 EXPECT_CALL(mMockPca9685_1, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
 
                 success = mServos.Initialize();
-                EXPECT_TRUE(success);
+                EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
             }
 
             virtual void TearDown() {
@@ -47,7 +47,9 @@ namespace Component
         };
 
         TEST_F(UT_CMP_SERVOS, Update_Ok) {
+            EXPECT_CALL(mMockTick, GetMs()).Times(NB_SERVOS).WillRepeatedly(Return(0U));
             for (size_t i = 0; i < NB_SERVOS; i++) {
+                mServos.GetServo(i).SetEnablePca(true);
                 mServos.GetServo(i).SetEnable(true);
                 mServos.GetServo(i).SetAngle(91U);
             }

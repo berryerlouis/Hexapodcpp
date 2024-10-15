@@ -2,11 +2,9 @@
 
 #include "ServiceInterface.h"
 #include "../Cluster/Constants.h"
-#include "../Misc/Logger/Logger.h"
 #include "Event/EventDispatcherInterface.h"
 #include "Event/EventListenerInterface.h"
 #include "Constants.h"
-#include "string.h"
 
 namespace Service
 {
@@ -16,7 +14,7 @@ namespace Service
             : mUpdateTime(updateTime)
               , mDeltaTime(0U)
               , mPreviousTime(0UL)
-              , mMinDeltaTime(1000UL)
+              , mMinDeltaTime(10000UL)
               , mMaxDeltaTime(0UL)
               , mEventListener(eventListener) {
         }
@@ -30,7 +28,11 @@ namespace Service
         }
 
         void SetNewUpdateTime(const uint64_t currentTime, const EServices serviceId) {
-            this->mDeltaTime = abs(static_cast<uint16_t>(currentTime - this->mPreviousTime - this->mUpdateTime));
+            this->mDeltaTime = abs(
+                static_cast<uint16_t>(
+                    static_cast<int64_t>(currentTime) -
+                    static_cast<int64_t>(this->mPreviousTime) -
+                    static_cast<int64_t>(this->mUpdateTime)));
 
             if (this->mPreviousTime == 0U) {
                 this->mDeltaTime = 0U;
@@ -76,7 +78,7 @@ namespace Service
         }
 
         void ResetTiming(void) {
-            this->mMinDeltaTime = 0U;
+            this->mMinDeltaTime = 10000UL;
             this->mMaxDeltaTime = 0U;
         }
 
@@ -95,13 +97,13 @@ namespace Service
         virtual void DispatchEvent(const SEvent &event) = 0;
 
     protected:
-        uint64_t mUpdateTime;
-        uint16_t mDeltaTime;
+        volatile uint64_t mUpdateTime;
+        volatile uint64_t mDeltaTime;
 
     private:
-        uint64_t mPreviousTime;
-        uint16_t mMinDeltaTime;
-        uint16_t mMaxDeltaTime;
+        volatile uint64_t mPreviousTime;
+        volatile uint64_t mMinDeltaTime;
+        volatile uint64_t mMaxDeltaTime;
         Event::EventListenerInterface &mEventListener;
     };
 }

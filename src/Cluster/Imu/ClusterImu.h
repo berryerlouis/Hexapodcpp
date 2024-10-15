@@ -2,6 +2,7 @@
 
 
 #include "../ClusterBase.h"
+#include "../../Component/Barometer/BarometerInterface.h"
 #include "../../Component/Imu/Mpu9150Interface.h"
 #include "../../Misc/Maths/Geometry.h"
 
@@ -10,17 +11,28 @@ namespace Cluster
     namespace Imu
     {
         using namespace Component::Imu;
+        using namespace Component::Barometer;
 
         class ClusterImu : public ClusterBase, StrategyCluster {
         public:
-            ClusterImu(Mpu9150Interface &imu)
+            ClusterImu(Mpu9150Interface &imu, BarometerInterface &barometer)
                 : ClusterBase(IMU, this)
-                  , mImu(imu) {
+                  , StrategyCluster(NB_COMMANDS_IMU)
+                  , mImu(imu)
+                  , mBarometer(barometer) {
                 this->AddClusterItem((ClusterItem){.commandId = EImuCommands::ALL, .expectedSize = 0U});
                 this->AddClusterItem((ClusterItem){.commandId = EImuCommands::ACC, .expectedSize = 0U});
                 this->AddClusterItem((ClusterItem){.commandId = EImuCommands::GYR, .expectedSize = 0U});
                 this->AddClusterItem((ClusterItem){.commandId = EImuCommands::MAG, .expectedSize = 0U});
                 this->AddClusterItem((ClusterItem){.commandId = EImuCommands::TMP, .expectedSize = 0U});
+                this->AddClusterItem((ClusterItem){.commandId = EImuCommands::YAW_PITCH_ROLL, .expectedSize = 0U});
+                this->AddClusterItem((ClusterItem){.commandId = EImuCommands::PRESSURE, .expectedSize = 0U});
+                this->AddClusterItem((ClusterItem){.commandId = EImuCommands::ALTITUDE, .expectedSize = 0U});
+                this->AddClusterItem((ClusterItem){.commandId = EImuCommands::TMP_BAR, .expectedSize = 0U});
+                this->AddClusterItem((ClusterItem){
+                    .commandId = EImuCommands::START_STOP_MAG_CALIB, .expectedSize = 1U
+                });
+                this->AddClusterItem((ClusterItem){.commandId = EImuCommands::CALIB_MAG_MIN_MAX, .expectedSize = 1U});
             }
 
             ~ClusterImu() = default;
@@ -45,6 +57,26 @@ namespace Cluster
                 } else if (request.commandId == EImuCommands::TMP) {
                     const uint16_t temp = this->mImu.ReadTemp();
                     success = this->BuildFrameTmp(temp, response);
+                } else if (request.commandId == EImuCommands::YAW_PITCH_ROLL) {
+                    const Position3D ypr = this->mImu.ReadYawPitchRoll();
+                    success = this->BuildFrameYawPitchRoll(ypr, response);
+                } else if (request.commandId == EImuCommands::PRESSURE) {
+                    const int32_t pressure = this->mBarometer.GetPressure();
+                    success = this->BuildFramePressure(pressure, response);
+                } else if (request.commandId == EImuCommands::ALTITUDE) {
+                    const uint16_t seaLevel = this->mBarometer.GetAltitude();
+                    success = this->BuildFrameSeaLevel(seaLevel, response);
+                } else if (request.commandId == EImuCommands::TMP_BAR) {
+                    const int16_t temp = this->mBarometer.GetTemp();
+                    success = this->BuildFrameTmpBar(temp, response);
+                } else if (request.commandId == EImuCommands::CALIB_MAG_MIN_MAX) {
+                    const bool min = request.Get1ByteParam(0U);
+                    const Vector3F calib = this->mImu.ReadCalibrationMag(min);
+                    success = this->BuildFrameCalibMag(min, calib, response);
+                } else if (request.commandId == EImuCommands::START_STOP_MAG_CALIB) {
+                    const bool start = request.Get1ByteParam(0U);
+                    this->mImu.StartCalibrationMag(start);
+                    success = this->BuildFrameStartCalibMag(response);
                 }
                 return success;
             }
@@ -54,7 +86,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::IMU,
                     EImuCommands::ALL);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.SetxBytesParam(6U, (uint8_t *) &acc);
                     response.SetxBytesParam(6U, (uint8_t *) &gyr);
                     response.SetxBytesParam(6U, (uint8_t *) &mag);
@@ -67,7 +99,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::IMU,
                     EImuCommands::ACC);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.SetxBytesParam(6U, (uint8_t *) &acc);
                 }
                 return (success);
@@ -77,7 +109,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::IMU,
                     EImuCommands::GYR);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.SetxBytesParam(6U, (uint8_t *) &gyr);
                 }
                 return (success);
@@ -87,7 +119,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::IMU,
                     EImuCommands::MAG);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.SetxBytesParam(6U, (uint8_t *) &mag);
                 }
                 return (success);
@@ -97,14 +129,76 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::IMU,
                     EImuCommands::TMP);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set2BytesParam(temp);
                 }
                 return (success);
             }
 
+            inline Core::CoreStatus BuildFrameYawPitchRoll(const Position3D ypr, Frame &response) const {
+                Vector3 cmp;
+                cmp.x = static_cast<int16_t>(ypr.roll);
+                cmp.y = static_cast<int16_t>(ypr.pitch);
+                cmp.z = static_cast<int16_t>(ypr.yaw);
+                const Core::CoreStatus success = response.Build(
+                    EClusters::IMU,
+                    EImuCommands::YAW_PITCH_ROLL);
+                if (success == Core::CoreStatus::CORE_OK) {
+                    response.SetxBytesParam(6U, (uint8_t *) &cmp);
+                }
+                return (success);
+            }
+
+            inline Core::CoreStatus BuildFramePressure(const int32_t pressure, Frame &response) const {
+                const Core::CoreStatus success = response.Build(
+                    EClusters::IMU,
+                    EImuCommands::PRESSURE);
+                if (success == Core::CoreStatus::CORE_OK) {
+                    response.Set4BytesParam(pressure);
+                }
+                return (success);
+            }
+
+            inline Core::CoreStatus BuildFrameSeaLevel(const uint16_t seaLevel, Frame &response) const {
+                const Core::CoreStatus success = response.Build(
+                    EClusters::IMU,
+                    EImuCommands::ALTITUDE);
+                if (success == Core::CoreStatus::CORE_OK) {
+                    response.Set2BytesParam(seaLevel);
+                }
+                return (success);
+            }
+
+            inline Core::CoreStatus BuildFrameTmpBar(const int16_t temp, Frame &response) const {
+                const Core::CoreStatus success = response.Build(
+                    EClusters::IMU,
+                    EImuCommands::TMP_BAR);
+                if (success == Core::CoreStatus::CORE_OK) {
+                    response.Set2BytesParam(temp);
+                }
+                return (success);
+            }
+
+            inline Core::CoreStatus BuildFrameCalibMag(const bool min, const Vector3F &calib, Frame &response) const {
+                const Core::CoreStatus success = response.Build(
+                    EClusters::IMU,
+                    EImuCommands::YAW_PITCH_ROLL);
+                if (success == Core::CoreStatus::CORE_OK) {
+                    response.Set1ByteParam(min);
+                    response.SetxBytesParam(12U, (uint8_t *) &calib);
+                }
+                return (success);
+            }
+
+            inline Core::CoreStatus BuildFrameStartCalibMag(Frame &response) const {
+                return response.Build(
+                    EClusters::IMU,
+                    EImuCommands::START_STOP_MAG_CALIB);
+            }
+
         private:
             Mpu9150Interface &mImu;
+            BarometerInterface &mBarometer;
         };
     }
 }

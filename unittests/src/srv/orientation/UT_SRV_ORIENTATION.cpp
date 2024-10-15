@@ -3,6 +3,7 @@
 
 
 #include "../../../mock/srv/MockService.h"
+#include "../../../mock/cmp/MockBarometer.h"
 #include "../../../mock/cmp/MockMpu9150.h"
 #include "../../../mock/srv/MockEventListener.h"
 
@@ -19,16 +20,18 @@ namespace Service
 		class UT_SRV_ORIENTATION : public ::testing::Test {
 		protected:
 			UT_SRV_ORIENTATION() : mMockMpu9150(),
+			                       mMockBarometer(),
 			                       mMockEventListener(),
-			                       mServiceOrientation(mMockMpu9150, mMockEventListener) {
+			                       mServiceOrientation(mMockMpu9150, mMockBarometer, mMockEventListener) {
 			}
 
 			virtual void SetUp() {
 				EXPECT_CALL(mMockMpu9150, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_ERROR));
-				EXPECT_FALSE(mServiceOrientation.Initialize());
+				EXPECT_EQ(Core::CoreStatus::CORE_ERROR, mServiceOrientation.Initialize());
 
 				EXPECT_CALL(mMockMpu9150, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-				EXPECT_TRUE(mServiceOrientation.Initialize());
+				EXPECT_CALL(mMockBarometer, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
+				EXPECT_EQ(Core::CoreStatus::CORE_OK, mServiceOrientation.Initialize());
 			}
 
 			virtual void TearDown() {
@@ -38,6 +41,7 @@ namespace Service
 
 			/* Mocks */
 			StrictMock<Component::Imu::MockMpu9150> mMockMpu9150;
+			StrictMock<Component::Barometer::MockBarometer> mMockBarometer;
 			StrictMock<Event::MockEventListener> mMockEventListener;
 
 			/* Test class */
@@ -45,17 +49,10 @@ namespace Service
 		};
 
 		TEST_F(UT_SRV_ORIENTATION, Update_Ok) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-
-			EXPECT_CALL(mMockMpu9150, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-
-			success = mServiceOrientation.Initialize();
-
 			EXPECT_CALL(mMockMpu9150, Update( _ )).Times(1U);
+			EXPECT_CALL(mMockBarometer, Update( _ )).Times(1U);
 
 			mServiceOrientation.Update(0UL);
-
-			EXPECT_TRUE(success);
 		}
 	}
 }

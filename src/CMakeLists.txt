@@ -36,6 +36,7 @@ set(SRC_FILES_SERVICES
         Service/Services/Services.cpp
         Service/Event/EventListener.cpp
         Service/Event/BufferEvent.cpp
+        Service/Body/ServiceBody.cpp
 )
 
 set(SRC_FILES_MISC
@@ -63,9 +64,11 @@ set(SRC_FILES_DRIVER_X64
 )
 
 set(SRC_FILES_COMPONENT
+        Component/Barometer/Barometer.cpp
         Component/Battery/Battery.cpp
         Component/Communication/Communication.cpp
         Component/Display/Ssd1306.cpp
+        Component/Imu/Ahrs.cpp
         Component/Imu/Mpu9150.cpp
         Component/Led/Led.cpp
         Component/Proximity/Laser/Vl53l0x.cpp
@@ -91,6 +94,7 @@ set(SRC_FILES_BOT
         Bot/Body/Body.cpp
         Bot/Leg/Leg.cpp
         Bot/Legs/Legs.cpp
+        Bot/Walk/Walk.cpp
 )
 
 

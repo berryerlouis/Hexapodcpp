@@ -21,7 +21,8 @@ namespace Component
               , mMax(SERVO_ANGLE_MAX)
               , mReverse(false)
               , mEnable(false)
-              , mIsMoving(false) {
+              , mIsMoving(false)
+              , mEnablePca(false) {
         }
 
         Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
@@ -38,7 +39,8 @@ namespace Component
               , mMax(SERVO_ANGLE_MAX)
               , mReverse(false)
               , mEnable(false)
-              , mIsMoving(false) {
+              , mIsMoving(false)
+              , mEnablePca(false) {
         }
 
         Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
@@ -55,7 +57,8 @@ namespace Component
               , mMax(SERVO_ANGLE_MAX)
               , mReverse(false)
               , mEnable(false)
-              , mIsMoving(false) {
+              , mIsMoving(false)
+              , mEnablePca(false) {
         }
 
         Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
@@ -72,7 +75,8 @@ namespace Component
               , mMax(max)
               , mReverse(false)
               , mEnable(false)
-              , mIsMoving(false) {
+              , mIsMoving(false)
+              , mEnablePca(false) {
         }
 
         Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
@@ -89,7 +93,8 @@ namespace Component
               , mMax(max)
               , mReverse(reverse)
               , mEnable(false)
-              , mIsMoving(false) {
+              , mIsMoving(false)
+              , mEnablePca(false) {
         }
 
         Core::CoreStatus Servo::Initialize(void) {
@@ -97,19 +102,20 @@ namespace Component
                 this->mMax = REVERSE_ANGLE(this->mMin);
                 this->mMin = REVERSE_ANGLE(this->mMax);
             }
-            this->mAngle += this->mOffset;
             return (Core::CoreStatus::CORE_OK);
         }
 
         void Servo::Update(const uint64_t currentTime) {
             if (this->IsMoving()) {
                 this->mAngle = this->GetAngleFromDeltaTime(currentTime);
-                const uint16_t pwm = Misc::Utils::Map(this->mAngle,
+                const uint16_t pwm = Misc::Utils::Map(this->mAngle + this->mOffset,
                                                       Servo::SERVO_ANGLE_MIN,
                                                       Servo::SERVO_ANGLE_MAX,
                                                       Servo::SERVO_PWM_MIN,
                                                       Servo::SERVO_PWM_MAX);
-                this->mPca9685.SetPwm(this->mServoId, pwm);
+                if (true == this->mEnablePca) {
+                    this->mPca9685.SetPwm(this->mServoId, pwm);
+                }
             }
         }
 
@@ -119,10 +125,10 @@ namespace Component
             if (currentTime < endTime) {
                 float deltaTime = 1.0f;
                 deltaTime -= ((endTime - currentTime) / static_cast<float>(this->mSpeed));
-                return (Misc::Utils::Lerp(this->mAngle, this->mTargetAngle + this->mOffset, deltaTime));
+                return (Misc::Utils::Lerp(this->mAngle, this->mTargetAngle, deltaTime));
             }
             this->mIsMoving = false;
-            return (this->mTargetAngle + this->mOffset);
+            return (this->mTargetAngle);
         }
 
         bool Servo::IsMoving(void) {
@@ -131,30 +137,36 @@ namespace Component
 
         Core::CoreStatus Servo::SetAngle(const uint8_t angle, const uint16_t travelTime) {
             if ((true == this->mEnable) &&
-                (angle >= this->mMin + this->mOffset) &&
-                (angle <= this->mMax + this->mOffset)) {
+                (angle >= this->mMin) &&
+                (angle <= this->mMax)) {
                 this->mTargetAngle = angle;
                 if (true == this->mReverse) {
                     this->mTargetAngle = REVERSE_ANGLE(angle);
                 }
                 // Instant move
-                if ((travelTime == 0U) &&
-                    (static_cast<int8_t>(this->mTargetAngle + this->mOffset) >= 0)) {
-                    this->mAngle = this->mTargetAngle + this->mOffset;
-                    this->mIsMoving = true;
-                } else {
-                    this->mIsMoving = true;
-                    this->mSpeed = travelTime;
-                    this->mStartTime = this->mTick.GetMs();
+                if (travelTime == 0U) {
+                    this->mAngle = this->mTargetAngle;
                 }
+                this->mSpeed = travelTime;
+                this->mStartTime = this->mTick.GetMs();
+                this->mIsMoving = true;
                 return (Core::CoreStatus::CORE_OK);
             }
             this->mIsMoving = false;
+            if (false == this->mEnable)
+                return (Core::CoreStatus::CORE_ERROR_SIZE);
+            if (angle < this->mMin)
+                return (Core::CoreStatus::CORE_ERROR_MIN);
+            if (angle > this->mMax)
+                return (Core::CoreStatus::CORE_ERROR_MAX);
             return (Core::CoreStatus::CORE_ERROR);
         }
 
         uint8_t Servo::GetAngle(void) const {
-            return (this->mAngle - this->mOffset);
+            if (true == this->mReverse) {
+                return (REVERSE_ANGLE(this->mAngle));
+            }
+            return (this->mAngle);
         }
 
         bool Servo::SetMin(const uint8_t angle) {
@@ -183,7 +195,6 @@ namespace Component
 
         bool Servo::SetOffset(const int8_t angle) {
             this->mOffset = angle;
-            this->mIsMoving = true;
             return (true);
         }
 
@@ -205,6 +216,14 @@ namespace Component
 
         bool Servo::IsEnable(void) {
             return (this->mEnable);
+        }
+
+        void Servo::SetEnablePca(const bool enable) {
+            this->mEnablePca = enable;
+        }
+
+        bool Servo::IsEnablePca(void) {
+            return (this->mEnablePca);
         }
     }
 }

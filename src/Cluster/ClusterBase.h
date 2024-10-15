@@ -14,17 +14,20 @@ namespace Cluster
     };
 
     class StrategyCluster {
+#define NB_COMMANDS_MAX 20U
+
     public:
-        StrategyCluster()
-            : mClusterItems{},
-              mClusterItemSize(0U) {
+        StrategyCluster(const uint8_t size)
+            : mClusterCommands{}
+              , mClusterCommandSize(0U)
+              , mSize(size) {
         }
 
         ~StrategyCluster() = default;
 
         bool AddClusterItem(const Cluster::ClusterItem clusterItem) {
-            if (this->mClusterItemSize < 15U) {
-                mClusterItems[this->mClusterItemSize++] = clusterItem;
+            if (this->mClusterCommandSize < this->mSize) {
+                mClusterCommands[this->mClusterCommandSize++] = clusterItem;
                 return true;
             }
             return false;
@@ -34,18 +37,21 @@ namespace Cluster
 
         Core::CoreStatus Execute(const Frame &request, Frame &response) {
             Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-            for (size_t i = 0; i < this->mClusterItemSize; i++) {
-                if (this->mClusterItems[i].commandId == request.commandId
-                    && this->mClusterItems[i].expectedSize == request.nbParams) {
-                    success = this->ExecuteFrame(request, response);
-                }
-            }
+			const uint8_t cmdId = request.commandId;
+			if(cmdId < this->mClusterCommandSize)
+			{
+				if(this->mClusterCommands[cmdId].expectedSize == request.nbParams)
+				{
+					success = this->ExecuteFrame(request, response);
+				}
+			}
             return success;
         }
 
     private:
-        Cluster::ClusterItem mClusterItems[15U];
-        uint8_t mClusterItemSize = 0U;
+        Cluster::ClusterItem mClusterCommands[NB_COMMANDS_MAX];
+        uint8_t mClusterCommandSize;
+        const uint8_t mSize;
     };
 
 
@@ -74,8 +80,14 @@ namespace Cluster
         virtual Core::CoreStatus BuildFrameNack(Frame &response) {
             response.clusterId = this->mClusterId;
             response.commandId = static_cast<uint8_t>(GENERIC);
-            response.nbParams = 1U;
-            response.params[0] = false;
+            response.Set1ByteParam(false);
+            return (Core::CoreStatus::CORE_OK);
+        }
+
+        virtual Core::CoreStatus BuildFrameNack(Frame &response, const Core::CoreStatus error) {
+            response.clusterId = this->mClusterId;
+            response.commandId = static_cast<uint8_t>(GENERIC);
+            response.Set1ByteParam(error);
             return (Core::CoreStatus::CORE_OK);
         }
 

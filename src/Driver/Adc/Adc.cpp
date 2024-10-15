@@ -12,9 +12,9 @@ namespace Driver
         }
 
         Core::CoreStatus Adc::Initialize(void) {
-            ADMUX = (1 << REFS0) | (1 << REFS1);
-            ADCSRA = (1 << ADEN) | (1 << ADPS0) | (1 << ADPS1) | (1 << ADIE);
-            ADMUX = ((ADMUX & 0xE0U) | (uint8_t) this->mGpio.GetPin());
+            ADMUX = _BV(REFS0) | _BV(REFS1);
+            ADCSRA = _BV(ADEN) | _BV(ADPS0) | _BV(ADPS1) | _BV(ADIE);
+            ADMUX = ((ADMUX & 0xE0U) | static_cast<uint8_t>(this->mGpio.GetPin()));
 
             this->StartConversion();
             return (Core::CoreStatus::CORE_OK);

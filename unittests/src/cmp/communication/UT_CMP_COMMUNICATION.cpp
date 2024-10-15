@@ -33,9 +33,9 @@ namespace Component
 
 			virtual void SetUp() {
 				EXPECT_CALL(mMockLed, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_ERROR));
-				EXPECT_FALSE(mCommunication.Initialize());
+				EXPECT_EQ(Core::CoreStatus::CORE_ERROR, mCommunication.Initialize());
 				EXPECT_CALL(mMockLed, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-				EXPECT_TRUE(mCommunication.Initialize());
+				EXPECT_EQ(Core::CoreStatus::CORE_OK, mCommunication.Initialize());
 			}
 
 			virtual void TearDown() {
@@ -106,10 +106,6 @@ namespace Component
 		TEST_F(UT_CMP_COMMUNICATION, Update_Ko_1frame) {
 			const char *bufferRx = "<0<0000>";
 
-			EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-			EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-			EXPECT_CALL(mMockUart, Send( Matcher <const char *>( _ ), _ )).Times(1U);
-
 			for (size_t i = 0; i < strlen(bufferRx); i++) {
 				EXPECT_CALL(mMockUart, DataAvailable()).WillRepeatedly(Return(strlen(bufferRx)));
 				EXPECT_CALL(mMockUart, Read()).WillOnce(Return(bufferRx[i]));
@@ -128,7 +124,7 @@ namespace Component
 			EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::CoreStatus::CORE_OK));
 			EXPECT_CALL(mMockUart, Send( Matcher <const char *>( _ ), _ )).Times(1U);
 			EXPECT_CALL(mMockClusters, GetCluster( Cluster::EClusters::BODY )).WillOnce(Return(&mClusterBody));
-			EXPECT_CALL(mMockBody, SetPositionRotation( position, rotation, travelTime )).Times(1U);
+			EXPECT_CALL(mMockBody, SetBodyPositionRotation( position, rotation, travelTime )).Times(1U);
 
 			for (size_t i = 0; i < strlen(bufferRx); i++) {
 				EXPECT_CALL(mMockUart, DataAvailable()).WillRepeatedly(Return(strlen(bufferRx)));

@@ -30,7 +30,7 @@ namespace Component
                 const bool detection = (distance != 0U && distance <= this->mThreshold);
                 if (true == detection) {
                     this->mLed.On();
-                    this->Notify(static_cast<SensorsId>(mSide), distance);
+                    this->Notify(static_cast<SensorsId>(this->mSide), distance);
                 } else {
                     this->mLed.Off();
                 }
@@ -40,12 +40,12 @@ namespace Component
                 return (this->mThreshold);
             }
 
-            Core::CoreStatus Srf05::SetThreshold(uint16_t mThreshold) {
-                this->mThreshold = mThreshold;
+            Core::CoreStatus Srf05::SetThreshold(const uint16_t threshold) {
+                this->mThreshold = threshold;
                 return (Core::CoreStatus::CORE_OK);
             }
 
-            void Srf05::SendPulse(void) {
+            void Srf05::SendPulse(void) const {
                 this->mGpioTrigger.Set();
                 this->mTick.DelayUs(10U);
                 this->mGpioTrigger.Reset();

@@ -15,9 +15,9 @@ namespace Driver
 
             virtual uint64_t GetMs(void) = 0;
 
-            virtual void DelayMs(uint64_t delayMs) = 0;
+            virtual void DelayMs(const uint64_t delayMs) = 0;
 
-            virtual void DelayUs(uint64_t delayUs) = 0;
+            virtual void DelayUs(const uint64_t delayUs) = 0;
         };
     }
 }

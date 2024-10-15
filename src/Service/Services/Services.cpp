@@ -17,6 +17,7 @@ namespace Service
             ServiceOrientation &serviceOrientation,
             ServiceBattery &serviceBattery,
             ServiceDisplay &serviceDisplay,
+            ServiceBody &serviceBody,
             Event::EventListenerInterface &eventListener)
             : mTick(tick)
               , mServices{
@@ -26,23 +27,22 @@ namespace Service
                   {COMMUNICATION, &serviceCommunication},
                   {ORIENTATION, &serviceOrientation},
                   {BATTERY, &serviceBattery},
-                  {DISPLAY, &serviceDisplay}
+                  {DISPLAY, &serviceDisplay},
+                  {BODY, &serviceBody}
               }
               , mEventListener(eventListener) {
         }
 
         Core::CoreStatus Services::Initialize(void) {
             Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+
             for (const ServiceItem item: this->mServices) {
                 success = item.service->Initialize();
-                if (!success) {
+                if (success != Core::CoreStatus::CORE_OK) {
 #ifdef DEBUG
                     const char serviceId[2U] = {static_cast<const char>(item.serviceId + 0x30U), ' '};
                     LOG("error");
                     LOG(serviceId);
-#endif
-#ifndef GTEST
-                    sei();
 #endif
                 }
             }
@@ -50,16 +50,16 @@ namespace Service
         }
 
         void Services::Update(const uint64_t currentTime) {
-            (void) currentTime;
-
-            for (const ServiceItem item: this->mServices) {
-                const uint64_t currentMillis = this->mTick.GetMs();
-                if (item.service->NeedUpdate(currentMillis)) {
-                    item.service->Update(currentMillis);
-                    item.service->SetNewUpdateTime(currentMillis, item.serviceId);
-                }
+            static size_t itemIndex = 0U;
+            const ServiceItem &item = this->mServices[itemIndex];
+            if (item.service->NeedUpdate(currentTime) == Core::CoreStatus::CORE_OK) {
+                item.service->Update(currentTime);
+                item.service->SetNewUpdateTime(this->mTick.GetMs(), item.serviceId);
+                this->DispatchEvent();
             }
-            this->DispatchEvent();
+            if (++itemIndex == NB_SERVICES - 1U) {
+                itemIndex = 0U;
+            }
         }
 
         Service *Services::Get(const EServices serviceId) {

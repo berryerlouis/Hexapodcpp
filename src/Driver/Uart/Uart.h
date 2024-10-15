@@ -9,7 +9,7 @@ namespace Driver
     {
         class Uart : public UartInterface {
         public:
-            Uart(const EBaudRate &baud = BAUDRATE_115200);
+            Uart(const EBaudRate &baud = BAUDRATE_500000);
 
             ~Uart() = default;
 
@@ -25,8 +25,6 @@ namespace Driver
 
             virtual uint8_t DataAvailable(void) const final override;
 
-            static Misc::Buffer::Buffer bufferTx;
-            static Misc::Buffer::Buffer bufferRx;
 
         private:
             EBaudRate mBaudRate;

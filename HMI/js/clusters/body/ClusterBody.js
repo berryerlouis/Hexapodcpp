@@ -9,8 +9,8 @@ export class ClusterBody {
     }
 
     initialize() {
-        this.messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.BODY, CommandBody.SET_X_Y_Z, (message) => {
-            if (message.size > 0) {
+        this.messageManager.addCallbackNotifyOnSpecificCommand(ClusterName.BODY, CommandBody.SET_BODY_X_Y_Z, (message) => {
+            if (message.size === 4) {
             }
         });
     }

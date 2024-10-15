@@ -14,7 +14,11 @@ namespace Driver
             start = GetMs();
         }
 
-        uint64_t Tick::GetUs(void) { return 0; }
+        uint64_t Tick::GetUs(void) {
+            auto duration = now.time_since_epoch();
+            now = std::chrono::system_clock::now();
+            return std::chrono::duration_cast<std::chrono::microseconds>(duration).count() - start;
+        }
 
         uint64_t Tick::GetMs(void) {
             auto duration = now.time_since_epoch();
@@ -22,11 +26,11 @@ namespace Driver
             return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() - start;
         }
 
-        void Tick::DelayMs(uint64_t delayMs) {
+        void Tick::DelayMs(const uint64_t delayMs) {
             (void) delayMs;
         }
 
-        void Tick::DelayUs(uint64_t delayUs) {
+        void Tick::DelayUs(const uint64_t delayUs) {
             (void) delayUs;
         }
     }

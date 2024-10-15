@@ -6,7 +6,7 @@ namespace Service
     {
         ServiceGeneral::ServiceGeneral(SoftwareInterface &software,
                                        Event::EventListenerInterface &eventListener)
-            : Service(1U, eventListener)
+            : Service(10000U, eventListener)
               , mSoftware(software) {
         }
 

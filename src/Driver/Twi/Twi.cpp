@@ -22,6 +22,13 @@ namespace Driver
             (void) currentTime;
         }
 
+        bool Twi::SendCommand(const uint8_t address, const uint8_t command) {
+            Start(address);
+            Write(command);
+            Stop();
+            return (true);
+        }
+
         bool Twi::ReadRegister(const uint8_t address, const uint8_t reg, uint8_t &data) {
             Start(address);
             Write(reg);
@@ -36,8 +43,18 @@ namespace Driver
             Write(reg);
             RepeatedStart(address);
             data = (uint16_t) ((uint16_t) ReadAck() << 8U);
-            data |= ReadAck();
-            ReadNack();
+            data |= ReadNack();
+            Stop();
+            return (true);
+        }
+
+        bool Twi::ReadRegister24Bits(const uint8_t address, const uint8_t reg, uint32_t &data) {
+            Start(address);
+            Write(reg);
+            RepeatedStart(address);
+            data = (uint32_t) ((uint32_t) ReadAck() << 16U);
+            data |= (uint32_t) ((uint32_t) ReadAck() << 8U);
+            data |= ReadNack();
             Stop();
             return (true);
         }
@@ -49,8 +66,7 @@ namespace Driver
             data = (uint32_t) ((uint32_t) ReadAck() << 24U);
             data |= (uint32_t) ((uint32_t) ReadAck() << 16U);
             data |= (uint32_t) ((uint32_t) ReadAck() << 8U);
-            data |= ReadAck();
-            ReadNack();
+            data |= ReadNack();
             Stop();
             return (true);
         }
@@ -60,11 +76,10 @@ namespace Driver
             Write(reg);
             RepeatedStart(address);
 
-            for (size_t i = 0U; i < length; i++) {
+            for (size_t i = 0U; i < length - 1U; i++) {
                 data[i] = ReadAck();
             }
-
-            ReadNack();
+			data[length - 1U] = ReadNack();
             Stop();
             return (true);
         }

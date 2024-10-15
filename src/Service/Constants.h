@@ -11,8 +11,9 @@ namespace Service
         DISPLAY = 3U,
         GENERAL = 4U,
         ORIENTATION = 5U,
-        PROXIMITY = 6U
+        PROXIMITY = 6U,
+        BODY = 7U
     };
 
-    static constexpr uint8_t NB_SERVICES = 7U;
+    static constexpr uint8_t NB_SERVICES = 8U;
 }

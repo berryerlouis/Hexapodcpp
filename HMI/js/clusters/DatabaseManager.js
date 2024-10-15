@@ -6,12 +6,12 @@ import {ClusterServo} from "./servo/ClusterServo.js";
 import {clustersDatabase} from "./db.js"
 
 export class DatabaseManager {
-    constructor(messageManager, robot) {
+    constructor(messageManager, robot, compass) {
         this.messageManager = messageManager;
         this.cluBattery = new ClusterBattery(messageManager, this, robot);
         this.cluGeneral = new ClusterGeneral(messageManager, this, robot);
         this.cluProximity = new ClusterProximity(messageManager, this, robot);
-        this.clusterImu = new ClusterImu(messageManager, this, robot);
+        this.clusterImu = new ClusterImu(messageManager, this, robot, compass);
         this.clusterServo = new ClusterServo(messageManager, this, robot);
         this.clusters = [
             this.cluBattery,
@@ -27,10 +27,14 @@ export class DatabaseManager {
     }
 
     updateDb = ({cluster, command, item, value}) => {
-        if (item) {
-            clustersDatabase[cluster][command][item] = value;
-            return;
+        try {
+            if (item) {
+                clustersDatabase[cluster][command][item] = value;
+                return;
+            }
+            clustersDatabase[cluster][command] = value;
+        } catch (e) {
+            console.error(e);
         }
-        clustersDatabase[cluster][command] = value;
     };
 }

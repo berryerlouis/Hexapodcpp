@@ -2,3 +2,8 @@
 build
 HMI/node_modules
 HMI/coverage
+*.o
+*.d
+*.atsuo
+src/debug/
+node_modules/

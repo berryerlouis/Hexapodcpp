@@ -5,7 +5,7 @@ namespace Service
     namespace Display
     {
         ServiceDisplay::ServiceDisplay(Ssd1306Interface &ssd1306, Event::EventListenerInterface &eventListener)
-            : Service(5U, eventListener)
+            : Service(20U, eventListener)
               , mSsd1306(ssd1306)
               , mBmpBatteryLevel{.bmp = const_cast<uint8_t *>(Bitmaps::Battery0), .width = 16U, .height = 7U}
               , mBmpCommunication{.bmp = const_cast<uint8_t *>(Bitmaps::Communication), .width = 16U, .height = 8U}
@@ -16,7 +16,7 @@ namespace Service
 
         Core::CoreStatus ServiceDisplay::Initialize(void) {
             Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-            if (true == this->mSsd1306.Initialize()) {
+            if (this->mSsd1306.Initialize() == Core::CoreStatus::CORE_OK) {
                 this->DisplayBackground();
                 success = Core::CoreStatus::CORE_OK;
             }

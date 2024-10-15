@@ -1,6 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "../../../mock/cmp/MockBarometer.h"
 #include "../../../mock/cmp/MockMpu9150.h"
 #include "../../../../src/Cluster/Imu/ClusterImu.h"
 #include "../../../../src/Misc/Maths/Geometry.h"
@@ -16,7 +17,8 @@ namespace Cluster
 		class UT_CLU_IMU : public ::testing::Test {
 		protected:
 			UT_CLU_IMU() : mMockMpu9150(),
-			               mClusterImu(mMockMpu9150) {
+			               mMockBarometer(),
+			               mClusterImu(mMockMpu9150, mMockBarometer) {
 			}
 
 			virtual void SetUp() {
@@ -29,6 +31,7 @@ namespace Cluster
 
 			/* Mocks */
 			StrictMock<Component::Imu::MockMpu9150> mMockMpu9150;
+			StrictMock<Component::Barometer::MockBarometer> mMockBarometer;
 
 			/* Test class */
 			ClusterImu mClusterImu;
@@ -45,7 +48,7 @@ namespace Cluster
 			EXPECT_EQ(response.clusterId, 0U);
 			EXPECT_EQ(response.commandId, 0U);
 			EXPECT_EQ(response.nbParams, 0U);
-			EXPECT_FALSE(success);
+			EXPECT_EQ(success, Core::CoreStatus::CORE_ERROR);
 		}
 
 
@@ -65,7 +68,7 @@ namespace Cluster
 			EXPECT_EQ(response.clusterId, IMU);
 			EXPECT_EQ(response.commandId, EImuCommands::ALL);
 			EXPECT_EQ(response.nbParams, 20U);
-			EXPECT_TRUE(success);
+			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 		}
 
 		TEST_F(UT_CLU_IMU, Execute_ACC_Ok) {
@@ -81,7 +84,7 @@ namespace Cluster
 			EXPECT_EQ(response.clusterId, IMU);
 			EXPECT_EQ(response.commandId, EImuCommands::ACC);
 			EXPECT_EQ(response.nbParams, 6U);
-			EXPECT_TRUE(success);
+			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 		}
 
 		TEST_F(UT_CLU_IMU, Execute_GYR_Ok) {
@@ -97,7 +100,7 @@ namespace Cluster
 			EXPECT_EQ(response.clusterId, IMU);
 			EXPECT_EQ(response.commandId, EImuCommands::GYR);
 			EXPECT_EQ(response.nbParams, 6U);
-			EXPECT_TRUE(success);
+			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 		}
 
 		TEST_F(UT_CLU_IMU, Execute_MAG_Ok) {
@@ -113,7 +116,7 @@ namespace Cluster
 			EXPECT_EQ(response.clusterId, IMU);
 			EXPECT_EQ(response.commandId, EImuCommands::MAG);
 			EXPECT_EQ(response.nbParams, 6U);
-			EXPECT_TRUE(success);
+			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 		}
 
 		TEST_F(UT_CLU_IMU, Execute_TMP_Ok) {
@@ -129,7 +132,7 @@ namespace Cluster
 			EXPECT_EQ(response.clusterId, IMU);
 			EXPECT_EQ(response.commandId, EImuCommands::TMP);
 			EXPECT_EQ(response.nbParams, 2U);
-			EXPECT_TRUE(success);
+			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 		}
 	}
 }

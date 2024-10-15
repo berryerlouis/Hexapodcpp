@@ -1,21 +1,15 @@
 #pragma once
 
-#include <stdint.h>
-
 namespace Core
 {
-    struct CoreStatus {
-        static constexpr int8_t CORE_ERROR = (-1);
-        static constexpr int8_t CORE_OK = (0);
-
-        CoreStatus(const int8_t state) : status(state) {
-        }
-
-        operator bool() const {
-            return (status == CORE_OK);
-        }
-
-    private:
-        int8_t status = CORE_ERROR;
+    enum CoreStatus {
+        CORE_OK = (0),
+        CORE_ERROR = (-1),
+        CORE_ERROR_ARGUMENT = (-2),
+        CORE_ERROR_NULLPTR = (-3),
+        CORE_ERROR_OVERLOAD = (-4),
+        CORE_ERROR_SIZE = (-5),
+        CORE_ERROR_MIN = (-6),
+        CORE_ERROR_MAX = (-7)
     };
 }

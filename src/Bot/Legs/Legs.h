@@ -16,7 +16,7 @@ namespace Bot
 
             ~Legs() = default;
 
-            Leg::Leg &GetLeg(const uint8_t legId) const;
+            Leg::Leg GetLeg(const uint8_t legId) const;
 
         private:
             Leg::Leg mLegFL;
@@ -25,7 +25,7 @@ namespace Bot
             Leg::Leg mLegFR;
             Leg::Leg mLegMR;
             Leg::Leg mLegRR;
-            Leg::Leg *mLegs[NB_LEGS];
+            Leg::Leg mLegs[NB_LEGS];
         };
     }
 }

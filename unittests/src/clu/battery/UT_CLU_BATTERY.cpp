@@ -49,7 +49,7 @@ namespace Cluster
 			EXPECT_EQ(response.nbParams, 2U);
 			EXPECT_EQ(response.params[0U], 10U);
 			EXPECT_EQ(response.params[1U], 0U);
-			EXPECT_TRUE(success);
+			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 		}
 
 		TEST_F(UT_CLU_BATTERY, Execute_Command_status_Ok) {
@@ -68,7 +68,7 @@ namespace Cluster
 			EXPECT_EQ(response.params[0U], NOMINAL);
 			EXPECT_EQ(response.params[1U], 10U);
 			EXPECT_EQ(response.params[2U], 0U);
-			EXPECT_TRUE(success);
+			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 		}
 
 		TEST_F(UT_CLU_BATTERY, Execute_WrongCommand_Ko) {
@@ -82,7 +82,7 @@ namespace Cluster
 			EXPECT_EQ(response.clusterId, 0U);
 			EXPECT_EQ(response.commandId, 0U);
 			EXPECT_EQ(response.nbParams, 0U);
-			EXPECT_FALSE(success);
+			EXPECT_EQ(success, Core::CoreStatus::CORE_ERROR);
 		}
 	}
 }

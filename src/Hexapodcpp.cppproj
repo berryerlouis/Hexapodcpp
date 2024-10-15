@@ -1,0 +1,657 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
+  <PropertyGroup>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>7.0</ProjectVersion>
+    <ToolchainName>com.Atmel.AVRGCC8.CPP</ToolchainName>
+    <ProjectGuid>dce6c7e3-ee26-4d79-826b-08594b9ad897</ProjectGuid>
+    <avrdevice>ATmega1284P</avrdevice>
+    <avrdeviceseries>none</avrdeviceseries>
+    <OutputType>Executable</OutputType>
+    <Language>CPP</Language>
+    <OutputFileName>$(MSBuildProjectName)</OutputFileName>
+    <OutputFileExtension>.elf</OutputFileExtension>
+    <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
+    <AssemblyName>GccApplication1</AssemblyName>
+    <Name>Hexapodcpp</Name>
+    <RootNamespace>GccApplication1</RootNamespace>
+    <ToolchainFlavour>Native</ToolchainFlavour>
+    <KeepTimersRunning>true</KeepTimersRunning>
+    <OverrideVtor>false</OverrideVtor>
+    <CacheFlash>true</CacheFlash>
+    <ProgFlashFromRam>true</ProgFlashFromRam>
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
+    <UncachedRange />
+    <preserveEEPROM>true</preserveEEPROM>
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
+    <BootSegment>2</BootSegment>
+    <ResetRule>0</ResetRule>
+    <eraseonlaunchrule>0</eraseonlaunchrule>
+    <EraseKey />
+    <avrtool>com.atmel.avrdbg.tool.jtagice3plus</avrtool>
+    <avrtoolserialnumber>J30200010429</avrtoolserialnumber>
+    <avrdeviceexpectedsignature>0x1E9705</avrdeviceexpectedsignature>
+    <com_atmel_avrdbg_tool_jtagice3plus>
+      <ToolOptions>
+        <InterfaceProperties>
+          <JtagDbgClock>5158558</JtagDbgClock>
+        </InterfaceProperties>
+        <InterfaceName>JTAG</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.jtagice3plus</ToolType>
+      <ToolNumber>J30200010429</ToolNumber>
+      <ToolName>JTAGICE3</ToolName>
+    </com_atmel_avrdbg_tool_jtagice3plus>
+    <avrtoolinterface>JTAG</avrtoolinterface>
+    <avrtoolinterfaceclock>5158558</avrtoolinterfaceclock>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <ToolchainSettings>
+      <AvrGccCpp>
+        <avrgcc.common.Device>-mmcu=atmega1284p -B "%24(PackRepoDir)\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega1284p"</avrgcc.common.Device>
+        <avrgcc.common.optimization.RelaxBranches>True</avrgcc.common.optimization.RelaxBranches>
+        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+        <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+        <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>NDEBUG</Value>
+          </ListValues>
+        </avrgcc.compiler.symbols.DefSymbols>
+        <avrgcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\ATmega_DFP\1.7.374\include\</Value>
+          </ListValues>
+        </avrgcc.compiler.directories.IncludePaths>
+        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcccpp.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcccpp.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcccpp.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcccpp.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcccpp.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>NDEBUG</Value>
+          </ListValues>
+        </avrgcccpp.compiler.symbols.DefSymbols>
+        <avrgcccpp.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\ATmega_DFP\1.7.374\include\</Value>
+          </ListValues>
+        </avrgcccpp.compiler.directories.IncludePaths>
+        <avrgcccpp.compiler.optimization.level>Optimize for size (-Os)</avrgcccpp.compiler.optimization.level>
+        <avrgcccpp.compiler.optimization.PackStructureMembers>True</avrgcccpp.compiler.optimization.PackStructureMembers>
+        <avrgcccpp.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcccpp.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcccpp.compiler.warnings.AllWarnings>True</avrgcccpp.compiler.warnings.AllWarnings>
+        <avrgcccpp.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+          </ListValues>
+        </avrgcccpp.linker.libraries.Libraries>
+        <avrgcccpp.assembler.general.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\ATmega_DFP\1.7.374\include\</Value>
+          </ListValues>
+        </avrgcccpp.assembler.general.IncludePaths>
+      </AvrGccCpp>
+    </ToolchainSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <ToolchainSettings>
+      <AvrGccCpp>
+        <avrgcc.common.Device>-mmcu=atmega1284p -B "%24(PackRepoDir)\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega1284p"</avrgcc.common.Device>
+        <avrgcc.common.optimization.RelaxBranches>True</avrgcc.common.optimization.RelaxBranches>
+        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+        <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+        <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>DEBUG</Value>
+          </ListValues>
+        </avrgcc.compiler.symbols.DefSymbols>
+        <avrgcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\ATmega_DFP\1.7.374\include\</Value>
+          </ListValues>
+        </avrgcc.compiler.directories.IncludePaths>
+        <avrgcc.compiler.optimization.level>Optimize debugging experience (-Og)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcccpp.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcccpp.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcccpp.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcccpp.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcccpp.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>DEBUG</Value>
+            <Value>F_CPU=20000000UL</Value>
+          </ListValues>
+        </avrgcccpp.compiler.symbols.DefSymbols>
+        <avrgcccpp.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\ATmega_DFP\1.7.374\include\</Value>
+          </ListValues>
+        </avrgcccpp.compiler.directories.IncludePaths>
+        <avrgcccpp.compiler.optimization.level>Optimize debugging experience (-Og)</avrgcccpp.compiler.optimization.level>
+        <avrgcccpp.compiler.optimization.DebugLevel>Default (-g2)</avrgcccpp.compiler.optimization.DebugLevel>
+        <avrgcccpp.compiler.warnings.AllWarnings>True</avrgcccpp.compiler.warnings.AllWarnings>
+        <avrgcccpp.compiler.warnings.Undefined>True</avrgcccpp.compiler.warnings.Undefined>
+        <avrgcccpp.compiler.warnings.WarningsAsErrors>True</avrgcccpp.compiler.warnings.WarningsAsErrors>
+        <avrgcccpp.compiler.miscellaneous.OtherFlags>-std=gnu++11 -fno-threadsafe-statics</avrgcccpp.compiler.miscellaneous.OtherFlags>
+        <avrgcccpp.compiler.miscellaneous.Verbose>True</avrgcccpp.compiler.miscellaneous.Verbose>
+        <avrgcccpp.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+          </ListValues>
+        </avrgcccpp.linker.libraries.Libraries>
+        <avrgcccpp.assembler.general.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\ATmega_DFP\1.7.374\include\</Value>
+          </ListValues>
+        </avrgcccpp.assembler.general.IncludePaths>
+        <avrgcccpp.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcccpp.assembler.debugging.DebugLevel>
+      </AvrGccCpp>
+    </ToolchainSettings>
+    <UsesExternalMakeFile>False</UsesExternalMakeFile>
+    <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
+    <BuildTarget>all</BuildTarget>
+    <CleanTarget>clean</CleanTarget>
+    <ExternalMakeFilePath>C:\Users\Louis\Desktop\HexapodCpp\GccApplication1\CMakeLists.txt</ExternalMakeFilePath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Bot\Walk\Walk.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Bot\Walk\Walk.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Barometer\Barometer.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Barometer\Barometer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Barometer\BarometerInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Adc\Adc.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Adc\Adc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Adc\AdcInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Hexapodcpp.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Bot\Body\Body.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Bot\Body\Body.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Bot\Body\BodyInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Bot\Constants.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Bot\Leg\Leg.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Bot\Leg\Leg.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Bot\Legs\Legs.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Bot\Legs\Legs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Builder\App.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Builder\App.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="CMakeLists.txt">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Cluster\Battery\ClusterBattery.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Cluster\Body\ClusterBody.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Cluster\ClusterBase.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Cluster\ClusterInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Cluster\Clusters\Clusters.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Cluster\Clusters\Clusters.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Cluster\Clusters\ClustersInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Cluster\Constants.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Cluster\Decoding\Protocol.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Cluster\Decoding\Protocol.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Cluster\Frame\Frame.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Cluster\Frame\Frame.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Cluster\General\ClusterGeneral.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Cluster\Imu\ClusterImu.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Cluster\Proximity\ClusterProximity.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Cluster\Servo\ClusterServo.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Battery\Battery.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Battery\Battery.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Battery\BatteryInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Battery\BatteryObservable.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Battery\BatteryObservableInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Battery\BatteryObserverInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Battery\BatteryState.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Communication\Communication.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Communication\Communication.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Communication\CommunicationInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\ComponentInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Display\Ssd1306.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Display\Ssd1306.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Display\Ssd1306Interface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Imu\Ahrs.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Imu\Ahrs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Imu\Mpu9150.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Imu\Mpu9150.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Imu\Mpu9150Interface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Led\Led.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Led\Led.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Led\LedInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Proximity\Laser\Vl53l0x.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Proximity\Laser\Vl53l0x.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Proximity\SensorProximity.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Proximity\SensorProximity.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Proximity\SensorProximityInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Proximity\SensorProximityObservable.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Proximity\SensorProximityObservableInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Proximity\SensorProximityObserverInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Proximity\SensorProximityWindow.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Proximity\SensorsId.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Proximity\Ultrasound\Srf05.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Proximity\Ultrasound\Srf05.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Servo\Servo.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Servo\Servo.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Servo\ServoInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Servos\Constants.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Servos\Servos.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Servos\Servos.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Servos\ServosInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\ServosController\Pca9685.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\ServosController\Pca9685.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\ServosController\Pca9685Interface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Software\Software.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Software\Software.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Component\Software\SoftwareInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Core\CoreInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Core\Status.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\DriverInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Gpio\Gpio.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Gpio\Gpio.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Gpio\GpioInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\InputCapture\InputCapture.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\InputCapture\InputCapture.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\InputCapture\InputCaptureInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Isr.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Tick\Tick.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Tick\Tick.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Tick\TickInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Twi\Constants.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Twi\Twi.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Twi\Twi.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Twi\TwiInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Uart\Constants.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Uart\Uart.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Uart\Uart.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Driver\Uart\UartInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Misc\Bitmap\Bitmaps.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Misc\Bitmap\Bitmaps.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Misc\Bitmap\Font.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Misc\Bitmap\Pixel.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Misc\Buffer\Buffer.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Misc\Buffer\Buffer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Misc\Logger\Logger.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Misc\Logger\Logger.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Misc\Maths\Geometry.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Misc\Maths\Maths.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Misc\Maths\Utils.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Battery\ServiceBattery.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Battery\ServiceBattery.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Body\ServiceBody.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Body\ServiceBody.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Communication\ServiceCommunication.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Communication\ServiceCommunication.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Constants.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Control\ServiceControl.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Control\ServiceControl.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Display\ServiceDisplay.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Display\ServiceDisplay.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Event\BufferEvent.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Event\BufferEvent.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Event\EventDispatcherInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Event\EventListener.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Event\EventListener.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Event\EventListenerInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Event\SEvent.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\General\ServiceGeneral.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\General\ServiceGeneral.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Orientation\ServiceOrientation.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Orientation\ServiceOrientation.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Proximity\ServiceProximity.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Proximity\ServiceProximity.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Service.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\ServiceInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Services\Services.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Service\Services\Services.h">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Bot\" />
+    <Folder Include="Bot\Body\" />
+    <Folder Include="Bot\Leg\" />
+    <Folder Include="Bot\Legs\" />
+    <Folder Include="Bot\Walk" />
+    <Folder Include="Builder\" />
+    <Folder Include="Cluster\" />
+    <Folder Include="Cluster\Battery\" />
+    <Folder Include="Cluster\Body\" />
+    <Folder Include="Cluster\Clusters\" />
+    <Folder Include="Cluster\Decoding\" />
+    <Folder Include="Cluster\Frame\" />
+    <Folder Include="Cluster\General\" />
+    <Folder Include="Cluster\Imu\" />
+    <Folder Include="Cluster\Proximity\" />
+    <Folder Include="Cluster\Servo\" />
+    <Folder Include="Component\" />
+    <Folder Include="Component\Battery\" />
+    <Folder Include="Component\Communication\" />
+    <Folder Include="Component\Display\" />
+    <Folder Include="Component\Imu\" />
+    <Folder Include="Component\Led\" />
+    <Folder Include="Component\Barometer" />
+    <Folder Include="Component\Proximity\" />
+    <Folder Include="Component\Proximity\Laser\" />
+    <Folder Include="Component\Proximity\Ultrasound\" />
+    <Folder Include="Component\Servo\" />
+    <Folder Include="Component\Servos\" />
+    <Folder Include="Component\ServosController\" />
+    <Folder Include="Component\Software\" />
+    <Folder Include="Core\" />
+    <Folder Include="Driver\" />
+    <Folder Include="Driver\Gpio\" />
+    <Folder Include="Driver\InputCapture\" />
+    <Folder Include="Driver\Adc" />
+    <Folder Include="Driver\Tick\" />
+    <Folder Include="Driver\Twi\" />
+    <Folder Include="Driver\Uart\" />
+    <Folder Include="Misc\" />
+    <Folder Include="Misc\Bitmap\" />
+    <Folder Include="Misc\Buffer\" />
+    <Folder Include="Misc\Logger\" />
+    <Folder Include="Misc\Maths\" />
+    <Folder Include="Service\" />
+    <Folder Include="Service\Battery\" />
+    <Folder Include="Service\Communication\" />
+    <Folder Include="Service\Control\" />
+    <Folder Include="Service\Display\" />
+    <Folder Include="Service\Event\" />
+    <Folder Include="Service\General\" />
+    <Folder Include="Service\Body" />
+    <Folder Include="Service\Orientation\" />
+    <Folder Include="Service\Proximity\" />
+    <Folder Include="Service\Services\" />
+  </ItemGroup>
+  <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
+</Project>

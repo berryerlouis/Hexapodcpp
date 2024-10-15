@@ -4,8 +4,8 @@ namespace Component
 {
     namespace Battery
     {
-#define NOMINAL_LEVEL    80U
-#define WARNING_LEVEL    75U
+#define NOMINAL_LEVEL    800U
+#define WARNING_LEVEL    750U
 
         Battery::Battery(Adc::AdcInterface &adc)
             : mVoltage(0U)

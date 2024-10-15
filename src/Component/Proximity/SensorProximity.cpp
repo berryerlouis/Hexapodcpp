@@ -13,7 +13,7 @@ namespace Component
             uint8_t success = 0U;
 
             for (SensorProximityInterface *sensor: this->mSensors) {
-                if (sensor->Initialize()) {
+                if (sensor->Initialize() == Core::CoreStatus::CORE_OK) {
                     success++;
                 }
             }
@@ -43,7 +43,7 @@ namespace Component
             uint8_t success = 0U;
 
             for (SensorProximityInterface *sensor: this->mSensors) {
-                if (sensor->Attach(observer)) {
+                if (sensor->Attach(observer) == Core::CoreStatus::CORE_OK) {
                     success++;
                 }
             }

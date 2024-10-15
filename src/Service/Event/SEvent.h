@@ -9,10 +9,10 @@ namespace Service
 #define EVENT_MAX_PARAMS    10U
 
     struct SEvent {
-        EServices id;
-        uint8_t value;
-        uint8_t nbParams;
-        uint8_t params[EVENT_MAX_PARAMS];
+        volatile EServices id;
+        volatile uint8_t value;
+        volatile uint8_t nbParams;
+        volatile uint8_t params[EVENT_MAX_PARAMS];
 
         SEvent() = default;
 
@@ -28,8 +28,8 @@ namespace Service
               , value(value)
               , nbParams(nbParams) {
             if (nbParams < EVENT_MAX_PARAMS) {
-                memset(this->params, 0U, EVENT_MAX_PARAMS);
-                memcpy(this->params, params, nbParams);
+                memset((void*)this->params, 0U, EVENT_MAX_PARAMS);
+                memcpy((void*)this->params, params, nbParams);
             }
         }
 

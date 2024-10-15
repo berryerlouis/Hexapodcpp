@@ -14,6 +14,7 @@
 #include "../Cluster/Clusters/Clusters.h"
 #include "../Component/Battery/Battery.h"
 #include "../Component/Led/Led.h"
+#include "../Component/Barometer/Barometer.h"
 #include "../Component/Imu/Mpu9150.h"
 #include "../Component/ServosController/Pca9685.h"
 #include "../Component/Servos/Servos.h"
@@ -25,6 +26,7 @@
 #include "../Component/Communication/Communication.h"
 #include "../Service/Event/EventListener.h"
 #include "../Service/Battery/ServiceBattery.h"
+#include "../Service/Body/ServiceBody.h"
 #include "../Service/Control/ServiceControl.h"
 #include "../Service/Communication/ServiceCommunication.h"
 #include "../Service/Display/ServiceDisplay.h"
@@ -60,6 +62,7 @@ namespace Builder
         Driver::InputCapture::InputCapture mInputCaptureRight;
         Component::Battery::Battery mBattery;
         Component::Imu::Mpu9150 mMpu9150;
+        Component::Barometer::Barometer mBarometer;
         Component::Proximity::Ultrasound::Srf05 mSrf05Left;
         Component::Proximity::Ultrasound::Srf05 mSrf05Right;
         Component::Proximity::Laser::Vl53l0x mVl53l0x;
@@ -88,6 +91,7 @@ namespace Builder
         Service::Proximity::ServiceProximity mServiceProximity;
         Service::Orientation::ServiceOrientation mServiceOrientation;
         Service::Battery::ServiceBattery mServiceBattery;
+        Service::Body::ServiceBody mServiceBody;
         Service::Display::ServiceDisplay mServiceDisplay;
         Service::General::ServiceGeneral mServiceGeneral;
         Service::Services::Services mServices;

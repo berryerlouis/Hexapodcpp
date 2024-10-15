@@ -37,7 +37,7 @@ namespace Component
 					Core::CoreStatus success = mSrf05.Initialize();
 
 					EXPECT_EQ(mSrf05.GetThreshold(), 30U);
-					EXPECT_TRUE(success);
+					EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 				}
 
 				virtual void TearDown() {
@@ -55,7 +55,7 @@ namespace Component
 			};
 
 			TEST_F(UT_CMP_SRF05, SetThreshold) {
-				EXPECT_TRUE(mSrf05.SetThreshold( 35U ));
+				EXPECT_EQ(mSrf05.SetThreshold( 35U ), Core::CoreStatus::CORE_OK);
 				EXPECT_EQ(35U, mSrf05.GetThreshold());
 			}
 

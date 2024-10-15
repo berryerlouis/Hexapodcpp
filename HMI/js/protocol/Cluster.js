@@ -48,11 +48,19 @@ const CommandImu = {
     ACC: 'ACC',
     GYR: 'GYR',
     MAG: 'MAG',
-    TMP: 'TMP'
+    TMP: 'TMP',
+    YAWPITCHROLL: 'YAWPITCHROLL',
+    PRESSURE: 'PRESSURE',
+    ALTITUDE: 'ALTITUDE',
+    TMPBAR: 'TMPBAR',
+    CALIB_MAG_MIN_MAX: 'CALIBMAGMINMAX',
+    START_STOP_MAG_CALIB: 'STARTSTOPMAGCALIB',
 };
 
 const CommandBody = {
-    SET_X_Y_Z: 'SET_X_Y_Z'
+    SET_BODY_X_Y_Z: 'SET_BODY_X_Y_Z',
+    SET_LEG_X_Y_Z: 'SET_LEG_X_Y_Z',
+    SET_WALK_STATUS: 'SET_WALK_STATUS'
 };
 
 const CommandProximity = {
@@ -104,7 +112,13 @@ export default class Clusters {
                 new Command(CommandImu.ACC, '01'),
                 new Command(CommandImu.GYR, '02'),
                 new Command(CommandImu.MAG, '03'),
-                new Command(CommandImu.TMP, '04')
+                new Command(CommandImu.TMP, '04'),
+                new Command(CommandImu.YAWPITCHROLL, '05'),
+                new Command(CommandImu.PRESSURE, '06'),
+                new Command(CommandImu.ALTITUDE, '07'),
+                new Command(CommandImu.TMPBAR, '08'),
+                new Command(CommandImu.CALIB_MAG_MIN_MAX, '09'),
+                new Command(CommandImu.START_STOP_MAG_CALIB, '0A')
             ]
         ),
         new Cluster(
@@ -145,7 +159,9 @@ export default class Clusters {
         new Cluster(
             ClusterName.BODY, '05',
             [
-                new Command(CommandBody.SET_X_Y_Z, '00')
+                new Command(CommandBody.SET_BODY_X_Y_Z, '00'),
+                new Command(CommandBody.SET_LEG_X_Y_Z, '01'),
+                new Command(CommandBody.SET_WALK_STATUS, '02')
             ]
         )
     ];

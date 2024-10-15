@@ -13,6 +13,7 @@ namespace Cluster
         public:
             ClusterGeneral(SoftwareInterface &software)
                 : ClusterBase(GENERAL, this)
+                  , StrategyCluster(NB_COMMANDS_GENERAL)
                   , mSoftware(software) {
                 this->AddClusterItem({.commandId = EGeneralCommands::VERSION, .expectedSize = 0U});
                 this->AddClusterItem({.commandId = EGeneralCommands::MIN_EXECUTION_TIME, .expectedSize = 1U});
@@ -43,7 +44,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::GENERAL,
                     EGeneralCommands::VERSION);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set1ByteParam(version.major);
                     response.Set1ByteParam(version.minor);
                 }
@@ -55,7 +56,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::GENERAL,
                     EGeneralCommands::MIN_EXECUTION_TIME);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set1ByteParam(serviceId);
                     response.Set2BytesParam(deltaTime);
                 }
@@ -67,7 +68,7 @@ namespace Cluster
                 const Core::CoreStatus success = response.Build(
                     EClusters::GENERAL,
                     EGeneralCommands::MAX_EXECUTION_TIME);
-                if (success) {
+                if (success == Core::CoreStatus::CORE_OK) {
                     response.Set1ByteParam(serviceId);
                     response.Set2BytesParam(deltaTime);
                 }

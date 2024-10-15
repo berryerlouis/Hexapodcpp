@@ -27,20 +27,30 @@ export class ClusterBattery {
                     value: voltage
                 });
                 if (state === 0) {
+                    this.batteryStatusHMI.removeClass('bi-usb-symbol');
                     this.batteryStatusHMI.removeClass('bi-battery');
                     this.batteryStatusHMI.removeClass('bi-battery-half');
                     this.batteryStatusHMI.addClass('bi-battery-full');
                     this.batteryStatusHMI.attr('style', "color: rgb(50, 223, 27);");
                 } else if (state === 1) {
+                    this.batteryStatusHMI.removeClass('bi-usb-symbol');
                     this.batteryStatusHMI.removeClass('bi-battery');
                     this.batteryStatusHMI.removeClass('bi-battery-full');
                     this.batteryStatusHMI.addClass('bi-battery-half');
                     this.batteryStatusHMI.attr('style', "color: rgb(223, 135, 27);");
                 } else if (state === 2) {
+                    this.batteryStatusHMI.removeClass('bi-usb-symbol');
                     this.batteryStatusHMI.removeClass('bi-battery-full');
                     this.batteryStatusHMI.removeClass('bi-battery-half');
-                    this.batteryStatusHMI.addClass('bi-battery');
-                    this.batteryStatusHMI.attr('style', "color: rgb(223, 27, 27);");
+                    if (voltage < 5) {
+                        this.batteryStatusHMI.addClass('bi-usb-symbol');
+                        this.batteryStatusHMI.removeClass('bi-battery');
+                        this.batteryStatusHMI.attr('style', "color: rgb(50, 223, 27);");
+                    } else {
+                        this.batteryStatusHMI.removeClass('bi-usb-symbol');
+                        this.batteryStatusHMI.addClass('bi-battery');
+                        this.batteryStatusHMI.attr('style', "color: rgb(223, 27, 27);");
+                    }
                 } else {
                     this.batteryStatusHMI.removeClass('bi-battery-full');
                     this.batteryStatusHMI.removeClass('bi-battery-half');

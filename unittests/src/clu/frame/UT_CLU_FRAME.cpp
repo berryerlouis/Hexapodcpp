@@ -40,7 +40,7 @@ namespace Cluster
 		EXPECT_EQ(mFrame.commandId, EBatteryCommands::GET_VOLTAGE);
 		EXPECT_EQ(mFrame.nbParams, 0U);
 		EXPECT_EQ(mFrame.params[0U], 0U);
-		EXPECT_TRUE(success);
+		EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 	}
 
 	TEST_F(UT_CLU_FRAME, BuildNoArgNullptr_Ok) {
@@ -56,7 +56,7 @@ namespace Cluster
 		EXPECT_EQ(mFrame.commandId, EBatteryCommands::GET_VOLTAGE);
 		EXPECT_EQ(mFrame.nbParams, 0U);
 		EXPECT_EQ(mFrame.params[0U], 0U);
-		EXPECT_TRUE(success);
+		EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 	}
 
 	TEST_F(UT_CLU_FRAME, Build1ByteArg_Ok) {
@@ -74,7 +74,7 @@ namespace Cluster
 		EXPECT_EQ(mFrame.nbParams, 1U);
 		EXPECT_EQ(mFrame.params[0U], 42U);
 		EXPECT_EQ(mFrame.Get1ByteParam( 0U ), 42U);
-		EXPECT_TRUE(success);
+		EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 	}
 
 	TEST_F(UT_CLU_FRAME, BuildAndAdd1ByteArg_Ok) {
@@ -91,7 +91,7 @@ namespace Cluster
 		EXPECT_EQ(mFrame.nbParams, 1U);
 		EXPECT_EQ(mFrame.params[0U], 42U);
 		EXPECT_EQ(mFrame.Get1ByteParam( 0U ), 42U);
-		EXPECT_TRUE(success);
+		EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 	}
 
 	TEST_F(UT_CLU_FRAME, BuildAndAddMultiple1ByteArg_Ok) {
@@ -120,7 +120,7 @@ namespace Cluster
 		EXPECT_EQ(mFrame.Get1ByteParam( 3U ), 64U);
 		EXPECT_EQ(mFrame.params[4U], 15U);
 		EXPECT_EQ(mFrame.Get1ByteParam( 4U ), 15U);
-		EXPECT_TRUE(success);
+		EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 	}
 
 	TEST_F(UT_CLU_FRAME, Build2BytesArg_Ok) {
@@ -139,7 +139,7 @@ namespace Cluster
 		EXPECT_EQ(mFrame.params[0U], 42U);
 		EXPECT_EQ(mFrame.params[1U], 0U);
 		EXPECT_EQ(mFrame.Get2BytesParam( 0U ), 42U);
-		EXPECT_TRUE(success);
+		EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 	}
 
 	TEST_F(UT_CLU_FRAME, BuildAndAdd2BytesArg_Ok) {
@@ -157,7 +157,7 @@ namespace Cluster
 		EXPECT_EQ(mFrame.params[0U], 42U);
 		EXPECT_EQ(mFrame.params[1U], 0U);
 		EXPECT_EQ(mFrame.Get2BytesParam( 0U ), 42U);
-		EXPECT_TRUE(success);
+		EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 	}
 
 	TEST_F(UT_CLU_FRAME, BuildAndAddMultiple2BytesArg_Ok) {
@@ -190,7 +190,7 @@ namespace Cluster
 		EXPECT_EQ(mFrame.params[8U], 0U);
 		EXPECT_EQ(mFrame.params[9U], 0x15U);
 		EXPECT_EQ(mFrame.Get2BytesParam( 8U ), 0x1500U);
-		EXPECT_TRUE(success);
+		EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 	}
 
 	TEST_F(UT_CLU_FRAME, BuildAndAdd3BytesArg_Ok) {
@@ -209,7 +209,7 @@ namespace Cluster
 		EXPECT_EQ(mFrame.params[1U], 0x41U);
 		EXPECT_EQ(mFrame.params[2U], 0x42U);
 		EXPECT_EQ(mFrame.Get3BytesParam( 0U ), 0x424140U);
-		EXPECT_TRUE(success);
+		EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 	}
 
 	TEST_F(UT_CLU_FRAME, BuildAndAddMultiple3BytesArg_Ok) {
@@ -237,7 +237,7 @@ namespace Cluster
 		EXPECT_EQ(mFrame.Get3BytesParam( 0U ), 0x424140U);
 		EXPECT_EQ(mFrame.Get2BytesParam( 3U ), 0x5533U);
 		EXPECT_EQ(mFrame.Get1ByteParam( 5U ), 0xAAU);
-		EXPECT_TRUE(success);
+		EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 	}
 
 	TEST_F(UT_CLU_FRAME, BuildAndAdd4BytesArg_Ok) {
@@ -257,7 +257,7 @@ namespace Cluster
 		EXPECT_EQ(mFrame.params[2U], 0x41U);
 		EXPECT_EQ(mFrame.params[3U], 0x42U);
 		EXPECT_EQ(mFrame.Get4BytesParam( 0U ), 0x42414039U);
-		EXPECT_TRUE(success);
+		EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 	}
 
 	TEST_F(UT_CLU_FRAME, BuildAndAddMultiple4BytesArg_Ok) {
@@ -292,7 +292,7 @@ namespace Cluster
 		EXPECT_EQ(mFrame.Get2BytesParam( 3U ), 0x5533U);
 		EXPECT_EQ(mFrame.Get1ByteParam( 5U ), 0xAAU);
 		EXPECT_EQ(mFrame.Get4BytesParam( 6U ), 0x42414039U);
-		EXPECT_TRUE(success);
+		EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 	}
 
 	TEST_F(UT_CLU_FRAME, BuildAndAdd6BytesArg_Ok) {
@@ -314,7 +314,7 @@ namespace Cluster
 		EXPECT_EQ(mFrame.params[4U], 0x41U);
 		EXPECT_EQ(mFrame.params[5U], 0x42U);
 		EXPECT_EQ(mFrame.Get6BytesParam( 0U ), 0x424140394241U);
-		EXPECT_TRUE(success);
+		EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 	}
 
 	TEST_F(UT_CLU_FRAME, BuildAndAdd8BytesArg_Ok) {
@@ -338,6 +338,6 @@ namespace Cluster
 		EXPECT_EQ(mFrame.params[6U], 0x41U);
 		EXPECT_EQ(mFrame.params[7U], 0x42U);
 		EXPECT_EQ(mFrame.Get8BytesParam( 0U ), 0x4241403942414039U);
-		EXPECT_TRUE(success);
+		EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 	}
 }

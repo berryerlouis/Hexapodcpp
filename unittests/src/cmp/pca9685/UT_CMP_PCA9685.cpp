@@ -48,7 +48,7 @@ TEST_F( UT_CMP_PCA9685, Initialize_Ok )
 
 	success = mPca9685.Initialize();
 
-	EXPECT_TRUE( success );
+	EXPECT_EQ( success, Core::CoreStatus::CORE_OK );
 }
 
 TEST_F( UT_CMP_PCA9685, Update_Ok )
@@ -65,7 +65,7 @@ TEST_F( UT_CMP_PCA9685, Update_Ok )
 	success = mPca9685.Initialize();
 	mPca9685.Update( 0U );
 
-	EXPECT_TRUE( success );
+	EXPECT_EQ( success, Core::CoreStatus::CORE_OK );
 }
 }
 }

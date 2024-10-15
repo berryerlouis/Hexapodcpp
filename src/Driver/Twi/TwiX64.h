@@ -20,6 +20,12 @@ namespace Driver {
                 (void) currentTime;
             }
 
+            bool SendCommand(const uint8_t address, const uint8_t command) final override {
+                (void) address;
+                (void) command;
+                return (true);
+            }
+
             virtual bool ReadRegister(const uint8_t address, const uint8_t reg, uint8_t &data) final override {
                 (void) address;
                 (void) reg;
@@ -28,6 +34,13 @@ namespace Driver {
             }
 
             virtual bool ReadRegister16Bits(const uint8_t address, const uint8_t reg, uint16_t &data) final override {
+                (void) address;
+                (void) reg;
+                (void) data;
+                return true;
+            }
+
+            virtual bool ReadRegister24Bits(const uint8_t address, const uint8_t reg, uint32_t &data) final override {
                 (void) address;
                 (void) reg;
                 (void) data;

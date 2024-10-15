@@ -5,10 +5,11 @@ namespace Driver
 {
     namespace Uart
     {
-        Misc::Buffer::Buffer Uart::bufferRx;
-        Misc::Buffer::Buffer Uart::bufferTx;
-
-        Uart::Uart(const EBaudRate &baud) : mBaudRate(baud) {
+	    Misc::Buffer::Buffer mBufferRx;
+	    Misc::Buffer::Buffer mBufferTx;
+		
+        Uart::Uart(const EBaudRate &baud) 
+		: mBaudRate(baud) {
         }
 
         Core::CoreStatus Uart::Initialize(void) {
@@ -28,44 +29,37 @@ namespace Driver
 
         void Uart::Send(const char *data, const size_t len) {
             for (size_t i = 0U; i < len; ++i) {
-                Send(data[i]);
+                mBufferTx.Push(static_cast<const uint8_t &>(data[i]));
             }
+            UCSR0B |= _BV(UDRIE0);
         }
 
         void Uart::Send(const uint8_t data) {
-            Uart::bufferTx.Push(data);
+            mBufferTx.Push(data);
             UCSR0B |= _BV(UDRIE0);
         }
 
         uint8_t Uart::Read(void) {
-            return Uart::bufferRx.Pop();
+            return mBufferRx.Pop();
         }
 
         uint8_t Uart::DataAvailable(void) const {
-            return (Uart::bufferRx.GetLength());
+            return (mBufferRx.GetLength());
         }
 
         ISR(USART0_UDRE_vect) {
-            ISR_EMBEDDED_CODE(
-                if ( Uart::bufferTx.GetLength() > 0U )
-                {
-                UDR0 = Uart::bufferTx.Pop();
-                }
-                else
-                {
-                UCSR0B &= ~_BV( UDRIE0 );
-                }
-            );
+			UDR0 = mBufferTx.Pop();
+            UCSR0A |= _BV(TXC0);
+            if (mBufferTx.GetLength() == 0U) {
+                UCSR0B &= ~_BV(UDRIE0);
+            }
         }
 
         ISR(USART0_RX_vect) {
-            ISR_EMBEDDED_CODE(
-                volatile uint8_t receivedData = UDR0;
-                if ( ( UCSR0A & ( _BV( FE0 ) | _BV( DOR0 ) | _BV( UPE0 ) ) ) == 0U )
-                {
-                Uart::bufferRx.Push( receivedData );
-                }
-            );
+            volatile uint8_t receivedData = UDR0;
+            if ((UCSR0A & (_BV(FE0) | _BV(DOR0) | _BV(UPE0))) == 0U) {
+                mBufferRx.Push(receivedData);
+            }
         }
     }
 }

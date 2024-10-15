@@ -31,6 +31,7 @@ add_subdirectory(src/clu/protocol)
 add_subdirectory(src/clu/proximity)
 add_subdirectory(src/clu/servo)
 
+add_subdirectory(src/cmp/ahrs)
 add_subdirectory(src/cmp/battery)
 add_subdirectory(src/cmp/communication)
 add_subdirectory(src/cmp/led)
