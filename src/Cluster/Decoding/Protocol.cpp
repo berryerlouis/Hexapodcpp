@@ -51,6 +51,7 @@ namespace Cluster
             }
 
             buffer[length] = '>';
+            buffer[length + 1U] = '\0';
             return (length + 1U);
         }
 

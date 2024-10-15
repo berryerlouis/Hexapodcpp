@@ -35,7 +35,6 @@ namespace Cluster
                 this->commandId = commandId;
                 this->nbParams = nbParams;
 
-                memset((void *) &this->params[nbParams], 0U, FRAME_MAX_PARAMS);
                 memcpy((void *) this->params, params, nbParams);
                 success = Core::CoreStatus::CORE_OK;
             }

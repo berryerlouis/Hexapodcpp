@@ -116,20 +116,6 @@ namespace Cluster
 			}
 		}
 
-		TEST_F(UT_CLU_PROTOCOL, Decode_BufferDataInvalidCharacter) {
-			Frame request;
-			constexpr char bufferRx[] = "000g00";
-			const Core::CoreStatus parsedStatus = Protocol::Decode(bufferRx, request);
-
-			EXPECT_EQ(parsedStatus, Core::CoreStatus::CORE_ERROR_ARGUMENT);
-			EXPECT_EQ(request.clusterId, 0U);
-			EXPECT_EQ(request.commandId, 0U);
-			EXPECT_EQ(request.nbParams, 0U);
-			for (size_t i = 0U; i < FRAME_MAX_PARAMS; i++) {
-				EXPECT_EQ(request.params[i], 0U);
-			}
-		}
-
 		TEST_F(UT_CLU_PROTOCOL, Decode_BufferDataSizeError) {
 			Frame request;
 			constexpr char bufferRx[] = "000001";

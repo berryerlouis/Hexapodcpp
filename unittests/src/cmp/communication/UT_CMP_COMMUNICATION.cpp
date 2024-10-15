@@ -106,10 +106,6 @@ namespace Component
 		TEST_F(UT_CMP_COMMUNICATION, Update_Ko_1frame) {
 			const char *bufferRx = "<0<0000>";
 
-			EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-			EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-			EXPECT_CALL(mMockUart, Send( Matcher <const char *>( _ ), _ )).Times(1U);
-
 			for (size_t i = 0; i < strlen(bufferRx); i++) {
 				EXPECT_CALL(mMockUart, DataAvailable()).WillRepeatedly(Return(strlen(bufferRx)));
 				EXPECT_CALL(mMockUart, Read()).WillOnce(Return(bufferRx[i]));

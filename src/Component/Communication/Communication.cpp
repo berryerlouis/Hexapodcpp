@@ -67,7 +67,7 @@ namespace Component
 
         bool Communication::ReceivedStringFrame(void) {
             uint8_t nbData = this->mUart.DataAvailable();
-            while (nbData > 0U) {
+            if (nbData > 0U) {
                 nbData--;
                 const volatile uint8_t rc = this->mUart.Read();
                 if (rc == '<') {

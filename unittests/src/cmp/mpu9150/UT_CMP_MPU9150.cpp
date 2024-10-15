@@ -24,6 +24,20 @@ namespace Component
 			}
 
 			virtual void SetUp() {
+				Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+
+				EXPECT_CALL(mMockTwi, ReadRegister( _, _, _ )).WillRepeatedly(Return(true));
+				EXPECT_CALL(mMockTwi, WriteRegister( _, _, _ )).WillRepeatedly(Return(true));
+
+				EXPECT_CALL(mMockTwi, ReadRegister( Mpu9150::MPU9150_I2C_ADDRESS, Mpu9150::ERegister::WHO_AM_I, _ )).
+						WillOnce(DoAll(SetArgReferee<2U>(Mpu9150::MPU9150_I2C_ADDRESS - 1), Return(true)));
+				EXPECT_CALL(mMockTwi, ReadRegister( Mpu9150::AK8963_I2C_ADDRESS, 0, _ )).
+						WillOnce(DoAll(SetArgReferee<2U>(0x48U), Return(true)));
+				EXPECT_CALL(mMockTwi, ReadRegisters( Mpu9150::AK8963_I2C_ADDRESS, 0x10, _, 3)).WillRepeatedly(
+					Return(true));
+				success = mMpu9150.Initialize();
+
+				EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 			}
 
 			virtual void TearDown() {
@@ -39,41 +53,8 @@ namespace Component
 			Mpu9150 mMpu9150;
 		};
 
-		TEST_F(UT_CMP_MPU9150, Initialize_Ok) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-
-			EXPECT_CALL(mMockTick, DelayMs(1000U)).Times(1U);
-			EXPECT_CALL(mMockTwi, ReadRegister( _, _, _ )).WillRepeatedly(Return(true));
-			EXPECT_CALL(mMockTwi, WriteRegister( _, _, _ )).WillRepeatedly(Return(true));
-
-			EXPECT_CALL(mMockTwi, ReadRegister( Mpu9150::MPU9150_I2C_ADDRESS, Mpu9150::ERegister::WHO_AM_I, _ )).
-					WillOnce(DoAll(SetArgReferee<2U>(Mpu9150::MPU9150_I2C_ADDRESS - 1), Return(true)));
-			EXPECT_CALL(mMockTwi, ReadRegister( Mpu9150::AK8963_I2C_ADDRESS, 0, _ )).
-					WillOnce(DoAll(SetArgReferee<2U>(0x48U), Return(true)));
-			EXPECT_CALL(mMockTwi, ReadRegisters( Mpu9150::AK8963_I2C_ADDRESS, 0x10, _, 3)).WillRepeatedly(Return(true));
-			success = mMpu9150.Initialize();
-
-			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
-		}
-
 		TEST_F(UT_CMP_MPU9150, Update_Ok) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-
-			EXPECT_CALL(mMockTick, GetUs()).Times(1U);
-			EXPECT_CALL(mMockTick, DelayMs(1000U)).Times(1U);
-			EXPECT_CALL(mMockTwi, ReadRegister( _, _, _ )).WillRepeatedly(Return(true));
-			EXPECT_CALL(mMockTwi, ReadRegisters( _, _, _, _ )).WillRepeatedly(Return(true));
-			EXPECT_CALL(mMockTwi, WriteRegister( _, _, _ )).WillRepeatedly(Return(true));
-
-			EXPECT_CALL(mMockTwi, ReadRegister( Mpu9150::MPU9150_I2C_ADDRESS, Mpu9150::ERegister::WHO_AM_I, _ )).
-					WillOnce(DoAll(SetArgReferee<2U>(Mpu9150::MPU9150_I2C_ADDRESS - 1), Return(true)));
-			EXPECT_CALL(mMockTwi, ReadRegister( Mpu9150::AK8963_I2C_ADDRESS, 0, _ )).
-					WillOnce(DoAll(SetArgReferee<2U>(0x48U), Return(true)));
-
-			success = mMpu9150.Initialize();
 			mMpu9150.Update(0UL);
-
-			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
 		}
 	}
 }

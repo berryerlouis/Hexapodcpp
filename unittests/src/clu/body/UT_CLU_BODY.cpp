@@ -66,7 +66,7 @@ namespace Cluster
 
 		TEST_F(UT_CLU_BODY, BuildFrameSetPosition_Ok) {
 			Frame response;
-			mClusterBody.BuildFrameSetPosition(response, 0);
+			mClusterBody.BuildFrameSetBodyPosition(response, 0);
 			EXPECT_EQ(response.clusterId, BODY);
 			EXPECT_EQ(response.commandId, EBodyCommands::SET_BODY_POS_ROT);
 			EXPECT_EQ(response.nbParams, 4U);
