@@ -1,6 +1,6 @@
 #pragma once
 
-#ifndef GTEST
+#ifdef AVR
 #include <avr/pgmspace.h>
 #else
 #define PROGMEM
@@ -31,6 +31,7 @@ namespace Misc
             static const uint8_t PROGMEM Battery50[];
             static const uint8_t PROGMEM Battery25[];
             static const uint8_t PROGMEM Battery0[];
+            static const uint8_t PROGMEM Usb[];
             static const uint8_t PROGMEM ArrowRight[];
             static const uint8_t PROGMEM ArrowLeft[];
             static const uint8_t PROGMEM ArrowUp[];
@@ -38,5 +39,5 @@ namespace Misc
             static const uint8_t PROGMEM ArrowCenter[];
             static const uint8_t PROGMEM Communication[];
         };
-    }
-}
+    } // namespace Bitmap
+} // namespace Misc

@@ -3,33 +3,25 @@
 #include "../Gpio/GpioInterface.h"
 #include "AdcInterface.h"
 
-namespace Driver {
-    namespace Adc {
+namespace Driver
+{
+    namespace Adc
+    {
         class Adc : public AdcInterface {
         public:
-            Adc( Gpio::GpioInterface &gpio ) {
-                (void)gpio;
-            }
-            ~Adc() = default;
+            Adc(Gpio::GpioInterface &gpio);
 
-            virtual Core::CoreStatus Initialize( void ) final override
-            {
-                return ( Core::CoreStatus::CORE_OK );
-            }
+            ~Adc() {
+            };
 
-            virtual void Update( const uint64_t currentTime ) final override
-            {
-                (void)currentTime;
-            }
+            virtual Core::Status Initialize(void) final override;
 
-            virtual void StartConversion( void ) final override
-            {
-            }
-            virtual uint16_t Read( void ) final override
-            {
-                return 2U;
-            }
-        private:
+            virtual void Update(const uint64_t currentTime) final override;
+
+            virtual void StartConversion(void) final override;
+
+            virtual uint16_t Read(void) final override;
+
         };
-    }
-}
+    } // namespace Adc
+} // namespace Driver

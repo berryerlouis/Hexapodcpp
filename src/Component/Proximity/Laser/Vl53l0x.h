@@ -3,6 +3,9 @@
 #include "../../../Cluster/Constants.h"
 #include "../../../Driver/Twi/TwiInterface.h"
 #include "../../../Driver/Tick/TickInterface.h"
+#ifdef RPI
+#include "../../Led/LedInterface.h"
+#endif
 #include "../SensorProximityInterface.h"
 
 namespace Component
@@ -77,23 +80,30 @@ namespace Component
 #define VL53L0X_ALGO_PHASECAL_CONFIG_TIMEOUT                   0x30U
 
                 static const uint16_t DISTANCE_THRESHOLD = 300U;
-
+#ifdef RPI
+                Vl53l0x(Twi::TwiInterface &i2c, Led::LedInterface &led, Tick::TickInterface &tick,
+                        const uint8_t address = 0x29U);
+#else
                 Vl53l0x(Twi::TwiInterface &i2c, Tick::TickInterface &tick, const uint8_t address = 0x29U);
+#endif
 
                 ~Vl53l0x() = default;
 
-                Core::CoreStatus Initialize(void);
+                Core::Status Initialize(void);
 
                 void Update(const uint64_t currentTime);
 
                 virtual uint16_t GetDistance(void) final override;
 
-                virtual Core::CoreStatus SetThreshold(const uint16_t threshold) final override;
+                virtual Core::Status SetThreshold(const uint16_t threshold) final override;
 
                 virtual uint16_t GetThreshold(void) final override;
 
             private:
                 Twi::TwiInterface &mI2c;
+#ifdef RPI
+                Led::LedInterface &mLed;
+#endif
                 Tick::TickInterface &mTick;
                 uint8_t mAddress;
                 uint16_t mDistance;
@@ -131,7 +141,7 @@ namespace Component
 
                 uint16_t DecodeTimeout(uint16_t reg_val);
 
-                uint16_t EncodeTimeout(uint32_t timeout_mclks);
+                uint16_t EncodeTimeout(const uint32_t timeout_mclks);
 
                 uint8_t GetVcselPulsePeriod(VcselPeriodType type);
 

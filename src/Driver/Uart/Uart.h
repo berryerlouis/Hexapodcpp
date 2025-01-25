@@ -13,7 +13,7 @@ namespace Driver
 
             ~Uart() = default;
 
-            virtual Core::CoreStatus Initialize(void) final override;
+            virtual Core::Status Initialize(void) final override;
 
             virtual void Update(const uint64_t currentTime) final override;
 
@@ -23,7 +23,7 @@ namespace Driver
 
             virtual uint8_t Read(void) final override;
 
-            virtual uint8_t DataAvailable(void) const final override;
+            virtual uint8_t DataAvailable(void) final override;
 
 
         private:

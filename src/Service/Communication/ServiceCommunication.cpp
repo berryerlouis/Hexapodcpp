@@ -1,7 +1,7 @@
 #include "ServiceCommunication.h"
 #include "../../Cluster/Battery/ClusterBattery.h"
-#include "../../Cluster/General/ClusterGeneral.h"
 #include "../../Cluster/Body/ClusterBody.h"
+#include "../../Cluster/General/ClusterGeneral.h"
 #include "../../Cluster/Imu/ClusterImu.h"
 #include "../../Cluster/Proximity/ClusterProximity.h"
 #include "../../Cluster/Servo/ClusterServo.h"
@@ -12,17 +12,18 @@ namespace Service
     {
         ServiceCommunication::ServiceCommunication(CommunicationInterface &communication,
                                                    Clusters::ClustersInterface &clusters,
-                                                   Event::EventListenerInterface &eventListener)
-            : Service(1U, eventListener), mClusters(clusters), mCommunication(communication) {
+                                                   Event::EventListenerInterface &eventListener) :
+            Service(1U, eventListener), mClusters(clusters), mCommunication(communication) {}
+
+        Core::Status ServiceCommunication::Initialize(void) {
+            const Core::Status success = this->mCommunication.Initialize();
+            if (Core::Status::CORE_OK == success) {
+                this->mInitialized = true;
+            }
+            return (success);
         }
 
-        Core::CoreStatus ServiceCommunication::Initialize(void) {
-            return (this->mCommunication.Initialize());
-        }
-
-        void ServiceCommunication::Update(const uint64_t currentTime) {
-            this->mCommunication.Update(currentTime);
-        }
+        void ServiceCommunication::Update(const uint64_t currentTime) { this->mCommunication.Update(currentTime); }
 
         void ServiceCommunication::DispatchEvent(const SEvent &event) {
             Frame response;
@@ -43,9 +44,8 @@ namespace Service
                 }
 
                 case EServices::PROXIMITY: {
-                    const Proximity::ClusterProximity *clusterProximity =
-                            static_cast<Proximity::ClusterProximity *>(
-                                this->mClusters.GetCluster(EClusters::PROXIMITY));
+                    const Proximity::ClusterProximity *clusterProximity = static_cast<Proximity::ClusterProximity *>(
+                            this->mClusters.GetCluster(EClusters::PROXIMITY));
                     const Proximity::SensorsId sensorId = static_cast<Proximity::SensorsId>(event.value);
                     const uint16_t distance = PTR_TO_UINT16(&event.params[0U]);
                     clusterProximity->BuildFrameDistance(sensorId, distance, response);
@@ -70,5 +70,5 @@ namespace Service
                 this->mCommunication.SendMessage(response);
             }
         }
-    }
-}
+    } // namespace Communication
+} // namespace Service

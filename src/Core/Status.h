@@ -2,7 +2,7 @@
 
 namespace Core
 {
-    enum CoreStatus {
+    enum Status {
         CORE_OK = (0),
         CORE_ERROR = (-1),
         CORE_ERROR_ARGUMENT = (-2),

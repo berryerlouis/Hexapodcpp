@@ -4,48 +4,28 @@
 
 namespace Driver
 {
-	namespace Gpio
-	{
-		class Gpio : public GpioInterface
-		{
-		public:
-			Gpio(const SGpio& gpio, const EPortDirection& portDirection) :
-				mGpio(gpio)
-			{
-                (void)portDirection;
-			};
-			~Gpio() = default;
+    namespace Gpio
+    {
+        class Gpio : public GpioInterface {
+        public:
+            Gpio(const SGpio &gpio, const EPortDirection &portDirection);
+            ;
+            ~Gpio() = default;
 
-			virtual Core::CoreStatus Set(void) final override
-			{
-				return (Core::CoreStatus::CORE_OK);
-			}
+            virtual Core::Status Set(void) final override;
 
-			virtual Core::CoreStatus Reset(void) final override
-			{
-				return (Core::CoreStatus::CORE_OK);
-			}
+            virtual Core::Status Reset(void) final override;
 
-			virtual bool Get(void) final override
-			{
-				return (Core::CoreStatus::CORE_OK);
-			}
+            virtual bool Get(void) final override;
 
-			virtual EPin& GetPin(void) final override
-			{
-				return (this->mGpio.pin);
-			}
+            virtual SGpio &GetPin(void) final override;
 
-			virtual void SetInterruptPin(void) final override
-			{
-			}
+            virtual void SetInterruptPin(void) final override;
 
-			virtual void ResetInterruptPin(void) final override
-			{
-			}
+            virtual void ResetInterruptPin(void) final override;
 
-		private:
-			SGpio mGpio;
-		};
-	}
-}
+        private:
+            SGpio mGpio;
+        };
+    } // namespace Gpio
+} // namespace Driver

@@ -33,10 +33,10 @@ namespace Cluster
             return false;
         }
 
-        virtual Core::CoreStatus ExecuteFrame(const Frame &request, Frame &response) = 0;
+        virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) = 0;
 
-        Core::CoreStatus Execute(const Frame &request, Frame &response) {
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+        Core::Status Execute(const Frame &request, Frame &response) {
+            Core::Status success = Core::Status::CORE_ERROR;
 			const uint8_t cmdId = request.commandId;
 			if(cmdId < this->mClusterCommandSize)
 			{
@@ -62,8 +62,8 @@ namespace Cluster
               , mStrategyCluster(strategyCluster) {
         }
 
-        virtual Core::CoreStatus Execute(Frame &request, Frame &response) final override {
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+        virtual Core::Status Execute(Frame &request, Frame &response) final override {
+            Core::Status success = Core::Status::CORE_ERROR;
             if (this->mStrategyCluster != nullptr) {
                 if (request.clusterId != this->GetId()) {
                     return (success);
@@ -77,18 +77,18 @@ namespace Cluster
             return (this->mClusterId);
         }
 
-        virtual Core::CoreStatus BuildFrameNack(Frame &response) {
+        virtual Core::Status BuildFrameNack(Frame &response) {
             response.clusterId = this->mClusterId;
             response.commandId = static_cast<uint8_t>(GENERIC);
             response.Set1ByteParam(false);
-            return (Core::CoreStatus::CORE_OK);
+            return (Core::Status::CORE_OK);
         }
 
-        virtual Core::CoreStatus BuildFrameNack(Frame &response, const Core::CoreStatus error) {
+        virtual Core::Status BuildFrameNack(Frame &response, const Core::Status error) {
             response.clusterId = this->mClusterId;
             response.commandId = static_cast<uint8_t>(GENERIC);
             response.Set1ByteParam(error);
-            return (Core::CoreStatus::CORE_OK);
+            return (Core::Status::CORE_OK);
         }
 
     protected:

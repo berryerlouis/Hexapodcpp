@@ -1,7 +1,7 @@
 #pragma once
 
 #include "TickInterface.h"
-#ifdef GTEST
+#ifdef X64
 #include <chrono>
 #endif
 

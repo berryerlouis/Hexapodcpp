@@ -23,8 +23,8 @@ namespace Cluster
 
             ~ClusterGeneral() = default;
 
-            virtual Core::CoreStatus ExecuteFrame(const Frame &request, Frame &response) final override {
-                Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) final override {
+                Core::Status success = Core::Status::CORE_ERROR;
                 if (request.commandId == EGeneralCommands::VERSION) {
                     const SoftwareInterface::Version version = this->mSoftware.GetVersion();
                     success = this->BuildFrameGetVersion(version, response);
@@ -39,36 +39,36 @@ namespace Cluster
                 return success;
             }
 
-            inline Core::CoreStatus BuildFrameGetVersion(const SoftwareInterface::Version version,
+            inline Core::Status BuildFrameGetVersion(const SoftwareInterface::Version version,
                                                          Frame &response) const {
-                const Core::CoreStatus success = response.Build(
+                const Core::Status success = response.Build(
                     EClusters::GENERAL,
                     EGeneralCommands::VERSION);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.Set1ByteParam(version.major);
                     response.Set1ByteParam(version.minor);
                 }
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameGetMinTime(const uint8_t serviceId, const uint16_t deltaTime,
+            inline Core::Status BuildFrameGetMinTime(const uint8_t serviceId, const uint16_t deltaTime,
                                                          Frame &response) const {
-                const Core::CoreStatus success = response.Build(
+                const Core::Status success = response.Build(
                     EClusters::GENERAL,
                     EGeneralCommands::MIN_EXECUTION_TIME);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.Set1ByteParam(serviceId);
                     response.Set2BytesParam(deltaTime);
                 }
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameGetMaxTime(const uint8_t serviceId, const uint16_t deltaTime,
+            inline Core::Status BuildFrameGetMaxTime(const uint8_t serviceId, const uint16_t deltaTime,
                                                          Frame &response) const {
-                const Core::CoreStatus success = response.Build(
+                const Core::Status success = response.Build(
                     EClusters::GENERAL,
                     EGeneralCommands::MAX_EXECUTION_TIME);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.Set1ByteParam(serviceId);
                     response.Set2BytesParam(deltaTime);
                 }

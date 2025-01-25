@@ -5,28 +5,27 @@ namespace Service
     namespace Battery
     {
         ServiceBattery::ServiceBattery(BatteryInterface &batteryInterface,
-                                       Event::EventListenerInterface &eventListener)
-            : Service(100U, eventListener), mBatteryInterface(batteryInterface) {
+                                       Event::EventListenerInterface &eventListener) :
+            Service(100U, eventListener), mBatteryInterface(batteryInterface) {
         }
 
-        Core::CoreStatus ServiceBattery::Initialize(void) {
-            const Core::CoreStatus success = this->mBatteryInterface.Initialize();
-            this->mBatteryInterface.Attach(this);
+        Core::Status ServiceBattery::Initialize(void) {
+            const Core::Status success = this->mBatteryInterface.Initialize();
+            if (Core::Status::CORE_OK == success) {
+                this->mInitialized = true;
+                this->mBatteryInterface.Attach(this);
+            }
             return (success);
         }
 
-        void ServiceBattery::Update(const uint64_t currentTime) {
-            this->mBatteryInterface.Update(currentTime);
-        }
+        void ServiceBattery::Update(const uint64_t currentTime) { this->mBatteryInterface.Update(currentTime); }
 
-        void ServiceBattery::DispatchEvent(const SEvent &event) {
-            (void) event;
-        }
+        void ServiceBattery::DispatchEvent(const SEvent &event) { (void) event; }
 
         void ServiceBattery::UpdatedBatteryState(const BatteryState &batteryState, const uint16_t voltage) {
             const uint8_t arg[2U] = UINT16_TO_ARRAY(voltage);
             const SEvent ev(EServices::BATTERY, static_cast<uint8_t>(batteryState), arg, 2U);
             this->AddEvent(ev);
         }
-    }
-}
+    } // namespace Battery
+} // namespace Service

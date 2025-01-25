@@ -22,12 +22,12 @@ namespace Cluster
         class Clusters : public ClustersInterface {
         public:
             Clusters(
-                ClusterGeneral &general,
-                ClusterBattery &battery,
-                ClusterBody &body,
-                ClusterImu &imu,
-                ClusterProximity &proximity,
-                ClusterServo &servo);
+                    ClusterGeneral &general,
+                    ClusterBattery &battery,
+                    ClusterBody &body,
+                    ClusterImu &imu,
+                    ClusterProximity &proximity,
+                    ClusterServo &servo);
 
             ~Clusters() = default;
 

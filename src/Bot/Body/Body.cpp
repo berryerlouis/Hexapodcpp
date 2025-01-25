@@ -10,13 +10,13 @@ namespace Bot
               , mWalk(mLegs) {
         }
 
-        Core::CoreStatus Body::Initialize(void) {
+        Core::Status Body::Initialize(void) {
             constexpr Position3d position = {0.0, 0.0, 0.0};
             constexpr Rotation3d rotation = {0.0, 0.0, 0.0};
 
             this->SetBodyPositionRotation(position, rotation, 1000);
 
-            return (Core::CoreStatus::CORE_OK);
+            return (Core::Status::CORE_OK);
         }
 
         void Body::Update(const uint64_t currentTime) {

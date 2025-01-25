@@ -24,7 +24,7 @@ namespace Component
 
                 ~Srf05() = default;
 
-                Core::CoreStatus Initialize(void) final override;
+                Core::Status Initialize(void) final override;
 
                 void Update(const uint64_t currentTime) final override;
 
@@ -34,7 +34,7 @@ namespace Component
 
                 virtual uint16_t GetThreshold(void) final override;
 
-                virtual Core::CoreStatus SetThreshold(const uint16_t threshold) final override;
+                virtual Core::Status SetThreshold(const uint16_t threshold) final override;
 
             private:
                 Cluster::EProximityCommands mSide;

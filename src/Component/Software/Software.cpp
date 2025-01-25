@@ -7,8 +7,8 @@ namespace Component
         Software::Software() {
         }
 
-        Core::CoreStatus Software::Initialize(void) {
-            return (Core::CoreStatus::CORE_OK);
+        Core::Status Software::Initialize(void) {
+            return (Core::Status::CORE_OK);
         }
 
         void Software::Update(const uint64_t currentTime) {

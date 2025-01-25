@@ -23,7 +23,7 @@ namespace Bot
 
             ~Body() = default;
 
-            virtual Core::CoreStatus Initialize(void) final override;
+            virtual Core::Status Initialize(void) final override;
 
             virtual void Update(const uint64_t currentTime) final override;
 

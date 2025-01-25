@@ -12,7 +12,7 @@ namespace Cluster
 
             ~Protocol() = default;
 
-            static Core::CoreStatus Decode(const char *frameBuffer, Frame &frame);
+            static Core::Status Decode(const char *frameBuffer, Frame &frame);
 
             static uint8_t Encode(const Frame &response, char *buffer);
 

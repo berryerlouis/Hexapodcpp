@@ -1,45 +1,53 @@
-#pragma once
-
 #include "UartInterface.h"
-#include "../../Misc/Logger/Logger.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
+#include <iostream>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <sys/wait.h>
+#include <sys/fcntl.h>
+#include <signal.h>
 
-namespace Driver {
-    namespace Uart {
+struct addrinfo;
+
+namespace Driver
+{
+    namespace Uart
+    {
+#define BUFFER_SIZE 256U
+
         class Uart : public UartInterface {
-        public:
 
-            Uart(const EBaudRate &baud = BAUDRATE_115200) {
-                (void) baud;
-            }
+        public:
+            Uart(const EBaudRate &baud = BAUDRATE_115200);
 
             ~Uart() = default;
 
-            virtual Core::CoreStatus Initialize(void) final override {
-                return (Core::CoreStatus::CORE_OK);
-            }
+            virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override {
-                (void) currentTime;
-            }
+            virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void Send(const char *data, const size_t len) final override {
-                (void) data;
-                (void) len;
-                LOG(data);
-            }
+            virtual void Send(const char *data, const size_t len) final override;
 
-            virtual void Send(const uint8_t data) final override {
-                (void) data;
-                LOG(data);
-            }
+            virtual void Send(const uint8_t data) final override;
 
-            virtual uint8_t Read(void) final override {
-                return 0;
-            }
+            virtual uint8_t Read(void) final override;
 
-            virtual uint8_t DataAvailable(void) const final override {
-                return 0;
-            }
+            virtual uint8_t DataAvailable(void) final override;
+
+        private:
+            static int mServerFd;
+            static int mClientFd;
+            static sockaddr_storage their_addr;
+            addrinfo hints, *servinfo; // connector's address information
+            socklen_t sin_size;
+            struct sigaction sa;
+            addrinfo *p;
         };
-    }
-}
+    } // namespace Uart
+} // namespace Driver

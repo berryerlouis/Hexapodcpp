@@ -23,8 +23,8 @@ namespace Cluster
 
             ~ClusterProximity() = default;
 
-            virtual Core::CoreStatus ExecuteFrame(const Frame &request, Frame &response) override {
-                Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override {
+                Core::Status success = Core::Status::CORE_ERROR;
                 if (request.commandId == EProximityCommands::LASER) {
                     const SensorsId sensorId = static_cast<SensorsId>(request.commandId);
                     const uint16_t distance = this->mProximity.GetDistance(sensorId);
@@ -46,23 +46,23 @@ namespace Cluster
                 return success;
             }
 
-            inline Core::CoreStatus BuildFrameDistance(const SensorsId sensorId, const uint16_t distance,
+            inline Core::Status BuildFrameDistance(const SensorsId sensorId, const uint16_t distance,
                                                        Frame &response) const {
-                const Core::CoreStatus success = response.Build(
+                const Core::Status success = response.Build(
                     EClusters::PROXIMITY,
                     sensorId);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.Set2BytesParam(distance);
                 }
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameThreshold(const SensorsId sensorId, const uint16_t threshold,
+            inline Core::Status BuildFrameThreshold(const SensorsId sensorId, const uint16_t threshold,
                                                         Frame &response) const {
-                const Core::CoreStatus success = response.Build(
+                const Core::Status success = response.Build(
                     EClusters::PROXIMITY,
                     EProximityCommands::SET_THRESHOLD);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.Set1ByteParam(sensorId);
                     response.Set2BytesParam(threshold);
                 }

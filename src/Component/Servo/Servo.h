@@ -33,11 +33,11 @@ namespace Component
 
             ~Servo() = default;
 
-            virtual Core::CoreStatus Initialize(void) final override;
+            virtual Core::Status Initialize(void) final override;
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual Core::CoreStatus SetAngle(const uint8_t angle, const uint16_t travelTime = 0U) final override;
+            virtual Core::Status SetAngle(const uint8_t angle, const uint16_t travelTime = 0U) final override;
 
             virtual uint8_t GetAngle(void) const final override;
 

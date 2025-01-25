@@ -4,15 +4,15 @@ namespace Service
 {
     namespace Control
     {
-        ServiceControl::ServiceControl(ServosInterface &servos,
-                                       Event::EventListenerInterface &eventListener)
-            : Service(20U, eventListener)
-              , mStepPca9685(0U)
-              , mServosInterface(servos) {
-        }
+        ServiceControl::ServiceControl(ServosInterface &servos, Event::EventListenerInterface &eventListener) :
+            Service(20U, eventListener), mStepPca9685(0U), mServosInterface(servos) {}
 
-        Core::CoreStatus ServiceControl::Initialize(void) {
-            return (this->mServosInterface.Initialize());
+        Core::Status ServiceControl::Initialize(void) {
+            const Core::Status success = this->mServosInterface.Initialize();
+            if (Core::Status::CORE_OK == success) {
+                this->mInitialized = true;
+            }
+            return (success);
         }
 
         void ServiceControl::Update(const uint64_t currentTime) {
@@ -24,8 +24,6 @@ namespace Service
             }
         }
 
-        void ServiceControl::DispatchEvent(const SEvent &event) {
-            (void) event;
-        }
-    }
-}
+        void ServiceControl::DispatchEvent(const SEvent &event) { (void) event; }
+    } // namespace Control
+} // namespace Service

@@ -18,12 +18,12 @@ namespace Component
 
             ~SensorProximityObservable() = default;
 
-            virtual Core::CoreStatus Attach(SensorProximityObserverInterface *observer) final override {
-                Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            virtual Core::Status Attach(SensorProximityObserverInterface *observer) final override {
+                Core::Status success = Core::Status::CORE_ERROR;
                 if (this->mIndexList != MAX_OBSERVERS) {
                     this->mListObserver[this->mIndexList] = observer;
                     this->mIndexList++;
-                    success = Core::CoreStatus::CORE_OK;
+                    success = Core::Status::CORE_OK;
                 }
                 return (success);
             }

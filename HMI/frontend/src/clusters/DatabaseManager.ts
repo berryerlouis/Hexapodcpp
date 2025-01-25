@@ -1,0 +1,55 @@
+import { ClusterBattery } from "./battery/ClusterBattery.js";
+import { ClusterGeneral } from "./general/ClusterGeneral.js";
+import { ClusterProximity } from "./proximity/ClusterProximity.js";
+import { ClusterImu } from "./imu/ClusterImu.js";
+import { ClusterServo } from "./servo/ClusterServo.js";
+import { clustersDatabase } from "./db.js";
+
+interface UpdateDbParams {
+    cluster: string;
+    command: string;
+    item?: string;
+    value: any;
+}
+
+export class DatabaseManager {
+    private messageManager: any;
+    private cluBattery: ClusterBattery;
+    private cluGeneral: ClusterGeneral;
+    private cluProximity: ClusterProximity;
+    private clusterImu: ClusterImu;
+    private clusterServo: ClusterServo;
+    private clusters: any[];
+
+    constructor(messageManager: any, robot: any, compass: any) {
+        this.messageManager = messageManager;
+        this.cluBattery = new ClusterBattery(messageManager, this, robot);
+        this.cluGeneral = new ClusterGeneral(messageManager, this, robot);
+        this.cluProximity = new ClusterProximity(messageManager, this, robot);
+        this.clusterImu = new ClusterImu(messageManager, this, robot, compass);
+        this.clusterServo = new ClusterServo(messageManager, this, robot);
+        this.clusters = [
+            this.cluBattery,
+            this.cluGeneral,
+            this.cluProximity,
+            this.clusterImu,
+            this.clusterServo,
+        ];
+
+        this.clusters.forEach((cluster) => {
+            cluster.initialize();
+        });
+    }
+
+    updateDb = ({ cluster, command, item, value }: UpdateDbParams) => {
+        try {
+            if (item) {
+                clustersDatabase[cluster][command][item] = value;
+                return;
+            }
+            clustersDatabase[cluster][command] = value;
+        } catch (e) {
+            console.error(e);
+        }
+    };
+}

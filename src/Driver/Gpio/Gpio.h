@@ -12,13 +12,13 @@ namespace Driver
 
             ~Gpio() = default;
 
-            virtual Core::CoreStatus Set(void) final override;
+            virtual Core::Status Set(void) final override;
 
-            virtual Core::CoreStatus Reset(void) final override;
+            virtual Core::Status Reset(void) final override;
 
             virtual bool Get(void) final override;
 
-            virtual EPin &GetPin(void) final override;
+            virtual SGpio &GetPin(void) final override;
 
             virtual void SetInterruptPin(void) final override;
 

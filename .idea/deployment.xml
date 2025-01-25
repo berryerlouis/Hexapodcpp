@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="Rpi (6e17c7f5-fea9-47d6-9872-8c98f60ce16f)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/tmp.MElGUJNU5s" local="$PROJECT_DIR$" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/build/gcc-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/unittests" />
+            <excludedPath local="true" path="$PROJECT_DIR$/node" />
+            <excludedPath local="true" path="$PROJECT_DIR$/HMI" />
+            <excludedPath local="true" path="$PROJECT_DIR$/unittests" />
+            <excludedPath local="true" path="$PROJECT_DIR$/HMI-copy" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build/gcc-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build/unittest" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build/rpi" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-gcc-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/node" />
+            <excludedPath local="true" path="$PROJECT_DIR$/HMI" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-gcc-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build/avr-release" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-rpi" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build/avr-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build/avr-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build/unittest" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build/avr-release" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

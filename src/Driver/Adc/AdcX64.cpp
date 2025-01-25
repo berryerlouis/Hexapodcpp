@@ -1,29 +1,20 @@
-#include "Adc.h"
+#include "AdcX64.h"
 
 namespace Driver
 {
     namespace Adc
     {
-        volatile uint16_t Adc::sAdcValue = 0U;
+        Adc::Adc(Gpio::GpioInterface &gpio) {
 
-        Adc::Adc(Gpio::GpioInterface &gpio)
-            : mGpio(gpio) {
         }
 
-        Core::CoreStatus Adc::Initialize(void) {
-            return (Core::CoreStatus::CORE_OK);
-        }
+        Core::Status Adc::Initialize(void) { return (Core::Status::CORE_OK); }
 
-        void Adc::Update(const uint64_t currentTime) {
-            (void) currentTime;
-        }
+        void Adc::Update(const uint64_t currentTime) { (void) currentTime; }
 
         void Adc::StartConversion(void) {
         }
 
-        uint16_t Adc::Read() {
-            this->StartConversion();
-            return 0U;
-        }
+        uint16_t Adc::Read() { return 0U; }
     }
 }

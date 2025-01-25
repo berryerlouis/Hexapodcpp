@@ -1,43 +1,31 @@
 #include "Mpu9150.h"
-#ifndef GTEST
+#ifdef AVR
 #include <avr/interrupt.h>
+#elif RPI
+#include "wiringPi/wiringPiI2C.h"
 #endif
 
 namespace Component
 {
     namespace Imu
     {
-#define NB_SAMPLES    20
+#define NB_SAMPLES 20
 
-        Mpu9150::Mpu9150(Twi::TwiInterface &i2c, Tick::TickInterface &tick, const uint8_t address)
-            : mI2c(i2c)
-              , mTick(tick)
-              , mAddress(address)
-              , mAddressMag(AK8963_I2C_ADDRESS)
-              , mAccOffset{0, 0, 0}
-              , mGyrOffset{0, -0, -0}
-              , mMagOffset{40.0F, 177.5F, -101.5F}
-              , mMagBias{0, 0, 0}
-              , mStartMagCalib(false)
-              , mMagCalibMin{100000, 100000, 100000}
-              , mMagCalibMax{0, 0, 0}
-              , mAccRaw{0, 0, 0}
-              , mGyrRaw{0, 0, 0}
-              , mMagRaw{0, 0, 0}
-              , mAcc{0, 0, 0}
-              , mGyr{0, 0, 0}
-              , mMag{0, 0, 0}
-              , mTmp(0U)
-              , mLastLoopTime(0U)
-              , mAhrs()
-              , mYawPitchRoll{0, 0, 0}
-              , mDoComputation(false) {
+        Mpu9150::Mpu9150(Twi::TwiInterface &i2c, Tick::TickInterface &tick, const uint8_t address) :
+            mI2c(i2c), mTick(tick), mAddress(address), mAddressMag(AK8963_I2C_ADDRESS), mAccOffset{0, 0, 0},
+            mGyrOffset{0, -0, -0}, mMagOffset{40.0F, 177.5F, -101.5F}, mMagBias{0, 0, 0}, mStartMagCalib(false),
+            mMagCalibMin{100000, 100000, 100000}, mMagCalibMax{0, 0, 0}, mAccRaw{0, 0, 0}, mGyrRaw{0, 0, 0},
+            mMagRaw{0, 0, 0}, mAcc{0, 0, 0}, mGyr{0, 0, 0}, mMag{0, 0, 0}, mTmp(0U), mLastLoopTime(0U), mAhrs(),
+            mYawPitchRoll{0, 0, 0}, mDoComputation(false) {
+#ifdef RPI
+            this->mAddress = wiringPiI2CSetup(address);
+#endif
         }
 
-        Core::CoreStatus Mpu9150::Initialize(void) {
+        Core::Status Mpu9150::Initialize(void) {
             uint8_t whoAmI = 0x00U;
             uint8_t reg = 0x00U;
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            Core::Status success = Core::Status::CORE_ERROR;
 
             // check device
             this->mI2c.ReadRegister(this->mAddress, ERegister::WHO_AM_I, whoAmI);
@@ -69,12 +57,12 @@ namespace Component
                 reg &= ~(1U << 4U);
                 this->mI2c.WriteRegister(this->mAddress, ERegister::CONFIG, reg);
 
-                //disable sleep mode
+                // disable sleep mode
                 this->mI2c.ReadRegister(this->mAddress, ERegister::PWR_MGMT_1, reg);
                 reg &= ~(1U << ERegister::PWR1_SLEEP_BIT);
                 this->mI2c.WriteRegister(this->mAddress, ERegister::PWR_MGMT_1, reg);
 
-                //set Data Ready interrupt enabled status.
+                // set Data Ready interrupt enabled status.
                 this->mI2c.ReadRegister(this->mAddress, ERegister::INT_ENABLE, reg);
                 reg |= (1U << 0U);
                 this->mI2c.WriteRegister(this->mAddress, ERegister::INT_ENABLE, reg);
@@ -85,7 +73,7 @@ namespace Component
                     this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x0F);
                     this->AdjustingMag();
                     this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x01);
-                    success = Core::CoreStatus::CORE_OK;
+                    success = Core::Status::CORE_OK;
                 }
             }
             return (success);
@@ -192,8 +180,7 @@ namespace Component
 
             this->mI2c.ReadRegister(this->mAddressMag, 0x02, dataIsReady);
             if (dataIsReady == 1U && this->mI2c.ReadRegisters(this->mAddressMag, ERegisterMag::XOUT_L,
-                                                              reinterpret_cast<uint8_t *>(&this->mMagRaw),
-                                                              6U)) {
+                                                              reinterpret_cast<uint8_t *>(&this->mMagRaw), 6U)) {
                 if ((abs(this->mMagRaw.x) + abs(this->mMagRaw.y) + abs(this->mMagRaw.z)) >= 4912.0) {
                     return (this->mMagRaw);
                 }
@@ -231,5 +218,5 @@ namespace Component
             isReady &= 0x01U;
             return isReady;
         }
-    }
-}
+    } // namespace Imu
+} // namespace Component

@@ -97,12 +97,12 @@ namespace Component
               , mEnablePca(false) {
         }
 
-        Core::CoreStatus Servo::Initialize(void) {
+        Core::Status Servo::Initialize(void) {
             if (true == this->mReverse) {
                 this->mMax = REVERSE_ANGLE(this->mMin);
                 this->mMin = REVERSE_ANGLE(this->mMax);
             }
-            return (Core::CoreStatus::CORE_OK);
+            return (Core::Status::CORE_OK);
         }
 
         void Servo::Update(const uint64_t currentTime) {
@@ -135,7 +135,7 @@ namespace Component
             return (this->mIsMoving);
         }
 
-        Core::CoreStatus Servo::SetAngle(const uint8_t angle, const uint16_t travelTime) {
+        Core::Status Servo::SetAngle(const uint8_t angle, const uint16_t travelTime) {
             if ((true == this->mEnable) &&
                 (angle >= this->mMin) &&
                 (angle <= this->mMax)) {
@@ -150,16 +150,16 @@ namespace Component
                 this->mSpeed = travelTime;
                 this->mStartTime = this->mTick.GetMs();
                 this->mIsMoving = true;
-                return (Core::CoreStatus::CORE_OK);
+                return (Core::Status::CORE_OK);
             }
             this->mIsMoving = false;
             if (false == this->mEnable)
-                return (Core::CoreStatus::CORE_ERROR_SIZE);
+                return (Core::Status::CORE_ERROR_SIZE);
             if (angle < this->mMin)
-                return (Core::CoreStatus::CORE_ERROR_MIN);
+                return (Core::Status::CORE_ERROR_MIN);
             if (angle > this->mMax)
-                return (Core::CoreStatus::CORE_ERROR_MAX);
-            return (Core::CoreStatus::CORE_ERROR);
+                return (Core::Status::CORE_ERROR_MAX);
+            return (Core::Status::CORE_ERROR);
         }
 
         uint8_t Servo::GetAngle(void) const {

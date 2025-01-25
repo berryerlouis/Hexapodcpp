@@ -7,20 +7,17 @@ namespace Driver
 {
     namespace Gpio
     {
-        enum EPortDirection {
-            IN = 0U,
-            OUT = 1U
+        enum EPortDirection { IN = 0U, OUT = 1U };
+
+        enum EPort { PORT_A, PORT_B, PORT_C, PORT_D };
+
+#define NB_PORT 4U
+
+#ifdef RPI
+        struct SGpio {
+            uint8_t pin;
         };
-
-        enum EPort {
-            PORT_A,
-            PORT_B,
-            PORT_C,
-            PORT_D
-        };
-
-#define NB_PORT    4U
-
+#else
         enum EPin {
             PIN_0,
             PIN_1,
@@ -36,6 +33,7 @@ namespace Driver
             EPort port;
             EPin pin;
         };
+#endif
 
 
         class GpioInterface {
@@ -44,11 +42,11 @@ namespace Driver
 
             ~GpioInterface() = default;
 
-            virtual Core::CoreStatus Set(void) = 0;
+            virtual Core::Status Set(void) = 0;
 
-            virtual Core::CoreStatus Reset(void) = 0;
+            virtual Core::Status Reset(void) = 0;
 
-            virtual EPin &GetPin(void) = 0;
+            virtual SGpio &GetPin(void) = 0;
 
             virtual bool Get(void) = 0;
 
@@ -56,5 +54,5 @@ namespace Driver
 
             virtual void ResetInterruptPin(void) = 0;
         };
-    }
-}
+    } // namespace Gpio
+} // namespace Driver

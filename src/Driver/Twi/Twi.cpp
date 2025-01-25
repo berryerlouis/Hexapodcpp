@@ -10,12 +10,12 @@ namespace Driver
               , mTimeout(0U) {
         }
 
-        Core::CoreStatus Twi::Initialize(void) {
+        Core::Status Twi::Initialize(void) {
             TWBR = ((F_CPU / this->mFreq) - 16) / 2;
             TWSR = 0U;
             TWCR = (1 << TWEN);
 
-            return (Core::CoreStatus::CORE_OK);
+            return (Core::Status::CORE_OK);
         }
 
         void Twi::Update(const uint64_t currentTime) {

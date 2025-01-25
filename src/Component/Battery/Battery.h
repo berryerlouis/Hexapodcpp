@@ -16,7 +16,7 @@ namespace Component
 
             ~Battery() = default;
 
-            virtual Core::CoreStatus Initialize(void) final override;
+            virtual Core::Status Initialize(void) final override;
 
             virtual void Update(const uint64_t currentTime) final override;
 
@@ -24,7 +24,7 @@ namespace Component
 
             virtual uint16_t GetVoltage(void) final override;
 
-            virtual Core::CoreStatus Attach(BatteryObserverInterface *observer) final override;
+            virtual Core::Status Attach(BatteryObserverInterface *observer) final override;
 
             virtual void Notify(const BatteryState &state, const uint16_t voltage) final override;
 

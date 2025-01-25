@@ -19,9 +19,9 @@ namespace Cluster
 
         void Reset(void);
 
-        Core::CoreStatus Build(const uint8_t clusterId, const uint8_t commandId);
+        Core::Status Build(const uint8_t clusterId, const uint8_t commandId);
 
-        Core::CoreStatus Build(const uint8_t clusterId, const uint8_t commandId, const uint8_t *params,
+        Core::Status Build(const uint8_t clusterId, const uint8_t commandId, const uint8_t *params,
                                const uint8_t nbParams);
 
         void Set1ByteParam(const uint8_t value);

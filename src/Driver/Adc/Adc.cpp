@@ -11,13 +11,13 @@ namespace Driver
             : mGpio(gpio) {
         }
 
-        Core::CoreStatus Adc::Initialize(void) {
+        Core::Status Adc::Initialize(void) {
             ADMUX = _BV(REFS0) | _BV(REFS1);
             ADCSRA = _BV(ADEN) | _BV(ADPS0) | _BV(ADPS1) | _BV(ADIE);
-            ADMUX = ((ADMUX & 0xE0U) | static_cast<uint8_t>(this->mGpio.GetPin()));
+            ADMUX = ((ADMUX & 0xE0U) | static_cast<uint8_t>(this->mGpio.GetPin().pin));
 
             this->StartConversion();
-            return (Core::CoreStatus::CORE_OK);
+            return (Core::Status::CORE_OK);
         }
 
         void Adc::Update(const uint64_t currentTime) {

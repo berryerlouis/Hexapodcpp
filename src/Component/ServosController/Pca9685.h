@@ -80,15 +80,15 @@ namespace Component
 
             virtual void SetFrequency(const uint32_t frequency) final override;
 
-            virtual void SetPwm(uint8_t num, uint16_t off) final override;
+            virtual void SetPwm(const uint8_t num, const uint16_t off) final override;
 
-            Core::CoreStatus Initialize(void);
+            Core::Status Initialize(void);
 
             void Update(const uint64_t currentTime);
 
         private:
             Twi::TwiInterface &mI2c;
-            const uint8_t mAddress;
+            uint8_t mAddress;
             uint32_t mInternalOscillatorFrequency;
             SPwm mPwm[EConstant::NB_LEDS];
         };

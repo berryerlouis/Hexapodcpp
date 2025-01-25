@@ -14,7 +14,7 @@ namespace Component
               , mObservable() {
         }
 
-        Core::CoreStatus Battery::Initialize(void) {
+        Core::Status Battery::Initialize(void) {
             return (this->mAdc.Initialize());
         }
 
@@ -42,7 +42,7 @@ namespace Component
             return (this->mVoltage);
         }
 
-        Core::CoreStatus Battery::Attach(BatteryObserverInterface *observer) {
+        Core::Status Battery::Attach(BatteryObserverInterface *observer) {
             return (this->mObservable.Attach(observer));
         }
 

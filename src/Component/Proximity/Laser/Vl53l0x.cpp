@@ -1,30 +1,41 @@
 #include "Vl53l0x.h"
-
+#ifdef RPI
+#include "wiringPi/wiringPiI2C.h"
+#endif
 namespace Component
 {
     namespace Proximity
     {
         namespace Laser
         {
-#define decodeVcselPeriod( reg_val )             ( ( ( reg_val ) + 1 ) << 1 )
-#define encodeVcselPeriod( period_pclks )        ( ( ( period_pclks ) >> 1 ) - 1 )
-#define calcMacroPeriod( vcsel_period_pclks )    ( ( ( (uint32_t) 2304 * ( vcsel_period_pclks ) * 1655 ) + 500 ) / 1000 )
+#define decodeVcselPeriod(reg_val) (((reg_val) + 1) << 1)
+#define encodeVcselPeriod(period_pclks) (((period_pclks) >> 1) - 1)
+#define calcMacroPeriod(vcsel_period_pclks) ((((uint32_t) 2304 * (vcsel_period_pclks) * 1655) + 500) / 1000)
 
-
-            Vl53l0x::Vl53l0x(Twi::TwiInterface &i2c, Tick::TickInterface &tick, const uint8_t address)
-                : mI2c(i2c)
-                  , mTick(tick)
-                  , mAddress(address)
-                  , mDistance(0)
-                  , mThreshold(DISTANCE_THRESHOLD)
-                  , mMeasurementTimingBudget(0U)
-                  , mStop(0U) {
+#ifdef RPI
+            Vl53l0x::Vl53l0x(
+                    Twi::TwiInterface &i2c
+                    , Led::LedInterface &led
+                    , Tick::TickInterface &tick
+                    , const uint8_t address) :
+                mI2c(i2c), mLed(led), mTick(tick), mAddress(address), mDistance(0), mThreshold(DISTANCE_THRESHOLD),
+                mMeasurementTimingBudget(0U), mStop(0U) {
+#else
+            Vl53l0x::Vl53l0x(Twi::TwiInterface &i2c, Tick::TickInterface &tick, const uint8_t address) :
+                mI2c(i2c), mTick(tick), mAddress(address), mDistance(0), mThreshold(DISTANCE_THRESHOLD),
+                mMeasurementTimingBudget(0U), mStop(0U) {
+#endif
+#ifdef RPI
+                this->mAddress = wiringPiI2CSetup(address);
+#endif
             }
 
-            Core::CoreStatus Vl53l0x::Initialize(void) {
-                Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            Core::Status Vl53l0x::Initialize(void) {
+                Core::Status success = Core::Status::CORE_ERROR;
                 uint8_t data = 0U;
-
+#ifdef RPI
+                this->mLed.Initialize();
+#endif
                 this->mI2c.ReadRegister(this->mAddress, VL53L0X_IDENTIFICATION_MODEL_ID, data);
                 if (data == 0xEE) {
                     this->mI2c.ReadRegister(this->mAddress, VL53L0X_VHV_CONFIG_PAD_SCL_SDA_EXTSUP_HV, data);
@@ -56,9 +67,9 @@ namespace Component
                     bool spad_type_is_aperture;
 
                     if (this->GetSpadInfo(&spad_count, &spad_type_is_aperture)) {
-                        //The SPAD map (RefGoodSpadMap) is read by VL53L0X_get_info_from_device() in
-                        //the API, but the same data seems to be more easily readable from
-                        //GLOBAL_CONFIG_SPAD_ENABLES_REF_0 through _6, so read it from there
+                        // The SPAD map (RefGoodSpadMap) is read by VL53L0X_get_info_from_device() in
+                        // the API, but the same data seems to be more easily readable from
+                        // GLOBAL_CONFIG_SPAD_ENABLES_REF_0 through _6, so read it from there
                         uint8_t ref_spad_map[6];
                         this->mI2c.ReadRegisters(this->mAddress, VL53L0X_GLOBAL_CONFIG_SPAD_ENABLES_REF_0, ref_spad_map,
                                                  6U);
@@ -71,7 +82,7 @@ namespace Component
                         this->mI2c.WriteRegister(this->mAddress, 0xFF, 0x00);
                         this->mI2c.WriteRegister(this->mAddress, VL53L0X_GLOBAL_CONFIG_REF_EN_START_SELECT, 0xB4);
 
-                        uint8_t first_spad_to_enable = spad_type_is_aperture ? 12 : 0;
+                        const uint8_t first_spad_to_enable = spad_type_is_aperture ? 12 : 0;
                         uint8_t spads_enabled = 0U;
 
                         for (size_t i = 0U; i < 48U; i++) {
@@ -114,7 +125,7 @@ namespace Component
                                 this->SetVcselPulsePeriod(VcselPeriodFinalRange, 14);
 
                                 this->StartContinuous();
-                                success = Core::CoreStatus::CORE_OK;
+                                success = Core::Status::CORE_OK;
                             }
                         }
                     }
@@ -128,13 +139,20 @@ namespace Component
                 this->mDistance = this->GetDistance();
                 const bool detection = this->mDistance != 0U && this->mDistance <= this->mThreshold;
                 if (true == detection) {
+#ifdef RPI
+                    this->mLed.On();
+#endif
                     this->Notify(VLX, this->mDistance);
+                } else {
+#ifdef RPI
+                    this->mLed.Off();
+#endif
                 }
             }
 
-            Core::CoreStatus Vl53l0x::SetThreshold(uint16_t mThreshold) {
+            Core::Status Vl53l0x::SetThreshold(uint16_t mThreshold) {
                 this->mThreshold = mThreshold;
-                return (Core::CoreStatus::CORE_OK);
+                return (Core::Status::CORE_OK);
             }
 
             uint16_t Vl53l0x::GetThreshold(void) {
@@ -185,15 +203,14 @@ namespace Component
                 SequenceStepEnables enables;
                 SequenceStepTimeouts timeouts;
 
-                uint16_t const StartOverhead = 1910;
-                uint16_t const EndOverhead = 960;
-                uint16_t const MsrcOverhead = 660;
-                uint16_t const TccOverhead = 590;
-                uint16_t const DssOverhead = 690;
-                uint16_t const PreRangeOverhead = 660;
-                uint16_t const FinalRangeOverhead = 550;
-
-                uint32_t const MinTimingBudget = 20000;
+                const uint16_t StartOverhead = 1910;
+                const uint16_t EndOverhead = 960;
+                const uint16_t MsrcOverhead = 660;
+                const uint16_t TccOverhead = 590;
+                const uint16_t DssOverhead = 690;
+                const uint16_t PreRangeOverhead = 660;
+                const uint16_t FinalRangeOverhead = 550;
+                const uint32_t MinTimingBudget = 20000;
 
                 if (budget_us < MinTimingBudget) {
                     return (false);
@@ -225,8 +242,8 @@ namespace Component
                         return (false);
                     }
                     uint32_t final_range_timeout_us = budget_us - used_budget_us;
-                    uint32_t final_range_timeout_mclks = this->TimeoutMicrosecondsToMclks(final_range_timeout_us,
-                        timeouts.final_range_vcsel_period_pclks);
+                    uint32_t final_range_timeout_mclks = this->TimeoutMicrosecondsToMclks(
+                            final_range_timeout_us, timeouts.final_range_vcsel_period_pclks);
 
                     if (enables.pre_range) {
                         final_range_timeout_mclks += timeouts.pre_range_mclks;
@@ -244,13 +261,13 @@ namespace Component
                 SequenceStepEnables enables;
                 SequenceStepTimeouts timeouts;
 
-                uint16_t const StartOverhead = 1910;
-                uint16_t const EndOverhead = 960;
-                uint16_t const MsrcOverhead = 660;
-                uint16_t const TccOverhead = 590;
-                uint16_t const DssOverhead = 690;
-                uint16_t const PreRangeOverhead = 660;
-                uint16_t const FinalRangeOverhead = 550;
+                const uint16_t StartOverhead = 1910;
+                const uint16_t EndOverhead = 960;
+                const uint16_t MsrcOverhead = 660;
+                const uint16_t TccOverhead = 590;
+                const uint16_t DssOverhead = 690;
+                const uint16_t PreRangeOverhead = 660;
+                const uint16_t FinalRangeOverhead = 550;
 
                 // "Start and end overhead times always present"
                 uint32_t budget_us = StartOverhead + EndOverhead;
@@ -346,18 +363,16 @@ namespace Component
                 this->mI2c.ReadRegister16Bits(this->mAddress, VL53L0X_MSRC_CONFIG_TIMEOUT_MACROP,
                                               timeouts->msrc_dss_tcc_mclks);
                 timeouts->msrc_dss_tcc_mclks += 1;
-                timeouts->msrc_dss_tcc_us =
-                        this->TimeoutMclksToMicroseconds(timeouts->msrc_dss_tcc_mclks,
-                                                         timeouts->pre_range_vcsel_period_pclks);
+                timeouts->msrc_dss_tcc_us = this->TimeoutMclksToMicroseconds(timeouts->msrc_dss_tcc_mclks,
+                                                                             timeouts->pre_range_vcsel_period_pclks);
 
                 timeouts->pre_range_mclks = 0U;
                 this->mI2c.ReadRegister16Bits(this->mAddress, VL53L0X_PRE_RANGE_CONFIG_TIMEOUT_MACROP_HI,
                                               timeouts->pre_range_mclks);
                 this->DecodeTimeout(timeouts->pre_range_mclks);
 
-                timeouts->pre_range_us =
-                        this->TimeoutMclksToMicroseconds(timeouts->pre_range_mclks,
-                                                         timeouts->pre_range_vcsel_period_pclks);
+                timeouts->pre_range_us = this->TimeoutMclksToMicroseconds(timeouts->pre_range_mclks,
+                                                                          timeouts->pre_range_vcsel_period_pclks);
 
                 timeouts->final_range_vcsel_period_pclks = this->GetVcselPulsePeriod(VcselPeriodFinalRange);
 
@@ -367,9 +382,8 @@ namespace Component
                 if (enables->pre_range) {
                     timeouts->final_range_mclks -= timeouts->pre_range_mclks;
                 }
-                timeouts->final_range_us =
-                        this->TimeoutMclksToMicroseconds(timeouts->final_range_mclks,
-                                                         timeouts->final_range_vcsel_period_pclks);
+                timeouts->final_range_us = this->TimeoutMclksToMicroseconds(timeouts->final_range_mclks,
+                                                                            timeouts->final_range_vcsel_period_pclks);
             }
 
             uint16_t Vl53l0x::DecodeTimeout(uint16_t reg_val) {
@@ -377,23 +391,22 @@ namespace Component
                 return ((uint16_t) ((reg_val & 0x00FF) << (uint16_t) ((reg_val & 0xFF00) >> 8)) + 1);
             }
 
-            uint16_t Vl53l0x::EncodeTimeout(uint32_t timeout_mclks) {
+            uint16_t Vl53l0x::EncodeTimeout(const uint32_t timeout_mclks) {
                 // format: "(LSByte * 2^MSByte) + 1"
 
                 uint32_t ls_byte = 0U;
                 uint16_t ms_byte = 0U;
 
-                if (timeout_mclks > 0) {
-                    ls_byte = timeout_mclks - 1;
+                if (timeout_mclks > 0U) {
+                    ls_byte = timeout_mclks - 1U;
 
-                    while ((ls_byte & 0xFFFFFF00) > 0) {
-                        ls_byte >>= 1;
+                    while ((ls_byte & 0xFFFFFF00UL) > 0UL) {
+                        ls_byte >>= 1U;
                         ms_byte++;
                     }
-                    return ((ms_byte << 8) | (ls_byte & 0xFF));
-                } else {
-                    return (0);
+                    return ((ms_byte << 8U) | (ls_byte & 0xFFU));
                 }
+                return (0U);
             }
 
             uint8_t Vl53l0x::GetVcselPulsePeriod(VcselPeriodType type) {
@@ -678,6 +691,6 @@ namespace Component
                 this->mI2c.WriteRegister(this->mAddress, 0xFF, 0x00);
                 this->mI2c.WriteRegister(this->mAddress, 0x80, 0x00);
             } // Vl53l0x::Tune
-        }
-    }
-}
+        } // namespace Laser
+    } // namespace Proximity
+} // namespace Component

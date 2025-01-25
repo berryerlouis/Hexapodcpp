@@ -37,8 +37,8 @@ namespace Cluster
 
             ~ClusterImu() = default;
 
-            virtual Core::CoreStatus ExecuteFrame(const Frame &request, Frame &response) override {
-                Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override {
+                Core::Status success = Core::Status::CORE_ERROR;
                 if (request.commandId == EImuCommands::ALL) {
                     const Vector3 acc = this->mImu.ReadAcc();
                     const Vector3 gyr = this->mImu.ReadGyr();
@@ -81,12 +81,12 @@ namespace Cluster
                 return success;
             }
 
-            inline Core::CoreStatus BuildFrameAll(const Vector3 &acc, const Vector3 &gyr, const Vector3 &mag,
+            inline Core::Status BuildFrameAll(const Vector3 &acc, const Vector3 &gyr, const Vector3 &mag,
                                                   const uint16_t temp, Frame &response) const {
-                const Core::CoreStatus success = response.Build(
+                const Core::Status success = response.Build(
                     EClusters::IMU,
                     EImuCommands::ALL);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.SetxBytesParam(6U, (uint8_t *) &acc);
                     response.SetxBytesParam(6U, (uint8_t *) &gyr);
                     response.SetxBytesParam(6U, (uint8_t *) &mag);
@@ -95,102 +95,102 @@ namespace Cluster
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameAcc(const Vector3 &acc, Frame &response) const {
-                const Core::CoreStatus success = response.Build(
+            inline Core::Status BuildFrameAcc(const Vector3 &acc, Frame &response) const {
+                const Core::Status success = response.Build(
                     EClusters::IMU,
                     EImuCommands::ACC);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.SetxBytesParam(6U, (uint8_t *) &acc);
                 }
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameGyr(const Vector3 &gyr, Frame &response) const {
-                const Core::CoreStatus success = response.Build(
+            inline Core::Status BuildFrameGyr(const Vector3 &gyr, Frame &response) const {
+                const Core::Status success = response.Build(
                     EClusters::IMU,
                     EImuCommands::GYR);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.SetxBytesParam(6U, (uint8_t *) &gyr);
                 }
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameMag(const Vector3 &mag, Frame &response) const {
-                const Core::CoreStatus success = response.Build(
+            inline Core::Status BuildFrameMag(const Vector3 &mag, Frame &response) const {
+                const Core::Status success = response.Build(
                     EClusters::IMU,
                     EImuCommands::MAG);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.SetxBytesParam(6U, (uint8_t *) &mag);
                 }
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameTmp(const uint16_t temp, Frame &response) const {
-                const Core::CoreStatus success = response.Build(
+            inline Core::Status BuildFrameTmp(const uint16_t temp, Frame &response) const {
+                const Core::Status success = response.Build(
                     EClusters::IMU,
                     EImuCommands::TMP);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.Set2BytesParam(temp);
                 }
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameYawPitchRoll(const Position3D ypr, Frame &response) const {
+            inline Core::Status BuildFrameYawPitchRoll(const Position3D ypr, Frame &response) const {
                 Vector3 cmp;
                 cmp.x = static_cast<int16_t>(ypr.roll);
                 cmp.y = static_cast<int16_t>(ypr.pitch);
                 cmp.z = static_cast<int16_t>(ypr.yaw);
-                const Core::CoreStatus success = response.Build(
+                const Core::Status success = response.Build(
                     EClusters::IMU,
                     EImuCommands::YAW_PITCH_ROLL);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.SetxBytesParam(6U, (uint8_t *) &cmp);
                 }
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFramePressure(const int32_t pressure, Frame &response) const {
-                const Core::CoreStatus success = response.Build(
+            inline Core::Status BuildFramePressure(const int32_t pressure, Frame &response) const {
+                const Core::Status success = response.Build(
                     EClusters::IMU,
                     EImuCommands::PRESSURE);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.Set4BytesParam(pressure);
                 }
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameSeaLevel(const uint16_t seaLevel, Frame &response) const {
-                const Core::CoreStatus success = response.Build(
+            inline Core::Status BuildFrameSeaLevel(const uint16_t seaLevel, Frame &response) const {
+                const Core::Status success = response.Build(
                     EClusters::IMU,
                     EImuCommands::ALTITUDE);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.Set2BytesParam(seaLevel);
                 }
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameTmpBar(const int16_t temp, Frame &response) const {
-                const Core::CoreStatus success = response.Build(
+            inline Core::Status BuildFrameTmpBar(const int16_t temp, Frame &response) const {
+                const Core::Status success = response.Build(
                     EClusters::IMU,
                     EImuCommands::TMP_BAR);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.Set2BytesParam(temp);
                 }
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameCalibMag(const bool min, const Vector3F &calib, Frame &response) const {
-                const Core::CoreStatus success = response.Build(
+            inline Core::Status BuildFrameCalibMag(const bool min, const Vector3F &calib, Frame &response) const {
+                const Core::Status success = response.Build(
                     EClusters::IMU,
                     EImuCommands::YAW_PITCH_ROLL);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.Set1ByteParam(min);
                     response.SetxBytesParam(12U, (uint8_t *) &calib);
                 }
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameStartCalibMag(Frame &response) const {
+            inline Core::Status BuildFrameStartCalibMag(Frame &response) const {
                 return response.Build(
                     EClusters::IMU,
                     EImuCommands::START_STOP_MAG_CALIB);

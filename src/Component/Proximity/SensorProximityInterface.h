@@ -13,7 +13,7 @@ namespace Component
 
             ~SensorProximityInterface() = default;
 
-            virtual Core::CoreStatus Initialize(void) = 0;
+            virtual Core::Status Initialize(void) = 0;
 
             virtual void Update(const uint64_t currentTime) = 0;
 
@@ -21,7 +21,7 @@ namespace Component
 
             virtual uint16_t GetThreshold(void) = 0;
 
-            virtual Core::CoreStatus SetThreshold(const uint16_t threshold) = 0;
+            virtual Core::Status SetThreshold(const uint16_t threshold) = 0;
         };
 
         class SensorProximityMultipleInterface : public ComponentInterface {
@@ -30,7 +30,7 @@ namespace Component
 
             ~SensorProximityMultipleInterface() = default;
 
-            virtual Core::CoreStatus Initialize(void) = 0;
+            virtual Core::Status Initialize(void) = 0;
 
             virtual void Update(const uint64_t currentTime) = 0;
 
@@ -38,9 +38,9 @@ namespace Component
 
             virtual uint16_t GetThreshold(const SensorsId &sensorId) = 0;
 
-            virtual Core::CoreStatus SetThreshold(const SensorsId &sensorId, const uint16_t threshold) = 0;
+            virtual Core::Status SetThreshold(const SensorsId &sensorId, const uint16_t threshold) = 0;
 
-            virtual Core::CoreStatus Attach(SensorProximityObserverInterface *observer) = 0;
+            virtual Core::Status Attach(SensorProximityObserverInterface *observer) = 0;
         };
     }
 }

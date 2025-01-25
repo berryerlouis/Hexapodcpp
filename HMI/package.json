@@ -1,17 +1,23 @@
 {
-  "name": "hexapod-hmi-vanilla-js",
-  "description": "Learn how to test your JavaScript.",
+  "name": "hexapod",
   "version": "1.0.0",
-  "license": "GPL",
-  "type": "module",
+  "main": "app.js",
   "scripts": {
-    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
-    "testcov": "node --trace-warnings --experimental-vm-modules ./node_modules/jest/bin/jest.js --coverage"
+    "build-backend": "tsc --build backend/tsconfig.json",
+    "build-frontend": "tsc --build frontend/tsconfig.json",
+    "build": "concurrently \"tsc --build backend/tsconfig.json\" \"tsc --build frontend/tsconfig.json\"",
+    "start": "node backend/dist/app.js",
+    "watch": "nodemon backend/src/app.ts"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
   "devDependencies": {
-    "jest": "^29.7.0"
-  },
-  "dependencies": {
-    "three": "^0.168.0"
+    "concurrently": "^6.0.0",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "tsc-watch": "^6.2.1",
+    "typescript": "^5.7.3"
   }
 }

@@ -1,9 +1,17 @@
 #pragma once
 
+#ifdef RPI
+#include <wiringPi/wiringPi.h>
+#include "../Driver/Gpio/GpioX64.h"
+#include "../Driver/Adc/AdcX64.h"
+#include "../Driver/Uart/UartX64.h"
+#else
+#include "../Driver/Gpio/Gpio.h"
+#include "../Driver/Adc/Adc.h"
+#include "../Driver/Uart/Uart.h"
+#endif
 #include "../Driver/Tick/Tick.h"
 #include "../Driver/Twi/Twi.h"
-#include "../Driver/Uart/Uart.h"
-#include "../Driver/Adc/Adc.h"
 #include "../Driver/InputCapture/InputCapture.h"
 #include "../Cluster/General/ClusterGeneral.h"
 #include "../Cluster/Battery/ClusterBattery.h"
@@ -39,28 +47,35 @@
 
 namespace Builder
 {
-    class App : public Core::CoreInterface {
+    class App {
     public:
         App(void);
 
         ~App(void) = default;
 
-        virtual Core::CoreStatus Initialize(void) final override;
+        virtual Core::Status Initialize(void);
 
-        virtual void Update(const uint64_t currentTime) final override;
+        virtual void Update(void);
 
     private:
         Driver::Tick::Tick mTick;
         Driver::Uart::Uart mUart;
         Driver::Twi::Twi mTwi;
         Driver::Adc::Adc mAdc;
-        Component::Led::Led mLedBoot;
         Component::Led::Led mLedStatus;
         Component::Led::Led mLedLeft;
         Component::Led::Led mLedRight;
+#ifdef RPI
+        Component::Led::Led mLedCenter;
+        Component::Led::Led mLedMiddleLeft;
+        Component::Led::Led mLedMiddleRight;
+        Driver::Gpio::Gpio mEnablePwm;
+#else
+        Component::Led::Led mLedBoot;
+#endif
+        Component::Battery::Battery mBattery;
         Driver::InputCapture::InputCapture mInputCaptureLeft;
         Driver::InputCapture::InputCapture mInputCaptureRight;
-        Component::Battery::Battery mBattery;
         Component::Imu::Mpu9150 mMpu9150;
         Component::Barometer::Barometer mBarometer;
         Component::Proximity::Ultrasound::Srf05 mSrf05Left;

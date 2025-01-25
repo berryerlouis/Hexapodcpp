@@ -13,7 +13,7 @@ namespace Driver
 
             ~UartInterface() = default;
 
-            virtual Core::CoreStatus Initialize(void) = 0;
+            virtual Core::Status Initialize(void) = 0;
 
             virtual void Update(const uint64_t currentTime) = 0;
 
@@ -23,7 +23,7 @@ namespace Driver
 
             virtual uint8_t Read(void) = 0;
 
-            virtual uint8_t DataAvailable(void) const = 0;
+            virtual uint8_t DataAvailable(void) = 0;
 
         private:
         };

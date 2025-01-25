@@ -21,8 +21,8 @@ namespace Cluster
 
             ~ClusterBattery() = default;
 
-            virtual Core::CoreStatus ExecuteFrame(const Frame &request, Frame &response) override {
-                Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override {
+                Core::Status success = Core::Status::CORE_ERROR;
                 if (request.commandId == EBatteryCommands::GET_VOLTAGE) {
                     const uint16_t voltage = this->mBattery.GetVoltage();
                     success = this->BuildFrameVoltage(voltage, response);
@@ -34,22 +34,22 @@ namespace Cluster
                 return success;
             }
 
-            inline Core::CoreStatus BuildFrameVoltage(const uint16_t voltage, Frame &response) const {
-                const Core::CoreStatus success = response.Build(
+            inline Core::Status BuildFrameVoltage(const uint16_t voltage, Frame &response) const {
+                const Core::Status success = response.Build(
                     EClusters::BATTERY,
                     EBatteryCommands::GET_VOLTAGE);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.Set2BytesParam(voltage);
                 }
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameState(const uint16_t state, const uint16_t voltage,
+            inline Core::Status BuildFrameState(const uint16_t state, const uint16_t voltage,
                                                     Frame &response) const {
-                const Core::CoreStatus success = response.Build(
+                const Core::Status success = response.Build(
                     EClusters::BATTERY,
                     EBatteryCommands::GET_BAT_STATUS);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.Set1ByteParam(state);
                     response.Set2BytesParam(voltage);
                 }

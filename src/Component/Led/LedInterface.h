@@ -17,15 +17,15 @@ namespace Component
 
             ~LedInterface() = default;
 
-            virtual Core::CoreStatus Initialize(void) = 0;
+            virtual Core::Status Initialize(void) = 0;
 
             virtual void Update(const uint64_t currentTime) = 0;
 
-            virtual Core::CoreStatus On() = 0;
+            virtual Core::Status On() = 0;
 
-            virtual Core::CoreStatus Off() = 0;
+            virtual Core::Status Off() = 0;
 
-            virtual Core::CoreStatus Toggle() = 0;
+            virtual Core::Status Toggle() = 0;
 
             virtual LedState Get() const = 0;
         };

@@ -5,51 +5,47 @@
  ![Hmi](images/HMI.png)
 
  # Install 
-  First install the following tools:
-  - install uncrustify
-  - install VS-code
-  - install serial-monitor extension
-  - install avr-gcc [(link windows)](https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/avr8-gnu-toolchain-3.7.0.1796-win32.any.x86_64.zip) [(link linux)](https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/avr8-gnu-toolchain-3.7.0.1796-linux.any.x86_64.tar.gz)
- 
- # Uncrustify
-  - parse all project files
-  - run `./bin/dev/uncrustify-all`
- 
- # Using Make
- ## Clean
-  - run `make clean`
+  The following tools are used:
+  - Install VS-code or CLion
+  - If you are using VS-code install serial-monitor extension
+  - Install avr-gcc [(link windows)](https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/avr8-gnu-toolchain-3.7.0.1796-win32.any.x86_64.zip) [(link linux)](https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/avr8-gnu-toolchain-3.7.0.1796-linux.any.x86_64.tar.gz)
 
- ## Compile
-  - run `make -j16`
- 
- ## Upload
-  - run `make flash`
+# Architecture
+
+![Architecture](images/architecture.png)
 
 # Using Cmake
  ## Compile
-  - run bin/dev/build.sh 
- 
- ## Goole Test
-  - run bin/dev/test.sh
 
- # Serial 
- ## attach to wsl
- usbipd.exe wsl attach --hardware-id=10c4:ea60
+ ``` shell
+ bin/dev/build.sh 
+ ```
+ 
+## Google Test 
+ ``` shell
+ bin/dev/test.sh
+ ```
+
+ # Serial
+ ## CLI to write firmware
+ ``` shell
+ bin/stack/avrdude.exe -c arduino -P COM4 -b 500000 -p m1284p -U flash:w:build/avr-debug/src/Hexapodcpp.elf
+ ```
+ ## On WSL 
+ ### Attach to wsl
+ ``` shell
+ usbipd.exe bind --hardware-id=10c4:ea60 
+ ```
+ ``` shell
+ usbipd.exe --wsl attach --hardware-id=10c4:ea60
+  ```
+ ### Detach to wsl
+ ``` shell
+ usbipd.exe unbind --hardware-id=10c4:ea60
+ ```
 
  ## Communication settings
- - baud: 115200
+ - baud: 500000
  - bytes: 8
- - parity: N
- - stopbit: 1
-
- ##usbip
-- PS> ```usbipd list```
-- PS> ```usbipd bind --busid 12-4```
-- PS> ```usbipd attach --wsl --busid 12-4```
-- PS> ```usbipd detach --busid 12-4```
-
-- WSL> ```lsusb```
-- WSL> ```sudo modprobe cp210x```
-- WSL> ```sudo chmod a+rw /dev/ttyUSB0```
-- WSL> ```sudo dmesg```
-     
+ - parity: None
+ - stop bit: 1

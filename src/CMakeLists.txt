@@ -1,12 +1,33 @@
-cmake_minimum_required(VERSION 3.22.1)
+cmake_minimum_required(VERSION 3.22)
 
 message(INFO " => Compilation with ${TARGET} in ${CMAKE_BUILD_TYPE} mode for ${PROJECT_NAME}")
 if (${TARGET} STREQUAL "gcc")
+    set(CMAKE_CXX_STANDARD 11)
+    set(CMAKE_CXX_STANDARD_REQUIRED True)
+
     # using GCC
     add_compile_definitions(GTEST)
     add_compile_definitions(X64)
     add_compile_definitions(DEBUG)
-    add_compile_options(-DF_CPU=${F_CPU} -Wall -Wextra -std=c++17 -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O0 -g)
+    add_compile_options(-DF_CPU=${F_CPU} -Wall -Wextra -std=c++17 -fexceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O0 -g)
+elseif (${TARGET} STREQUAL "rpi")
+
+    set(CMAKE_CXX_STANDARD 11)
+    set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+    # Utiliser FetchContent pour récupérer WiringPi
+    include(FetchContent)
+    FetchContent_Declare(
+            wiringPi
+            GIT_REPOSITORY https://github.com/WiringPi/WiringPi.git
+            GIT_TAG master
+    )
+    FetchContent_MakeAvailable(wiringPi)
+    include_directories(${wiringpi_SOURCE_DIR})
+    
+    add_compile_definitions(X64)
+    add_compile_definitions(RPI)
+
 else ()
     # using AVR GCC
     set(CMAKE_SYSTEM_NAME Generic)
@@ -16,6 +37,9 @@ else ()
     set(F_CPU 20000000UL)
     set(MCU atmega1284p)
     set(CMAKE_EXE_LINKER_FLAGS -mmcu=${MCU})
+
+    add_compile_definitions(AVR)
+
     if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
         add_compile_definitions(DEBUG)
     endif ()
@@ -121,20 +145,21 @@ set(SRC_FILES_X64
 )
 
 if (${TARGET} STREQUAL "gcc")
-    # using GCC
     add_executable(${PROJECT_NAME} ${SRC_FILES_X64})
+elseif (${TARGET} STREQUAL "rpi")
+    add_executable(${PROJECT_NAME} ${SRC_FILES_X64})
+    target_link_libraries(${PROJECT_NAME} wiringPi)
 else ()
     # using AVR GCC
     add_executable(${PROJECT_NAME} ${SRC_FILES})
+    # Rename the output to .elf as we will create multiple files
+    set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME}.elf)
+
+    # Strip binary for upload
+    add_custom_target(strip ALL avr-strip ${PROJECT_NAME}.elf DEPENDS ${PROJECT_NAME})
+
+    add_custom_target(hex ALL avr-objcopy -R .eeprom -O ihex ${PROJECT_NAME}.elf ${PROJECT_NAME}.hex DEPENDS strip)
+
+    # Upload the firmware with avrdude
+    add_custom_target(upload avrdude.exe -c arduino -P COM4 -b 500000 -p m1284p -U flash:w:build/avr-debug/src/Hexapodcpp.elf DEPEND hex)
 endif ()
-
-# Rename the output to .elf as we will create multiple files
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME}.elf)
-
-# Strip binary for upload
-add_custom_target(strip ALL avr-strip ${PROJECT_NAME}.elf DEPENDS ${PROJECT_NAME})
-
-add_custom_target(hex ALL avr-objcopy -R .eeprom -O ihex ${PROJECT_NAME}.elf ${PROJECT_NAME}.hex DEPENDS strip)
-
-# Upload the firmware with avrdude
-add_custom_target(upload avrdude.exe -c arduino -P COM4 -b 500000 -p m1284p -U flash:w:build/avr-debug/src/Hexapodcpp.elf DEPEND HEX)

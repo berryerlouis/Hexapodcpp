@@ -59,7 +59,7 @@ namespace Component
 
             ~Ssd1306() = default;
 
-            virtual Core::CoreStatus Initialize(void) final override;
+            virtual Core::Status Initialize(void) final override;
 
             virtual void Update(const uint64_t currentTime) final override;
 
@@ -86,7 +86,7 @@ namespace Component
 
         private:
             Twi::TwiInterface &mTwi;
-            const uint8_t mAddress;
+            uint8_t mAddress;
             uint8_t mBufferScreen[BUFFER_DISPLAY_LENGTH];
             bool mNeedToUpdate;
             int16_t mUpdateIndex;

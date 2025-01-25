@@ -12,7 +12,7 @@ namespace Component
 
             ~Pca9685Interface() = default;
 
-            virtual Core::CoreStatus Initialize(void) = 0;
+            virtual Core::Status Initialize(void) = 0;
 
             virtual void Update(const uint64_t currentTime) = 0;
 
@@ -26,7 +26,7 @@ namespace Component
 
             virtual void SetFrequency(const uint32_t frequency) = 0;
 
-            virtual void SetPwm(uint8_t num, uint16_t off) = 0;
+            virtual void SetPwm(const uint8_t num, const uint16_t off) = 0;
         };
     }
 }

@@ -22,8 +22,8 @@ namespace Cluster
 
             ~ClusterBody() = default;
 
-            virtual Core::CoreStatus ExecuteFrame(const Frame &request, Frame &response) override {
-                Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override {
+                Core::Status success = Core::Status::CORE_ERROR;
                 if (request.commandId == EBodyCommands::SET_BODY_POS_ROT) {
                     const Position3d position =
                     {
@@ -59,27 +59,27 @@ namespace Cluster
                 return success;
             }
 
-            inline Core::CoreStatus BuildFrameSetBodyPosition(Frame &response, const uint32_t successMove) const {
-                const Core::CoreStatus success = response.Build(
+            inline Core::Status BuildFrameSetBodyPosition(Frame &response, const uint32_t successMove) const {
+                const Core::Status success = response.Build(
                     EClusters::BODY,
                     EBodyCommands::SET_BODY_POS_ROT);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.Set4BytesParam(successMove);
                 }
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameSetLegPosition(Frame &response, const uint32_t successMove) const {
-                const Core::CoreStatus success = response.Build(
+            inline Core::Status BuildFrameSetLegPosition(Frame &response, const uint32_t successMove) const {
+                const Core::Status success = response.Build(
                     EClusters::BODY,
                     EBodyCommands::SET_LEG_POS_ROT);
-                if (success == Core::CoreStatus::CORE_OK) {
+                if (success == Core::Status::CORE_OK) {
                     response.Set4BytesParam(successMove);
                 }
                 return (success);
             }
 
-            inline Core::CoreStatus BuildFrameUpdateWalkStatus(Frame &response) const {
+            inline Core::Status BuildFrameUpdateWalkStatus(Frame &response) const {
                 return response.Build(EClusters::BODY, EBodyCommands::SET_WALK_STATUS);
             }
 

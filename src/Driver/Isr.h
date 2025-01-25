@@ -1,5 +1,6 @@
 #pragma once
 
+#ifdef AVR
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdint.h>
@@ -14,3 +15,6 @@
         sei();                          \
     }                                   \
 )
+#else
+#define ISR_EMBEDDED_CODE( code ) code
+#endif

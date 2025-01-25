@@ -36,20 +36,20 @@ namespace Service
         class Services : public ServiceInterface {
         public:
             Services(
-                Tick::TickInterface &tick,
-                ServiceGeneral &serviceGeneral,
-                ServiceControl &serviceControl,
-                ServiceCommunication &serviceCommunication,
-                ServiceProximity &serviceProximity,
-                ServiceOrientation &serviceOrientation,
-                ServiceBattery &serviceBattery,
-                ServiceDisplay &serviceDisplay,
-                ServiceBody &serviceBody,
-                Event::EventListenerInterface &eventListener);
+                    Tick::TickInterface &tick,
+                    ServiceGeneral &serviceGeneral,
+                    ServiceControl &serviceControl,
+                    ServiceCommunication &serviceCommunication,
+                    ServiceProximity &serviceProximity,
+                    ServiceOrientation &serviceOrientation,
+                    ServiceBattery &serviceBattery,
+                    ServiceDisplay &serviceDisplay,
+                    ServiceBody &serviceBody,
+                    Event::EventListenerInterface &eventListener);
 
             ~Services() = default;
 
-            virtual Core::CoreStatus Initialize(void) final override;
+            virtual Core::Status Initialize(void) final override;
 
             virtual void Update(const uint64_t currentTime) final override;
 

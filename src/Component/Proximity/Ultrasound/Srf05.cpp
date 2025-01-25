@@ -17,10 +17,10 @@ namespace Component
                   , mThreshold(DISTANCE_THRESHOLD) {
             }
 
-            Core::CoreStatus Srf05::Initialize(void) {
+            Core::Status Srf05::Initialize(void) {
                 this->mGpioEcho.Initialize();
                 this->mLed.Initialize();
-                return (Core::CoreStatus::CORE_OK);
+                return (Core::Status::CORE_OK);
             }
 
             void Srf05::Update(const uint64_t currentTime) {
@@ -40,9 +40,9 @@ namespace Component
                 return (this->mThreshold);
             }
 
-            Core::CoreStatus Srf05::SetThreshold(const uint16_t threshold) {
+            Core::Status Srf05::SetThreshold(const uint16_t threshold) {
                 this->mThreshold = threshold;
-                return (Core::CoreStatus::CORE_OK);
+                return (Core::Status::CORE_OK);
             }
 
             void Srf05::SendPulse(void) const {

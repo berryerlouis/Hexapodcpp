@@ -16,13 +16,13 @@ namespace Driver
               , mDelay(0UL) {
         }
 
-        Core::CoreStatus InputCapture::Initialize(void) {
+        Core::Status InputCapture::Initialize(void) {
             PCICR |= _BV(PCIE0);
-            PCMSK0 |= _BV(( this->mGpio.GetPin() ));
+            PCMSK0 |= _BV(( this->mGpio.GetPin().pin ));
             inputCapture[inputCaptureIndex] = this;
             inputCaptureIndex++;
 
-            return (Core::CoreStatus::CORE_OK);
+            return (Core::Status::CORE_OK);
         }
 
         void InputCapture::Update(const uint64_t currentTime) {

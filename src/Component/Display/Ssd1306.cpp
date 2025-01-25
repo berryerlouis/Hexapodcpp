@@ -1,76 +1,49 @@
 #include "Ssd1306.h"
-#include "../../Misc/Bitmap/Font.h"
 #include <math.h>
 #include <string.h>
-
+#include "../../Misc/Bitmap/Font.h"
+#ifdef RPI
+#include "wiringPi/wiringPiI2C.h"
+#endif
 namespace Component
 {
     namespace Display
     {
-        Ssd1306::Ssd1306(Twi::TwiInterface &twi, const uint8_t address)
-            : mTwi(twi)
-              , mAddress(address)
-              , mBufferScreen{0x00U}
-              , mNeedToUpdate(false)
-              , mUpdateIndex(BUFFER_DISPLAY_LENGTH) {
+        Ssd1306::Ssd1306(Twi::TwiInterface &twi, const uint8_t address) :
+            mTwi(twi), mAddress(address), mBufferScreen{0x00U}, mNeedToUpdate(false),
+            mUpdateIndex(BUFFER_DISPLAY_LENGTH) {
+#ifdef RPI
+            this->mAddress = wiringPiI2CSetup(address);
+#endif
         }
 
-        Core::CoreStatus Ssd1306::Initialize(void) {
-            uint8_t vccState = SSD1306_SWITCHCAPVCC;
-            uint8_t init1[] =
-            {
-                SSD1306_DISPLAYOFF,
-                SSD1306_SETDISPLAYCLOCKDIV,
-                0x80U,
-                SSD1306_SETMULTIPLEX
-            };
+        Core::Status Ssd1306::Initialize(void) {
+            const uint8_t vccState = SSD1306_SWITCHCAPVCC;
+            uint8_t init1[] = {SSD1306_DISPLAYOFF, SSD1306_SETDISPLAYCLOCKDIV, 0x80U, SSD1306_SETMULTIPLEX};
             this->mTwi.WriteRegisters(this->mAddress, SSD1306_SETLOWCOLUMN, init1, sizeof(init1));
             this->mTwi.WriteRegister(this->mAddress, SSD1306_SETLOWCOLUMN, SCREEN_HEIGHT - 1);
 
-            uint8_t init2[] =
-            {
-                SSD1306_SETDISPLAYOFFSET,
-                0x0,
-                SSD1306_SETSTARTLINE | 0x0,
-                SSD1306_CHARGEPUMP
-            };
+            uint8_t init2[] = {SSD1306_SETDISPLAYOFFSET, 0x0, SSD1306_SETSTARTLINE | 0x0, SSD1306_CHARGEPUMP};
             this->mTwi.WriteRegisters(this->mAddress, SSD1306_SETLOWCOLUMN, init2, sizeof(init2));
 
             this->mTwi.WriteRegister(this->mAddress, SSD1306_SETLOWCOLUMN,
                                      (vccState == SSD1306_EXTERNALVCC) ? 0x10 : 0x14);
 
-            uint8_t init3[] =
-            {
-                SSD1306_MEMORYMODE,
-                0x00,
-                SSD1306_SEGREMAP | 0x1,
-                SSD1306_COMSCANDEC
-            };
+            uint8_t init3[] = {SSD1306_MEMORYMODE, 0x00, SSD1306_SEGREMAP | 0x1, SSD1306_COMSCANDEC};
             this->mTwi.WriteRegisters(this->mAddress, SSD1306_SETLOWCOLUMN, init3, sizeof(init3));
 
-            uint8_t init4a[] =
-            {
-                SSD1306_SETCOMPINS,
-                0x02,
-                SSD1306_SETCONTRAST,
-                0x8F
-            };
+            uint8_t init4a[] = {SSD1306_SETCOMPINS, 0x02, SSD1306_SETCONTRAST, 0x8F};
             this->mTwi.WriteRegisters(this->mAddress, SSD1306_SETLOWCOLUMN, init4a, sizeof(init4a));
 
             this->mTwi.WriteRegister(this->mAddress, SSD1306_SETLOWCOLUMN, SSD1306_SETPRECHARGE);
             this->mTwi.WriteRegister(this->mAddress, SSD1306_SETLOWCOLUMN,
                                      (vccState == SSD1306_EXTERNALVCC) ? 0x22 : 0xF1);
-            uint8_t init5[] = {
-                SSD1306_SETVCOMDETECT,
-                0x40,
-                SSD1306_DISPLAYALLON_RESUME,
-                SSD1306_NORMALDISPLAY,
-                SSD1306_DEACTIVATE_SCROLL,
-                SSD1306_DISPLAYON
-            };
+            uint8_t init5[] = {SSD1306_SETVCOMDETECT,       0x40,
+                               SSD1306_DISPLAYALLON_RESUME, SSD1306_NORMALDISPLAY,
+                               SSD1306_DEACTIVATE_SCROLL,   SSD1306_DISPLAYON};
             this->mTwi.WriteRegisters(this->mAddress, SSD1306_SETLOWCOLUMN, init5, sizeof(init5));
 
-            return (Core::CoreStatus::CORE_OK);
+            return (Core::Status::CORE_OK);
         }
 
         void Ssd1306::Update(const uint64_t currentTime) {
@@ -78,13 +51,7 @@ namespace Component
             static constexpr uint8_t NB_BYTES = 64U;
             if (this->mNeedToUpdate == true) {
                 if (this->mUpdateIndex == BUFFER_DISPLAY_LENGTH) {
-                    uint8_t screenConfig[] = {
-                        SSD1306_PAGEADDR,
-                        0U,
-                        0xFFU,
-                        SSD1306_COLUMNADDR,
-                        0U
-                    };
+                    uint8_t screenConfig[] = {SSD1306_PAGEADDR, 0U, 0xFFU, SSD1306_COLUMNADDR, 0U};
 
                     this->mTwi.WriteRegisters(this->mAddress, SSD1306_SETLOWCOLUMN, screenConfig, sizeof(screenConfig));
                     this->mTwi.WriteRegister(this->mAddress, SSD1306_SETLOWCOLUMN, SCREEN_WIDTH - 1);
@@ -137,10 +104,7 @@ namespace Component
         }
 
         void Ssd1306::DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
-            if (
-                (x1 <= SCREEN_WIDTH) && (x2 <= SCREEN_WIDTH) &&
-                (y1 <= SCREEN_HEIGHT) && (y2 <= SCREEN_HEIGHT)
-            ) {
+            if ((x1 <= SCREEN_WIDTH) && (x2 <= SCREEN_WIDTH) && (y1 <= SCREEN_HEIGHT) && (y2 <= SCREEN_HEIGHT)) {
                 uint16_t dx = abs(x2 - x1);
                 uint16_t dy = abs(y2 - y1);
                 if (dx != 0) {
@@ -159,10 +123,7 @@ namespace Component
         }
 
         void Ssd1306::DrawRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
-            if (
-                (x1 < SCREEN_WIDTH) && (x2 < SCREEN_WIDTH) &&
-                (y1 < SCREEN_HEIGHT) && (y2 < SCREEN_HEIGHT)
-            ) {
+            if ((x1 < SCREEN_WIDTH) && (x2 < SCREEN_WIDTH) && (y1 < SCREEN_HEIGHT) && (y2 < SCREEN_HEIGHT)) {
                 Ssd1306::DrawLine(x1, y1, x2, y1, color);
                 Ssd1306::DrawLine(x1, y2, x2, y2, color);
                 Ssd1306::DrawLine(x1, y1, x1, y2, color);
@@ -221,8 +182,8 @@ namespace Component
                     } else {
                         Ssd1306::DrawPixel(x + j, y + i,
                                            color == Bitmap::Bitmaps::Color::COLOR_BLACK
-                                               ? Bitmap::Bitmaps::Color::COLOR_WHITE
-                                               : Bitmap::Bitmaps::Color::COLOR_BLACK);
+                                                   ? Bitmap::Bitmaps::Color::COLOR_WHITE
+                                                   : Bitmap::Bitmaps::Color::COLOR_BLACK);
                     }
                 }
             }
@@ -248,7 +209,7 @@ namespace Component
                     if (i & 7U) {
                         b <<= 1U;
                     } else {
-#ifndef GTEST
+#ifdef AVR
                         b = pgm_read_byte(&bmp->bmp[j * byteWidth + i / 8U]);
 #endif
                     }
@@ -259,5 +220,5 @@ namespace Component
             }
             this->mNeedToUpdate = true;
         }
-    }
-}
+    } // namespace Display
+} // namespace Component

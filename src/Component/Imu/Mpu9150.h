@@ -117,7 +117,7 @@ namespace Component
 
             ~Mpu9150() = default;
 
-            Core::CoreStatus Initialize(void);
+            Core::Status Initialize(void);
 
             void Update(const uint64_t currentTime);
 
@@ -226,7 +226,7 @@ namespace Component
 
             Twi::TwiInterface &mI2c;
             Tick::TickInterface &mTick;
-            const uint8_t mAddress;
+            uint8_t mAddress;
             const uint8_t mAddressMag;
             Vector3 mAccOffset;
             Vector3 mGyrOffset;

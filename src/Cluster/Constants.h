@@ -4,20 +4,12 @@
 
 namespace Cluster
 {
-    enum EClusters {
-        GENERAL = 0U,
-        IMU = 1U,
-        PROXIMITY = 2U,
-        SERVO = 3U,
-        BATTERY = 4U,
-        BODY = 5U
-    };
+    enum EClusters { GENERAL = 0U, IMU = 1U, PROXIMITY = 2U, SERVO = 3U, BATTERY = 4U, BODY = 5U };
 
-    static const uint8_t NB_CLUSTERS = 6U;
+    static constexpr uint8_t NB_CLUSTERS = 6U;
 
-    enum EClusterCommandGeneric {
-        GENERIC = 0xFFU
-    };
+
+    enum EClusterCommandGeneric { GENERIC = 0xFFU };
 
     enum EGeneralCommands {
         VERSION,
@@ -27,22 +19,18 @@ namespace Cluster
         RESET_EXECUTION_TIME
     };
 
-#define NB_COMMANDS_GENERAL 5U
+    static constexpr uint8_t NB_COMMANDS_GENERAL = 5U;
 
     enum EBatteryCommands {
         GET_VOLTAGE = 0x00U,
         GET_BAT_STATUS,
     };
 
-#define NB_COMMANDS_BATTERY 2U
+    static constexpr uint8_t NB_COMMANDS_BATTERY = 2U;
 
-    enum EBodyCommands {
-        SET_BODY_POS_ROT = 0x00U,
-        SET_LEG_POS_ROT,
-        SET_WALK_STATUS
-    };
+    enum EBodyCommands { SET_BODY_POS_ROT = 0x00U, SET_LEG_POS_ROT, SET_WALK_STATUS };
 
-#define NB_COMMANDS_BODY 3U
+    static constexpr uint8_t NB_COMMANDS_BODY = 3U;
 
     enum EImuCommands {
         ALL,
@@ -58,7 +46,7 @@ namespace Cluster
         START_STOP_MAG_CALIB,
     };
 
-#define NB_COMMANDS_IMU 11U
+    static constexpr uint8_t NB_COMMANDS_IMU = 11U;
 
     enum EServoCommands {
         GET_ALL = 0,
@@ -78,7 +66,8 @@ namespace Cluster
         SET_STATE_PCA,
     };
 
-#define NB_COMMANDS_SERVO 15U
+    static constexpr uint8_t NB_COMMANDS_SERVO = 15U;
+
 
     enum EProximityCommands {
         US_LEFT,
@@ -87,5 +76,5 @@ namespace Cluster
         SET_THRESHOLD,
     };
 
-#define NB_COMMANDS_PROXIMITY 4U
-}
+    static constexpr uint8_t NB_COMMANDS_PROXIMITY = 4U;
+} // namespace Cluster

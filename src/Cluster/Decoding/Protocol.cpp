@@ -7,9 +7,9 @@ namespace Cluster
         Protocol::Protocol() {
         }
 
-        Core::CoreStatus Protocol::Decode(const char *frameBuffer, Frame &frame) {
+        Core::Status Protocol::Decode(const char *frameBuffer, Frame &frame) {
             if (frameBuffer == nullptr) {
-                return (Core::CoreStatus::CORE_ERROR_NULLPTR);
+                return (Core::Status::CORE_ERROR_NULLPTR);
             }
             const uint8_t frameLength = strlen(frameBuffer);
 
@@ -20,19 +20,19 @@ namespace Cluster
                        (unsigned int *) &frame.nbParams);
 
                 if (frame.nbParams == 0U && frameLength == 6U) {
-                    return (Core::CoreStatus::CORE_OK);
+                    return (Core::Status::CORE_OK);
                 } else if ((frame.nbParams * 2U) + 6U == frameLength) {
                     for (size_t i = 0U; i < frame.nbParams * 2U; i += 2U) {
                         sscanf(&frameBuffer[6U + i], "%02x", (unsigned int *) &frame.params[i / 2U]);
                     }
-                    return (Core::CoreStatus::CORE_OK);
+                    return (Core::Status::CORE_OK);
                 }
 
                 // wrong param size
-                return (Core::CoreStatus::CORE_ERROR_OVERLOAD);
+                return (Core::Status::CORE_ERROR_OVERLOAD);
             }
             // frameLength is not or less than 6 bytes
-            return (Core::CoreStatus::CORE_ERROR_SIZE);
+            return (Core::Status::CORE_ERROR_SIZE);
         }
 
         uint8_t Protocol::Encode(const Frame &response, char *buffer) {

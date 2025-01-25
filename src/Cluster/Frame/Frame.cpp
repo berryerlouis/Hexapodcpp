@@ -13,20 +13,20 @@ namespace Cluster
           , params{0U} {
     }
 
-    Core::CoreStatus Frame::Build(const uint8_t clusterId, const uint8_t commandId) {
+    Core::Status Frame::Build(const uint8_t clusterId, const uint8_t commandId) {
         if (nbParams > FRAME_MAX_PARAMS) {
-            return (Core::CoreStatus::CORE_ERROR);
+            return (Core::Status::CORE_ERROR);
         }
         this->clusterId = clusterId;
         this->commandId = commandId;
         this->nbParams = 0U;
 
-        return (Core::CoreStatus::CORE_OK);
+        return (Core::Status::CORE_OK);
     }
 
-    Core::CoreStatus Frame::Build(const uint8_t clusterId, const uint8_t commandId, const uint8_t *params,
+    Core::Status Frame::Build(const uint8_t clusterId, const uint8_t commandId, const uint8_t *params,
                                   const uint8_t nbParams) {
-        Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+        Core::Status success = Core::Status::CORE_ERROR;
         if (nbParams < FRAME_MAX_PARAMS) {
             if ((params == nullptr) && (nbParams == 0U)) {
                 success = this->Build(clusterId, commandId);
@@ -36,7 +36,7 @@ namespace Cluster
                 this->nbParams = nbParams;
 
                 memcpy((void *) this->params, params, nbParams);
-                success = Core::CoreStatus::CORE_OK;
+                success = Core::Status::CORE_OK;
             }
         }
         return (success);

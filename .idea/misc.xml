@@ -11,5 +11,16 @@
     <option name="pythonIntegrationState" value="YES" />
   </component>
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
+  <component name="CidrRootsConfiguration">
+    <sourceRoots>
+      <file path="$PROJECT_DIR$/src" />
+    </sourceRoots>
+    <excludeRoots>
+      <file path="$PROJECT_DIR$/HMI" />
+      <file path="$PROJECT_DIR$/HMI-copy" />
+      <file path="$PROJECT_DIR$/node" />
+      <file path="$PROJECT_DIR$/unittests" />
+    </excludeRoots>
+  </component>
   <component name="WestSettings">{}</component>
 </project>

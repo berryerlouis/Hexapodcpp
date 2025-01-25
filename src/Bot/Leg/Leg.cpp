@@ -70,7 +70,7 @@ namespace Bot
             }
         }
 
-        Core::CoreStatus Leg::SetLegIk(const Position3d &position, const Position3d &bodyIk,
+        Core::Status Leg::SetLegIk(const Position3d &position, const Position3d &bodyIk,
                                        const uint16_t travelTime) {
             this->mLegIk.newFootPos.x = this->mFootPosition.x + position.x + bodyIk.x;
             this->mLegIk.newFootPos.y = this->mFootPosition.y + position.y + bodyIk.y;
@@ -124,7 +124,7 @@ namespace Bot
             success |= this->mFemur.SetAngle(static_cast<uint8_t>(this->mLegIk.femurIk), travelTime) << 3U;
             success |= this->mTibia.SetAngle(static_cast<uint8_t>(this->mLegIk.tibiaIk), travelTime) << 6U;
 
-            return success == 0U ? Core::CoreStatus::CORE_OK : Core::CoreStatus::CORE_ERROR;
+            return success == 0U ? Core::Status::CORE_OK : Core::Status::CORE_ERROR;
         }
     }
 }

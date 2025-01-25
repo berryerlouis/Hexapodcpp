@@ -6,36 +6,33 @@ namespace Driver
     namespace Gpio
     {
         Gpio::GpioRegister Gpio::sGpioRegisters[] = {
-            {&PINA, &PORTA, &DDRA, &PCICR, &PCMSK0, PCIE0},
-            {&PINB, &PORTB, &DDRB, &PCICR, &PCMSK1, PCIE1},
-            {&PINC, &PORTC, &DDRC, &PCICR, &PCMSK2, PCIE2},
-            {&PIND, &PORTD, &DDRD, &PCICR, &PCMSK3, PCIE3},
+                {&PINA, &PORTA, &DDRA, &PCICR, &PCMSK0, PCIE0},
+                {&PINB, &PORTB, &DDRB, &PCICR, &PCMSK1, PCIE1},
+                {&PINC, &PORTC, &DDRC, &PCICR, &PCMSK2, PCIE2},
+                {&PIND, &PORTD, &DDRD, &PCICR, &PCMSK3, PCIE3},
         };
 
 
-        Gpio::Gpio(const SGpio &gpio, const EPortDirection &portDirection) : mGpio(gpio),
-                                                                             mPortDirection(portDirection),
-                                                                             mGpioRegister(
-                                                                                 Gpio::sGpioRegisters[gpio.port]) {
+        Gpio::Gpio(const SGpio &gpio, const EPortDirection &portDirection) :
+            mGpio(gpio),
+            mPortDirection(portDirection),
+            mGpioRegister(
+                    Gpio::sGpioRegisters[gpio.port]) {
             if (this->mPortDirection == EPortDirection::OUT) {
                 *(this->mGpioRegister.portDirPtr) |= _BV(this->mGpio.pin);
-            } else {
-                *(this->mGpioRegister.portDirPtr) &= ~_BV(this->mGpio.pin);
-            }
+            } else { *(this->mGpioRegister.portDirPtr) &= ~_BV(this->mGpio.pin); }
         }
 
-        EPin &Gpio::GetPin(void) {
-            return (this->mGpio.pin);
-        }
+        SGpio &Gpio::GetPin(void) { return (this->mGpio); }
 
-        Core::CoreStatus Gpio::Set(void) {
+        Core::Status Gpio::Set(void) {
             *(this->mGpioRegister.portPtr) |= _BV(this->mGpio.pin);
-            return (Core::CoreStatus::CORE_OK);
+            return (Core::Status::CORE_OK);
         }
 
-        Core::CoreStatus Gpio::Reset(void) {
+        Core::Status Gpio::Reset(void) {
             *(this->mGpioRegister.portPtr) &= ~_BV(this->mGpio.pin);
-            return (Core::CoreStatus::CORE_OK);
+            return (Core::Status::CORE_OK);
         }
 
         bool Gpio::Get(void) {

@@ -5,25 +5,25 @@ namespace Service
     namespace Proximity
     {
         ServiceProximity::ServiceProximity(SensorProximityMultipleInterface &proximity,
-                                           Event::EventListenerInterface &eventListener)
-            : Service(25U, eventListener)
-              , mProximity(proximity)
-              , mTimeoutDetection{0xFFU, 0xFFU, 0xFFU} {
+                                           Event::EventListenerInterface &eventListener) :
+            Service(25U, eventListener), mProximity(proximity), mTimeoutDetection{0xFFU, 0xFFU, 0xFFU} {
         }
 
-        Core::CoreStatus ServiceProximity::Initialize(void) {
-            /*Core::CoreStatus success = */this->mProximity.Initialize();
-            this->mProximity.Attach(this);
-            return (Core::CoreStatus::CORE_OK);
+        Core::Status ServiceProximity::Initialize(void) {
+            const Core::Status success = this->mProximity.Initialize();
+            if (Core::Status::CORE_OK == success) {
+                this->mProximity.Attach(this);
+                this->mInitialized = true;
+            }
+            return success;
         }
 
         void ServiceProximity::Update(const uint64_t currentTime) {
             this->mProximity.Update(currentTime);
 
             for (int i = 0; i < NB_SENSORS; ++i) {
-                if (this->mTimeoutDetection[i] < MAX_TIMEOUT_DETECTION) {
-                    this->mTimeoutDetection[i]++;
-                } else if (this->mTimeoutDetection[i] == MAX_TIMEOUT_DETECTION) {
+                if (this->mTimeoutDetection[i] < MAX_TIMEOUT_DETECTION) { this->mTimeoutDetection[i]++; } else if (
+                    this->mTimeoutDetection[i] == MAX_TIMEOUT_DETECTION) {
                     this->mTimeoutDetection[i] = 0xFFU;
                     const uint16_t distance = this->mProximity.GetDistance(static_cast<SensorsId>(i));
                     const uint8_t arg[2U] = UINT16_TO_ARRAY(distance);
@@ -41,8 +41,6 @@ namespace Service
         }
 
 
-        void ServiceProximity::DispatchEvent(const SEvent &event) {
-            (void) event;
-        }
-    }
-}
+        void ServiceProximity::DispatchEvent(const SEvent &event) { (void) event; }
+    } // namespace Proximity
+} // namespace Service

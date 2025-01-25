@@ -1,0 +1,100 @@
+import * as THREE from 'three';
+import Leg from './leg.js';
+import drawBody from './body.js';
+import {hexapodConfiguration as hexapod} from './confHexapod.js';
+
+export default class Hexapod {
+    name: string;
+    groupBody: THREE.Group;
+    legs: Leg[];
+    sensors: THREE.Mesh[];
+    rot: number;
+
+    constructor(groupBody: THREE.Group) {
+        this.name = 'Hexapod';
+        this.groupBody = groupBody;
+        this.initBody();
+        this.initHead();
+    }
+
+    initBody(): void {
+        this.legs = [];
+        this.groupBody.add(drawBody("bottom", 0));
+        this.groupBody.add(drawBody("top", 50));
+        this.legs.push(new Leg("FL", hexapod.body.legFL));
+        this.legs.push(new Leg("ML", hexapod.body.legML));
+        this.legs.push(new Leg("RL", hexapod.body.legRL));
+        this.legs.push(new Leg("FR", hexapod.body.legFR));
+        this.legs.push(new Leg("MR", hexapod.body.legMR));
+        this.legs.push(new Leg("RR", hexapod.body.legRR));
+        this.groupBody.add(...this.legs);
+        this.rot = 0;
+    }
+
+    initHead(): void {
+        this.sensors = [];
+        let geometry = new THREE.BoxGeometry(80, 50, 1);
+        let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        let cylinder = new THREE.Mesh(geometry, material);
+        cylinder.position.x = 0;
+        cylinder.position.z = -hexapod.body.height / 2 - 8;
+        cylinder.position.y += 25 + hexapod.y;
+        cylinder.rotateY(30 * Math.PI / 180);
+        cylinder.translateZ(-100 - hexapod.head.srfLeft);
+        this.sensors.push(cylinder);
+
+        cylinder = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 1), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+        cylinder.position.x = 0;
+        cylinder.position.z = -hexapod.body.height / 2 - 8;
+        cylinder.position.y += 25 + hexapod.y;
+        cylinder.rotateY(0 * Math.PI / 180);
+        cylinder.translateZ(-100 - hexapod.head.vlx);
+        this.sensors.push(cylinder);
+
+        cylinder = new THREE.Mesh(geometry, material);
+        cylinder.position.x = 0;
+        cylinder.position.z = -hexapod.body.height / 2 - 8;
+        cylinder.position.y += 25 + hexapod.y;
+        cylinder.rotateY(-30 * Math.PI / 180);
+        cylinder.translateZ(-100 - hexapod.head.srfRight);
+        this.sensors.push(cylinder);
+        this.groupBody.add(...this.sensors);
+    }
+
+    drawObstacleLeft(distance: number): void {
+        hexapod.head.srfLeft = distance;
+        this.sensors[0].position.x = 0;
+        this.sensors[0].position.z = -50 - hexapod.body.height / 2 - 8;
+        if (-hexapod.head.srfLeft * 10 < -100) {
+            this.sensors[0].translateZ(-hexapod.head.srfLeft * 10);
+        } else {
+            this.sensors[0].translateZ(-50);
+        }
+    }
+
+    drawObstacleCenter(distance: number): void {
+        hexapod.head.vlx = distance;
+        this.sensors[1].position.x = 0;
+        this.sensors[1].position.z = -50 - hexapod.body.height / 2 - 8;
+        this.sensors[1].translateZ(-hexapod.head.vlx * 10);
+    }
+
+    drawObstacleRight(distance: number): void {
+        hexapod.head.srfRight = distance;
+        this.sensors[2].position.x = 0;
+        this.sensors[2].position.z = -50 - hexapod.body.height / 2 - 8;
+        if (-hexapod.head.srfRight * 10 < -100) {
+            this.sensors[2].translateZ(-hexapod.head.srfRight * 10);
+        } else {
+            this.sensors[2].translateZ(-50);
+        }
+    }
+
+    moveLeg(legId: number, coxa: number, femur: number, tibia: number): void {
+        this.legs[legId].move(coxa, femur, tibia);
+    }
+
+    moveServo(servoId: number, angle: number): void {
+        this.legs[Math.floor(servoId / 3)].moveServo(servoId % 3, angle - 90);
+    }
+}

@@ -1,30 +1,41 @@
-#include "InputCapture.h"
+#include "InputCaptureX64.h"
+#ifdef RPI
+#include "wiringPi/wiringPi.h"
+#endif
 
 namespace Driver
 {
     namespace InputCapture
     {
-        InputCapture::InputCapture(Gpio::GpioInterface &gpio, Tick::TickInterface &tick)
-            : mGpio(gpio)
-              , mTick(tick)
-              , mState(false)
-              , mStartTime(0UL)
-              , mDelay(0UL) {
+        static InputCapture *inputCapture[2U] = {};
+        static uint8_t inputCaptureIndex = 0U;
+
+        void InterruptInputCapture(void) {
+            for (size_t i = 0U; i < inputCaptureIndex; i++) { inputCapture[i]->EdgeChange(); }
         }
 
-        Core::CoreStatus InputCapture::Initialize(void) {
-            return (Core::CoreStatus::CORE_OK);
+        InputCapture::InputCapture(Gpio::GpioInterface &gpio, Tick::TickInterface &tick) :
+            mGpio(gpio), mTick(tick), mState(false), mStartTime(0UL), mDelay(0UL) {
+#ifdef RPI
+            inputCapture[inputCaptureIndex] = this;
+            inputCaptureIndex++;
+            wiringPiISR(this->mGpio.GetPin().pin, INT_EDGE_BOTH, &InterruptInputCapture);
+#endif
+
         }
 
-        void InputCapture::Update(const uint64_t currentTime) {
-            (void) currentTime;
-        }
+        Core::Status InputCapture::Initialize(void) { return (Core::Status::CORE_OK); }
 
-        uint64_t InputCapture::GetInputCaptureTime(void) {
-            return (this->mDelay);
-        }
+        void InputCapture::Update(const uint64_t currentTime) { (void) currentTime; }
+
+        uint64_t InputCapture::GetInputCaptureTime(void) { return (this->mDelay); }
 
         void InputCapture::EdgeChange(void) {
+            const int state = this->mGpio.Get();
+
+            if (state != this->mState && state == true) { this->mStartTime = this->mTick.GetUs(); } else if (
+                state != this->mState && state == false) { this->mDelay = this->mTick.GetUs() - this->mStartTime; }
+            this->mState = state;
         }
-    }
-}
+    } // namespace InputCapture
+} // namespace Driver

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeSharedSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Rpi Debug" ENABLED="true" GENERATION_DIR="build/rpi-debug" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Rpi" GENERATION_OPTIONS="-DTARGET=&quot;rpi&quot;" BUILD_OPTIONS="-- -j16" />
+      <configuration PROFILE_NAME="AVR Debug" ENABLED="true" GENERATION_DIR="build/avr-debug" CONFIG_NAME="Debug" TOOLCHAIN_NAME="WSL AVR" GENERATION_OPTIONS="-DTARGET=&quot;avr&quot;" BUILD_OPTIONS="-- -j 16" />
+      <configuration PROFILE_NAME="AVR Release" ENABLED="true" GENERATION_DIR="build/avr-release" CONFIG_NAME="Release" TOOLCHAIN_NAME="WSL AVR" GENERATION_OPTIONS="-DTARGET=&quot;avr&quot;" BUILD_OPTIONS="-- -j 16" />
+      <configuration PROFILE_NAME="X64 Debug" ENABLED="true" GENERATION_DIR="build/gcc-debug" CONFIG_NAME="Debug" TOOLCHAIN_NAME="WSL GCC" GENERATION_OPTIONS="-DTARGET=&quot;gcc&quot; -DCMAKE_BUILD_TYPE=DEBUG" BUILD_OPTIONS="-- -j 16" />
+      <configuration PROFILE_NAME="TEST" ENABLED="true" GENERATION_DIR="build/unittest" CONFIG_NAME="Debug" TOOLCHAIN_NAME="WSL GCC" GENERATION_OPTIONS="-DGTEST=1 -Wno-dev" BUILD_OPTIONS="-- -j 16" />
+      <configuration PROFILE_NAME="X64 Rpi Debug" ENABLED="true" GENERATION_DIR="build/rpi-gcc-debug" CONFIG_NAME="Debug" TOOLCHAIN_NAME="WSL GCC" GENERATION_OPTIONS="-DTARGET=&quot;rpi&quot;" BUILD_OPTIONS="-- -j 16" />
+    </configurations>
+  </component>
+</project>
