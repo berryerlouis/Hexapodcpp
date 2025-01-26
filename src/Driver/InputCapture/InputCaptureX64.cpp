@@ -1,7 +1,4 @@
-#include "InputCaptureX64.h"
-#ifdef RPI
-#include "wiringPi/wiringPi.h"
-#endif
+#include "InputCapture.h"
 
 namespace Driver
 {
@@ -10,19 +7,10 @@ namespace Driver
         static InputCapture *inputCapture[2U] = {};
         static uint8_t inputCaptureIndex = 0U;
 
-        void InterruptInputCapture(void) {
-            for (size_t i = 0U; i < inputCaptureIndex; i++) { inputCapture[i]->EdgeChange(); }
-        }
 
         InputCapture::InputCapture(Gpio::GpioInterface &gpio, Tick::TickInterface &tick) :
             mGpio(gpio), mTick(tick), mState(false), mStartTime(0UL), mDelay(0UL) {
-#ifdef RPI
-            inputCapture[inputCaptureIndex] = this;
-            inputCaptureIndex++;
-            wiringPiISR(this->mGpio.GetPin().pin, INT_EDGE_BOTH, &InterruptInputCapture);
-#endif
-
-        }
+       }
 
         Core::Status InputCapture::Initialize(void) { return (Core::Status::CORE_OK); }
 

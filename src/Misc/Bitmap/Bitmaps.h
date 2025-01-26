@@ -26,6 +26,11 @@ namespace Misc
                 COLOR_WHITE,
             };
 
+#ifdef RPI
+#undef PROGMEM
+#define PROGMEM
+#endif
+
             static const uint8_t PROGMEM Battery100[];
             static const uint8_t PROGMEM Battery75[];
             static const uint8_t PROGMEM Battery50[];

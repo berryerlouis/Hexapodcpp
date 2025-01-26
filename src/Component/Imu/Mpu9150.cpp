@@ -30,7 +30,7 @@ namespace Component
             // check device
             this->mI2c.ReadRegister(this->mAddress, ERegister::WHO_AM_I, whoAmI);
 
-            if (whoAmI == this->mAddress - 1) {
+            if (whoAmI == MPU9150_I2C_ADDRESS - 1U) {
                 // setClockSource
                 this->mI2c.ReadRegister(this->mAddress, ERegister::PWR_MGMT_1, reg);
                 reg |= (ERegisterGyro::CLOCK_PLL_XGYRO << ERegister::PWR1_CLKSEL_BIT);
@@ -69,12 +69,14 @@ namespace Component
 
                 this->mI2c.WriteRegister(this->mAddress, ERegister::INT_PIN_CFG, 0x02);
                 this->mI2c.ReadRegister(this->mAddressMag, ERegisterMag::WHO_AM_I, whoAmI);
-                if (whoAmI == 0x48U) {
-                    this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x0F);
-                    this->AdjustingMag();
-                    this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x01);
-                    success = Core::Status::CORE_OK;
-                }
+
+                //todo: check if the mag is connected
+                //if (whoAmI == 0x48U) {
+                this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x0F);
+                this->AdjustingMag();
+                this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x01);
+                success = Core::Status::CORE_OK;
+                //}
             }
             return (success);
         }

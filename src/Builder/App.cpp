@@ -18,6 +18,7 @@ Gpio echoRightPin = Gpio({20}, IN);
 Gpio triggerLeftPin = Gpio({7}, OUT);
 Gpio triggerRightPin = Gpio({21}, OUT);
 Gpio adcPinBattery = Gpio({0}, IN);
+Gpio buttonPin = Gpio({4}, IN);
 #else
 Gpio ledBoot = Gpio({PORT_B, PIN_0}, OUT);
 Gpio ledStatus = Gpio({PORT_B, PIN_1}, OUT);
@@ -46,6 +47,8 @@ namespace Builder
         , mLedMiddleRight(ledMiddleRight)
         , mEnablePwm(enablePwm)
         , mBattery(mAdc)
+        , mInputCaptureButton(buttonPin, mTick)
+        , mButton(mInputCaptureButton)
         , mInputCaptureLeft(echoLeftPin, mTick)
         , mInputCaptureRight(echoRightPin, mTick)
         , mMpu9150(mTwi, mTick)
@@ -82,10 +85,10 @@ namespace Builder
                     mServiceOrientation, mServiceBattery, mServiceDisplay, mServiceBody, mEventListener)
 #else
         , mAdc(adcPinBattery)
-        , mLedBoot(ledBoot)
         , mLedStatus(ledStatus)
         , mLedLeft(ledLeft)
         , mLedRight(ledRight)
+        , mLedBoot(ledBoot)
         , mBattery(mAdc)
         , mInputCaptureLeft(echoLeftPin, mTick)
         , mInputCaptureRight(echoRightPin, mTick)

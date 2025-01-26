@@ -1,16 +1,9 @@
 #pragma once
 
-#ifdef RPI
-#include <wiringPi/wiringPi.h>
-#include "../Driver/Gpio/GpioX64.h"
-#include "../Driver/Adc/AdcX64.h"
-#include "../Driver/Uart/UartX64.h"
-#else
-#include "../Driver/Gpio/Gpio.h"
 #include "../Driver/Adc/Adc.h"
-#include "../Driver/Uart/Uart.h"
-#endif
+#include "../Driver/Gpio/Gpio.h"
 #include "../Driver/Tick/Tick.h"
+#include "../Driver/Uart/Uart.h"
 #include "../Driver/Twi/Twi.h"
 #include "../Driver/InputCapture/InputCapture.h"
 #include "../Cluster/General/ClusterGeneral.h"
@@ -22,6 +15,9 @@
 #include "../Cluster/Clusters/Clusters.h"
 #include "../Component/Battery/Battery.h"
 #include "../Component/Led/Led.h"
+#ifdef RPI
+#include "../Component/Button/Button.h"
+#endif
 #include "../Component/Barometer/Barometer.h"
 #include "../Component/Imu/Mpu9150.h"
 #include "../Component/ServosController/Pca9685.h"
@@ -74,6 +70,10 @@ namespace Builder
         Component::Led::Led mLedBoot;
 #endif
         Component::Battery::Battery mBattery;
+#ifdef RPI
+        Driver::InputCapture::InputCapture mInputCaptureButton;
+        Component::Button::Button mButton;
+#endif
         Driver::InputCapture::InputCapture mInputCaptureLeft;
         Driver::InputCapture::InputCapture mInputCaptureRight;
         Component::Imu::Mpu9150 mMpu9150;

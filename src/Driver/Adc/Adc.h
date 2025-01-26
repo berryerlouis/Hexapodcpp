@@ -1,34 +1,9 @@
 #pragma once
 
-#include "../Gpio/GpioInterface.h"
-#include "AdcInterface.h"
-
-namespace Driver
-{
-    namespace Adc
-    {
-        class Adc : public AdcInterface {
-        public:
-#define BRIDGE_DIVIDER    (float) ( 0.2F )
-#define ADC_STEP          (float) ( 2.56F / 1024.0F )
-#define ADC_VOLT( ADC_VALUE )    (float) ( ADC_STEP * ADC_VALUE )
-
-            Adc(Gpio::GpioInterface &gpio);
-
-            ~Adc() = default;
-
-            virtual Core::Status Initialize(void) final override;
-
-            virtual void Update(const uint64_t currentTime) final override;
-
-            virtual void StartConversion(void) final override;
-
-            virtual uint16_t Read(void) final override;
-
-            static volatile uint16_t sAdcValue;
-
-        private:
-            Gpio::GpioInterface &mGpio;
-        };
-    }
-}
+#ifdef RPI
+#include "AdcX64.h"
+#elif AVR
+#include "AdcAVR.h"
+#elif X64
+#include "AdcX64.h"
+#endif

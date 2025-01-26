@@ -63,11 +63,11 @@ namespace Misc
         const uint8_t PROGMEM Bitmaps::Usb[] =
         {
                 ________, ________,
-                __XXXXXX, XXXXX___,
-                __X_____, __XX_XXX,
-                XXX_____, __XXXXXX,
-                __X_____, __XX_XXX,
-                __XXXXXX, XXXXX___,
+                _____XXX, XXXXX___,
+                _____X__, __XX_XXX,
+                XXXXXX__, __XXXXXX,
+                _____X__, __XX_XXX,
+                _____XXX, XXXXX___,
                 ________, ________,
         };
 

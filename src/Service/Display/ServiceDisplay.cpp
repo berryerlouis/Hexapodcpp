@@ -15,6 +15,7 @@ namespace Service
         Core::Status ServiceDisplay::Initialize(void) {
             Core::Status success = Core::Status::CORE_ERROR;
             if (this->mSsd1306.Initialize() == Core::Status::CORE_OK) {
+                this->DisplayBackground();
                 this->mInitialized = true;
                 success = Core::Status::CORE_OK;
             }

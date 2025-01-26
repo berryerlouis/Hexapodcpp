@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 message(INFO " => Compilation with ${TARGET} in ${CMAKE_BUILD_TYPE} mode for ${PROJECT_NAME}")
-if (${TARGET} STREQUAL "gcc")
+if (${TARGET} STREQUAL "X64")
     set(CMAKE_CXX_STANDARD 11)
     set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -10,7 +10,7 @@ if (${TARGET} STREQUAL "gcc")
     add_compile_definitions(X64)
     add_compile_definitions(DEBUG)
     add_compile_options(-DF_CPU=${F_CPU} -Wall -Wextra -std=c++17 -fexceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O0 -g)
-elseif (${TARGET} STREQUAL "rpi")
+elseif (${TARGET} STREQUAL "RPI")
 
     set(CMAKE_CXX_STANDARD 11)
     set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -24,7 +24,7 @@ elseif (${TARGET} STREQUAL "rpi")
     )
     FetchContent_MakeAvailable(wiringPi)
     include_directories(${wiringpi_SOURCE_DIR})
-    
+
     add_compile_definitions(X64)
     add_compile_definitions(RPI)
 
@@ -70,26 +70,18 @@ set(SRC_FILES_MISC
 )
 
 set(SRC_FILES_DRIVER
-        Driver/Adc/Adc.cpp
-        Driver/Gpio/Gpio.cpp
-        Driver/InputCapture/InputCapture.cpp
-        Driver/Tick/Tick.cpp
-        Driver/Twi/Twi.cpp
-        Driver/Uart/Uart.cpp
-)
-
-set(SRC_FILES_DRIVER_X64
-        Driver/Adc/AdcX64.cpp
-        Driver/Gpio/GpioX64.cpp
-        Driver/InputCapture/InputCaptureX64.cpp
-        Driver/Tick/TickX64.cpp
-        Driver/Twi/TwiX64.cpp
-        Driver/Uart/UartX64.cpp
+        Driver/Adc/Adc${TARGET}.cpp
+        Driver/Gpio/Gpio${TARGET}.cpp
+        Driver/InputCapture/InputCapture${TARGET}.cpp
+        Driver/Tick/Tick${TARGET}.cpp
+        Driver/Twi/Twi${TARGET}.cpp
+        Driver/Uart/Uart${TARGET}.cpp
 )
 
 set(SRC_FILES_COMPONENT
         Component/Barometer/Barometer.cpp
         Component/Battery/Battery.cpp
+        Component/Button/Button.cpp
         Component/Communication/Communication.cpp
         Component/Display/Ssd1306.cpp
         Component/Imu/Ahrs.cpp
@@ -133,25 +125,10 @@ set(SRC_FILES
         ${SRC_FILES_SERVICES}
 )
 
-set(SRC_FILES_X64
-        ${SRC_FILES_BUILDER}
-        ${SRC_FILES_BOT}
-        ${SRC_FILES_CLUSTER}
-        ${SRC_FILES_COMPONENT}
-        ${SRC_FILES_DRIVER_X64}
-        ${SRC_FILES_MAIN}
-        ${SRC_FILES_MISC}
-        ${SRC_FILES_SERVICES}
-)
-
-if (${TARGET} STREQUAL "gcc")
-    add_executable(${PROJECT_NAME} ${SRC_FILES_X64})
-elseif (${TARGET} STREQUAL "rpi")
-    add_executable(${PROJECT_NAME} ${SRC_FILES_X64})
+add_executable(${PROJECT_NAME} ${SRC_FILES})
+if (${TARGET} STREQUAL "RPI")
     target_link_libraries(${PROJECT_NAME} wiringPi)
 else ()
-    # using AVR GCC
-    add_executable(${PROJECT_NAME} ${SRC_FILES})
     # Rename the output to .elf as we will create multiple files
     set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME}.elf)
 

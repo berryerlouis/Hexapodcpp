@@ -1,4 +1,4 @@
-#include "AdcX64.h"
+#include "Adc.h"
 
 namespace Driver
 {

@@ -1,33 +1,9 @@
 #pragma once
 
-#include "UartInterface.h"
-#include "../../Misc/Buffer/Buffer.h"
-
-namespace Driver
-{
-    namespace Uart
-    {
-        class Uart : public UartInterface {
-        public:
-            Uart(const EBaudRate &baud = BAUDRATE_500000);
-
-            ~Uart() = default;
-
-            virtual Core::Status Initialize(void) final override;
-
-            virtual void Update(const uint64_t currentTime) final override;
-
-            virtual void Send(const char *data, const size_t len) final override;
-
-            virtual void Send(const uint8_t data) final override;
-
-            virtual uint8_t Read(void) final override;
-
-            virtual uint8_t DataAvailable(void) final override;
-
-
-        private:
-            EBaudRate mBaudRate;
-        };
-    }
-}
+#ifdef RPI
+#include "UartRPI.h"
+#elif AVR
+#include "UartAVR.h"
+#elif X64
+#include "UartX64.h"
+#endif
