@@ -16,12 +16,8 @@ else
     # Run prebuild script with provided arguments
     bin/dev/prebuild.sh ${1} ${2} ${3}
 
-    pwd
-    ls -al
     # If target is RPI and the fourth argument is "install"
     if [ "$1" = "RPI" -a "$4" = "install" ]; then
-        pwd
-        ls -al
         # Change directory to wiringpi source
         cd ./build/_deps/wiringpi-src/
         # Execute the build script
