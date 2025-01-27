@@ -14,7 +14,7 @@ if [ $# -eq 0 ]; then
 else
 
     # Run prebuild script with provided arguments
-    bin/dev/prebuild.sh ${1} ${2} ${3}
+    bin/dev/prebuild.sh ${1} source ${2} ${3}
 
     pwd
     ls -al
