@@ -1,22 +1,18 @@
 #pragma once
 
-#include "BufferEvent.h"
+#include "../../Cluster/Frame/Frame.h"
 
 namespace Service
 {
     namespace Event
     {
-#define MAX_EVENTS 10U
-
         class EventListenerInterface {
         public:
             EventListenerInterface() = default;
 
             ~EventListenerInterface() = default;
 
-            virtual void AddEvent(const SEvent &event) = 0;
-
-            virtual bool GetLastEvent(SEvent &event) = 0;
+            virtual void SendMessage(const Cluster::Frame &message) const = 0;
         };
     }
 }

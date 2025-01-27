@@ -25,6 +25,7 @@ enable_testing()
 
 add_subdirectory(src/clu)
 add_subdirectory(src/clu/battery)
+add_subdirectory(src/clu/button)
 add_subdirectory(src/clu/body)
 add_subdirectory(src/clu/frame)
 add_subdirectory(src/clu/general)

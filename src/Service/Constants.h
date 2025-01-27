@@ -16,5 +16,5 @@ namespace Service
         BUTTON = 8U
     };
 
-    static constexpr uint8_t NB_SERVICES = 8U;
+    static constexpr uint8_t NB_SERVICES = 9U;
 }

@@ -1,0 +1,26 @@
+#pragma once
+
+#include "../ClusterBase.h"
+#include "../../Component/Button/ButtonInterface.h"
+
+namespace Cluster
+{
+    namespace Button
+    {
+        using namespace Component::Button;
+
+        class ClusterButton : public ClusterBase, ClusterCommand {
+        public:
+            ClusterButton(ButtonInterface &button);
+
+            ~ClusterButton() = default;
+
+            virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override;
+
+            static Core::Status BuildFrameGetButtonState(const ButtonState state, Frame &response);
+
+        private:
+            ButtonInterface &mButton;
+        };
+    }
+}

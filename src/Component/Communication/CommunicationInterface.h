@@ -19,7 +19,7 @@ namespace Component
 
             virtual void Update(const uint64_t currentTime) = 0;
 
-            virtual Core::Status SendMessage(Frame &message) = 0;
+            virtual Core::Status SendMessage(const Frame &message) = 0;
         };
     }
 }

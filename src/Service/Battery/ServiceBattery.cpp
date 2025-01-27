@@ -1,12 +1,15 @@
 #include "ServiceBattery.h"
 
+#include "../../Cluster/Battery/ClusterBattery.h"
+
 namespace Service
 {
     namespace Battery
     {
         ServiceBattery::ServiceBattery(BatteryInterface &batteryInterface,
                                        Event::EventListenerInterface &eventListener) :
-            Service(100U, eventListener), mBatteryInterface(batteryInterface) {
+            Service(100U, eventListener)
+            , mBatteryInterface(batteryInterface) {
         }
 
         Core::Status ServiceBattery::Initialize(void) {
@@ -22,14 +25,10 @@ namespace Service
             this->mBatteryInterface.Update(currentTime);
         }
 
-        void ServiceBattery::DispatchEvent(const SEvent &event) {
-            (void) event;
-        }
-
         void ServiceBattery::UpdatedBatteryState(const BatteryState &batteryState, const uint16_t voltage) {
-            const uint8_t arg[2U] = UINT16_TO_ARRAY(voltage);
-            const SEvent ev(EServices::BATTERY, static_cast<uint8_t>(batteryState), arg, 2U);
-            this->AddEvent(ev);
+            Frame response;
+            Cluster::Battery::ClusterBattery::BuildFrameState(batteryState, voltage, response);
+            this->SendMessage(response);
         }
     } // namespace Battery
 } // namespace Service

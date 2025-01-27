@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 sudo modprobe cp210x
 sudo chmod a+rw /dev/ttyUSB0

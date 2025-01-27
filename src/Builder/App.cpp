@@ -64,13 +64,20 @@ namespace Builder
         , mBody(mLegs)
         , mClusterGeneral(mSoftware)
         , mClusterBattery(mBattery)
+        , mClusterButton(mButton)
         , mClusterBody(mBody)
         , mClusterImu(mMpu9150, mBarometer)
         , mClusterProximity(mSensorProximity)
         , mClusterServo(mServos)
-        , mClusters(mClusterGeneral, mClusterBattery, mClusterBody, mClusterImu, mClusterProximity, mClusterServo)
+        , mClusters(mClusterGeneral
+                    , mClusterBattery
+                    , mClusterButton
+                    , mClusterBody
+                    , mClusterImu
+                    , mClusterProximity
+                    , mClusterServo)
         , mCommunication(mUart, mClusters, mLedStatus)
-        , mEventListener()
+        , mEventListener(mCommunication)
         , mServiceButton(mButton, mEventListener)
         , mServiceControl(mServos, mEventListener)
         , mServiceCommunication(mCommunication, mClusters, mEventListener)
@@ -81,7 +88,7 @@ namespace Builder
         , mServiceDisplay(mSsd1306, mEventListener)
         , mServiceGeneral(mSoftware, mEventListener)
         , mServices(mTick, mServiceGeneral, mServiceControl, mServiceCommunication, mServiceProximity,
-                    mServiceOrientation, mServiceBattery, mServiceDisplay, mServiceBody, mEventListener)
+                    mServiceOrientation, mServiceBattery, mServiceDisplay, mServiceBody, mServiceButton, mEventListener)
 #else
         , mAdc(adcPinBattery)
         , mLedStatus(ledStatus)

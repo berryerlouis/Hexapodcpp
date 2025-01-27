@@ -5,7 +5,8 @@ namespace Service
     namespace Body
     {
         ServiceBody::ServiceBody(BodyInterface &body, Event::EventListenerInterface &eventListener) :
-            Service(100U, eventListener), mBody(body) {}
+            Service(100U, eventListener), mBody(body) {
+        }
 
         Core::Status ServiceBody::Initialize(void) {
             const Core::Status success = this->mBody.Initialize();
@@ -15,8 +16,9 @@ namespace Service
             return (success);
         }
 
-        void ServiceBody::Update(const uint64_t currentTime) { this->mBody.Update(currentTime); }
+        void ServiceBody::Update(const uint64_t currentTime) {
+            this->mBody.Update(currentTime);
+        }
 
-        void ServiceBody::DispatchEvent(const SEvent &event) { (void) event; }
     } // namespace Body
 } // namespace Service

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="CMakeSharedSettings">
     <configurations>
-      <configuration PROFILE_NAME="Rpi Debug" ENABLED="false" GENERATION_DIR="build/rpi-debug" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Rpi" GENERATION_OPTIONS="-DTARGET=&quot;RPI&quot;" BUILD_OPTIONS="-- -j4" />
+      <configuration PROFILE_NAME="Rpi Debug" ENABLED="false" GENERATION_DIR="build/rpi-debug" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Rpi" GENERATION_OPTIONS="-DTARGET=&quot;RPI&quot; --gtest_color=yes" BUILD_OPTIONS="-- -j4" />
       <configuration PROFILE_NAME="AVR Debug" ENABLED="false" GENERATION_DIR="build/avr-debug" CONFIG_NAME="Debug" TOOLCHAIN_NAME="WSL AVR" GENERATION_OPTIONS="-DTARGET=&quot;AVR&quot;" BUILD_OPTIONS="-- -j 16" />
       <configuration PROFILE_NAME="AVR Release" ENABLED="false" GENERATION_DIR="build/avr-release" CONFIG_NAME="Release" TOOLCHAIN_NAME="WSL AVR" GENERATION_OPTIONS="-DTARGET=&quot;AVR&quot;" BUILD_OPTIONS="-- -j 16" />
       <configuration PROFILE_NAME="X64 Debug" ENABLED="false" GENERATION_DIR="build/gcc-debug" CONFIG_NAME="Debug" TOOLCHAIN_NAME="WSL GCC" GENERATION_OPTIONS="-DTARGET=&quot;X64&quot; -DCMAKE_BUILD_TYPE=DEBUG" BUILD_OPTIONS="-- -j 16" />

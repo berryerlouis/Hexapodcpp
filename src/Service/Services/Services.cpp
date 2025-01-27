@@ -4,6 +4,7 @@
 #include "../../Misc/Logger/Logger.h"
 #include "Services.h"
 
+
 namespace Service
 {
     namespace Services
@@ -17,8 +18,9 @@ namespace Service
                 , ServiceOrientation &serviceOrientation
                 , ServiceBattery &serviceBattery
                 , ServiceDisplay &serviceDisplay
-                , ServiceBody &serviceBody,
-                Event::EventListenerInterface &eventListener) :
+                , ServiceBody &serviceBody
+                , Button::ServiceButton &serviceButton
+                , Event::EventListenerInterface &eventListener) :
             mTick(tick)
             , mServices{
                     {GENERAL, &serviceGeneral},
@@ -28,7 +30,8 @@ namespace Service
                     {ORIENTATION, &serviceOrientation},
                     {BATTERY, &serviceBattery},
                     {DISPLAY, &serviceDisplay},
-                    {BODY, &serviceBody}},
+                    {BODY, &serviceBody},
+                    {BUTTON, &serviceButton}},
             mEventListener(eventListener) {
         }
 
@@ -54,7 +57,6 @@ namespace Service
             if (item.service->NeedUpdate(currentTime) == Core::Status::CORE_OK) {
                 item.service->Update(currentTime);
                 item.service->SetNewUpdateTime(this->mTick.GetMs(), item.serviceId);
-                this->DispatchEvent();
             }
             if (++itemIndex == NB_SERVICES - 1U) {
                 itemIndex = 0U;
@@ -68,15 +70,6 @@ namespace Service
                 }
             }
             return (nullptr);
-        }
-
-        void Services::DispatchEvent(void) {
-            SEvent ev;
-            if (this->mEventListener.GetLastEvent(ev)) {
-                for (const ServiceItem &item: this->mServices) {
-                    item.service->DispatchEvent(ev);
-                }
-            }
         }
     } // namespace Services
 } // namespace Service

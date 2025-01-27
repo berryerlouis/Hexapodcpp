@@ -2,24 +2,24 @@
 
 #include "EventListenerInterface.h"
 
+#include "../../Component/Communication/CommunicationInterface.h"
+
 namespace Service
 {
     namespace Event
     {
-#define MAX_EVENTS 10U
+        using namespace Component::Communication;
 
         class EventListener : public EventListenerInterface {
         public:
-            EventListener();
+            EventListener(CommunicationInterface &communication);
 
             ~EventListener() = default;
 
-            virtual void AddEvent(const SEvent &event) final override;
-
-            virtual bool GetLastEvent(SEvent &event) final override;
+            virtual void SendMessage(const Frame &message) const final override;
 
         private:
-            BufferEvent mEventList;
+            Component::Communication::CommunicationInterface &mCommunication;
         };
     }
 }

@@ -6,11 +6,17 @@ namespace Cluster
         Reset();
     }
 
-    Frame::Frame(const uint8_t clusterId, const uint8_t commandId)
-        : clusterId(clusterId)
-          , commandId(commandId)
-          , nbParams(0U)
-          , params{0U} {
+    Frame::Frame(const uint8_t clusterId, const uint8_t commandId) :
+        clusterId(clusterId)
+        , commandId(commandId)
+        , nbParams(0U)
+        , params{0U} {
+    }
+
+    bool Frame::operator==(const Frame &other) const {
+        return ((clusterId == other.clusterId)
+                && (commandId == other.commandId)
+                && (nbParams == other.nbParams));
     }
 
     Core::Status Frame::Build(const uint8_t clusterId, const uint8_t commandId) {
@@ -25,7 +31,7 @@ namespace Cluster
     }
 
     Core::Status Frame::Build(const uint8_t clusterId, const uint8_t commandId, const uint8_t *params,
-                                  const uint8_t nbParams) {
+                              const uint8_t nbParams) {
         Core::Status success = Core::Status::CORE_ERROR;
         if (nbParams < FRAME_MAX_PARAMS) {
             if ((params == nullptr) && (nbParams == 0U)) {
@@ -41,6 +47,7 @@ namespace Cluster
         }
         return (success);
     }
+
 
     void Frame::Reset(void) {
         this->clusterId = 0U;

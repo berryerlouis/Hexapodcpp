@@ -21,8 +21,6 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void DispatchEvent(const SEvent &event) final override;
-
             virtual void UpdatedBatteryState(const BatteryState &batteryState, const uint16_t voltage) final override;
 
         protected:

@@ -19,8 +19,6 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void DispatchEvent(const SEvent &event) final override;
-
         protected:
             uint8_t mStepPca9685;
             ServosInterface &mServosInterface;

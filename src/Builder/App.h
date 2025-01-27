@@ -14,6 +14,7 @@
 #include "../Cluster/Servo/ClusterServo.h"
 #include "../Cluster/Clusters/Clusters.h"
 #include "../Component/Battery/Battery.h"
+#include "../Component/Button/Button.h"
 #include "../Component/Led/Led.h"
 #include "../Component/Button/Button.h"
 #include "../Component/Barometer/Barometer.h"
@@ -39,6 +40,7 @@
 #include "../Service/Services/Services.h"
 #include "../Bot/Body/Body.h"
 #include "../Bot/Legs/Legs.h"
+#include "../Cluster/Button/ClusterButton.h"
 
 namespace Builder
 {
@@ -89,6 +91,7 @@ namespace Builder
 
         Cluster::General::ClusterGeneral mClusterGeneral;
         Cluster::Battery::ClusterBattery mClusterBattery;
+        Cluster::Button::ClusterButton mClusterButton;
         Cluster::Body::ClusterBody mClusterBody;
         Cluster::Imu::ClusterImu mClusterImu;
         Cluster::Proximity::ClusterProximity mClusterProximity;

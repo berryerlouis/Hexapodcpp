@@ -17,7 +17,7 @@ namespace Cluster
 
             virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override;
 
-            Core::Status BuildFrameAllAngle(Frame &response) const;
+            static Core::Status BuildFrameAllAngle(const uint8_t angles[NB_SERVOS], Frame &response);
 
             static Core::Status BuildFrameGetAngle(const uint8_t servoId, const uint8_t angle,
                                                    Frame &response);

@@ -9,8 +9,7 @@ namespace Service
 	{
 		class MockEventListener : public EventListenerInterface {
 		public:
-			MOCK_METHOD1(AddEvent, void( const SEvent & ));
-			MOCK_METHOD1(GetLastEvent, bool( SEvent & ));
+			MOCK_CONST_METHOD1(SendMessage, void( const Cluster::Frame & ));
 		};
 	}
 }

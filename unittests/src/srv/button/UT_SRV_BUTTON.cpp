@@ -4,6 +4,7 @@
 #include "../../../mock/cmp/MockButton.h"
 #include "../../../mock/srv/MockEventListener.h"
 
+#include "../../../../src/Cluster/Button/ClusterButton.h"
 #include "../../../../src/Service/Button/ServiceButton.h"
 
 using ::testing::_;
@@ -53,14 +54,10 @@ namespace Service
 
         TEST_F(UT_SRV_BUTTON, UpdatedButtonState) {
             constexpr ButtonState ButtonState = ButtonState::RELEASE;
-            constexpr uint8_t voltage = 10U;
-            constexpr uint8_t arg[2U] = {
-                    static_cast<uint8_t>(voltage >> 8U),
-                    static_cast<uint8_t>(voltage & 0xFFU)
-            };
-            const SEvent ev(BUTTON, ButtonState, arg, 2U);
 
-            EXPECT_CALL(mMockEventListener, AddEvent(ev)).Times(1U);
+            Frame response;
+            Cluster::Button::ClusterButton::BuildFrameGetButtonState(ButtonState, response);
+            EXPECT_CALL(mMockEventListener, SendMessage(response)).Times(1U);
             mServiceButton.UpdatedButtonState(ButtonState, 10U);
         }
     }

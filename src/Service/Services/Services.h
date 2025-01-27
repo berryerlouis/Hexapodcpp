@@ -4,12 +4,14 @@
 #include "../Service.h"
 #include "../Battery/ServiceBattery.h"
 #include "../Body/ServiceBody.h"
+#include "../Button/ServiceButton.h"
 #include "../Communication/ServiceCommunication.h"
 #include "../Control/ServiceControl.h"
 #include "../Display/ServiceDisplay.h"
 #include "../General/ServiceGeneral.h"
 #include "../Orientation/ServiceOrientation.h"
 #include "../Proximity/ServiceProximity.h"
+#include "../Button/ServiceButton.h"
 
 namespace Service
 {
@@ -23,6 +25,7 @@ namespace Service
         using namespace ::Service::Battery;
         using namespace ::Service::Display;
         using namespace ::Service::Body;
+        using namespace ::Service::Button;
 
         struct ServiceItem {
             EServices serviceId;
@@ -45,6 +48,7 @@ namespace Service
                     ServiceBattery &serviceBattery,
                     ServiceDisplay &serviceDisplay,
                     ServiceBody &serviceBody,
+                    ServiceButton &serviceButton,
                     Event::EventListenerInterface &eventListener);
 
             ~Services() = default;
@@ -54,8 +58,6 @@ namespace Service
             virtual void Update(const uint64_t currentTime) final override;
 
         private:
-            void DispatchEvent(void);
-
             Service *Get(const EServices serviceId);
 
             Tick::TickInterface &mTick;

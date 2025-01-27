@@ -30,7 +30,11 @@ namespace Cluster
 
         Core::Status ClusterServo::ExecuteFrame(const Frame &request, Frame &response) {
             if (request.commandId == EServoCommands::GET_ALL) {
-                return BuildFrameAllAngle(response);
+                uint8_t params[NB_SERVOS] = {0U};
+                for (size_t servoId = 0U; servoId < NB_SERVOS; servoId++) {
+                    params[servoId] = this->mServosInterface.GetServo(servoId).GetAngle();
+                }
+                return BuildFrameAllAngle(params, response);
             }
             if (request.commandId == EServoCommands::GET_ANGLE) {
                 const uint8_t servoId = request.params[0U];
@@ -116,16 +120,12 @@ namespace Cluster
             return Core::Status::CORE_ERROR;
         }
 
-        Core::Status ClusterServo::BuildFrameAllAngle(Frame &response) const {
+        Core::Status ClusterServo::BuildFrameAllAngle(const uint8_t angles[NB_SERVOS], Frame &response) {
             const Core::Status success = response.Build(
                     EClusters::SERVO,
                     EServoCommands::GET_ALL);
             if (success == Core::Status::CORE_OK) {
-                uint8_t params[NB_SERVOS] = {0U};
-                for (size_t servoId = 0U; servoId < NB_SERVOS; servoId++) {
-                    params[servoId] = this->mServosInterface.GetServo(servoId).GetAngle();
-                }
-                response.SetxBytesParam(NB_SERVOS, reinterpret_cast<uint8_t *>(&params));
+                response.SetxBytesParam(NB_SERVOS, reinterpret_cast<uint8_t *>(&angles));
             }
             return (success);
         }

@@ -22,8 +22,6 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void DispatchEvent(const SEvent &event) final override;
-
             virtual void Detect(const SensorsId &sensorId, const uint16_t distance) final override;
 
         protected:

@@ -27,7 +27,7 @@ namespace Component
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual Core::Status SendMessage(Frame &message) final override;
+            virtual Core::Status SendMessage(const Frame &message) final override;
 
         private:
             bool ReceivedStringFrame(void);

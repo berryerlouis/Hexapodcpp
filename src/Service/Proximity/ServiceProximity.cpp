@@ -1,5 +1,7 @@
 #include "ServiceProximity.h"
 
+#include "../../Cluster/Proximity/ClusterProximity.h"
+
 namespace Service
 {
     namespace Proximity
@@ -22,25 +24,25 @@ namespace Service
             this->mProximity.Update(currentTime);
 
             for (int i = 0; i < NB_SENSORS; ++i) {
-                if (this->mTimeoutDetection[i] < MAX_TIMEOUT_DETECTION) { this->mTimeoutDetection[i]++; } else if (
+                if (this->mTimeoutDetection[i] < MAX_TIMEOUT_DETECTION) {
+                    this->mTimeoutDetection[i]++;
+                } else if (
                     this->mTimeoutDetection[i] == MAX_TIMEOUT_DETECTION) {
                     this->mTimeoutDetection[i] = 0xFFU;
+                    Frame response;
                     const uint16_t distance = this->mProximity.GetDistance(static_cast<SensorsId>(i));
-                    const uint8_t arg[2U] = UINT16_TO_ARRAY(distance);
-                    const SEvent ev(EServices::PROXIMITY, static_cast<uint8_t>(i), arg, 2U);
-                    this->AddEvent(ev);
+                    Cluster::Proximity::ClusterProximity::BuildFrameDistance(
+                            static_cast<SensorsId>(i), distance, response);
+                    this->SendMessage(response);
                 }
             }
         }
 
         void ServiceProximity::Detect(const SensorsId &sensorId, const uint16_t distance) {
-            const uint8_t arg[2U] = UINT16_TO_ARRAY(distance);
-            const SEvent ev(EServices::PROXIMITY, static_cast<uint8_t>(sensorId), arg, 2U);
-            this->AddEvent(ev);
+            Frame response;
+            Cluster::Proximity::ClusterProximity::BuildFrameDistance(sensorId, distance, response);
+            this->SendMessage(response);
             this->mTimeoutDetection[sensorId] = 0U;
         }
-
-
-        void ServiceProximity::DispatchEvent(const SEvent &event) { (void) event; }
     } // namespace Proximity
 } // namespace Service

@@ -30,14 +30,14 @@ namespace Service
             this->mSsd1306.Update(currentTime);
         }
 
-        void ServiceDisplay::DispatchEvent(const SEvent &event) {
+        /*void ServiceDisplay::DispatchEvent(const SEvent &event) {
             if (event.id == EServices::BATTERY) {
                 this->DisplayBatteryLevel(static_cast<Battery::BatteryState>(event.value));
             } else if (event.id == EServices::PROXIMITY) {
                 const uint16_t distance = PTR_TO_UINT16(&event.params[0U]);
                 this->DisplayProximitySensor(static_cast<Proximity::SensorsId>(event.value), distance);
             }
-        }
+        }*/
 
         void ServiceDisplay::DisplayBackground(void) const {
             this->mSsd1306.DrawLine(0, 10U, SCREEN_WIDTH, 10U, Bitmaps::Color::COLOR_WHITE);

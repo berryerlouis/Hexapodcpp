@@ -1,0 +1,37 @@
+#include "ClusterButton.h"
+
+
+namespace Cluster
+{
+    namespace Button
+    {
+        using namespace Component::Button;
+
+        ClusterButton::ClusterButton(ButtonInterface &button) :
+            ClusterBase(BUTTON, this)
+            , ClusterCommand(NB_COMMANDS_BUTTON)
+            , mButton(button) {
+            this->AddClusterItem({.commandId = EButtonCommands::GET_BP_STATUS, .expectedSize = 0U});
+        }
+
+        Core::Status ClusterButton::ExecuteFrame(const Frame &request, Frame &response) {
+            Core::Status success = Core::Status::CORE_ERROR;
+            if (request.commandId == EButtonCommands::GET_BP_STATUS) {
+                const ButtonState state = this->mButton.Get();
+                success = BuildFrameGetButtonState(state, response);
+            }
+            return success;
+        }
+
+        Core::Status ClusterButton::BuildFrameGetButtonState(const ButtonState state, Frame &response) {
+            const Core::Status success = response.Build(
+                    EClusters::BUTTON,
+                    EButtonCommands::GET_BP_STATUS);
+            if (success == Core::Status::CORE_OK) {
+                response.Set1ByteParam(state);
+            }
+            return (success);
+        }
+
+    };
+}

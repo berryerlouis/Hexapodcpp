@@ -51,7 +51,7 @@ namespace Component
             }
         }
 
-        Core::Status Communication::SendMessage(Frame &message) {
+        Core::Status Communication::SendMessage(const Frame &message) {
             const size_t size = Protocol::Encode(message, const_cast<char *>(this->mBufferTx));
             if (size != 0) {
                 this->mUart.Send(const_cast<const char *>(this->mBufferTx), size);

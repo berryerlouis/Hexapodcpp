@@ -17,12 +17,14 @@ namespace Cluster
 
         ~Frame(void) = default;
 
+        bool operator==(const Frame &other) const;
+
         void Reset(void);
 
         Core::Status Build(const uint8_t clusterId, const uint8_t commandId);
 
         Core::Status Build(const uint8_t clusterId, const uint8_t commandId, const uint8_t *params,
-                               const uint8_t nbParams);
+                           const uint8_t nbParams);
 
         void Set1ByteParam(const uint8_t value);
 

@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 # Arguments:
 # 1: target (AVR, X64, RPI)

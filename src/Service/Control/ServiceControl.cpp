@@ -5,7 +5,8 @@ namespace Service
     namespace Control
     {
         ServiceControl::ServiceControl(ServosInterface &servos, Event::EventListenerInterface &eventListener) :
-            Service(20U, eventListener), mStepPca9685(0U), mServosInterface(servos) {}
+            Service(20U, eventListener), mStepPca9685(0U), mServosInterface(servos) {
+        }
 
         Core::Status ServiceControl::Initialize(void) {
             const Core::Status success = this->mServosInterface.Initialize();
@@ -24,6 +25,5 @@ namespace Service
             }
         }
 
-        void ServiceControl::DispatchEvent(const SEvent &event) { (void) event; }
     } // namespace Control
 } // namespace Service

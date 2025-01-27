@@ -4,9 +4,9 @@
 
 namespace Cluster
 {
-    enum EClusters { GENERAL = 0U, IMU = 1U, PROXIMITY = 2U, SERVO = 3U, BATTERY = 4U, BODY = 5U };
+    enum EClusters { GENERAL = 0U, IMU = 1U, PROXIMITY = 2U, SERVO = 3U, BATTERY = 4U, BODY = 5U, BUTTON = 6U };
 
-    static constexpr uint8_t NB_CLUSTERS = 6U;
+    static constexpr uint8_t NB_CLUSTERS = 7U;
 
 
     enum EClusterCommandGeneric { GENERIC = 0xFFU };
@@ -77,4 +77,11 @@ namespace Cluster
     };
 
     static constexpr uint8_t NB_COMMANDS_PROXIMITY = 4U;
+
+
+    enum EButtonCommands {
+        GET_BP_STATUS = 0x00U,
+    };
+
+    static constexpr uint8_t NB_COMMANDS_BUTTON = 1U;
 } // namespace Cluster

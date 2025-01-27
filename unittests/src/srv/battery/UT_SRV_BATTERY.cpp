@@ -4,6 +4,7 @@
 #include "../../../mock/cmp/MockBattery.h"
 #include "../../../mock/srv/MockEventListener.h"
 
+#include "../../../../src/Cluster/Battery/ClusterBattery.h"
 #include "../../../../src/Service/Battery/ServiceBattery.h"
 
 using ::testing::_;
@@ -55,13 +56,9 @@ namespace Service
         TEST_F(UT_SRV_BATTERY, UpdatedBatteryState) {
             constexpr BatteryState batteryState = BatteryState::WARNING;
             constexpr uint8_t voltage = 10U;
-            constexpr uint8_t arg[2U] = {
-                    static_cast<uint8_t>(voltage >> 8U),
-                    static_cast<uint8_t>(voltage & 0xFFU)
-            };
-            const SEvent ev(BATTERY, batteryState, arg, 2U);
-
-            EXPECT_CALL(mMockEventListener, AddEvent(ev)).Times(1U);
+            Frame response;
+            Cluster::Battery::ClusterBattery::BuildFrameState(batteryState, voltage, response);
+            EXPECT_CALL(mMockEventListener, SendMessage(response)).Times(1U);
             mServiceBattery.UpdatedBatteryState(batteryState, 10U);
         }
     }

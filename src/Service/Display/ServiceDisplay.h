@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include "../../Component/Display/Ssd1306Interface.h"
 #include "../../Component/Battery/BatteryState.h"
 #include "../../Component/Proximity/SensorsId.h"
@@ -26,8 +27,6 @@ namespace Service
             virtual Core::Status Initialize(void) final override;
 
             virtual void Update(const uint64_t currentTime) final override;
-
-            virtual void DispatchEvent(const SEvent &event) final override;
 
             void DisplayBackground(void) const;
 

@@ -60,7 +60,6 @@ set(SRC_FILES_SERVICES
         Service/Proximity/ServiceProximity.cpp
         Service/Services/Services.cpp
         Service/Event/EventListener.cpp
-        Service/Event/BufferEvent.cpp
         Service/Body/ServiceBody.cpp
 )
 
@@ -99,6 +98,7 @@ set(SRC_FILES_COMPONENT
 
 set(SRC_FILES_CLUSTER
         Cluster/Battery/ClusterBattery.cpp
+        Cluster/Button/ClusterButton.cpp
         Cluster/Body/ClusterBody.cpp
         Cluster/General/ClusterGeneral.cpp
         Cluster/Imu/ClusterImu.cpp

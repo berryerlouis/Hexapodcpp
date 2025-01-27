@@ -4,6 +4,7 @@
 #include "../../../mock/cmp/MockSensorProximity.h"
 #include "../../../mock/srv/MockEventListener.h"
 
+#include "../../../../src/Cluster/Proximity/ClusterProximity.h"
 #include "../../../../src/Service/Proximity/ServiceProximity.h"
 #include "../../../../src/Component/Proximity/SensorProximity.h"
 
@@ -55,13 +56,10 @@ namespace Service
         TEST_F(UT_SRV_PROXIMITY, Detect) {
             constexpr SensorsId sensorId = SensorsId::SRF_LEFT;
             constexpr uint16_t distance = 42U;
-            constexpr uint8_t arg[2U] = {
-                    static_cast<uint8_t>(distance >> 8U),
-                    static_cast<uint8_t>(distance & 0xFFU)
-            };
-            const SEvent ev(PROXIMITY, sensorId, arg, 2U);
 
-            EXPECT_CALL(mMockEventListener, AddEvent(ev)).Times(1U);
+            Frame response;
+            Cluster::Proximity::ClusterProximity::BuildFrameDistance(sensorId, distance, response);
+            EXPECT_CALL(mMockEventListener, SendMessage(response)).Times(1U);
             mServiceProximity.Detect(sensorId, distance);
         }
     }
