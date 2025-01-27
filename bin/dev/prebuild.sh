@@ -3,7 +3,7 @@
 if [ $# -eq 0 ]; then
     cmake -DCMAKE_BUILD_TYPE=DEBUG -S . -B build
 else
-    if [ $2 = "source" ]; then
+    if [ $2 = "sources" ]; then
         if [ $# -eq 1 ]; then
             cmake -DCMAKE_BUILD_TYPE=DEBUG -DTARGET="${1}" -DGTEST=0 -S . -B build
         else 

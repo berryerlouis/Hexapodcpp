@@ -10,11 +10,11 @@
 # Check if no arguments are provided
 if [ $# -eq 0 ]; then
     # Run prebuild script with default parameters (RPI and source)
-    bin/dev/prebuild.sh RPI source #DEBUG by default
+    bin/dev/prebuild.sh RPI sources #DEBUG by default
 else
 
     # Run prebuild script with provided arguments
-    bin/dev/prebuild.sh ${1} source ${2} ${3}
+    bin/dev/prebuild.sh ${1} ${2} ${3}
 
     pwd
     ls -al
