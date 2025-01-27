@@ -1,10 +1,4 @@
-#!/bin/sh
-
-# Arguments:
-# 1: target (AVR, X64, RPI)
-# 2: source or test
-# 3: DEBUG, RELEASE, or CLEAN
-# 4: RPI install wiring PI (optional)
+#! /bin/sh
 
 # Check if no arguments are provided
 if [ $# -eq 0 ]; then
