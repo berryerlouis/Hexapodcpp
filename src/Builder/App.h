@@ -15,9 +15,7 @@
 #include "../Cluster/Clusters/Clusters.h"
 #include "../Component/Battery/Battery.h"
 #include "../Component/Led/Led.h"
-#ifdef RPI
 #include "../Component/Button/Button.h"
-#endif
 #include "../Component/Barometer/Barometer.h"
 #include "../Component/Imu/Mpu9150.h"
 #include "../Component/ServosController/Pca9685.h"
@@ -30,6 +28,7 @@
 #include "../Component/Communication/Communication.h"
 #include "../Service/Event/EventListener.h"
 #include "../Service/Battery/ServiceBattery.h"
+#include "../Service/Button/ServiceButton.h"
 #include "../Service/Body/ServiceBody.h"
 #include "../Service/Control/ServiceControl.h"
 #include "../Service/Communication/ServiceCommunication.h"
@@ -70,10 +69,8 @@ namespace Builder
         Component::Led::Led mLedBoot;
 #endif
         Component::Battery::Battery mBattery;
-#ifdef RPI
         Driver::InputCapture::InputCapture mInputCaptureButton;
         Component::Button::Button mButton;
-#endif
         Driver::InputCapture::InputCapture mInputCaptureLeft;
         Driver::InputCapture::InputCapture mInputCaptureRight;
         Component::Imu::Mpu9150 mMpu9150;
@@ -101,6 +98,7 @@ namespace Builder
         Component::Communication::Communication mCommunication;
 
         Service::Event::EventListener mEventListener;
+        Service::Button::ServiceButton mServiceButton;
         Service::Control::ServiceControl mServiceControl;
         Service::Communication::ServiceCommunication mServiceCommunication;
         Service::Proximity::ServiceProximity mServiceProximity;

@@ -32,9 +32,9 @@ namespace Cluster
 		TEST_F(UT_CLU_PROTOCOL, Decode_NullPtrBufferData) {
 			Frame request;
 
-			const Core::CoreStatus parsedStatus = Protocol::Decode(nullptr, request);
+			const Core::Status parsedStatus = Protocol::Decode(nullptr, request);
 
-			EXPECT_EQ(parsedStatus, Core::CoreStatus::CORE_ERROR_NULLPTR);
+			EXPECT_EQ(parsedStatus, Core::Status::CORE_ERROR_NULLPTR);
 			EXPECT_EQ(request.clusterId, 0U);
 			EXPECT_EQ(request.commandId, 0U);
 			EXPECT_EQ(request.nbParams, 0U);
@@ -46,9 +46,9 @@ namespace Cluster
 		TEST_F(UT_CLU_PROTOCOL, Decode_NoBufferData) {
 			Frame request;
 			constexpr char bufferRx[] = "";
-			const Core::CoreStatus parsedStatus = Protocol::Decode(bufferRx, request);
+			const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
 
-			EXPECT_NE(parsedStatus, Core::CoreStatus::CORE_OK);
+			EXPECT_NE(parsedStatus, Core::Status::CORE_OK);
 			EXPECT_EQ(request.clusterId, 0U);
 			EXPECT_EQ(request.commandId, 0U);
 			EXPECT_EQ(request.nbParams, 0U);
@@ -60,9 +60,9 @@ namespace Cluster
 		TEST_F(UT_CLU_PROTOCOL, Decode_BufferDataWhitoutParam) {
 			Frame request;
 			constexpr char bufferRx[] = "010400";
-			const Core::CoreStatus parsedStatus = Protocol::Decode(bufferRx, request);
+			const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
 
-			EXPECT_EQ(parsedStatus, Core::CoreStatus::CORE_OK);
+			EXPECT_EQ(parsedStatus, Core::Status::CORE_OK);
 			EXPECT_EQ(request.clusterId, 1U);
 			EXPECT_EQ(request.commandId, 4U);
 			EXPECT_EQ(request.nbParams, 0U);
@@ -74,9 +74,9 @@ namespace Cluster
 		TEST_F(UT_CLU_PROTOCOL, Decode_BufferDataWhitParam) {
 			Frame request;
 			constexpr char bufferRx[] = "0608020102";
-			const Core::CoreStatus parsedStatus = Protocol::Decode(bufferRx, request);
+			const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
 
-			EXPECT_EQ(parsedStatus, Core::CoreStatus::CORE_OK);
+			EXPECT_EQ(parsedStatus, Core::Status::CORE_OK);
 			EXPECT_EQ(request.clusterId, 6U);
 			EXPECT_EQ(request.commandId, 8U);
 			EXPECT_EQ(request.nbParams, 2U);
@@ -91,9 +91,9 @@ namespace Cluster
 		TEST_F(UT_CLU_PROTOCOL, Decode_BufferDataTooSmall) {
 			Frame request;
 			constexpr char bufferRx[] = "00000";
-			const Core::CoreStatus parsedStatus = Protocol::Decode(bufferRx, request);
+			const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
 
-			EXPECT_EQ(parsedStatus, Core::CoreStatus::CORE_ERROR_SIZE);
+			EXPECT_EQ(parsedStatus, Core::Status::CORE_ERROR_SIZE);
 			EXPECT_EQ(request.clusterId, 0U);
 			EXPECT_EQ(request.commandId, 0U);
 			EXPECT_EQ(request.nbParams, 0U);
@@ -105,9 +105,9 @@ namespace Cluster
 		TEST_F(UT_CLU_PROTOCOL, Decode_BufferDataTooBig) {
 			Frame request;
 			constexpr char bufferRx[] = "0000000";
-			const Core::CoreStatus parsedStatus = Protocol::Decode(bufferRx, request);
+			const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
 
-			EXPECT_EQ(parsedStatus, Core::CoreStatus::CORE_ERROR_SIZE);
+			EXPECT_EQ(parsedStatus, Core::Status::CORE_ERROR_SIZE);
 			EXPECT_EQ(request.clusterId, 0U);
 			EXPECT_EQ(request.commandId, 0U);
 			EXPECT_EQ(request.nbParams, 0U);
@@ -119,9 +119,9 @@ namespace Cluster
 		TEST_F(UT_CLU_PROTOCOL, Decode_BufferDataSizeError) {
 			Frame request;
 			constexpr char bufferRx[] = "000001";
-			const Core::CoreStatus parsedStatus = Protocol::Decode(bufferRx, request);
+			const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
 
-			EXPECT_EQ(parsedStatus, Core::CoreStatus::CORE_ERROR_OVERLOAD);
+			EXPECT_EQ(parsedStatus, Core::Status::CORE_ERROR_OVERLOAD);
 			EXPECT_EQ(request.clusterId, 0U);
 			EXPECT_EQ(request.commandId, 0U);
 			EXPECT_EQ(request.nbParams, 1U);

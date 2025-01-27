@@ -1,6 +1,8 @@
 #include "Vl53l0x.h"
 #ifdef RPI
+#ifndef GTEST
 #include "wiringPi/wiringPiI2C.h"
+#endif
 #endif
 namespace Component
 {
@@ -26,7 +28,9 @@ namespace Component
                 mMeasurementTimingBudget(0U), mStop(0U) {
 #endif
 #ifdef RPI
+#ifndef GTEST
                 this->mAddress = wiringPiI2CSetup(address);
+#endif
 #endif
             }
 

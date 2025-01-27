@@ -22,9 +22,9 @@ namespace Component
 			}
 
 			virtual void SetUp() {
-				const Core::CoreStatus success = mServo.Initialize();
+				const Core::Status success = mServo.Initialize();
 				mServo.SetEnable(true);
-				EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+				EXPECT_EQ(success, Core::Status::CORE_OK);
 			}
 
 			virtual void TearDown() {
@@ -47,7 +47,7 @@ namespace Component
 
 		TEST_F(UT_CMP_SERVO, SetAngle_Ok) {
 			EXPECT_CALL(mMockTick, GetMs()).Times(1U).WillOnce(Return(0U));
-			EXPECT_EQ(Core::CoreStatus::CORE_OK, mServo.SetAngle( 10U ));
+			EXPECT_EQ(Core::Status::CORE_OK, mServo.SetAngle( 10U ));
 			EXPECT_TRUE(mServo.IsMoving());
 			EXPECT_EQ(mServo.GetAngle(), 10U);
 		}
@@ -56,13 +56,13 @@ namespace Component
 			mServo.SetReverse(true);
 
 			EXPECT_CALL(mMockTick, GetMs()).Times(1U).WillOnce(Return(0U));
-			EXPECT_EQ(Core::CoreStatus::CORE_OK, mServo.SetAngle( 70U ));
+			EXPECT_EQ(Core::Status::CORE_OK, mServo.SetAngle( 70U ));
 			EXPECT_TRUE(mServo.IsMoving());
 			EXPECT_EQ(mServo.GetAngle(), 70U);
 		}
 
 		TEST_F(UT_CMP_SERVO, SetAngle_AboveMax_Ko) {
-			EXPECT_EQ(Core::CoreStatus::CORE_ERROR_MAX, mServo.SetAngle( 190U ));
+			EXPECT_EQ(Core::Status::CORE_ERROR_MAX, mServo.SetAngle( 190U ));
 			EXPECT_EQ(mServo.GetAngle(), 90U);
 			EXPECT_FALSE(mServo.IsMoving());
 		}
@@ -70,7 +70,7 @@ namespace Component
 		TEST_F(UT_CMP_SERVO, SetAngle_BelowMin_Ko) {
 			mServo.SetMin(50U);
 
-			EXPECT_EQ(Core::CoreStatus::CORE_ERROR_MIN, mServo.SetAngle( 40U ));
+			EXPECT_EQ(Core::Status::CORE_ERROR_MIN, mServo.SetAngle( 40U ));
 			EXPECT_EQ(mServo.GetAngle(), 90U);
 			EXPECT_FALSE(mServo.IsMoving());
 		}
@@ -79,7 +79,7 @@ namespace Component
 			mServo.SetOffset(-10);
 
 			EXPECT_CALL(mMockTick, GetMs()).Times(1U).WillOnce(Return(0U));
-			EXPECT_EQ(Core::CoreStatus::CORE_OK, mServo.SetAngle( 120U ));
+			EXPECT_EQ(Core::Status::CORE_OK, mServo.SetAngle( 120U ));
 			EXPECT_EQ(mServo.GetAngle(), 120U);
 			EXPECT_TRUE(mServo.IsMoving());
 		}
@@ -87,7 +87,7 @@ namespace Component
 		TEST_F(UT_CMP_SERVO, SetAngle_AboveMax_WithOffset_Ko) {
 			mServo.SetOffset(-10);
 
-			EXPECT_EQ(Core::CoreStatus::CORE_ERROR_MAX, mServo.SetAngle( 190U ));
+			EXPECT_EQ(Core::Status::CORE_ERROR_MAX, mServo.SetAngle( 190U ));
 			EXPECT_EQ(mServo.GetAngle(), 90U);
 			EXPECT_FALSE(mServo.IsMoving());
 		}
@@ -96,7 +96,7 @@ namespace Component
 			mServo.SetOffset(10);
 			mServo.SetMin(50U);
 
-			EXPECT_EQ(Core::CoreStatus::CORE_ERROR_MIN, mServo.SetAngle( 40U ));
+			EXPECT_EQ(Core::Status::CORE_ERROR_MIN, mServo.SetAngle( 40U ));
 			EXPECT_EQ(mServo.GetAngle(), 90U);
 			EXPECT_FALSE(mServo.IsMoving());
 		}

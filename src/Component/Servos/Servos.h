@@ -1,9 +1,7 @@
 #pragma once
 
 #include "ServosInterface.h"
-#ifdef RPI
-#include "../../Driver/Gpio/GpioX64.h"
-#endif
+#include "../../Driver/Gpio/GpioInterface.h"
 #include "../../Driver/Tick/TickInterface.h"
 
 namespace Component
@@ -16,7 +14,7 @@ namespace Component
         public:
 #ifdef RPI
             Servos(ServosController::Pca9685Interface &pca9685_0, ServosController::Pca9685Interface &pca9685_1
-                   , Gpio::Gpio &enablePwmPin, Tick::TickInterface &tick);
+                   , Gpio::GpioInterface &enablePwmPin, Tick::TickInterface &tick);
 #else
             Servos(ServosController::Pca9685Interface &pca9685_0, ServosController::Pca9685Interface &pca9685_1,
                    Tick::TickInterface &tick);
@@ -59,7 +57,7 @@ namespace Component
             ServosController::Pca9685Interface &mPca9685Left;
             ServosController::Pca9685Interface &mPca9685Right;
 #ifdef RPI
-            Gpio::Gpio mEnablePwmPin;
+            Gpio::GpioInterface &mEnablePwmPin;
 #endif
         };
     }

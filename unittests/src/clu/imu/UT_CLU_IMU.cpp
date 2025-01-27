@@ -38,7 +38,7 @@ namespace Cluster
 		};
 
 		TEST_F(UT_CLU_IMU, Execute_WrongCommand_Ko) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+			Core::Status success = Core::Status::CORE_ERROR;
 			Frame response;
 			Frame request;
 
@@ -48,12 +48,12 @@ namespace Cluster
 			EXPECT_EQ(response.clusterId, 0U);
 			EXPECT_EQ(response.commandId, 0U);
 			EXPECT_EQ(response.nbParams, 0U);
-			EXPECT_EQ(success, Core::CoreStatus::CORE_ERROR);
+			EXPECT_EQ(success, Core::Status::CORE_ERROR);
 		}
 
 
 		TEST_F(UT_CLU_IMU, Execute_ALL_Ok) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+			Core::Status success = Core::Status::CORE_ERROR;
 			Frame response;
 			Frame request;
 
@@ -68,11 +68,11 @@ namespace Cluster
 			EXPECT_EQ(response.clusterId, IMU);
 			EXPECT_EQ(response.commandId, EImuCommands::ALL);
 			EXPECT_EQ(response.nbParams, 20U);
-			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+			EXPECT_EQ(success, Core::Status::CORE_OK);
 		}
 
 		TEST_F(UT_CLU_IMU, Execute_ACC_Ok) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+			Core::Status success = Core::Status::CORE_ERROR;
 			Frame response;
 			Frame request;
 
@@ -84,11 +84,11 @@ namespace Cluster
 			EXPECT_EQ(response.clusterId, IMU);
 			EXPECT_EQ(response.commandId, EImuCommands::ACC);
 			EXPECT_EQ(response.nbParams, 6U);
-			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+			EXPECT_EQ(success, Core::Status::CORE_OK);
 		}
 
 		TEST_F(UT_CLU_IMU, Execute_GYR_Ok) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+			Core::Status success = Core::Status::CORE_ERROR;
 			Frame response;
 			Frame request;
 
@@ -100,11 +100,11 @@ namespace Cluster
 			EXPECT_EQ(response.clusterId, IMU);
 			EXPECT_EQ(response.commandId, EImuCommands::GYR);
 			EXPECT_EQ(response.nbParams, 6U);
-			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+			EXPECT_EQ(success, Core::Status::CORE_OK);
 		}
 
 		TEST_F(UT_CLU_IMU, Execute_MAG_Ok) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+			Core::Status success = Core::Status::CORE_ERROR;
 			Frame response;
 			Frame request;
 
@@ -116,11 +116,11 @@ namespace Cluster
 			EXPECT_EQ(response.clusterId, IMU);
 			EXPECT_EQ(response.commandId, EImuCommands::MAG);
 			EXPECT_EQ(response.nbParams, 6U);
-			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+			EXPECT_EQ(success, Core::Status::CORE_OK);
 		}
 
 		TEST_F(UT_CLU_IMU, Execute_TMP_Ok) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+			Core::Status success = Core::Status::CORE_ERROR;
 			Frame response;
 			Frame request;
 
@@ -132,7 +132,7 @@ namespace Cluster
 			EXPECT_EQ(response.clusterId, IMU);
 			EXPECT_EQ(response.commandId, EImuCommands::TMP);
 			EXPECT_EQ(response.nbParams, 2U);
-			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+			EXPECT_EQ(success, Core::Status::CORE_OK);
 		}
 	}
 }

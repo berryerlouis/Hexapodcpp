@@ -31,13 +31,13 @@ namespace Component
 				}
 
 				virtual void SetUp() {
-					EXPECT_CALL(mMockInputCapture, Initialize()).Times(1U).WillOnce(Return(Core::CoreStatus::CORE_OK));
-					EXPECT_CALL(mMockLed, Initialize()).Times(1U).WillOnce(Return(Core::CoreStatus::CORE_OK));
+					EXPECT_CALL(mMockInputCapture, Initialize()).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
+					EXPECT_CALL(mMockLed, Initialize()).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
 
-					Core::CoreStatus success = mSrf05.Initialize();
+					Core::Status success = mSrf05.Initialize();
 
 					EXPECT_EQ(mSrf05.GetThreshold(), 30U);
-					EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+					EXPECT_EQ(success, Core::Status::CORE_OK);
 				}
 
 				virtual void TearDown() {
@@ -55,17 +55,17 @@ namespace Component
 			};
 
 			TEST_F(UT_CMP_SRF05, SetThreshold) {
-				EXPECT_EQ(mSrf05.SetThreshold( 35U ), Core::CoreStatus::CORE_OK);
+				EXPECT_EQ(mSrf05.SetThreshold( 35U ), Core::Status::CORE_OK);
 				EXPECT_EQ(35U, mSrf05.GetThreshold());
 			}
 
 			TEST_F(UT_CMP_SRF05, UnderThreshold) {
 				//mSrf05.Detect();
 				EXPECT_CALL(mMockInputCapture, GetInputCaptureTime()).Times(1U).WillOnce(Return(58U));
-				EXPECT_CALL(mMockGpio, Set()).Times(1U).WillOnce(Return(Core::CoreStatus::CORE_OK));
+				EXPECT_CALL(mMockGpio, Set()).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
 				EXPECT_CALL(mMockTick, DelayUs( _ )).Times(1U);
-				EXPECT_CALL(mMockGpio, Reset()).Times(1U).WillOnce(Return(Core::CoreStatus::CORE_OK));
-				EXPECT_CALL(mMockLed, On()).Times(1U).WillOnce(Return(Core::CoreStatus::CORE_OK));
+				EXPECT_CALL(mMockGpio, Reset()).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
+				EXPECT_CALL(mMockLed, On()).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
 
 				mSrf05.Update(0U);
 			}
@@ -73,10 +73,10 @@ namespace Component
 			TEST_F(UT_CMP_SRF05, AboveThreshold) {
 				//mSrf05.Detect();
 				EXPECT_CALL(mMockInputCapture, GetInputCaptureTime()).Times(1U).WillOnce(Return(58U * 31U));
-				EXPECT_CALL(mMockGpio, Set()).Times(1U).WillOnce(Return(Core::CoreStatus::CORE_OK));
+				EXPECT_CALL(mMockGpio, Set()).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
 				EXPECT_CALL(mMockTick, DelayUs( _ )).Times(1U);
-				EXPECT_CALL(mMockGpio, Reset()).Times(1U).WillOnce(Return(Core::CoreStatus::CORE_OK));
-				EXPECT_CALL(mMockLed, Off()).Times(1U).WillOnce(Return(Core::CoreStatus::CORE_OK));
+				EXPECT_CALL(mMockGpio, Reset()).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
+				EXPECT_CALL(mMockLed, Off()).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
 
 				mSrf05.Update(0U);
 			}

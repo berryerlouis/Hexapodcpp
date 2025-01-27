@@ -1,8 +1,12 @@
 #include "Mpu9150.h"
 #ifdef AVR
 #include <avr/interrupt.h>
-#elif RPI
+#else
+#ifdef RPI
+#ifndef GTEST
 #include "wiringPi/wiringPiI2C.h"
+#endif
+#endif
 #endif
 
 namespace Component
@@ -18,7 +22,9 @@ namespace Component
             mMagRaw{0, 0, 0}, mAcc{0, 0, 0}, mGyr{0, 0, 0}, mMag{0, 0, 0}, mTmp(0U), mLastLoopTime(0U), mAhrs(),
             mYawPitchRoll{0, 0, 0}, mDoComputation(false) {
 #ifdef RPI
+#ifndef GTEST
             this->mAddress = wiringPiI2CSetup(address);
+#endif
 #endif
         }
 

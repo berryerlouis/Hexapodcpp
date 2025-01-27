@@ -7,10 +7,10 @@ namespace Component
         Led::Led(Driver::Gpio::GpioInterface &gpio) :
             mGpio(gpio)
             , mState(Led::LedState::OFF) {
-            this->Off();
         }
 
         Core::Status Led::Initialize(void) {
+            this->Off();
             return (Core::Status::CORE_OK);
         }
 

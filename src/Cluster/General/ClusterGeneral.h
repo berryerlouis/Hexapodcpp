@@ -9,71 +9,22 @@ namespace Cluster
     {
         using namespace Component::Software;
 
-        class ClusterGeneral : public ClusterBase, StrategyCluster {
+        class ClusterGeneral : public ClusterBase, ClusterCommand {
         public:
-            ClusterGeneral(SoftwareInterface &software)
-                : ClusterBase(GENERAL, this)
-                  , StrategyCluster(NB_COMMANDS_GENERAL)
-                  , mSoftware(software) {
-                this->AddClusterItem({.commandId = EGeneralCommands::VERSION, .expectedSize = 0U});
-                this->AddClusterItem({.commandId = EGeneralCommands::MIN_EXECUTION_TIME, .expectedSize = 1U});
-                this->AddClusterItem({.commandId = EGeneralCommands::MAX_EXECUTION_TIME, .expectedSize = 1U});
-                this->AddClusterItem({.commandId = EGeneralCommands::RESET_EXECUTION_TIME, .expectedSize = 1U});
-            }
+            ClusterGeneral(SoftwareInterface &software);
 
             ~ClusterGeneral() = default;
 
-            virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) final override {
-                Core::Status success = Core::Status::CORE_ERROR;
-                if (request.commandId == EGeneralCommands::VERSION) {
-                    const SoftwareInterface::Version version = this->mSoftware.GetVersion();
-                    success = this->BuildFrameGetVersion(version, response);
-                } else if (request.commandId == EGeneralCommands::MIN_EXECUTION_TIME) {
-                    const uint8_t serviceId = request.params[0U];
-                    success = this->BuildFrameGetMinTime(serviceId, 0, response);
-                } else if (request.commandId == EGeneralCommands::MAX_EXECUTION_TIME) {
-                    const uint8_t serviceId = request.params[0U];
-                    success = this->BuildFrameGetMaxTime(serviceId, 0, response);
-                } else if (request.commandId == EGeneralCommands::RESET_EXECUTION_TIME) {
-                }
-                return success;
-            }
+            virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) final override;
 
-            inline Core::Status BuildFrameGetVersion(const SoftwareInterface::Version version,
-                                                         Frame &response) const {
-                const Core::Status success = response.Build(
-                    EClusters::GENERAL,
-                    EGeneralCommands::VERSION);
-                if (success == Core::Status::CORE_OK) {
-                    response.Set1ByteParam(version.major);
-                    response.Set1ByteParam(version.minor);
-                }
-                return (success);
-            }
+            static Core::Status BuildFrameGetVersion(const SoftwareInterface::Version version,
+                                                     Frame &response);
 
-            inline Core::Status BuildFrameGetMinTime(const uint8_t serviceId, const uint16_t deltaTime,
-                                                         Frame &response) const {
-                const Core::Status success = response.Build(
-                    EClusters::GENERAL,
-                    EGeneralCommands::MIN_EXECUTION_TIME);
-                if (success == Core::Status::CORE_OK) {
-                    response.Set1ByteParam(serviceId);
-                    response.Set2BytesParam(deltaTime);
-                }
-                return (success);
-            }
+            static Core::Status BuildFrameGetMinTime(const uint8_t serviceId, const uint16_t deltaTime,
+                                                     Frame &response);
 
-            inline Core::Status BuildFrameGetMaxTime(const uint8_t serviceId, const uint16_t deltaTime,
-                                                         Frame &response) const {
-                const Core::Status success = response.Build(
-                    EClusters::GENERAL,
-                    EGeneralCommands::MAX_EXECUTION_TIME);
-                if (success == Core::Status::CORE_OK) {
-                    response.Set1ByteParam(serviceId);
-                    response.Set2BytesParam(deltaTime);
-                }
-                return (success);
-            }
+            static Core::Status BuildFrameGetMaxTime(const uint8_t serviceId, const uint16_t deltaTime,
+                                                     Frame &response);
 
         private:
             SoftwareInterface &mSoftware;

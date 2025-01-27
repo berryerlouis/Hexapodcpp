@@ -39,11 +39,11 @@ namespace Service
 			}
 
 			virtual void SetUp() {
-				EXPECT_CALL(mMockCommunication, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_ERROR));
-				EXPECT_EQ(Core::CoreStatus::CORE_ERROR, mServiceCommunication.Initialize());
+				EXPECT_CALL(mMockCommunication, Initialize()).WillOnce(Return(Core::Status::CORE_ERROR));
+				EXPECT_EQ(Core::Status::CORE_ERROR, mServiceCommunication.Initialize());
 
-				EXPECT_CALL(mMockCommunication, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-				EXPECT_EQ(Core::CoreStatus::CORE_OK, mServiceCommunication.Initialize());
+				EXPECT_CALL(mMockCommunication, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+				EXPECT_EQ(Core::Status::CORE_OK, mServiceCommunication.Initialize());
 			}
 
 			virtual void TearDown() {
@@ -80,7 +80,7 @@ namespace Service
 
 			EXPECT_CALL(mMockClusters, GetCluster( Cluster::EClusters::BATTERY )).
 					WillOnce(Return(&mClusterBattery));
-			EXPECT_CALL(mMockCommunication, SendMessage( _ )).Times(1U).WillOnce(Return(Core::CoreStatus::CORE_OK));
+			EXPECT_CALL(mMockCommunication, SendMessage( _ )).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
 			mServiceCommunication.DispatchEvent(ev);
 		}
 
@@ -94,7 +94,7 @@ namespace Service
 
 			EXPECT_CALL(mMockClusters, GetCluster( Cluster::EClusters::PROXIMITY )).
 					WillOnce(Return(&mClusterProximity));
-			EXPECT_CALL(mMockCommunication, SendMessage( _ )).Times(1U).WillOnce(Return(Core::CoreStatus::CORE_OK));
+			EXPECT_CALL(mMockCommunication, SendMessage( _ )).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
 			mServiceCommunication.DispatchEvent(ev);
 		}
 
@@ -108,7 +108,7 @@ namespace Service
 
 			EXPECT_CALL(mMockClusters, GetCluster( Cluster::EClusters::GENERAL )).
 					WillOnce(Return(&mClusterProximity));
-			EXPECT_CALL(mMockCommunication, SendMessage( _ )).Times(1U).WillOnce(Return(Core::CoreStatus::CORE_OK));
+			EXPECT_CALL(mMockCommunication, SendMessage( _ )).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
 			mServiceCommunication.DispatchEvent(ev);
 		}
 	}

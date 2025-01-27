@@ -1,6 +1,6 @@
 set(
         SRC_FILES
-        ../src/Cluster/Frame/Frame.cpp
+        ../src/Cluster/Proximity/ClusterProximity.cpp
 )
 set(
         TEST_FILE

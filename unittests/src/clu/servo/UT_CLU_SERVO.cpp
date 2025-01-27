@@ -44,7 +44,7 @@ namespace Cluster
         };
 
         TEST_F(UT_CLU_SERVO, Execute_WrongCommand_Ko) {
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            Core::Status success = Core::Status::CORE_ERROR;
             Frame response;
             Frame request;
 
@@ -54,11 +54,11 @@ namespace Cluster
             EXPECT_EQ(response.clusterId, 0U);
             EXPECT_EQ(response.commandId, 0U);
             EXPECT_EQ(response.nbParams, 0U);
-            EXPECT_EQ(success, Core::CoreStatus::CORE_ERROR);
+            EXPECT_EQ(success, Core::Status::CORE_ERROR);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameAllAngle_Ok) {
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            Core::Status success = Core::Status::CORE_ERROR;
             Frame response;
             const Frame request(SERVO, GET_ALL);
             Component::Servo::MockServo mockServo;
@@ -71,11 +71,11 @@ namespace Cluster
             EXPECT_EQ(response.clusterId, SERVO);
             EXPECT_EQ(response.commandId, EServoCommands::GET_ALL);
             EXPECT_EQ(response.nbParams, 18U);
-            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameGetAngle_Ok) {
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            Core::Status success = Core::Status::CORE_ERROR;
             Frame response;
             constexpr uint8_t servoId = 1;
             Frame request(SERVO, GET_ANGLE);
@@ -91,11 +91,11 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], 11U);
-            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameSetAngle_Ok) {
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            Core::Status success = Core::Status::CORE_ERROR;
             Frame response;
             constexpr uint8_t servoId = 1;
             constexpr uint8_t angle = 11;
@@ -115,12 +115,12 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], 11U);
-            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
 
         TEST_F(UT_CLU_SERVO, BuildFrameGetMin_Ok) {
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            Core::Status success = Core::Status::CORE_ERROR;
             Frame response;
             constexpr uint8_t servoId = 1;
             constexpr uint8_t angle = 11;
@@ -137,11 +137,11 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], 11U);
-            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameSetMin_Ok) {
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            Core::Status success = Core::Status::CORE_ERROR;
             Frame response;
             constexpr uint8_t servoId = 1;
             constexpr uint8_t angle = 11;
@@ -159,11 +159,11 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], 11U);
-            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameGetMax_Ok) {
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            Core::Status success = Core::Status::CORE_ERROR;
             Frame response;
             constexpr uint8_t servoId = 1;
             Frame request(SERVO, GET_MAX);
@@ -179,11 +179,11 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], 120U);
-            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameSetMax_Ok) {
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            Core::Status success = Core::Status::CORE_ERROR;
             Frame response;
             constexpr uint8_t servoId = 1;
             constexpr uint8_t angle = 11;
@@ -201,11 +201,11 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], 11U);
-            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameGetOffset_Ok) {
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            Core::Status success = Core::Status::CORE_ERROR;
             Frame response;
             constexpr uint8_t servoId = 1;
             Frame request(SERVO, GET_OFFSET);
@@ -221,11 +221,11 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], 11U);
-            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameSetOffset_Ok) {
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            Core::Status success = Core::Status::CORE_ERROR;
             Frame response;
             constexpr uint8_t servoId = 1;
             constexpr uint8_t offset = 11;
@@ -243,11 +243,11 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], offset);
-            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
         TEST_F(UT_CLU_SERVO, BuildFrameSetState_Ok) {
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            Core::Status success = Core::Status::CORE_ERROR;
             Frame response;
             constexpr uint8_t servoId = 1;
             Frame request(SERVO, SET_STATE);
@@ -264,7 +264,7 @@ namespace Cluster
             EXPECT_EQ(response.nbParams, 2U);
             EXPECT_EQ(response.params[0U], servoId);
             EXPECT_EQ(response.params[1U], true);
-            EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
         }
     }
 }

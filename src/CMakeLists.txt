@@ -51,6 +51,7 @@ set(SRC_FILES_MAIN Hexapodcpp.cpp)
 
 set(SRC_FILES_SERVICES
         Service/Battery/ServiceBattery.cpp
+        Service/Button/ServiceButton.cpp
         Service/Communication/ServiceCommunication.cpp
         Service/Control/ServiceControl.cpp
         Service/Display/ServiceDisplay.cpp
@@ -97,6 +98,14 @@ set(SRC_FILES_COMPONENT
 )
 
 set(SRC_FILES_CLUSTER
+        Cluster/Battery/ClusterBattery.cpp
+        Cluster/Body/ClusterBody.cpp
+        Cluster/General/ClusterGeneral.cpp
+        Cluster/Imu/ClusterImu.cpp
+        Cluster/Proximity/ClusterProximity.cpp
+        Cluster/Servo/ClusterServo.cpp
+        Cluster/ClusterBase.cpp
+        Cluster/ClusterCommand.cpp
         Cluster/Clusters/Clusters.cpp
         Cluster/Decoding/Protocol.cpp
         Cluster/Frame/Frame.cpp

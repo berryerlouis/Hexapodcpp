@@ -9,52 +9,18 @@ namespace Cluster
     {
         using namespace Component::Battery;
 
-        class ClusterBattery : public ClusterBase, StrategyCluster {
+        class ClusterBattery : public ClusterBase, ClusterCommand {
         public:
-            ClusterBattery(BatteryInterface &battery)
-                : ClusterBase(BATTERY, this)
-                  , StrategyCluster(NB_COMMANDS_BATTERY)
-                  , mBattery(battery) {
-                this->AddClusterItem({.commandId = EBatteryCommands::GET_VOLTAGE, .expectedSize = 0U});
-                this->AddClusterItem({.commandId = EBatteryCommands::GET_BAT_STATUS, .expectedSize = 0U});
-            }
+            ClusterBattery(BatteryInterface &battery);
 
             ~ClusterBattery() = default;
 
-            virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override {
-                Core::Status success = Core::Status::CORE_ERROR;
-                if (request.commandId == EBatteryCommands::GET_VOLTAGE) {
-                    const uint16_t voltage = this->mBattery.GetVoltage();
-                    success = this->BuildFrameVoltage(voltage, response);
-                } else if (request.commandId == EBatteryCommands::GET_BAT_STATUS) {
-                    const uint16_t voltage = this->mBattery.GetVoltage();
-                    const BatteryState state = this->mBattery.GetState();
-                    success = this->BuildFrameState(state, voltage, response);
-                }
-                return success;
-            }
+            virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override;
 
-            inline Core::Status BuildFrameVoltage(const uint16_t voltage, Frame &response) const {
-                const Core::Status success = response.Build(
-                    EClusters::BATTERY,
-                    EBatteryCommands::GET_VOLTAGE);
-                if (success == Core::Status::CORE_OK) {
-                    response.Set2BytesParam(voltage);
-                }
-                return (success);
-            }
+            static Core::Status BuildFrameVoltage(const uint16_t voltage, Frame &response);
 
-            inline Core::Status BuildFrameState(const uint16_t state, const uint16_t voltage,
-                                                    Frame &response) const {
-                const Core::Status success = response.Build(
-                    EClusters::BATTERY,
-                    EBatteryCommands::GET_BAT_STATUS);
-                if (success == Core::Status::CORE_OK) {
-                    response.Set1ByteParam(state);
-                    response.Set2BytesParam(voltage);
-                }
-                return (success);
-            }
+            static Core::Status BuildFrameState(const uint16_t state, const uint16_t voltage,
+                                                Frame &response);
 
         private:
             BatteryInterface &mBattery;

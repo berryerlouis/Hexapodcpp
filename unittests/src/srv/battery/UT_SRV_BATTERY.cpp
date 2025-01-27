@@ -16,22 +16,24 @@ namespace Service
     {
         class UT_SRV_BATTERY : public ::testing::Test {
         protected:
-            UT_SRV_BATTERY() : mMockEventListener(),
-                               mMockBattery(),
-                               mServiceBattery(mMockBattery, mMockEventListener) {
+            UT_SRV_BATTERY() :
+                mMockEventListener(),
+                mMockBattery(),
+                mServiceBattery(mMockBattery, mMockEventListener) {
             }
 
-            virtual void SetUp() {
-                EXPECT_CALL(mMockBattery, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_ERROR));
-                EXPECT_CALL(mMockBattery, Attach( _ )).WillOnce(Return(Core::CoreStatus::CORE_OK));
-                EXPECT_EQ(Core::CoreStatus::CORE_ERROR, mServiceBattery.Initialize());
+            virtual void
+            SetUp() {
+                EXPECT_CALL(mMockBattery, Initialize()).WillOnce(Return(Core::Status::CORE_ERROR));
+                EXPECT_EQ(Core::Status::CORE_ERROR, mServiceBattery.Initialize());
 
-                EXPECT_CALL(mMockBattery, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-                EXPECT_CALL(mMockBattery, Attach( _ )).WillOnce(Return(Core::CoreStatus::CORE_OK));
-                EXPECT_EQ(Core::CoreStatus::CORE_OK, mServiceBattery.Initialize());
+                EXPECT_CALL(mMockBattery, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockBattery, Attach( _ )).WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_EQ(Core::Status::CORE_OK, mServiceBattery.Initialize());
             }
 
-            virtual void TearDown() {
+            virtual void
+            TearDown() {
             }
 
             virtual ~UT_SRV_BATTERY() = default;
@@ -54,8 +56,8 @@ namespace Service
             constexpr BatteryState batteryState = BatteryState::WARNING;
             constexpr uint8_t voltage = 10U;
             constexpr uint8_t arg[2U] = {
-                static_cast<uint8_t>(voltage >> 8U),
-                static_cast<uint8_t>(voltage & 0xFFU)
+                    static_cast<uint8_t>(voltage >> 8U),
+                    static_cast<uint8_t>(voltage & 0xFFU)
             };
             const SEvent ev(BATTERY, batteryState, arg, 2U);
 

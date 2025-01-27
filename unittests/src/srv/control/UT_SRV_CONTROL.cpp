@@ -24,11 +24,11 @@ namespace Service
 			}
 
 			virtual void SetUp() {
-				EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_ERROR));
-				EXPECT_EQ(Core::CoreStatus::CORE_ERROR, mServiceControl.Initialize());
+				EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::Status::CORE_ERROR));
+				EXPECT_EQ(Core::Status::CORE_ERROR, mServiceControl.Initialize());
 
-				EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-				EXPECT_EQ(Core::CoreStatus::CORE_OK, mServiceControl.Initialize());
+				EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+				EXPECT_EQ(Core::Status::CORE_OK, mServiceControl.Initialize());
 			}
 
 			virtual void TearDown() {
@@ -46,9 +46,9 @@ namespace Service
 		};
 
 		TEST_F(UT_SRV_CONTROL, Update_Ok) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+			Core::Status success = Core::Status::CORE_ERROR;
 
-			EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
+			EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
 
 			success = mServiceControl.Initialize();
 
@@ -58,13 +58,13 @@ namespace Service
 
 			mServiceControl.Update(0UL);
 
-			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+			EXPECT_EQ(success, Core::Status::CORE_OK);
 		}
 
 		TEST_F(UT_SRV_CONTROL, Update_2Times_Ok) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+			Core::Status success = Core::Status::CORE_ERROR;
 
-			EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
+			EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
 
 			success = mServiceControl.Initialize();
 
@@ -76,7 +76,7 @@ namespace Service
 			mServiceControl.Update(0UL);
 			mServiceControl.Update(0UL);
 
-			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+			EXPECT_EQ(success, Core::Status::CORE_OK);
 		}
 	}
 }

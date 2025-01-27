@@ -12,15 +12,19 @@ namespace Service
         Core::Status ServiceBattery::Initialize(void) {
             const Core::Status success = this->mBatteryInterface.Initialize();
             if (Core::Status::CORE_OK == success) {
-                this->mInitialized = true;
                 this->mBatteryInterface.Attach(this);
+                this->mInitialized = true;
             }
             return (success);
         }
 
-        void ServiceBattery::Update(const uint64_t currentTime) { this->mBatteryInterface.Update(currentTime); }
+        void ServiceBattery::Update(const uint64_t currentTime) {
+            this->mBatteryInterface.Update(currentTime);
+        }
 
-        void ServiceBattery::DispatchEvent(const SEvent &event) { (void) event; }
+        void ServiceBattery::DispatchEvent(const SEvent &event) {
+            (void) event;
+        }
 
         void ServiceBattery::UpdatedBatteryState(const BatteryState &batteryState, const uint16_t voltage) {
             const uint8_t arg[2U] = UINT16_TO_ARRAY(voltage);

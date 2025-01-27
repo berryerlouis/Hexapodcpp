@@ -9,79 +9,19 @@ namespace Cluster
     {
         using namespace Bot::Body;
 
-        class ClusterBody : public ClusterBase, StrategyCluster {
+        class ClusterBody : public ClusterBase, ClusterCommand {
         public:
-            ClusterBody(BodyInterface &body)
-                : ClusterBase(BODY, this)
-                  , StrategyCluster(NB_COMMANDS_BODY)
-                  , mBody(body) {
-                this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_BODY_POS_ROT, .expectedSize = 14U});
-                this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_LEG_POS_ROT, .expectedSize = 9U});
-                this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_WALK_STATUS, .expectedSize = 1U});
-            }
+            ClusterBody(BodyInterface &body);
 
             ~ClusterBody() = default;
 
-            virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override {
-                Core::Status success = Core::Status::CORE_ERROR;
-                if (request.commandId == EBodyCommands::SET_BODY_POS_ROT) {
-                    const Position3d position =
-                    {
-                        .x = static_cast<int16_t>(request.Get2BytesParam(0U)) / 10.0f,
-                        .y = static_cast<int16_t>(request.Get2BytesParam(2U)) / 10.0f,
-                        .z = static_cast<int16_t>(request.Get2BytesParam(4U)) / 10.0f
-                    };
-                    const Rotation3d rotation =
-                    {
-                        .angleX = static_cast<int16_t>(request.Get2BytesParam(6U)) / 10.0f,
-                        .angleY = static_cast<int16_t>(request.Get2BytesParam(8U)) / 10.0f,
-                        .angleZ = static_cast<int16_t>(request.Get2BytesParam(10U)) / 10.0f
-                    };
-                    const uint16_t travelTime = request.Get2BytesParam(12U);
-                    const uint32_t successMove = this->mBody.SetBodyPositionRotation(position, rotation, travelTime);
-                    success = this->BuildFrameSetBodyPosition(response, successMove);
-                } else if (request.commandId == EBodyCommands::SET_LEG_POS_ROT) {
-                    const uint8_t legId = request.Get1ByteParam(0U);
-                    const Position3d position =
-                    {
-                        .x = static_cast<int16_t>(request.Get2BytesParam(1U)) / 10.0f,
-                        .y = static_cast<int16_t>(request.Get2BytesParam(3U)) / 10.0f,
-                        .z = static_cast<int16_t>(request.Get2BytesParam(5U)) / 10.0f
-                    };
-                    const uint16_t travelTime = request.Get2BytesParam(7U);
-                    const uint32_t successMove = this->mBody.SetLegPositionRotation(legId, position, travelTime);
-                    success = this->BuildFrameSetLegPosition(response, successMove);
-                } else if (request.commandId == EBodyCommands::SET_WALK_STATUS) {
-                    const Bot::EWalkStatus status = static_cast<Bot::EWalkStatus>(request.Get1ByteParam(0U));
-                    this->mBody.UpdateWalkStatus(status);
-                    success = this->BuildFrameUpdateWalkStatus(response);
-                }
-                return success;
-            }
+            virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override;
 
-            inline Core::Status BuildFrameSetBodyPosition(Frame &response, const uint32_t successMove) const {
-                const Core::Status success = response.Build(
-                    EClusters::BODY,
-                    EBodyCommands::SET_BODY_POS_ROT);
-                if (success == Core::Status::CORE_OK) {
-                    response.Set4BytesParam(successMove);
-                }
-                return (success);
-            }
+            static Core::Status BuildFrameSetBodyPosition(Frame &response, const uint32_t successMove);
 
-            inline Core::Status BuildFrameSetLegPosition(Frame &response, const uint32_t successMove) const {
-                const Core::Status success = response.Build(
-                    EClusters::BODY,
-                    EBodyCommands::SET_LEG_POS_ROT);
-                if (success == Core::Status::CORE_OK) {
-                    response.Set4BytesParam(successMove);
-                }
-                return (success);
-            }
+            static Core::Status BuildFrameSetLegPosition(Frame &response, const uint32_t successMove);
 
-            inline Core::Status BuildFrameUpdateWalkStatus(Frame &response) const {
-                return response.Build(EClusters::BODY, EBodyCommands::SET_WALK_STATUS);
-            }
+            static Core::Status BuildFrameUpdateWalkStatus(Frame &response);
 
         private:
             BodyInterface &mBody;

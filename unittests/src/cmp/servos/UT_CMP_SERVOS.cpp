@@ -3,6 +3,7 @@
 
 #include "../../../mock/cmp/MockPca9685.h"
 #include "../../../mock/drv/MockTick.h"
+#include "../../../mock/drv/MockGpio.h"
 
 #include "../../../../src/Component/Servos/Servos.h"
 
@@ -16,29 +17,34 @@ namespace Component
     {
         class UT_CMP_SERVOS : public ::testing::Test {
         protected:
-            UT_CMP_SERVOS() : mMockTick(),
-                              mMockPca9685_0(),
-                              mMockPca9685_1(),
-                              mServos(mMockPca9685_0, mMockPca9685_1, mMockTick) {
+            UT_CMP_SERVOS() :
+                mMockTick(),
+                mMockGpio(),
+                mMockPca9685_0(),
+                mMockPca9685_1(),
+                mServos(mMockPca9685_0, mMockPca9685_1, mMockGpio, mMockTick) {
             }
 
-            virtual void SetUp() {
-                Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            virtual void
+            SetUp() {
+                Core::Status success = Core::Status::CORE_ERROR;
 
-                EXPECT_CALL(mMockPca9685_0, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-                EXPECT_CALL(mMockPca9685_1, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
+                EXPECT_CALL(mMockPca9685_0, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockPca9685_1, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
 
                 success = mServos.Initialize();
-                EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+                EXPECT_EQ(success, Core::Status::CORE_OK);
             }
 
-            virtual void TearDown() {
+            virtual void
+            TearDown() {
             }
 
             virtual ~UT_CMP_SERVOS() = default;
 
             /* Mocks */
             StrictMock<Driver::Tick::MockTick> mMockTick;
+            StrictMock<Driver::Gpio::MockGpio> mMockGpio;
             StrictMock<Component::ServosController::MockPca9685> mMockPca9685_0;
             StrictMock<Component::ServosController::MockPca9685> mMockPca9685_1;
 

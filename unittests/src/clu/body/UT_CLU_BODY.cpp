@@ -35,7 +35,7 @@ namespace Cluster
 		};
 
 		TEST_F(UT_CLU_BODY, Execute_WrongCommand_Ko) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+			Core::Status success = Core::Status::CORE_ERROR;
 			Frame request;
 			Frame response;
 
@@ -45,11 +45,11 @@ namespace Cluster
 			EXPECT_EQ(response.clusterId, 0U);
 			EXPECT_EQ(response.commandId, 0U);
 			EXPECT_EQ(response.nbParams, 0U);
-			EXPECT_EQ(success, Core::CoreStatus::CORE_ERROR);
+			EXPECT_EQ(success, Core::Status::CORE_ERROR);
 		}
 
 		TEST_F(UT_CLU_BODY, Execute_SET_LEG_X_Y_Z_Ok) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+			Core::Status success = Core::Status::CORE_ERROR;
 			Frame request;
 			Frame response;
 			uint8_t params[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -61,7 +61,7 @@ namespace Cluster
 			EXPECT_EQ(response.clusterId, BODY);
 			EXPECT_EQ(response.commandId, EBodyCommands::SET_BODY_POS_ROT);
 			EXPECT_EQ(response.nbParams, 4U);
-			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+			EXPECT_EQ(success, Core::Status::CORE_OK);
 		}
 
 		TEST_F(UT_CLU_BODY, BuildFrameSetPosition_Ok) {

@@ -1,8 +1,10 @@
 #pragma once
 
+#include "ButtonState.h"
+
 namespace Component
 {
-    namespace Proximity
+    namespace Button
     {
         class ButtonObserverInterface {
         public:
@@ -10,7 +12,7 @@ namespace Component
 
             ~ButtonObserverInterface() = default;
 
-            virtual void Event(const uint16_t time) = 0;
+            virtual void UpdatedButtonState(const ButtonState &ButtonState, const uint16_t period) = 0;
         };
     }
 }

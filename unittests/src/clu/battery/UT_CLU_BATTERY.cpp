@@ -36,7 +36,7 @@ namespace Cluster
 
 
 		TEST_F(UT_CLU_BATTERY, Execute_Command_Voltage_Ok) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+			Core::Status success = Core::Status::CORE_ERROR;
 			const Frame request(BATTERY, GET_VOLTAGE);
 			Frame response;
 
@@ -49,11 +49,11 @@ namespace Cluster
 			EXPECT_EQ(response.nbParams, 2U);
 			EXPECT_EQ(response.params[0U], 10U);
 			EXPECT_EQ(response.params[1U], 0U);
-			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+			EXPECT_EQ(success, Core::Status::CORE_OK);
 		}
 
 		TEST_F(UT_CLU_BATTERY, Execute_Command_status_Ok) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+			Core::Status success = Core::Status::CORE_ERROR;
 			const Frame request(BATTERY, GET_BAT_STATUS);
 			Frame response;
 
@@ -68,11 +68,11 @@ namespace Cluster
 			EXPECT_EQ(response.params[0U], NOMINAL);
 			EXPECT_EQ(response.params[1U], 10U);
 			EXPECT_EQ(response.params[2U], 0U);
-			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+			EXPECT_EQ(success, Core::Status::CORE_OK);
 		}
 
 		TEST_F(UT_CLU_BATTERY, Execute_WrongCommand_Ko) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+			Core::Status success = Core::Status::CORE_ERROR;
 			Frame request;
 			Frame response;
 
@@ -82,7 +82,7 @@ namespace Cluster
 			EXPECT_EQ(response.clusterId, 0U);
 			EXPECT_EQ(response.commandId, 0U);
 			EXPECT_EQ(response.nbParams, 0U);
-			EXPECT_EQ(success, Core::CoreStatus::CORE_ERROR);
+			EXPECT_EQ(success, Core::Status::CORE_ERROR);
 		}
 	}
 }

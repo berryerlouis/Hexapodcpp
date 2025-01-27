@@ -8,7 +8,7 @@ namespace Display {
 using namespace Misc;
 class MockSsd1306 : public Ssd1306Interface {
 public:
-	MOCK_METHOD0( Initialize, Core::CoreStatus( void ) );
+	MOCK_METHOD0( Initialize, Core::Status( void ) );
 	MOCK_METHOD1( Update, void( const uint64_t ) );
 
 	MOCK_METHOD3( DrawPixel, void ( uint16_t x, uint16_t y, uint16_t color ) );

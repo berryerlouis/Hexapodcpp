@@ -26,12 +26,12 @@ namespace Service
 			}
 
 			virtual void SetUp() {
-				EXPECT_CALL(mMockMpu9150, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_ERROR));
-				EXPECT_EQ(Core::CoreStatus::CORE_ERROR, mServiceOrientation.Initialize());
+				EXPECT_CALL(mMockMpu9150, Initialize()).WillOnce(Return(Core::Status::CORE_ERROR));
+				EXPECT_EQ(Core::Status::CORE_ERROR, mServiceOrientation.Initialize());
 
-				EXPECT_CALL(mMockMpu9150, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-				EXPECT_CALL(mMockBarometer, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-				EXPECT_EQ(Core::CoreStatus::CORE_OK, mServiceOrientation.Initialize());
+				EXPECT_CALL(mMockMpu9150, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+				EXPECT_CALL(mMockBarometer, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+				EXPECT_EQ(Core::Status::CORE_OK, mServiceOrientation.Initialize());
 			}
 
 			virtual void TearDown() {

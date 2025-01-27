@@ -1,15 +1,15 @@
 #pragma once
 #include "../../Core/CoreInterface.h"
+#include "ButtonState.h"
+#include "ButtonObserverInterface.h"
 #include "ButtonObservableInterface.h"
 
 namespace Component
 {
-    namespace Proximity
+    namespace Button
     {
         class ButtonObservable : public ButtonObservableInterface {
         public:
-#define MAX_OBSERVERS    5U
-
             ButtonObservable() :
                 mIndexList(0U)
                 , mListObserver{nullptr} {
@@ -29,15 +29,16 @@ namespace Component
             }
 
             virtual void
-            Notify(const uint16_t distance) final override {
+            Notify(const ButtonState &state, const uint16_t period) final override {
                 for (size_t i = 0; i < this->mIndexList; i++) {
                     if (this->mListObserver[i] != nullptr) {
-                        this->mListObserver[i]->Event(distance);
+                        this->mListObserver[i]->UpdatedButtonState(state, period);
                     }
                 }
             }
 
         private:
+            static constexpr uint8_t MAX_OBSERVERS = 2U;
             uint8_t mIndexList;
             ButtonObserverInterface *mListObserver[MAX_OBSERVERS];
         };

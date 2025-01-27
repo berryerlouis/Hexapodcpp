@@ -1,6 +1,4 @@
 #include "Servos.h"
-#include <stdlib.h>
-#include <string.h>
 
 namespace Component
 {
@@ -8,7 +6,7 @@ namespace Component
     {
 #ifdef RPI
         Servos::Servos(ServosController::Pca9685Interface &pca9685_0, ServosController::Pca9685Interface &pca9685_1,
-                       Gpio::Gpio &enablePwmPin, Tick::TickInterface &tick):
+                       Gpio::GpioInterface &enablePwmPin, Tick::TickInterface &tick):
 #else
         Servos::Servos(ServosController::Pca9685Interface &pca9685_0, ServosController::Pca9685Interface &pca9685_1,
                        Tick::TickInterface &tick) :

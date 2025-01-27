@@ -24,7 +24,7 @@ namespace Component
 			}
 
 			virtual void SetUp() {
-				Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+				Core::Status success = Core::Status::CORE_ERROR;
 
 				EXPECT_CALL(mMockTwi, ReadRegister( _, _, _ )).WillRepeatedly(Return(true));
 				EXPECT_CALL(mMockTwi, WriteRegister( _, _, _ )).WillRepeatedly(Return(true));
@@ -37,7 +37,7 @@ namespace Component
 					Return(true));
 				success = mMpu9150.Initialize();
 
-				EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
+				EXPECT_EQ(success, Core::Status::CORE_OK);
 			}
 
 			virtual void TearDown() {

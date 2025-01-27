@@ -1,6 +1,8 @@
 #include "Pca9685.h"
 #ifdef RPI
+#ifndef GTEST
 #include "wiringPi/wiringPiI2C.h"
+#endif
 #endif
 namespace Component
 {
@@ -9,7 +11,9 @@ namespace Component
         Pca9685::Pca9685(Twi::TwiInterface &i2c, const uint8_t address) :
             mI2c(i2c), mAddress(address), mInternalOscillatorFrequency(EConstant::FREQUENCY_OSCILLATOR), mPwm{0U, 0U} {
 #ifdef RPI
+#ifndef GTEST
             this->mAddress = wiringPiI2CSetup(address);
+#endif
 #endif
         }
 

@@ -20,8 +20,8 @@ namespace Component
 			}
 
 			virtual void SetUp() {
-				EXPECT_CALL(mMockAdc, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-				EXPECT_EQ(mBattery.Initialize(), Core::CoreStatus::CORE_OK);
+				EXPECT_CALL(mMockAdc, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+				EXPECT_EQ(mBattery.Initialize(), Core::Status::CORE_OK);
 			}
 
 			virtual void TearDown() {

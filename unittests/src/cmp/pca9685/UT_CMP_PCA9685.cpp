@@ -40,7 +40,7 @@ protected:
 
 TEST_F( UT_CMP_PCA9685, Initialize_Ok )
 {
-	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Core::Status success = Core::Status::CORE_ERROR;
 
 	EXPECT_CALL( mMockTwi, WriteRegister( _, Pca9685::ERegister::MODE1, _ ) ).WillRepeatedly( Return( true ) );
 	EXPECT_CALL( mMockTwi, ReadRegister( _, Pca9685::ERegister::MODE1, _ ) ).WillRepeatedly( Return( true ) );
@@ -48,12 +48,12 @@ TEST_F( UT_CMP_PCA9685, Initialize_Ok )
 
 	success = mPca9685.Initialize();
 
-	EXPECT_EQ( success, Core::CoreStatus::CORE_OK );
+	EXPECT_EQ( success, Core::Status::CORE_OK );
 }
 
 TEST_F( UT_CMP_PCA9685, Update_Ok )
 {
-	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+	Core::Status success = Core::Status::CORE_ERROR;
 
 	EXPECT_CALL( mMockTwi, WriteRegister( _, Pca9685::ERegister::MODE1, _ ) ).WillRepeatedly( Return( true ) );
 	EXPECT_CALL( mMockTwi, ReadRegister( _, Pca9685::ERegister::MODE1, _ ) ).WillRepeatedly( Return( true ) );
@@ -65,7 +65,7 @@ TEST_F( UT_CMP_PCA9685, Update_Ok )
 	success = mPca9685.Initialize();
 	mPca9685.Update( 0U );
 
-	EXPECT_EQ( success, Core::CoreStatus::CORE_OK );
+	EXPECT_EQ( success, Core::Status::CORE_OK );
 }
 }
 }

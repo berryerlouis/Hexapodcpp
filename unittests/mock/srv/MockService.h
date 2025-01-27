@@ -13,7 +13,7 @@ namespace Service
 			: mEventListener(eventListener) {
 		}
 
-		MOCK_METHOD0(Initialize, Core::CoreStatus( void ));
+		MOCK_METHOD0(Initialize, Core::Status( void ));
 		MOCK_METHOD1(Update, void( const uint64_t ));
 		MOCK_METHOD1(DispatchEvent, void( SEvent & ));
 

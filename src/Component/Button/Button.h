@@ -1,12 +1,15 @@
 #pragma once
 
-#include "ButtonInterface.h"
 #include "../../Driver/InputCapture/InputCaptureInterface.h"
+#include "ButtonInterface.h"
+#include "ButtonObservable.h"
 
 namespace Component
 {
     namespace Button
     {
+        using namespace Driver;
+
         class Button : public ButtonInterface {
         public:
             Button(Driver::InputCapture::InputCaptureInterface &inputCapture);
@@ -17,11 +20,16 @@ namespace Component
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual ButtonState Get() const final override;
+            virtual ButtonState Get(void) const final override;
+
+            virtual Core::Status Attach(ButtonObserverInterface *observer) final override;
+
+            virtual void Notify(const ButtonState &state, const uint16_t voltage) final override;
 
         private:
-            Driver::InputCapture::InputCaptureInterface &mInputCapture;
             ButtonState mState;
+            Driver::InputCapture::InputCaptureInterface &mInputCaptureButton;
+            ButtonObservable mObservable;
         };
     }
 }

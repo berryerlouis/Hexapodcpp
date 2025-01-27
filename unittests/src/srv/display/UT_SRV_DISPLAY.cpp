@@ -22,13 +22,13 @@ namespace Service
 			}
 
 			virtual void SetUp() {
-				EXPECT_CALL(mMockSsd1306, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_ERROR));
-				EXPECT_EQ(Core::CoreStatus::CORE_ERROR, mServiceDisplay.Initialize());
+				EXPECT_CALL(mMockSsd1306, Initialize()).WillOnce(Return(Core::Status::CORE_ERROR));
+				EXPECT_EQ(Core::Status::CORE_ERROR, mServiceDisplay.Initialize());
 
-				EXPECT_CALL(mMockSsd1306, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
+				EXPECT_CALL(mMockSsd1306, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
 				EXPECT_CALL(mMockSsd1306,
 				            DrawLine( 0, 10U, SCREEN_WIDTH, 10U, Bitmap::Bitmaps::Color::COLOR_WHITE )).Times(1U);
-				EXPECT_EQ(Core::CoreStatus::CORE_OK, mServiceDisplay.Initialize());
+				EXPECT_EQ(Core::Status::CORE_OK, mServiceDisplay.Initialize());
 			}
 
 			virtual void TearDown() {

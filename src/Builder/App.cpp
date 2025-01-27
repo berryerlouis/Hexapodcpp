@@ -1,6 +1,4 @@
 #include "App.h"
-
-
 #include "../Misc/Logger/Logger.h"
 
 using namespace Driver::Gpio;
@@ -73,6 +71,7 @@ namespace Builder
         , mClusters(mClusterGeneral, mClusterBattery, mClusterBody, mClusterImu, mClusterProximity, mClusterServo)
         , mCommunication(mUart, mClusters, mLedStatus)
         , mEventListener()
+        , mServiceButton(mButton, mEventListener)
         , mServiceControl(mServos, mEventListener)
         , mServiceCommunication(mCommunication, mClusters, mEventListener)
         , mServiceProximity(mSensorProximity, mEventListener)

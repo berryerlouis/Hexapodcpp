@@ -11,93 +11,80 @@ using ::testing::StrictMock;
 
 namespace Component
 {
-	namespace Led
-	{
-		class UT_CMP_LED : public ::testing::Test {
-		protected:
-			UT_CMP_LED() : mMockGpio(),
-			               mLed(mMockGpio) {
-			}
+    namespace Led
+    {
+        class UT_CMP_LED : public ::testing::Test {
+        protected:
+            UT_CMP_LED() :
+                mMockGpio(),
+                mLed(mMockGpio) {
+            }
 
-			virtual void SetUp() {
-			}
+            virtual void
+            SetUp() {
+                EXPECT_CALL(mMockGpio, Set()).WillOnce(Return(Core::Status::CORE_OK));
+                Core::Status success = mLed.Initialize();
+                EXPECT_EQ(success, Core::Status::CORE_OK);
+            }
 
-			virtual void TearDown() {
-			}
+            virtual void
+            TearDown() {
+            }
 
-			virtual ~UT_CMP_LED() = default;
+            virtual ~UT_CMP_LED() = default;
 
-			/* Mocks */
-			StrictMock<Driver::Gpio::MockGpio> mMockGpio;
+            /* Mocks */
+            StrictMock<Driver::Gpio::MockGpio> mMockGpio;
 
-			/* Test class */
-			Led mLed;
-		};
+            /* Test class */
+            Led mLed;
+        };
 
-		TEST_F(UT_CMP_LED, Initialize_Ok) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
 
-			EXPECT_CALL(mMockGpio, Set()).WillOnce(Return(Core::CoreStatus::CORE_OK));
+        TEST_F(UT_CMP_LED, On) {
+            Core::Status success = Core::Status::CORE_ERROR;
 
-			success = mLed.Initialize();
+            EXPECT_CALL(mMockGpio, Reset()).WillOnce(Return(Core::Status::CORE_OK));
 
-			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
-		}
+            success = mLed.On();
 
-		TEST_F(UT_CMP_LED, On) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            Led::LedState status = mLed.Get();
 
-			EXPECT_CALL(mMockGpio, Set()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-			EXPECT_CALL(mMockGpio, Reset()).WillOnce(Return(Core::CoreStatus::CORE_OK));
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+            EXPECT_EQ(status, Led::LedState::ON);
+        }
 
-			success = mLed.Initialize();
-			mLed.On();
+        TEST_F(UT_CMP_LED, Off) {
+            Core::Status success = Core::Status::CORE_ERROR;
 
-			Led::LedState status = mLed.Get();
+            EXPECT_CALL(mMockGpio, Set()).WillRepeatedly(Return(Core::Status::CORE_OK));
 
-			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
-			EXPECT_EQ(status, Led::LedState::ON);
-		}
+            success = mLed.Off();
 
-		TEST_F(UT_CMP_LED, Off) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            Led::LedState status = mLed.Get();
 
-			EXPECT_CALL(mMockGpio, Set()).Times(2U).WillRepeatedly(Return(Core::CoreStatus::CORE_OK));
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+            EXPECT_EQ(status, Led::LedState::OFF);
+        }
 
-			success = mLed.Initialize();
-			mLed.Off();
+        TEST_F(UT_CMP_LED, Toggle) {
+            Core::Status success = Core::Status::CORE_ERROR;
 
-			Led::LedState status = mLed.Get();
+            EXPECT_CALL(mMockGpio, Reset()).WillOnce(Return(Core::Status::CORE_OK));
 
-			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
-			EXPECT_EQ(status, Led::LedState::OFF);
-		}
+            success = mLed.Toggle();
 
-		TEST_F(UT_CMP_LED, Toggle) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            Led::LedState status = mLed.Get();
 
-			EXPECT_CALL(mMockGpio, Set()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-			EXPECT_CALL(mMockGpio, Reset()).WillOnce(Return(Core::CoreStatus::CORE_OK));
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+            EXPECT_EQ(status, Led::LedState::ON);
+        }
 
-			success = mLed.Initialize();
-			mLed.Toggle();
+        TEST_F(UT_CMP_LED, Get) {
 
-			Led::LedState status = mLed.Get();
+            Led::LedState status = mLed.Get();
 
-			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
-			EXPECT_EQ(status, Led::LedState::ON);
-		}
-
-		TEST_F(UT_CMP_LED, Get) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-
-			EXPECT_CALL(mMockGpio, Set()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-
-			success = mLed.Initialize();
-			Led::LedState status = mLed.Get();
-
-			EXPECT_EQ(success, Core::CoreStatus::CORE_OK);
-			EXPECT_EQ(status, Led::LedState::OFF);
-		}
-	}
+            EXPECT_EQ(status, Led::LedState::OFF);
+        }
+    }
 }
