@@ -1,5 +1,12 @@
 #! /bin/sh
 
+# Arguments:
+# 1: target (AVR, X64, RPI)
+# 2: source or test
+# 3: DEBUG, RELEASE, or CLEAN
+# 4: RPI install wiring PI (optional)
+
+
 # Check if no arguments are provided
 if [ $# -eq 0 ]; then
     # Run prebuild script with default parameters (RPI and source)
@@ -11,8 +18,8 @@ else
 
     # If target is RPI and the fourth argument is "install"
     if [ "$1" = "RPI" -a "$4" = "install" ]; then
-       pwd
-       ls -al
+        pwd
+        ls -al
         # Change directory to wiringpi source
         cd ./build/_deps/wiringpi-src/
         # Execute the build script
