@@ -1,9 +1,12 @@
 #! /bin/sh
 
 if [ $# -eq 0 ]; then
-    bin/dev/prebuild.sh source #DEBUG by default
+    bin/dev/prebuild.sh RPI source #DEBUG by default
 else
-    bin/dev/prebuild.sh source -D${1} #could be DEBUG or RELEASE or CLEAN
+   #1 : target AVR, X64, RPI
+   #2 : source or test
+   #3 : DEBUG or RELEASE or CLEAN
+    bin/dev/prebuild.sh ${1} source ${2}
 fi
 
 cd build

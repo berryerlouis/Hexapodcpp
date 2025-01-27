@@ -18,7 +18,7 @@ jobs:
 
       - name: Build Release
         run: |
-          bin/dev/build.sh RELEASE
+          bin/dev/build.sh RPI RELEASE
 
       - name: Run Test
         run: |
