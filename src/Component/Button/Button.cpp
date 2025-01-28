@@ -4,21 +4,45 @@ namespace Component
 {
     namespace Button
     {
-        Button::Button(Driver::InputCapture::InputCaptureInterface &inputCapture) :
-            mInputCaptureButton(inputCapture)
+        static Button *button[3U] = {};
+        static uint8_t buttonIndex = 0U;
+
+        void InterruptGpioBp(void) {
+            for (size_t i = 0U; i < buttonIndex; i++) {
+                button[i]->Hit();
+            }
+        }
+
+        Button::Button(Gpio::GpioInterface &gpio, Tick::TickInterface &tick) :
+            mGpioButton(gpio)
+            , mTick(tick)
+            , mPushTime(0U)
             , mState(RELEASE) {
+            button[buttonIndex] = this;
+            buttonIndex++;
         }
 
         Core::Status Button::Initialize(void) {
-            return (this->mInputCaptureButton.Initialize());
+            this->mGpioButton.SetInterruptPin(&InterruptGpioBp);
+            return (Core::Status::CORE_OK);
+        }
+
+        void Button::Hit(void) {
+            if (this->mGpioButton.Get() == true) {
+                this->mState = PUSH;
+                this->mPushTime = this->mTick.GetUs();
+                this->Notify(this->mState, 0U);
+            } else {
+                if (this->mState == PUSH) {
+                    this->mState = RELEASE;
+                    const uint64_t delayMs = this->mTick.GetUs() - this->mPushTime;
+                    this->Notify(this->mState, delayMs);
+                }
+            }
         }
 
         void Button::Update(const uint64_t currentTime) {
             (void) currentTime;
-            const uint64_t time = this->mInputCaptureButton.GetInputCaptureTime();
-            if (time > 50) {
-                this->Notify(this->mState, time);
-            }
         }
 
         ButtonState Button::Get() const {
@@ -34,4 +58,5 @@ namespace Component
         }
 
     }
+
 }

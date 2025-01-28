@@ -11,7 +11,7 @@ namespace Service
 
         class ServiceBody : public Service {
         public:
-            ServiceBody(BodyInterface &body, Event::EventListenerInterface &eventListener);
+            ServiceBody(BodyInterface &body, Event::MessageInterface &messageListener);
 
             ~ServiceBody() = default;
 

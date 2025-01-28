@@ -11,7 +11,7 @@ namespace Service
 
         class ServiceGeneral : public Service {
         public:
-            ServiceGeneral(SoftwareInterface &software, Event::EventListenerInterface &eventListener);
+            ServiceGeneral(SoftwareInterface &software, Event::MessageInterface &messageListener);
 
             ~ServiceGeneral() = default;
 

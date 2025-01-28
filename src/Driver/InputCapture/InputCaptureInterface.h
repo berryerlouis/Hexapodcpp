@@ -19,6 +19,8 @@ namespace Driver
             virtual void EdgeChange(void) = 0;
 
             virtual uint64_t GetInputCaptureTime(void) = 0;
+
+            virtual void ResetInputCaptureTime(void) = 0;
         };
     }
 }

@@ -17,6 +17,8 @@ namespace Cluster
 
             virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) final override;
 
+            static Core::Status BuildFrameReset(Frame &response, const Core::Status successReset);
+
             static Core::Status BuildFrameGetVersion(const SoftwareInterface::Version version,
                                                      Frame &response);
 

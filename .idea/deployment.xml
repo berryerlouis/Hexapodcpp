@@ -10,9 +10,8 @@
           <excludedPaths>
             <excludedPath local="true" path="$PROJECT_DIR$/build/gcc-debug" />
             <excludedPath local="true" path="$PROJECT_DIR$/unittests" />
-            <excludedPath local="true" path="$PROJECT_DIR$/node" />
             <excludedPath local="true" path="$PROJECT_DIR$/HMI" />
-            <excludedPath local="true" path="$PROJECT_DIR$/unittests" />
+            <excludedPath local="true" path="$PROJECT_DIR$/node" />
             <excludedPath local="true" path="$PROJECT_DIR$/HMI-copy" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/gcc-debug" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-debug" />
@@ -21,6 +20,7 @@
             <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-gcc-debug" />
             <excludedPath local="true" path="$PROJECT_DIR$/node" />
             <excludedPath local="true" path="$PROJECT_DIR$/HMI" />
+            <excludedPath local="true" path="$PROJECT_DIR$/HMI-copy" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-gcc-debug" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-debug" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/avr-release" />

@@ -58,6 +58,7 @@ set(SRC_FILES_SERVICES
         Service/General/ServiceGeneral.cpp
         Service/Orientation/ServiceOrientation.cpp
         Service/Proximity/ServiceProximity.cpp
+        Service/Sound/ServiceSound.cpp
         Service/Services/Services.cpp
         Service/Event/EventListener.cpp
         Service/Body/ServiceBody.cpp
@@ -73,6 +74,7 @@ set(SRC_FILES_DRIVER
         Driver/Adc/Adc${TARGET}.cpp
         Driver/Gpio/Gpio${TARGET}.cpp
         Driver/InputCapture/InputCapture${TARGET}.cpp
+        Driver/Socket/Socket${TARGET}.cpp
         Driver/Tick/Tick${TARGET}.cpp
         Driver/Twi/Twi${TARGET}.cpp
         Driver/Uart/Uart${TARGET}.cpp
@@ -81,6 +83,7 @@ set(SRC_FILES_DRIVER
 set(SRC_FILES_COMPONENT
         Component/Barometer/Barometer.cpp
         Component/Battery/Battery.cpp
+        Component/Sound/Sound.cpp
         Component/Button/Button.cpp
         Component/Communication/Communication.cpp
         Component/Display/Ssd1306.cpp
@@ -106,6 +109,7 @@ set(SRC_FILES_CLUSTER
         Cluster/Servo/ClusterServo.cpp
         Cluster/ClusterBase.cpp
         Cluster/ClusterCommand.cpp
+        Cluster/Sound/ClusterSound.cpp
         Cluster/Clusters/Clusters.cpp
         Cluster/Decoding/Protocol.cpp
         Cluster/Frame/Frame.cpp

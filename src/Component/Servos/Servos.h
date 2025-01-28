@@ -12,13 +12,11 @@ namespace Component
 
         class Servos : public ServosInterface {
         public:
-#ifdef RPI
-            Servos(ServosController::Pca9685Interface &pca9685_0, ServosController::Pca9685Interface &pca9685_1
-                   , Gpio::GpioInterface &enablePwmPin, Tick::TickInterface &tick);
-#else
-            Servos(ServosController::Pca9685Interface &pca9685_0, ServosController::Pca9685Interface &pca9685_1,
-                   Tick::TickInterface &tick);
-#endif
+            Servos(ServosController::Pca9685Interface &pca9685_0
+                   , ServosController::Pca9685Interface &pca9685_1
+                   , Gpio::GpioInterface &enablePwmPin
+                   , Tick::TickInterface &tick);
+
 
             ~Servos() = default;
 
@@ -29,6 +27,8 @@ namespace Component
             virtual void Enable(void) final override;
 
             virtual void Disable(void) final override;
+
+            virtual bool GetState(void) final override;
 
             virtual Servo::Servo &GetServo(const uint8_t servoId) final override;
 

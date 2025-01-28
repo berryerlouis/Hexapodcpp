@@ -1,6 +1,7 @@
 #pragma once
 
 #include "string.h"
+#include "../../Driver/Socket/Socket.h"
 #include "../../Driver/Uart/UartInterface.h"
 
 #ifdef GTEST
@@ -35,14 +36,14 @@ namespace Misc
     {
         class Logger {
         public:
-            static Logger *GetInstance(Driver::Uart::UartInterface &uart);
+            static Logger *GetInstance(Driver::Socket::SocketInterface &socket);
 
             void Write(const char *data) const;
 
         private:
-            Driver::Uart::UartInterface &mUart;
+            Driver::Socket::SocketInterface &mSocket;
 
-            Logger(Driver::Uart::UartInterface &uart) : mUart(uart) {
+            Logger(Driver::Socket::SocketInterface &socket) : mSocket(socket) {
             }
 
             Logger(Logger &) = delete;

@@ -4,8 +4,8 @@ namespace Service
 {
     namespace Control
     {
-        ServiceControl::ServiceControl(ServosInterface &servos, Event::EventListenerInterface &eventListener) :
-            Service(20U, eventListener), mStepPca9685(0U), mServosInterface(servos) {
+        ServiceControl::ServiceControl(ServosInterface &servos, Event::MessageInterface &messageListener) :
+            Service(20U, messageListener), mStepPca9685(0U), mServosInterface(servos) {
         }
 
         Core::Status ServiceControl::Initialize(void) {

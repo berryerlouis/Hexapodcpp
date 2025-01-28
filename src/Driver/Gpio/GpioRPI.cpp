@@ -14,6 +14,7 @@ namespace Driver
                 once = true;
             }
             pinMode(this->mGpio.pin, portDirection == EPortDirection::IN ? INPUT : OUTPUT);
+            pullUpDnControl(this->mGpio.pin,PUD_DOWN);
         }
 
         SGpio &Gpio::GetPin(void) {
@@ -37,7 +38,12 @@ namespace Driver
         void Gpio::SetInterruptPin(void) {
         }
 
+        void Gpio::SetInterruptPin(void (*function)(void)) {
+            wiringPiISR(this->mGpio.pin, INT_EDGE_BOTH, function);
+        }
+
         void Gpio::ResetInterruptPin(void) {
+            wiringPiISRStop(this->mGpio.pin);
         }
     } // namespace Gpio
 } // namespace Driver

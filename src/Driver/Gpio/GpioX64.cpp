@@ -29,6 +29,9 @@ namespace Driver
         void Gpio::SetInterruptPin(void) {
         }
 
+        void Gpio::SetInterruptPin(void (*function)(void)) {
+        }
+
         void Gpio::ResetInterruptPin(void) {
         }
     } // namespace Gpio

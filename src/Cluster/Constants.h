@@ -4,22 +4,30 @@
 
 namespace Cluster
 {
-    enum EClusters { GENERAL = 0U, IMU = 1U, PROXIMITY = 2U, SERVO = 3U, BATTERY = 4U, BODY = 5U, BUTTON = 6U };
+    enum EClusters {
+        GENERAL = 0U,
+        IMU = 1U,
+        PROXIMITY = 2U,
+        SERVO = 3U,
+        BATTERY = 4U,
+        BODY = 5U,
+        BUTTON = 6U,
+        SOUND = 7U
+    };
 
-    static constexpr uint8_t NB_CLUSTERS = 7U;
+    static constexpr uint8_t NB_CLUSTERS = 8U;
 
 
     enum EClusterCommandGeneric { GENERIC = 0xFFU };
 
     enum EGeneralCommands {
+        RESET = 0x00U,
         VERSION,
         MIN_EXECUTION_TIME,
-        MAX_EXECUTION_TIME,
-        INSTANT_EXECUTION_TIME,
-        RESET_EXECUTION_TIME
+        MAX_EXECUTION_TIME
     };
 
-    static constexpr uint8_t NB_COMMANDS_GENERAL = 5U;
+    static constexpr uint8_t NB_COMMANDS_GENERAL = 4U;
 
     enum EBatteryCommands {
         GET_VOLTAGE = 0x00U,
@@ -84,4 +92,11 @@ namespace Cluster
     };
 
     static constexpr uint8_t NB_COMMANDS_BUTTON = 1U;
+
+
+    enum ESoundCommands {
+        GET_SOUND_STATUS = 0x00U,
+    };
+
+    static constexpr uint8_t NB_COMMANDS_SOUND = 1U;
 } // namespace Cluster

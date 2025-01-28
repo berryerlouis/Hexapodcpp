@@ -3,7 +3,7 @@
 
 #include "../../../mock/bot/MockBody.h"
 #include "../../../mock/cmp/MockLed.h"
-#include "../../../mock/drv/MockUart.h"
+#include "../../../mock/drv/MockSocket.h"
 #include "../../../mock/clu/MockClusters.h"
 
 
@@ -25,11 +25,11 @@ namespace Component
         protected:
             UT_CMP_COMMUNICATION() :
                 mMockBody(),
-                mMockUart(),
+                mMockSocket(),
                 mMockClusters(),
                 mMockLed(),
                 mClusterBody(mMockBody),
-                mCommunication(mMockUart, mMockClusters, mMockLed) {
+                mCommunication(mMockSocket, mMockClusters, mMockLed) {
             }
 
             virtual void
@@ -48,7 +48,7 @@ namespace Component
 
             /* Mocks */
             StrictMock<Bot::Body::MockBody> mMockBody;
-            StrictMock<Driver::Uart::MockUart> mMockUart;
+            StrictMock<Driver::Socket::MockSocket> mMockSocket;
             StrictMock<Cluster::Clusters::MockClusters> mMockClusters;
             StrictMock<Component::Led::MockLed> mMockLed;
             Cluster::Body::ClusterBody mClusterBody;
@@ -58,8 +58,8 @@ namespace Component
         };
 
         TEST_F(UT_CMP_COMMUNICATION, Update_Ok_Noframe) {
-            EXPECT_CALL(mMockUart, Update(0U));
-            EXPECT_CALL(mMockUart, DataAvailable()).WillOnce(Return(0U));
+            EXPECT_CALL(mMockSocket, Update(0U));
+            EXPECT_CALL(mMockSocket, DataAvailable()).WillOnce(Return(0U));
             EXPECT_CALL(mMockLed, On()).Times(0U);
             EXPECT_CALL(mMockLed, Off()).Times(0U);
             mCommunication.Update(0UL);
@@ -67,14 +67,14 @@ namespace Component
 
         TEST_F(UT_CMP_COMMUNICATION, Update_Ok_1frame_with_unknwon_char) {
             const char *bufferRx = "<00z000>";
-            EXPECT_CALL(mMockUart, Update(0U));
+            EXPECT_CALL(mMockSocket, Update(0U));
             EXPECT_CALL(mMockLed, On()).Times(0U);
             EXPECT_CALL(mMockLed, Off()).Times(0U);
-            EXPECT_CALL(mMockUart, DataAvailable()).WillOnce(Return(strlen(bufferRx)));
+            EXPECT_CALL(mMockSocket, DataAvailable()).WillOnce(Return(strlen(bufferRx)));
 
             ::testing::Sequence s;
             for (size_t i = 0; i < strlen(bufferRx); i++) {
-                EXPECT_CALL(mMockUart, Read()).InSequence(s).WillOnce(Return(bufferRx[i]));
+                EXPECT_CALL(mMockSocket, Read()).InSequence(s).WillOnce(Return(bufferRx[i]));
             }
 
             mCommunication.Update(0UL);
@@ -83,16 +83,16 @@ namespace Component
         TEST_F(UT_CMP_COMMUNICATION, Update_Ok_1frame) {
             const char *bufferRx = "<000000>";
 
-            EXPECT_CALL(mMockUart, Update(0U));
+            EXPECT_CALL(mMockSocket, Update(0U));
             EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::Status::CORE_OK));
             EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
-            EXPECT_CALL(mMockUart, Send( Matcher <const char *>( _ ), _ )).Times(1U);
+            EXPECT_CALL(mMockSocket, Send( Matcher <const char *>( _ ), _ )).Times(1U);
             EXPECT_CALL(mMockClusters, GetCluster( GENERAL )).Times(1U);
 
-            EXPECT_CALL(mMockUart, DataAvailable()).WillOnce(Return(strlen(bufferRx)));
+            EXPECT_CALL(mMockSocket, DataAvailable()).WillOnce(Return(strlen(bufferRx)));
             ::testing::Sequence s;
             for (size_t i = 0; i < strlen(bufferRx); i++) {
-                EXPECT_CALL(mMockUart, Read()).InSequence(s).WillOnce(Return(bufferRx[i]));
+                EXPECT_CALL(mMockSocket, Read()).InSequence(s).WillOnce(Return(bufferRx[i]));
             }
             mCommunication.Update(0UL);
         }
@@ -100,16 +100,16 @@ namespace Component
         TEST_F(UT_CMP_COMMUNICATION, Update_Ok_1frame_IMU) {
             const char *bufferRx = "<010000>";
 
-            EXPECT_CALL(mMockUart, Update(0U));
+            EXPECT_CALL(mMockSocket, Update(0U));
             EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::Status::CORE_OK));
             EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
-            EXPECT_CALL(mMockUart, Send( Matcher <const char *>( _ ), _ )).Times(1U);
+            EXPECT_CALL(mMockSocket, Send( Matcher <const char *>( _ ), _ )).Times(1U);
             EXPECT_CALL(mMockClusters, GetCluster( IMU )).Times(1U);
 
-            EXPECT_CALL(mMockUart, DataAvailable()).WillOnce(Return(strlen(bufferRx)));
+            EXPECT_CALL(mMockSocket, DataAvailable()).WillOnce(Return(strlen(bufferRx)));
             ::testing::Sequence s;
             for (size_t i = 0; i < strlen(bufferRx); i++) {
-                EXPECT_CALL(mMockUart, Read()).InSequence(s).WillOnce(Return(bufferRx[i]));
+                EXPECT_CALL(mMockSocket, Read()).InSequence(s).WillOnce(Return(bufferRx[i]));
             }
             mCommunication.Update(0UL);
         }
@@ -117,12 +117,12 @@ namespace Component
         TEST_F(UT_CMP_COMMUNICATION, Update_Ko_1frame) {
             const char *bufferRx = "<0<0000>";
 
-            EXPECT_CALL(mMockUart, Update(0U));
+            EXPECT_CALL(mMockSocket, Update(0U));
 
-            EXPECT_CALL(mMockUart, DataAvailable()).WillOnce(Return(strlen(bufferRx)));
+            EXPECT_CALL(mMockSocket, DataAvailable()).WillOnce(Return(strlen(bufferRx)));
             ::testing::Sequence s;
             for (size_t i = 0; i < strlen(bufferRx); i++) {
-                EXPECT_CALL(mMockUart, Read()).InSequence(s).WillOnce(Return(bufferRx[i]));
+                EXPECT_CALL(mMockSocket, Read()).InSequence(s).WillOnce(Return(bufferRx[i]));
             }
             mCommunication.Update(0UL);
         }
@@ -134,17 +134,17 @@ namespace Component
 
             const char *bufferRx = "<05000ECEFF3200CEFFE2FF1E00ECFFF401>";
 
-            EXPECT_CALL(mMockUart, Update(0U));
+            EXPECT_CALL(mMockSocket, Update(0U));
             EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::Status::CORE_OK));
             EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
-            EXPECT_CALL(mMockUart, Send( Matcher <const char *>( _ ), _ )).Times(1U);
+            EXPECT_CALL(mMockSocket, Send( Matcher <const char *>( _ ), _ )).Times(1U);
             EXPECT_CALL(mMockClusters, GetCluster( Cluster::EClusters::BODY )).WillOnce(Return(&mClusterBody));
             EXPECT_CALL(mMockBody, SetBodyPositionRotation( position, rotation, travelTime )).Times(1U);
 
-            EXPECT_CALL(mMockUart, DataAvailable()).WillOnce(Return(strlen(bufferRx)));
+            EXPECT_CALL(mMockSocket, DataAvailable()).WillOnce(Return(strlen(bufferRx)));
             ::testing::Sequence s;
             for (size_t i = 0; i < strlen(bufferRx); i++) {
-                EXPECT_CALL(mMockUart, Read()).InSequence(s).WillOnce(Return(bufferRx[i]));
+                EXPECT_CALL(mMockSocket, Read()).InSequence(s).WillOnce(Return(bufferRx[i]));
             }
             mCommunication.Update(0UL);
         }

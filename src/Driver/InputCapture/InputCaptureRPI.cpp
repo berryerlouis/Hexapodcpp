@@ -33,6 +33,10 @@ namespace Driver
             return (this->mDelay);
         }
 
+        void InputCapture::ResetInputCaptureTime(void) {
+            this->mDelay = 0U;
+        }
+
         void InputCapture::EdgeChange(void) {
             const int state = this->mGpio.Get();
 

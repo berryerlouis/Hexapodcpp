@@ -6,13 +6,13 @@ namespace Misc
 {
     namespace Logger
     {
-        Logger *Logger::GetInstance(Driver::Uart::UartInterface &uart) {
-            static Logger instance(uart);
+        Logger *Logger::GetInstance(Driver::Socket::SocketInterface &socket) {
+            static Logger instance(socket);
             return (&instance);
         }
 
         void Logger::Write(const char *data) const {
-            mUart.Send(data, strlen(data));
+            mSocket.Send(data, strlen(data));
         }
 
         Logger *Log;

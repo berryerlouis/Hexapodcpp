@@ -5,9 +5,9 @@ namespace Component
 {
     namespace Communication
     {
-        Communication::Communication(Uart::UartInterface &uart, Clusters::ClustersInterface &clusters,
+        Communication::Communication(Socket::SocketInterface &socket, Clusters::ClustersInterface &clusters,
                                      Led::LedInterface &ledStatus) :
-            mUart(uart), mClusters(clusters), mLedStatus(ledStatus), mBufferRx{0U}, mBufferTx{0U}, mIndexBufferRx(0U),
+            mSocket(socket), mClusters(clusters), mLedStatus(ledStatus), mBufferRx{0U}, mBufferTx{0U}, mIndexBufferRx(0U),
             mBeginIncomingFrame(false) {
         }
 
@@ -16,7 +16,7 @@ namespace Component
         }
 
         void Communication::Update(const uint64_t currentTime) {
-            this->mUart.Update(currentTime);
+            this->mSocket.Update(currentTime);
             if (true == this->ReceivedStringFrame()) {
                 this->mLedStatus.On();
                 Frame request;
@@ -54,17 +54,17 @@ namespace Component
         Core::Status Communication::SendMessage(const Frame &message) {
             const size_t size = Protocol::Encode(message, const_cast<char *>(this->mBufferTx));
             if (size != 0) {
-                this->mUart.Send(const_cast<const char *>(this->mBufferTx), size);
+                this->mSocket.Send(const_cast<const char *>(this->mBufferTx), size);
                 return (Core::Status::CORE_OK);
             }
             return (Core::Status::CORE_ERROR);
         }
 
         bool Communication::ReceivedStringFrame(void) {
-            uint8_t nbData = this->mUart.DataAvailable();
+            uint8_t nbData = this->mSocket.DataAvailable();
             while (nbData != 0U) {
                 nbData--;
-                const volatile uint8_t rc = this->mUart.Read();
+                const volatile uint8_t rc = this->mSocket.Read();
                 if (rc == '<') {
                     this->mBeginIncomingFrame = true;
                     this->mIndexBufferRx = 0U;

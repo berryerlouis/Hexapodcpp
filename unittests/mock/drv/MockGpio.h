@@ -13,6 +13,7 @@ namespace Driver
 			MOCK_METHOD0(Get, bool( void ));
 			MOCK_METHOD0(GetPin, SGpio & ( void ));
 			MOCK_METHOD0(SetInterruptPin, void( void ));
+			MOCK_METHOD1(SetInterruptPin, void(void (*)(void)));
 			MOCK_METHOD0(ResetInterruptPin, void( void ));
 		};
 	}

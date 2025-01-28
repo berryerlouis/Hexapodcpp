@@ -2,21 +2,16 @@
 
 #include "../Driver/Adc/Adc.h"
 #include "../Driver/Gpio/Gpio.h"
+#include "../Driver/Socket/Socket.h"
 #include "../Driver/Tick/Tick.h"
-#include "../Driver/Uart/Uart.h"
 #include "../Driver/Twi/Twi.h"
+#include "../Driver/Uart/Uart.h"
 #include "../Driver/InputCapture/InputCapture.h"
-#include "../Cluster/General/ClusterGeneral.h"
-#include "../Cluster/Battery/ClusterBattery.h"
-#include "../Cluster/Body/ClusterBody.h"
-#include "../Cluster/Imu/ClusterImu.h"
-#include "../Cluster/Proximity/ClusterProximity.h"
-#include "../Cluster/Servo/ClusterServo.h"
 #include "../Cluster/Clusters/Clusters.h"
 #include "../Component/Battery/Battery.h"
 #include "../Component/Button/Button.h"
 #include "../Component/Led/Led.h"
-#include "../Component/Button/Button.h"
+#include "../Component/Sound/Sound.h"
 #include "../Component/Barometer/Barometer.h"
 #include "../Component/Imu/Mpu9150.h"
 #include "../Component/ServosController/Pca9685.h"
@@ -37,6 +32,7 @@
 #include "../Service/General/ServiceGeneral.h"
 #include "../Service/Orientation/ServiceOrientation.h"
 #include "../Service/Proximity/ServiceProximity.h"
+#include "../Service/Sound/ServiceSound.h"
 #include "../Service/Services/Services.h"
 #include "../Bot/Body/Body.h"
 #include "../Bot/Legs/Legs.h"
@@ -57,22 +53,23 @@ namespace Builder
     private:
         Driver::Tick::Tick mTick;
         Driver::Uart::Uart mUart;
+        Driver::Socket::Socket mSocket;
         Driver::Twi::Twi mTwi;
         Driver::Adc::Adc mAdc;
-        Component::Led::Led mLedStatus;
-        Component::Led::Led mLedLeft;
-        Component::Led::Led mLedRight;
-#ifdef RPI
-        Component::Led::Led mLedCenter;
-        Component::Led::Led mLedMiddleLeft;
-        Component::Led::Led mLedMiddleRight;
         Driver::Gpio::Gpio mEnablePwm;
-#else
-        Component::Led::Led mLedBoot;
-#endif
+        Driver::Gpio::Gpio mGpioButton;
+        Driver::Gpio::Gpio mGpioSoundLeft;
+        Driver::Gpio::Gpio mGpioSoundRight;
+        Component::Led::Led mLedStatus;
+        Component::Led::Led mLedCenter;
+        Component::Led::Led mLedLeft;
+        Component::Led::Led mLedMiddleLeft;
+        Component::Led::Led mLedRight;
+        Component::Led::Led mLedMiddleRight;
         Component::Battery::Battery mBattery;
-        Driver::InputCapture::InputCapture mInputCaptureButton;
         Component::Button::Button mButton;
+        Component::Sound::Sound mSoundLeft;
+        Component::Sound::Sound mSoundRight;
         Driver::InputCapture::InputCapture mInputCaptureLeft;
         Driver::InputCapture::InputCapture mInputCaptureRight;
         Component::Imu::Mpu9150 mMpu9150;
@@ -92,6 +89,7 @@ namespace Builder
         Cluster::General::ClusterGeneral mClusterGeneral;
         Cluster::Battery::ClusterBattery mClusterBattery;
         Cluster::Button::ClusterButton mClusterButton;
+        Cluster::Sound::ClusterSound mClusterSound;
         Cluster::Body::ClusterBody mClusterBody;
         Cluster::Imu::ClusterImu mClusterImu;
         Cluster::Proximity::ClusterProximity mClusterProximity;
@@ -100,8 +98,9 @@ namespace Builder
 
         Component::Communication::Communication mCommunication;
 
-        Service::Event::EventListener mEventListener;
+        Service::Event::EventListener mMessageListener;
         Service::Button::ServiceButton mServiceButton;
+        Service::Sound::ServiceSound mServiceSound;
         Service::Control::ServiceControl mServiceControl;
         Service::Communication::ServiceCommunication mServiceCommunication;
         Service::Proximity::ServiceProximity mServiceProximity;

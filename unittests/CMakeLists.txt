@@ -33,6 +33,7 @@ add_subdirectory(src/clu/imu)
 add_subdirectory(src/clu/protocol)
 add_subdirectory(src/clu/proximity)
 add_subdirectory(src/clu/servo)
+add_subdirectory(src/clu/sound)
 
 add_subdirectory(src/cmp/ahrs)
 add_subdirectory(src/cmp/battery)
@@ -44,6 +45,7 @@ add_subdirectory(src/cmp/pca9685)
 add_subdirectory(src/cmp/proximity)
 add_subdirectory(src/cmp/servo)
 add_subdirectory(src/cmp/servos)
+add_subdirectory(src/cmp/sound)
 add_subdirectory(src/cmp/srf05)
 add_subdirectory(src/cmp/vl53l0x)
 
@@ -55,6 +57,7 @@ add_subdirectory(src/srv/display)
 add_subdirectory(src/srv/general)
 add_subdirectory(src/srv/orientation)
 add_subdirectory(src/srv/proximity)
+add_subdirectory(src/srv/sound)
 
 add_executable(
         HexapodcppTest

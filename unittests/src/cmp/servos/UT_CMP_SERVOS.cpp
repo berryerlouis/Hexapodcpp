@@ -55,7 +55,6 @@ namespace Component
         TEST_F(UT_CMP_SERVOS, Update_Ok) {
             EXPECT_CALL(mMockTick, GetMs()).Times(NB_SERVOS).WillRepeatedly(Return(0U));
             for (size_t i = 0; i < NB_SERVOS; i++) {
-                mServos.GetServo(i).SetEnablePca(true);
                 mServos.GetServo(i).SetEnable(true);
                 mServos.GetServo(i).SetAngle(91U);
             }

@@ -43,6 +43,10 @@ namespace Misc
             static const uint8_t PROGMEM ArrowDown[];
             static const uint8_t PROGMEM ArrowCenter[];
             static const uint8_t PROGMEM Communication[];
+            static const uint8_t PROGMEM ButtonRelease[];
+            static const uint8_t PROGMEM ButtonPush[];
+            static const uint8_t PROGMEM SoundLeft[];
+            static const uint8_t PROGMEM SoundRight[];
         };
     } // namespace Bitmap
 } // namespace Misc

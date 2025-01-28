@@ -52,6 +52,8 @@ namespace Driver
 
             virtual void SetInterruptPin(void) = 0;
 
+            virtual void SetInterruptPin(void (*function)(void)) = 0;
+
             virtual void ResetInterruptPin(void) = 0;
         };
     } // namespace Gpio

@@ -15,6 +15,8 @@ Gpio echoLeftPin = Gpio({8}, IN);
 Gpio echoRightPin = Gpio({20}, IN);
 Gpio triggerLeftPin = Gpio({7}, OUT);
 Gpio triggerRightPin = Gpio({21}, OUT);
+Gpio soundLeftPin = Gpio({23}, IN);
+Gpio soundRightPin = Gpio({24}, IN);
 Gpio adcPinBattery = Gpio({0}, IN);
 Gpio buttonPin = Gpio({4}, IN);
 #else
@@ -34,19 +36,23 @@ namespace Builder
     App::App(void) :
         mTick()
         , mUart()
+        , mSocket()
         , mTwi(Driver::Twi::EI2cFreq::FREQ_400_KHZ)
-#ifdef RPI
         , mAdc(adcPinBattery)
+        , mEnablePwm(enablePwm)
+        , mGpioButton(buttonPin)
+        , mGpioSoundLeft(soundLeftPin)
+        , mGpioSoundRight(soundRightPin)
         , mLedStatus(ledStatus)
         , mLedCenter(ledCenter)
         , mLedLeft(ledLeft)
         , mLedMiddleLeft(ledMiddleLeft)
         , mLedRight(ledRight)
         , mLedMiddleRight(ledMiddleRight)
-        , mEnablePwm(enablePwm)
         , mBattery(mAdc)
-        , mInputCaptureButton(buttonPin, mTick)
-        , mButton(mInputCaptureButton)
+        , mButton(mGpioButton, mTick)
+        , mSoundLeft(Component::Sound::SoundId::SOUND_LEFT, mGpioSoundLeft, mLedMiddleLeft, mTick)
+        , mSoundRight(Component::Sound::SoundId::SOUND_RIGHT, mGpioSoundRight, mLedMiddleRight, mTick)
         , mInputCaptureLeft(echoLeftPin, mTick)
         , mInputCaptureRight(echoRightPin, mTick)
         , mMpu9150(mTwi, mTick)
@@ -58,13 +64,14 @@ namespace Builder
         , mSsd1306(mTwi)
         , mPca9685Left(mTwi, 0x41U)
         , mPca9685Right(mTwi, 0x40U)
-        , mServos(mPca9685Left, mPca9685Right, enablePwm, mTick)
+        , mServos(mPca9685Left, mPca9685Right, mEnablePwm, mTick)
         , mSoftware()
         , mLegs(mServos)
         , mBody(mLegs)
         , mClusterGeneral(mSoftware)
         , mClusterBattery(mBattery)
         , mClusterButton(mButton)
+        , mClusterSound(mSoundLeft, mSoundRight)
         , mClusterBody(mBody)
         , mClusterImu(mMpu9150, mBarometer)
         , mClusterProximity(mSensorProximity)
@@ -72,71 +79,41 @@ namespace Builder
         , mClusters(mClusterGeneral
                     , mClusterBattery
                     , mClusterButton
+                    , mClusterSound
                     , mClusterBody
                     , mClusterImu
                     , mClusterProximity
                     , mClusterServo)
-        , mCommunication(mUart, mClusters, mLedStatus)
-        , mEventListener(mCommunication)
-        , mServiceButton(mButton, mEventListener)
-        , mServiceControl(mServos, mEventListener)
-        , mServiceCommunication(mCommunication, mClusters, mEventListener)
-        , mServiceProximity(mSensorProximity, mEventListener)
-        , mServiceOrientation(mMpu9150, mBarometer, mEventListener)
-        , mServiceBattery(mBattery, mEventListener)
-        , mServiceBody(mBody, mEventListener)
-        , mServiceDisplay(mSsd1306, mEventListener)
-        , mServiceGeneral(mSoftware, mEventListener)
-        , mServices(mTick, mServiceGeneral, mServiceControl, mServiceCommunication, mServiceProximity,
-                    mServiceOrientation, mServiceBattery, mServiceDisplay, mServiceBody, mServiceButton, mEventListener)
-#else
-        , mAdc(adcPinBattery)
-        , mLedStatus(ledStatus)
-        , mLedLeft(ledLeft)
-        , mLedRight(ledRight)
-        , mLedBoot(ledBoot)
-        , mBattery(mAdc)
-        , mInputCaptureLeft(echoLeftPin, mTick)
-        , mInputCaptureRight(echoRightPin, mTick)
-        , mMpu9150(mTwi, mTick)
-        , mBarometer(mTwi)
-        , mSrf05Left(Cluster::EProximityCommands::US_LEFT, triggerLeftPin, mInputCaptureLeft, mLedLeft, mTick)
-        , mSrf05Right(Cluster::EProximityCommands::US_RIGHT, triggerRightPin, mInputCaptureRight, mLedRight, mTick)
-        , mVl53l0x(mTwi, mTick)
-        , mSensorProximity(mSrf05Left, mSrf05Right, mVl53l0x)
-        , mSsd1306(mTwi)
-        , mPca9685Left(mTwi, 0x41U)
-        , mPca9685Right(mTwi, 0x40U)
-        , mServos(mPca9685Left, mPca9685Right, mTick)
-        , mSoftware()
-        , mLegs(mServos)
-        , mBody(mLegs)
-        , mClusterGeneral(mSoftware)
-        , mClusterBattery(mBattery)
-        , mClusterBody(mBody)
-        , mClusterImu(mMpu9150, mBarometer)
-        , mClusterProximity(mSensorProximity)
-        , mClusterServo(mServos)
-        , mClusters(mClusterGeneral, mClusterBattery, mClusterBody, mClusterImu, mClusterProximity, mClusterServo)
-        , mCommunication(mUart, mClusters, mLedStatus)
-        , mEventListener()
-        , mServiceControl(mServos, mEventListener)
-        , mServiceCommunication(mCommunication, mClusters, mEventListener)
-        , mServiceProximity(mSensorProximity, mEventListener)
-        , mServiceOrientation(mMpu9150, mBarometer, mEventListener)
-        , mServiceBattery(mBattery, mEventListener)
-        , mServiceBody(mBody, mEventListener)
-        , mServiceDisplay(mSsd1306, mEventListener)
-        , mServiceGeneral(mSoftware, mEventListener)
-        , mServices(mTick, mServiceGeneral, mServiceControl, mServiceCommunication, mServiceProximity,
-                    mServiceOrientation, mServiceBattery, mServiceDisplay, mServiceBody, mEventListener)
-#endif
-    {
-        INIT_LOGGER(mUart);
+        , mCommunication(mSocket, mClusters, mLedStatus)
+        , mMessageListener(mCommunication)
+        , mServiceButton(mButton, mMessageListener)
+        , mServiceSound(mSoundLeft, mSoundRight, mMessageListener)
+        , mServiceControl(mServos, mMessageListener)
+        , mServiceCommunication(mCommunication, mClusters, mMessageListener)
+        , mServiceProximity(mSensorProximity, mMessageListener)
+        , mServiceOrientation(mMpu9150, mBarometer, mMessageListener)
+        , mServiceBattery(mBattery, mMessageListener)
+        , mServiceBody(mBody, mMessageListener)
+        , mServiceDisplay(mSsd1306, mButton, mSoundLeft, mSoundRight, mSensorProximity, mMessageListener)
+        , mServiceGeneral(mSoftware, mMessageListener)
+        , mServices(
+                mTick,
+                mServiceGeneral,
+                mServiceControl,
+                mServiceCommunication,
+                mServiceProximity,
+                mServiceOrientation,
+                mServiceBattery,
+                mServiceDisplay,
+                mServiceBody,
+                mServiceButton,
+                mServiceSound,
+                mMessageListener) {
+        INIT_LOGGER(mSocket);
     }
 
     Core::Status App::Initialize(void) {
-        Core::Status success = mUart.Initialize();
+        Core::Status success = mSocket.Initialize();
         if (success == Core::Status::CORE_OK) {
             success = mTwi.Initialize();
         }

@@ -11,7 +11,7 @@
 #include "../General/ServiceGeneral.h"
 #include "../Orientation/ServiceOrientation.h"
 #include "../Proximity/ServiceProximity.h"
-#include "../Button/ServiceButton.h"
+#include "../Sound/ServiceSound.h"
 
 namespace Service
 {
@@ -26,6 +26,7 @@ namespace Service
         using namespace ::Service::Display;
         using namespace ::Service::Body;
         using namespace ::Service::Button;
+        using namespace ::Service::Sound;
 
         struct ServiceItem {
             EServices serviceId;
@@ -49,7 +50,8 @@ namespace Service
                     ServiceDisplay &serviceDisplay,
                     ServiceBody &serviceBody,
                     ServiceButton &serviceButton,
-                    Event::EventListenerInterface &eventListener);
+                    ServiceSound &serviceSound,
+                    Event::MessageInterface &messageListener);
 
             ~Services() = default;
 
@@ -62,7 +64,7 @@ namespace Service
 
             Tick::TickInterface &mTick;
             ServiceItem mServices[NB_SERVICES];
-            Event::EventListenerInterface &mEventListener;
+            Event::MessageInterface &mMessageListener;
         };
     }
 }

@@ -108,13 +108,17 @@ namespace Cluster
             }
             if (request.commandId == EServoCommands::GET_STATE_PCA) {
                 const uint8_t servoId = request.params[0U];
-                const bool state = this->mServosInterface.GetServo(servoId).IsEnablePca();
+                const bool state = this->mServosInterface.GetState();
                 return this->BuildFrameGetStatePca(servoId, state, response);
             }
             if (request.commandId == EServoCommands::SET_STATE_PCA) {
                 const uint8_t servoId = request.params[0U];
                 const bool state = request.params[1U];
-                this->mServosInterface.GetServo(servoId).SetEnablePca(state);
+                if (state == true) {
+                    this->mServosInterface.Enable();
+                } else {
+                    this->mServosInterface.Disable();
+                }
                 return this->BuildFrameSetStatePca(servoId, state, response);
             }
             return Core::Status::CORE_ERROR;
@@ -125,7 +129,7 @@ namespace Cluster
                     EClusters::SERVO,
                     EServoCommands::GET_ALL);
             if (success == Core::Status::CORE_OK) {
-                response.SetxBytesParam(NB_SERVOS, reinterpret_cast<uint8_t *>(&angles));
+                response.SetxBytesParam(NB_SERVOS, angles);
             }
             return (success);
         }

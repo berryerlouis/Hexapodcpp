@@ -13,7 +13,7 @@ namespace Service
         class ServiceButton : public Service, public ButtonObserverInterface {
         public:
             ServiceButton(ButtonInterface &ButtonInterface,
-                          Event::EventListenerInterface &eventListener);
+                          Event::MessageInterface &messageListener);
 
             ~ServiceButton() = default;
 

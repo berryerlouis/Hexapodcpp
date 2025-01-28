@@ -61,10 +61,6 @@ namespace Component
 
             virtual bool IsEnable(void) final override;
 
-            virtual void SetEnablePca(const bool enable) final override;
-
-            virtual bool IsEnablePca(void) final override;
-
             virtual bool IsMoving(void) final override;
 
         private:
@@ -83,7 +79,6 @@ namespace Component
             bool mReverse;
             bool mEnable;
             bool mIsMoving;
-            bool mEnablePca;
         };
     }
 }

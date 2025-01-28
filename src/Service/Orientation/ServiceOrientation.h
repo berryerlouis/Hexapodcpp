@@ -14,7 +14,7 @@ namespace Service
         class ServiceOrientation : public Service {
         public:
             ServiceOrientation(Mpu9150Interface &imu, BarometerInterface &barometer,
-                               Event::EventListenerInterface &eventListener);
+                               Event::MessageInterface &messageListener);
 
             ~ServiceOrientation() = default;
 

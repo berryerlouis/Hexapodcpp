@@ -35,10 +35,7 @@ namespace Component
             }
             , mPca9685Left(pca9685_0)
             , mPca9685Right(pca9685_1)
-#ifdef RPI
-            , mEnablePwmPin(enablePwmPin)
-#endif
-        {
+            , mEnablePwmPin(enablePwmPin) {
         }
 
         Core::Status Servos::Initialize(void) {
@@ -63,16 +60,15 @@ namespace Component
         }
 
         void Servos::Enable(void) {
-#ifdef RPI
             this->mEnablePwmPin.Set();
-#endif
         }
 
         void Servos::Disable(void) {
-#ifdef RPI
             this->mEnablePwmPin.Reset();
-#endif
+        }
 
+        bool Servos::GetState(void) {
+            return this->mEnablePwmPin.Get();
         }
 
         Servo::Servo &Servos::GetServo(const uint8_t servoId) {

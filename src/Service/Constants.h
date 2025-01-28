@@ -13,8 +13,9 @@ namespace Service
         ORIENTATION = 5U,
         PROXIMITY = 6U,
         BODY = 7U,
-        BUTTON = 8U
+        BUTTON = 8U,
+        SOUND = 9U
     };
 
-    static constexpr uint8_t NB_SERVICES = 9U;
+    static constexpr uint8_t NB_SERVICES = 10U;
 }

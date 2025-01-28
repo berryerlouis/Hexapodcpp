@@ -132,5 +132,49 @@ namespace Misc
                 __XX____, _XXX____,
                 ________, ________
         };
+
+        const uint8_t PROGMEM Bitmaps::ButtonRelease[] =
+        {
+                _____XXX, XXX_____,
+                _______X, X_______,
+                _______X, X_______,
+                _______X, X_______,
+                ____XXXX, XXXX____,
+                ____XXXX, XXXX____,
+                ____XX__, __XX____
+        };
+
+        const uint8_t PROGMEM Bitmaps::ButtonPush[] =
+        {
+                ________, ________,
+                ________, ________,
+                _____XXX, XXX_____,
+                _______X, X_______,
+                ____XXXX, XXXX____,
+                ____XXXX, XXXX____,
+                ____XX__, __XX____
+        };
+
+        const uint8_t PROGMEM Bitmaps::SoundLeft[] =
+        {
+                _____X__, ________,
+                ____X___, X_______,
+                ___X___X, ___X____,
+                __X___X_, __X___X_,
+                ___X___X, ___X____,
+                ____X___, X_______,
+                _____X__, ________,
+        };
+
+        const uint8_t PROGMEM Bitmaps::SoundRight[] =
+        {
+                ________, __X_____,
+                _______X, ___X____,
+                ____X___, X___X___,
+                _X___X__, _X___X__,
+                ____X___, X___X___,
+                _______X, ___X____,
+                ________, __X_____,
+        };
     }
 }

@@ -11,7 +11,7 @@ namespace Service
 
         class ServiceControl : public Service {
         public:
-            ServiceControl(ServosInterface &servos, Event::EventListenerInterface &eventListener);
+            ServiceControl(ServosInterface &servos, Event::MessageInterface &messageListener);
 
             ~ServiceControl() = default;
 

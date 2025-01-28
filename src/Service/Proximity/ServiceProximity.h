@@ -14,7 +14,7 @@ namespace Service
         class ServiceProximity : public Service, public SensorProximityObserverInterface {
         public:
             ServiceProximity(SensorProximityMultipleInterface &proximity,
-                             Event::EventListenerInterface &eventListener);
+                             Event::MessageInterface &messageListener);
 
             ~ServiceProximity() = default;
 

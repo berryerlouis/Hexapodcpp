@@ -45,5 +45,9 @@ namespace Service
             /* Test class */
             ServiceGeneral mServiceGeneral;
         };
+
+        TEST_F(UT_SRV_GENERAL, Update_Ok) {
+            mServiceGeneral.Update(500U);
+        }
     }
 }

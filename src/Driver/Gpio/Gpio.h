@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef RPI
-#include "GpioX64.h"
+#include "GpioRPI.h"
 #elif AVR
 #include "GpioAVR.h"
 #elif X64

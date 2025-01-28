@@ -4,8 +4,8 @@ namespace Service
 {
     namespace General
     {
-        ServiceGeneral::ServiceGeneral(SoftwareInterface &software, Event::EventListenerInterface &eventListener) :
-            Service(10000U, eventListener), mSoftware(software) {
+        ServiceGeneral::ServiceGeneral(SoftwareInterface &software, Event::MessageInterface &messageListener) :
+            Service(10000U, messageListener), mSoftware(software) {
         }
 
         Core::Status ServiceGeneral::Initialize(void) {

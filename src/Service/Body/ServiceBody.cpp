@@ -4,8 +4,8 @@ namespace Service
 {
     namespace Body
     {
-        ServiceBody::ServiceBody(BodyInterface &body, Event::EventListenerInterface &eventListener) :
-            Service(100U, eventListener), mBody(body) {
+        ServiceBody::ServiceBody(BodyInterface &body, Event::MessageInterface &messageListener) :
+            Service(100U, messageListener), mBody(body) {
         }
 
         Core::Status ServiceBody::Initialize(void) {

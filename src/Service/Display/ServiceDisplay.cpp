@@ -4,18 +4,37 @@ namespace Service
 {
     namespace Display
     {
-        ServiceDisplay::ServiceDisplay(Ssd1306Interface &ssd1306, Event::EventListenerInterface &eventListener) :
-            Service(20U, eventListener), mSsd1306(ssd1306),
-            mBmpBatteryLevel{.bmp = const_cast<uint8_t *>(Bitmaps::Battery0), .width = 16U, .height = 7U},
-            mBmpCommunication{.bmp = const_cast<uint8_t *>(Bitmaps::Communication), .width = 16U, .height = 8U},
-            mBmpProximity{.bmp = const_cast<uint8_t *>(Bitmaps::ArrowCenter), .width = 16U, .height = 6U},
-            mPreviousTime(0UL), mToggleCommunicationBmp(false) {
+        ServiceDisplay::ServiceDisplay(Ssd1306Interface &ssd1306
+                                       , ButtonInterface &button
+                                       , SoundInterface &soundInterfaceLeft
+                                       , SoundInterface &soundInterfaceRight
+                                       , SensorProximityMultipleInterface &sensors
+                                       , Event::MessageInterface &messageListener) :
+            Service(20U, messageListener)
+            , mButton(button)
+            , mSoundInterfaceLeft(soundInterfaceLeft)
+            , mSoundInterfaceRight(soundInterfaceRight)
+            , mSensors(sensors)
+            , mSsd1306(ssd1306)
+            , mBmpBatteryLevel{.bmp = const_cast<uint8_t *>(Bitmaps::Battery0), .width = 16U, .height = 7U}
+            , mBmpCommunication{.bmp = const_cast<uint8_t *>(Bitmaps::Communication), .width = 16U, .height = 8U}
+            , mBmpProximity{.bmp = const_cast<uint8_t *>(Bitmaps::ArrowCenter), .width = 16U, .height = 6U}
+            , mBmpButton{.bmp = const_cast<uint8_t *>(Bitmaps::ButtonRelease), .width = 16U, .height = 7U}
+            , mBmpSound{.bmp = const_cast<uint8_t *>(Bitmaps::SoundLeft), .width = 16U, .height = 7U}
+            , mPreviousTime(0UL)
+            , mToggleCommunicationBmp(false) {
         }
 
         Core::Status ServiceDisplay::Initialize(void) {
             Core::Status success = Core::Status::CORE_ERROR;
             if (this->mSsd1306.Initialize() == Core::Status::CORE_OK) {
+                this->mButton.Attach(this);
+                this->mSoundInterfaceLeft.Attach(this);
+                this->mSoundInterfaceRight.Attach(this);
+                this->mSensors.Attach(this);
                 this->DisplayBackground();
+                this->DisplayBatteryLevel(UNKNOWN);
+                this->DisplayButtonBmp(RELEASE);
                 this->mInitialized = true;
                 success = Core::Status::CORE_OK;
             }
@@ -30,17 +49,35 @@ namespace Service
             this->mSsd1306.Update(currentTime);
         }
 
-        /*void ServiceDisplay::DispatchEvent(const SEvent &event) {
-            if (event.id == EServices::BATTERY) {
-                this->DisplayBatteryLevel(static_cast<Battery::BatteryState>(event.value));
-            } else if (event.id == EServices::PROXIMITY) {
-                const uint16_t distance = PTR_TO_UINT16(&event.params[0U]);
-                this->DisplayProximitySensor(static_cast<Proximity::SensorsId>(event.value), distance);
-            }
-        }*/
+        void ServiceDisplay::UpdatedButtonState(const ButtonState &buttonState, const uint16_t period) {
+            this->DisplayButtonBmp(buttonState);
+        }
+
+        void ServiceDisplay::Detect(const SensorsId &sensorId, const uint16_t distance) {
+            this->DisplayProximitySensor(sensorId, distance);
+        }
+
+        void ServiceDisplay::UpdatedSoundState(const SoundId &soundId, const SoundState &soundState,
+                                               const uint16_t period) {
+            this->DisplaySound(soundId, soundState, period);
+        }
 
         void ServiceDisplay::DisplayBackground(void) const {
             this->mSsd1306.DrawLine(0, 10U, SCREEN_WIDTH, 10U, Bitmaps::Color::COLOR_WHITE);
+        }
+
+        void ServiceDisplay::DisplayButtonBmp(const ButtonState &buttonState) {
+            this->mSsd1306.EraseArea(SCREEN_WIDTH - this->mBmpCommunication.width - 2U - this->mBmpButton.width, 0U,
+                                     this->mBmpButton.width, 8U);
+            if (buttonState == RELEASE) {
+                this->mBmpButton.bmp = const_cast<uint8_t *>(Bitmaps::ButtonRelease);
+            } else {
+                this->mBmpButton.bmp = const_cast<uint8_t *>(Bitmaps::ButtonPush);
+            }
+            this->mSsd1306.DrawBitmap(&this->mBmpButton,
+                                      SCREEN_WIDTH - this->mBmpCommunication.width - 2U - this->mBmpButton.width,
+                                      0U,
+                                      Bitmaps::Color::COLOR_WHITE);
         }
 
         void ServiceDisplay::DisplayCommunicationBmp(void) {
@@ -102,5 +139,27 @@ namespace Service
                 }
             }
         }
+
+        void ServiceDisplay::DisplaySound(const SoundId &soundId, const SoundState &soundState, const uint16_t period) {
+            if (soundId == SOUND_RIGHT) {
+                if (soundState == NO_SOUND) {
+                    this->mSsd1306.EraseArea((SCREEN_WIDTH) - (this->mBmpSound.width),
+                                             12U, this->mBmpSound.width, 8U);
+                } else {
+                    this->mBmpSound.bmp = const_cast<uint8_t *>(Bitmaps::SoundRight);
+                    this->mSsd1306.DrawBitmap(&this->mBmpSound, (SCREEN_WIDTH) - (this->mBmpSound.width),
+                                              12U, Bitmaps::Color::COLOR_WHITE);
+                }
+            } else {
+                if (soundState == NO_SOUND) {
+                    this->mSsd1306.EraseArea(0U, 12U, this->mBmpSound.width, 8U);
+                } else {
+                    this->mBmpSound.bmp = const_cast<uint8_t *>(Bitmaps::SoundLeft);
+                    this->mSsd1306.DrawBitmap(&this->mBmpSound, 0U, 12U,
+                                              Bitmaps::Color::COLOR_WHITE);
+                }
+            }
+        }
+
     } // namespace Display
 } // namespace Service

@@ -13,7 +13,7 @@ namespace Service
         class ServiceBattery : public Service, public BatteryObserverInterface {
         public:
             ServiceBattery(BatteryInterface &batteryInterface,
-                           Event::EventListenerInterface &eventListener);
+                           Event::MessageInterface &messageListener);
 
             ~ServiceBattery() = default;
 

@@ -10,16 +10,18 @@ namespace Cluster
             ClusterBase(GENERAL, this)
             , ClusterCommand(NB_COMMANDS_GENERAL)
             , mSoftware(software) {
+            this->AddClusterItem({.commandId = EGeneralCommands::RESET, .expectedSize = 0U});
             this->AddClusterItem({.commandId = EGeneralCommands::VERSION, .expectedSize = 0U});
             this->AddClusterItem({.commandId = EGeneralCommands::MIN_EXECUTION_TIME, .expectedSize = 1U});
             this->AddClusterItem({.commandId = EGeneralCommands::MAX_EXECUTION_TIME, .expectedSize = 1U});
-            this->AddClusterItem({.commandId = EGeneralCommands::RESET_EXECUTION_TIME, .expectedSize = 1U});
         }
 
 
         Core::Status ClusterGeneral::ExecuteFrame(const Frame &request, Frame &response) {
             Core::Status success = Core::Status::CORE_ERROR;
-            if (request.commandId == EGeneralCommands::VERSION) {
+            if (request.commandId == EGeneralCommands::RESET) {
+                success = this->BuildFrameReset(response, Core::Status::CORE_OK);
+            } else if (request.commandId == EGeneralCommands::VERSION) {
                 const SoftwareInterface::Version version = this->mSoftware.GetVersion();
                 success = this->BuildFrameGetVersion(version, response);
             } else if (request.commandId == EGeneralCommands::MIN_EXECUTION_TIME) {
@@ -28,9 +30,18 @@ namespace Cluster
             } else if (request.commandId == EGeneralCommands::MAX_EXECUTION_TIME) {
                 const uint8_t serviceId = request.params[0U];
                 success = this->BuildFrameGetMaxTime(serviceId, 0, response);
-            } else if (request.commandId == EGeneralCommands::RESET_EXECUTION_TIME) {
             }
             return success;
+        }
+
+        Core::Status ClusterGeneral::BuildFrameReset(Frame &response, const Core::Status successReset) {
+            const Core::Status success = response.Build(
+                    EClusters::GENERAL,
+                    EGeneralCommands::RESET);
+            if (success == Core::Status::CORE_OK) {
+                response.Set1ByteParam(successReset);
+            }
+            return (success);
         }
 
         Core::Status ClusterGeneral::BuildFrameGetVersion(const SoftwareInterface::Version version,
@@ -68,5 +79,6 @@ namespace Cluster
             }
             return (success);
         }
+
     }
 }

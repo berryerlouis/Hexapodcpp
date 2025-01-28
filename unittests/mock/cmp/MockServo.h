@@ -24,8 +24,6 @@ namespace Component
 			MOCK_METHOD1(SetEnable, void( const bool));
 			MOCK_METHOD0(IsEnable, bool( void));
 			MOCK_METHOD0(IsMoving, bool( void));
-			MOCK_METHOD1(SetEnablePca, void( const bool));
-			MOCK_METHOD0(IsEnablePca, bool( void));
 		};
 	}
 }

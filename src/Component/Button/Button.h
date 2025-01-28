@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../../Driver/InputCapture/InputCaptureInterface.h"
+#include "../../Driver/Gpio/GpioInterface.h"
+#include "../../Driver/Tick/TickInterface.h"
 #include "ButtonInterface.h"
 #include "ButtonObservable.h"
 
@@ -12,7 +13,7 @@ namespace Component
 
         class Button : public ButtonInterface {
         public:
-            Button(Driver::InputCapture::InputCaptureInterface &inputCapture);
+            Button(Gpio::GpioInterface &gpio, Tick::TickInterface &tick);
 
             ~Button() = default;
 
@@ -26,10 +27,18 @@ namespace Component
 
             virtual void Notify(const ButtonState &state, const uint16_t voltage) final override;
 
+
+            void Hit(void);
+
         private:
-            ButtonState mState;
-            Driver::InputCapture::InputCaptureInterface &mInputCaptureButton;
+            Gpio::GpioInterface &mGpioButton;
+            Tick::TickInterface &mTick;
             ButtonObservable mObservable;
+            uint64_t mPushTime;
+
+        public:
+            ButtonState mState;
+
         };
     }
 }

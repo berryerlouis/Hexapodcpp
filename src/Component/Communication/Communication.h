@@ -2,7 +2,7 @@
 
 #include "CommunicationInterface.h"
 #include "../Led/LedInterface.h"
-#include "../../Driver/Uart/UartInterface.h"
+#include "../../Driver/Socket/SocketInterface.h"
 #include "../../Cluster/Decoding/Protocol.h"
 #include "../../Cluster/Clusters/ClustersInterface.h"
 #include "../../Cluster/Constants.h"
@@ -17,7 +17,7 @@ namespace Component
 
         class Communication : public CommunicationInterface {
         public:
-            Communication(Uart::UartInterface &uart, Clusters::ClustersInterface &clusters,
+            Communication(Socket::SocketInterface &socket, Clusters::ClustersInterface &clusters,
                           Led::LedInterface &ledStatus);
 
             ~Communication() = default;
@@ -32,7 +32,7 @@ namespace Component
         private:
             bool ReceivedStringFrame(void);
 
-            Uart::UartInterface &mUart;
+            Socket::SocketInterface &mSocket;
             Clusters::ClustersInterface &mClusters;
             Led::LedInterface &mLedStatus;
             volatile char mBufferRx[50U];

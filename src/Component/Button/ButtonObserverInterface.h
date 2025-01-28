@@ -12,7 +12,7 @@ namespace Component
 
             ~ButtonObserverInterface() = default;
 
-            virtual void UpdatedButtonState(const ButtonState &ButtonState, const uint16_t period) = 0;
+            virtual void UpdatedButtonState(const ButtonState &buttonState, const uint16_t period) = 0;
         };
     }
 }

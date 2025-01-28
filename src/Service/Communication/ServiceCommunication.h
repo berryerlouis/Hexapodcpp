@@ -13,7 +13,7 @@ namespace Service
         class ServiceCommunication : public Service {
         public:
             ServiceCommunication(CommunicationInterface &communication, Clusters::ClustersInterface &clusters,
-                                 Event::EventListenerInterface &eventListener);
+                                 Event::MessageInterface &messageListener);
 
             ~ServiceCommunication() = default;
 

@@ -7,8 +7,8 @@ namespace Service
     namespace Button
     {
         ServiceButton::ServiceButton(ButtonInterface &ButtonInterface,
-                                     Event::EventListenerInterface &eventListener) :
-            Service(100U, eventListener), mButtonInterface(ButtonInterface) {
+                                     Event::MessageInterface &messageListener) :
+            Service(10U, messageListener), mButtonInterface(ButtonInterface) {
         }
 
         Core::Status ServiceButton::Initialize(void) {

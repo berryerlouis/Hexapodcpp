@@ -2,7 +2,7 @@
 
 #include "../Cluster/Constants.h"
 #include "Constants.h"
-#include "Event/EventListenerInterface.h"
+#include "Event/MessageInterface.h"
 #include "ServiceInterface.h"
 #include "../Cluster/General/ClusterGeneral.h"
 
@@ -10,9 +10,9 @@ namespace Service
 {
     class Service : public ServiceInterface {
     public:
-        Service(const uint64_t updateTime, Event::EventListenerInterface &eventListener) :
+        Service(const uint64_t updateTime, Event::MessageInterface &messageListener) :
             mUpdateTime(updateTime), mDeltaTime(0U), mInitialized(false), mPreviousTime(0UL), mMinDeltaTime(10000UL),
-            mMaxDeltaTime(0UL), mEventListener(eventListener) {
+            mMaxDeltaTime(0UL), mMessageListener(messageListener) {
         }
 
         ~Service() = default;
@@ -42,6 +42,7 @@ namespace Service
                 General::ClusterGeneral::BuildFrameGetMinTime(serviceId, this->mDeltaTime, response);
                 this->SendMessage(response);
             } else if (this->mDeltaTime > this->mMaxDeltaTime) {
+                this->SetMaxTime(this->mDeltaTime);
                 Frame response;
                 General::ClusterGeneral::BuildFrameGetMaxTime(serviceId, this->mDeltaTime, response);
                 this->SendMessage(response);
@@ -87,7 +88,7 @@ namespace Service
     protected:
         void
         SendMessage(const Frame &message) const {
-            this->mEventListener.SendMessage(message);
+            this->mMessageListener.SendMessage(message);
         }
 
         volatile uint64_t mUpdateTime;
@@ -98,6 +99,6 @@ namespace Service
         volatile uint64_t mPreviousTime;
         volatile uint64_t mMinDeltaTime;
         volatile uint64_t mMaxDeltaTime;
-        Event::EventListenerInterface &mEventListener;
+        Event::MessageInterface &mMessageListener;
     };
 } // namespace Service

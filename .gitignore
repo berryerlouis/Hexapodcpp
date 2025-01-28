@@ -7,3 +7,4 @@ HMI/coverage
 *.atsuo
 src/debug/
 node_modules/
+/HMI-copy/

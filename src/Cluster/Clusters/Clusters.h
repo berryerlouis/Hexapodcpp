@@ -7,6 +7,7 @@
 #include "../Proximity/ClusterProximity.h"
 #include "../Servo/ClusterServo.h"
 #include "../Button/ClusterButton.h"
+#include "../Sound/ClusterSound.h"
 #include "ClustersInterface.h"
 
 namespace Cluster
@@ -19,6 +20,7 @@ namespace Cluster
         using namespace ::Cluster::Imu;
         using namespace ::Cluster::Battery;
         using namespace ::Cluster::Button;
+        using namespace ::Cluster::Sound;
         using namespace ::Cluster::Servo;
 
         class Clusters : public ClustersInterface {
@@ -27,6 +29,7 @@ namespace Cluster
                     ClusterGeneral &general,
                     ClusterBattery &battery,
                     ClusterButton &button,
+                    ClusterSound &sound,
                     ClusterBody &body,
                     ClusterImu &imu,
                     ClusterProximity &proximity,

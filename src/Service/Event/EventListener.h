@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EventListenerInterface.h"
+#include "MessageInterface.h"
 
 #include "../../Component/Communication/CommunicationInterface.h"
 
@@ -10,7 +10,7 @@ namespace Service
     {
         using namespace Component::Communication;
 
-        class EventListener : public EventListenerInterface {
+        class EventListener : public MessageInterface {
         public:
             EventListener(CommunicationInterface &communication);
 

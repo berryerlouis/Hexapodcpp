@@ -19,8 +19,9 @@ namespace Service
                 , ServiceBattery &serviceBattery
                 , ServiceDisplay &serviceDisplay
                 , ServiceBody &serviceBody
-                , Button::ServiceButton &serviceButton
-                , Event::EventListenerInterface &eventListener) :
+                , ServiceButton &serviceButton
+                , ServiceSound &serviceSound
+                , Event::MessageInterface &messageListener) :
             mTick(tick)
             , mServices{
                     {GENERAL, &serviceGeneral},
@@ -31,8 +32,9 @@ namespace Service
                     {BATTERY, &serviceBattery},
                     {DISPLAY, &serviceDisplay},
                     {BODY, &serviceBody},
-                    {BUTTON, &serviceButton}},
-            mEventListener(eventListener) {
+                    {BUTTON, &serviceButton},
+                    {SOUND, &serviceSound}},
+            mMessageListener(messageListener) {
         }
 
         Core::Status Services::Initialize(void) {
@@ -48,18 +50,18 @@ namespace Service
 #endif
                 }
             }
+            Frame response;
+            Cluster::General::ClusterGeneral::BuildFrameReset(response, success);
+            this->mMessageListener.SendMessage(response);
             return (success);
         }
 
         void Services::Update(const uint64_t currentTime) {
-            static size_t itemIndex = 0U;
-            const ServiceItem &item = this->mServices[itemIndex];
-            if (item.service->NeedUpdate(currentTime) == Core::Status::CORE_OK) {
-                item.service->Update(currentTime);
-                item.service->SetNewUpdateTime(this->mTick.GetMs(), item.serviceId);
-            }
-            if (++itemIndex == NB_SERVICES - 1U) {
-                itemIndex = 0U;
+            for (const ServiceItem item: this->mServices) {
+                if (item.service->NeedUpdate(currentTime) == Core::Status::CORE_OK) {
+                    item.service->Update(currentTime);
+                    item.service->SetNewUpdateTime(this->mTick.GetMs(), item.serviceId);
+                }
             }
         }
 

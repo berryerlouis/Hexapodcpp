@@ -12,8 +12,8 @@ namespace Service
     {
         ServiceCommunication::ServiceCommunication(CommunicationInterface &communication,
                                                    Clusters::ClustersInterface &clusters,
-                                                   Event::EventListenerInterface &eventListener) :
-            Service(1U, eventListener), mClusters(clusters), mCommunication(communication) {
+                                                   Event::MessageInterface &messageListener) :
+            Service(1U, messageListener), mClusters(clusters), mCommunication(communication) {
         }
 
         Core::Status ServiceCommunication::Initialize(void) {

@@ -8,15 +8,15 @@ namespace Service
 {
 	class MockService : public ServiceInterface {
 	public:
-		MockService(Event::EventListenerInterface &eventListener)
+		MockService(Event::MessageInterface &messageListener)
 			:
-			mEventListener(eventListener) {
+			mMessageListener(messageListener) {
 		}
 
 		MOCK_METHOD0(Initialize, Core::Status( void ));
 		MOCK_METHOD1(Update, void( const uint64_t ));
 
 	private:
-		Event::EventListenerInterface &mEventListener;
+		Event::MessageInterface &mMessageListener;
 	};
 }

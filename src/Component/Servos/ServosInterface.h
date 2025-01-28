@@ -22,6 +22,8 @@ namespace Component
 
             virtual void Disable(void) = 0;
 
+            virtual bool GetState(void) = 0;
+
             virtual Servo::Servo &GetServo(const uint8_t servoId) = 0;
 
             virtual ServosController::Pca9685Interface &GetServosController(const uint8_t pca9685Id) = 0;
