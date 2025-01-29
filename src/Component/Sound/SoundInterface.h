@@ -20,6 +20,8 @@ namespace Component
 
             virtual SoundState Get() const = 0;
 
+            virtual uint64_t GetLastStartTimeHit(void) const = 0;
+
             virtual Core::Status Attach(SoundObserverInterface *observer) = 0;
 
             virtual void Notify(const SoundId &soundId, const SoundState &soundState, const uint16_t period) = 0;

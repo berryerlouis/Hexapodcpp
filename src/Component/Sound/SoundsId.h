@@ -10,7 +10,8 @@ namespace Component
 
         enum SoundId {
             SOUND_LEFT = 0x00U,
-            SOUND_RIGHT
+            SOUND_RIGHT,
+            SOUND_NONE
         };
     }
 }

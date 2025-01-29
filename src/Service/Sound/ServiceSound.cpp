@@ -16,14 +16,12 @@ namespace Service
         Core::Status ServiceSound::Initialize(void) {
             const Core::Status successLeft = this->mSoundInterfaceLeft.Initialize();
             const Core::Status successRight = this->mSoundInterfaceRight.Initialize();
-            const Core::Status success = (Core::Status::CORE_OK == successLeft) && (
-                                             Core::Status::CORE_OK == successRight)
-                                             ? Core::Status::CORE_OK
-                                             : Core::Status::CORE_ERROR;
-            if (Core::Status::CORE_OK == success) {
+            Core::Status success = Core::Status::CORE_ERROR;
+            if (IsSucess(successLeft) && IsSucess(successRight)) {
                 this->mSoundInterfaceLeft.Attach(this);
                 this->mSoundInterfaceRight.Attach(this);
                 this->mInitialized = true;
+                success = Core::CORE_OK;
             }
             return (success);
         }

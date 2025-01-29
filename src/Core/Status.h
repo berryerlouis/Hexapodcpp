@@ -13,4 +13,8 @@ namespace Core
         CORE_ERROR_MAX = (-7),
         CORE_ERROR_DISABLE = (-8)
     };
+
+    static inline bool IsSucess(const Status status) {
+        return (status == CORE_OK);
+    }
 }

@@ -25,12 +25,16 @@ namespace Component
 
             virtual SoundState Get(void) const final override;
 
+            virtual uint64_t GetLastStartTimeHit(void) const final override;
+
             virtual Core::Status Attach(SoundObserverInterface *observer) final override;
 
             virtual void
             Notify(const SoundId &soundId, const SoundState &soundState, const uint16_t voltage) final override;
 
             void Hit(void);
+
+            static SoundId soundIdHit;
 
         private:
             SoundId mSoundId;
