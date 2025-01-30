@@ -10,7 +10,11 @@ namespace Component
     namespace Display
     {
         Ssd1306::Ssd1306(Twi::TwiInterface &twi, const uint8_t address) :
-            mTwi(twi), mAddress(address), mBufferScreen{0x00U}, mNeedToUpdate(false),
+            mTwi(twi)
+            , mAddress(address)
+            , mBufferScreen{0x00U}
+            , mBufferIndexDisplayed(0U)
+            , mNeedToUpdate(false),
             mUpdateIndex(BUFFER_DISPLAY_LENGTH) {
 #ifdef RPI
             this->mAddress = wiringPiI2CSetup(address);
@@ -58,7 +62,8 @@ namespace Component
 
                 if (this->mUpdateIndex >= NB_BYTES) {
                     this->mTwi.WriteRegisters(this->mAddress, SSD1306_SETSTARTLINE,
-                                              &this->mBufferScreen[BUFFER_DISPLAY_LENGTH - this->mUpdateIndex],
+                                              &this->mBufferScreen[this->mBufferIndexDisplayed][
+                                                  BUFFER_DISPLAY_LENGTH - this->mUpdateIndex],
                                               NB_BYTES);
                     this->mUpdateIndex -= NB_BYTES;
                 }
@@ -66,6 +71,7 @@ namespace Component
                 if (this->mUpdateIndex == 0U) {
                     this->mNeedToUpdate = false;
                     this->mUpdateIndex = BUFFER_DISPLAY_LENGTH;
+                    this->mBufferIndexDisplayed = (this->mBufferIndexDisplayed == 0U) ? 1U : 0U;
                 }
             }
         }
@@ -88,15 +94,18 @@ namespace Component
             if ((x < SCREEN_WIDTH) && (y < SCREEN_HEIGHT)) {
                 switch (color) {
                     case Bitmap::Bitmaps::Color::COLOR_WHITE:
-                        this->mBufferScreen[x + (y / 8U) * SCREEN_WIDTH] |= (1U << (y & 7U));
+                        this->mBufferScreen[(this->mBufferIndexDisplayed == 0U) ? 1U : 0U][x + (y / 8U) * SCREEN_WIDTH]
+                                |= (1U << (y & 7U));
                         break;
 
                     case Bitmap::Bitmaps::Color::COLOR_BLACK:
-                        this->mBufferScreen[x + (y / 8U) * SCREEN_WIDTH] &= ~(1U << (y & 7U));
+                        this->mBufferScreen[(this->mBufferIndexDisplayed == 0U) ? 1U : 0U][x + (y / 8U) * SCREEN_WIDTH]
+                                &= ~(1U << (y & 7U));
                         break;
 
                     case INVERSE:
-                        this->mBufferScreen[x + (y / 8U) * SCREEN_WIDTH] ^= (1U << (y & 7U));
+                        this->mBufferScreen[(this->mBufferIndexDisplayed == 0U) ? 1U : 0U][x + (y / 8U) * SCREEN_WIDTH]
+                                ^= (1U << (y & 7U));
                         break;
                     default:
                         break;
