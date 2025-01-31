@@ -7,6 +7,8 @@ ClusterName.PROXIMITY = 'PROXIMITY';
 ClusterName.SERVO = 'SERVO';
 ClusterName.BATTERY = 'BATTERY';
 ClusterName.BODY = 'BODY';
+ClusterName.BUTTON = 'BUTTON';
+ClusterName.SOUND = 'SOUND';
 ClusterName.GENERIC = 'GENERIC';
 class Cluster {
     constructor(name, code, commands) {
@@ -26,11 +28,19 @@ class CommandNack {
 }
 CommandNack.NACK = 'NACK';
 const CommandGeneral = {
+    RESET: 'RESET',
     VERSION: 'VERSION',
     MIN_EXECUTION_TIME: 'MIN_EXECUTION_TIME',
-    MAX_EXECUTION_TIME: 'MAX_EXECUTION_TIME',
-    INSTANT_EXECUTION_TIME: 'INSTANT_EXECUTION_TIME',
-    RESET_EXECUTION_TIME: 'RESET_EXECUTION_TIME',
+    MAX_EXECUTION_TIME: 'MAX_EXECUTION_TIME'
+};
+const CommandBattery = {
+    VOLTAGE: 'VOLTAGE',
+    STATUS: 'STATUS'
+};
+const CommandBody = {
+    SET_BODY_X_Y_Z: 'SET_BODY_X_Y_Z',
+    SET_LEG_X_Y_Z: 'SET_LEG_X_Y_Z',
+    SET_WALK_STATUS: 'SET_WALK_STATUS'
 };
 const CommandImu = {
     ALL: 'ALL',
@@ -45,20 +55,11 @@ const CommandImu = {
     CALIB_MAG_MIN_MAX: 'CALIBMAGMINMAX',
     START_STOP_MAG_CALIB: 'STARTSTOPMAGCALIB',
 };
-const CommandBody = {
-    SET_BODY_X_Y_Z: 'SET_BODY_X_Y_Z',
-    SET_LEG_X_Y_Z: 'SET_LEG_X_Y_Z',
-    SET_WALK_STATUS: 'SET_WALK_STATUS'
-};
 const CommandProximity = {
     US_LEFT: 'US_LEFT',
     US_RIGHT: 'US_RIGHT',
     LASER: 'LASER',
     SET_THRESHOLD: 'SET_THRESHOLD'
-};
-const CommandBattery = {
-    VOLTAGE: 'VOLTAGE',
-    STATUS: 'STATUS'
 };
 const CommandServo = {
     GET_ALL: 'GET_ALL',
@@ -75,6 +76,12 @@ const CommandServo = {
     GET_REVERSE: 'GET_REVERSE',
     SET_REVERSE: 'SET_REVERSE',
     SAVE: 'SAVE'
+};
+const CommandButton = {
+    BP_STATUS: 'BP_STATUS'
+};
+const CommandSound = {
+    SOUND_STATUS: 'SOUND_STATUS'
 };
 class Clusters {
     static getClusterByNameOrCode(identifier, isCode = false) {
@@ -119,11 +126,10 @@ class Clusters {
 }
 Clusters.clusters = [
     new Cluster(ClusterName.GENERAL, '00', [
-        new Command(CommandGeneral.VERSION, '00'),
-        new Command(CommandGeneral.MIN_EXECUTION_TIME, '01'),
-        new Command(CommandGeneral.MAX_EXECUTION_TIME, '02'),
-        new Command(CommandGeneral.INSTANT_EXECUTION_TIME, '03'),
-        new Command(CommandGeneral.RESET_EXECUTION_TIME, '04')
+        new Command(CommandGeneral.RESET, '00'),
+        new Command(CommandGeneral.VERSION, '01'),
+        new Command(CommandGeneral.MIN_EXECUTION_TIME, '02'),
+        new Command(CommandGeneral.MAX_EXECUTION_TIME, '03')
     ]),
     new Cluster(ClusterName.IMU, '01', [
         new Command(CommandImu.ALL, '00'),
@@ -168,7 +174,13 @@ Clusters.clusters = [
         new Command(CommandBody.SET_BODY_X_Y_Z, '00'),
         new Command(CommandBody.SET_LEG_X_Y_Z, '01'),
         new Command(CommandBody.SET_WALK_STATUS, '02')
+    ]),
+    new Cluster(ClusterName.BUTTON, '06', [
+        new Command(CommandButton.BP_STATUS, '00')
+    ]),
+    new Cluster(ClusterName.SOUND, '07', [
+        new Command(CommandSound.SOUND_STATUS, '00')
     ])
 ];
 export default Clusters;
-export { Clusters, Cluster, Command, ClusterName, CodeCommandNack, CommandGeneral, CommandImu, CommandProximity, CommandBattery, CommandBody, CommandServo };
+export { Clusters, Cluster, Command, ClusterName, CodeCommandNack, CommandGeneral, CommandImu, CommandProximity, CommandBattery, CommandBody, CommandServo, CommandButton, CommandSound };

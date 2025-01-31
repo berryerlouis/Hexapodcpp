@@ -13,28 +13,9 @@ namespace Driver
 
 #define NB_PORT 4U
 
-#ifdef RPI
         struct SGpio {
             uint8_t pin;
         };
-#else
-        enum EPin {
-            PIN_0,
-            PIN_1,
-            PIN_2,
-            PIN_3,
-            PIN_4,
-            PIN_5,
-            PIN_6,
-            PIN_7,
-        };
-
-        struct SGpio {
-            EPort port;
-            EPin pin;
-        };
-#endif
-
 
         class GpioInterface {
         public:

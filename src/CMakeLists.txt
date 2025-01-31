@@ -5,17 +5,25 @@ if (${TARGET} STREQUAL "X64")
     set(CMAKE_CXX_STANDARD 11)
     set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+    include(FetchContent)
+
+    FetchContent_Declare(
+            TinyWebsockets
+            GIT_REPOSITORY https://github.com/berryerlouis/TinyWebsockets.git
+            GIT_TAG master
+    )
+
+    FetchContent_MakeAvailable(TinyWebsockets)
+
     # using GCC
     add_compile_definitions(GTEST)
     add_compile_definitions(X64)
-    add_compile_definitions(DEBUG)
-    add_compile_options(-DF_CPU=${F_CPU} -Wall -Wextra -std=c++17 -fexceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O0 -g)
+    add_compile_options(-DF_CPU=${F_CPU} -Wall -Wextra -std=c++17 -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O0 -g)
 elseif (${TARGET} STREQUAL "RPI")
 
     set(CMAKE_CXX_STANDARD 11)
     set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-    # Utiliser FetchContent pour récupérer WiringPi
+    #WiringPi
     include(FetchContent)
     FetchContent_Declare(
             wiringPi
@@ -24,6 +32,14 @@ elseif (${TARGET} STREQUAL "RPI")
     )
     FetchContent_MakeAvailable(wiringPi)
     include_directories(${wiringpi_SOURCE_DIR})
+
+    #TinyWebsockets
+    FetchContent_Declare(
+            TinyWebsockets
+            GIT_REPOSITORY https://github.com/berryerlouis/TinyWebsockets.git
+            GIT_TAG master
+    )
+    FetchContent_MakeAvailable(TinyWebsockets)
 
     add_compile_definitions(X64)
     add_compile_definitions(RPI)
@@ -126,7 +142,6 @@ set(SRC_FILES_BOT
         Bot/Walk/Walk.cpp
 )
 
-
 set(SRC_FILES
         ${SRC_FILES_BUILDER}
         ${SRC_FILES_BOT}
@@ -139,6 +154,7 @@ set(SRC_FILES
 )
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
+target_link_libraries(${PROJECT_NAME} tiny_websockets_lib)
 if (${TARGET} STREQUAL "RPI")
     target_link_libraries(${PROJECT_NAME} wiringPi)
 else ()

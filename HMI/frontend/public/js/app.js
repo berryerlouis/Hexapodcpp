@@ -13,6 +13,7 @@ import Canvas from "./ui/Canvas.js";
 import Compass from "./ui/Compass.js";
 import Hexapod from "./ui/hexapod/hexapod.js";
 import { Message } from "./protocol/Message.js";
+import { Pane } from 'tweakpane';
 import { ClusterName, CommandGeneral, CommandImu, CommandServo } from "./protocol/Cluster.js";
 const socketInterface = new SocketInterface();
 const messageManager = new MessageManager(socketInterface);
@@ -21,6 +22,7 @@ const hexapod = new Hexapod(canvas.groupBody);
 const compass = new Compass();
 function init() {
     animate();
+    const pane = new Pane();
 }
 function update() {
     canvas.animate();

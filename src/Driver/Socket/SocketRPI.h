@@ -1,11 +1,7 @@
 #include "SocketInterface.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <signal.h>
+#include "tiny_websockets/server.hpp"
+#include "tiny_websockets/client.hpp"
+#include <vector>
 
 struct addrinfo;
 
@@ -13,8 +9,6 @@ namespace Driver
 {
     namespace Socket
     {
-#define BUFFER_SIZE 256U
-
         class Socket : public SocketInterface {
 
         public:
@@ -34,14 +28,9 @@ namespace Driver
 
             virtual uint8_t DataAvailable(void) final override;
 
+            static void onMessage(websockets::WebsocketsClient &client, websockets::WebsocketsMessage message);
+
         private:
-            static int mServerFd;
-            static int mClientFd;
-            static sockaddr_storage their_addr;
-            addrinfo hints, *servinfo; // connector's address information
-            socklen_t sin_size;
-            struct sigaction sa;
-            addrinfo *p;
         };
     } // namespace Socket
 } // namespace Driver

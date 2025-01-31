@@ -16,10 +16,12 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "three": "^0.172.0",
+    "tweakpane": "^4.0.5",
     "undici-types": "^7.2.3",
     "ws": "^8.18.0"
   },
   "devDependencies": {
+    "@tweakpane/core": "^2.0.5",
     "@types/dat.gui": "^0.7.13",
     "@types/express": "^5.0.0",
     "@types/jquery": "^3.5.32",

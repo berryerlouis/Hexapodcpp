@@ -4,13 +4,8 @@ namespace Component
 {
     namespace Servos
     {
-#ifdef RPI
         Servos::Servos(ServosController::Pca9685Interface &pca9685_0, ServosController::Pca9685Interface &pca9685_1,
                        Gpio::GpioInterface &enablePwmPin, Tick::TickInterface &tick):
-#else
-        Servos::Servos(ServosController::Pca9685Interface &pca9685_0, ServosController::Pca9685Interface &pca9685_1,
-                       Tick::TickInterface &tick) :
-#endif
             mServo0(pca9685_0, tick, 0, 90U, 15, 60U, 120U, false)
             , mServo1(pca9685_0, tick, 1, 90U, -4, 60U, 120U, false)
             , mServo2(pca9685_0, tick, 2, 90U, 12, 60U, 120U, false)

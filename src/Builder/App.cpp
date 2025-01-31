@@ -3,7 +3,6 @@
 
 using namespace Driver::Gpio;
 
-#ifdef RPI
 Gpio ledStatus = Gpio({16}, OUT);
 Gpio ledCenter = Gpio({12}, OUT);
 Gpio ledLeft = Gpio({13}, OUT);
@@ -19,17 +18,7 @@ Gpio soundLeftPin = Gpio({23}, IN);
 Gpio soundRightPin = Gpio({24}, IN);
 Gpio adcPinBattery = Gpio({0}, IN);
 Gpio buttonPin = Gpio({4}, IN);
-#else
-Gpio ledBoot = Gpio({PORT_B, PIN_0}, OUT);
-Gpio ledStatus = Gpio({PORT_B, PIN_1}, OUT);
-Gpio ledLeft = Gpio({PORT_B, PIN_2}, OUT);
-Gpio ledRight = Gpio({PORT_B, PIN_3}, OUT);
-Gpio adcPinBattery = Gpio({PORT_A, PIN_0}, IN);
-Gpio echoLeftPin = Gpio({PORT_A, PIN_2}, IN);
-Gpio echoRightPin = Gpio({PORT_A, PIN_4}, IN);
-Gpio triggerLeftPin = Gpio({PORT_A, PIN_1}, OUT);
-Gpio triggerRightPin = Gpio({PORT_A, PIN_3}, OUT);
-#endif
+
 
 namespace Builder
 {

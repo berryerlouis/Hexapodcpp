@@ -1,4 +1,5 @@
 import {GUI} from "../../../vendor/dat.gui/build/dat.gui.module.js";
+import {Pane} from 'tweakpane';
 import ClusterCommand from "./ClusterCommand.js";
 
 export default class Controls {
@@ -7,6 +8,7 @@ export default class Controls {
 
         this.robot = robot;
         this.gui = new GUI();
+        const pane = new Pane();
         this.gui.domElement.id = 'gui';
         new ClusterCommand(this, messageManager, robot);
     }

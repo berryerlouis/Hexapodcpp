@@ -3,9 +3,7 @@
 #include "../../../Cluster/Constants.h"
 #include "../../../Driver/Twi/TwiInterface.h"
 #include "../../../Driver/Tick/TickInterface.h"
-#ifdef RPI
 #include "../../Led/LedInterface.h"
-#endif
 #include "../SensorProximityInterface.h"
 
 namespace Component
@@ -20,12 +18,10 @@ namespace Component
             public:
                 static constexpr uint8_t VL53L0X_ADDRESS = 0x29U;
                 static constexpr uint16_t DISTANCE_THRESHOLD = 300U;
-#ifdef RPI
+
                 Vl53l0x(Twi::TwiInterface &i2c, Led::LedInterface &led, Tick::TickInterface &tick,
                         const uint8_t address = 0x29U);
-#else
-                Vl53l0x(Twi::TwiInterface &i2c, Tick::TickInterface &tick, const uint8_t address = 0x29U);
-#endif
+
 
                 ~Vl53l0x() = default;
 
@@ -41,9 +37,7 @@ namespace Component
 
             private:
                 Twi::TwiInterface &mI2c;
-#ifdef RPI
                 Led::LedInterface &mLed;
-#endif
                 Tick::TickInterface &mTick;
                 uint8_t mAddress;
                 uint16_t mDistance;

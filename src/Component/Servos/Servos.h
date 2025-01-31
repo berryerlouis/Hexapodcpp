@@ -56,9 +56,7 @@ namespace Component
             Servo::Servo *mServos[NB_SERVOS];
             ServosController::Pca9685Interface &mPca9685Left;
             ServosController::Pca9685Interface &mPca9685Right;
-#ifdef RPI
             Gpio::GpioInterface &mEnablePwmPin;
-#endif
         };
     }
 }

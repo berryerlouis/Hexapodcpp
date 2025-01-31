@@ -14,7 +14,7 @@ namespace Component
 #define encodeVcselPeriod(period_pclks) (((period_pclks) >> 1) - 1)
 #define calcMacroPeriod(vcsel_period_pclks) ((((uint32_t) 2304 * (vcsel_period_pclks) * 1655) + 500) / 1000)
 
-#ifdef RPI
+
             Vl53l0x::Vl53l0x(
                     Twi::TwiInterface &i2c
                     , Led::LedInterface &led
@@ -22,11 +22,8 @@ namespace Component
                     , const uint8_t address) :
                 mI2c(i2c), mLed(led), mTick(tick), mAddress(address), mDistance(0), mThreshold(DISTANCE_THRESHOLD),
                 mMeasurementTimingBudget(0U), mStop(0U) {
-#else
-            Vl53l0x::Vl53l0x(Twi::TwiInterface &i2c, Tick::TickInterface &tick, const uint8_t address) :
-                mI2c(i2c), mTick(tick), mAddress(address), mDistance(0), mThreshold(DISTANCE_THRESHOLD),
-                mMeasurementTimingBudget(0U), mStop(0U) {
-#endif
+
+
 #ifdef RPI
 #ifndef GTEST
                 this->mAddress = wiringPiI2CSetup(address);

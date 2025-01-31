@@ -17,9 +17,12 @@ namespace Driver
         }
 
         void Uart::Send(const char *data, const size_t len) {
+            (void) data;
+            (void) len;
         }
 
         void Uart::Send(const uint8_t data) {
+            (void) data;
         }
 
         uint8_t Uart::Read(void) {

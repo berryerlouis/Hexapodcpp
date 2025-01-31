@@ -9,6 +9,7 @@ using namespace Builder;
 
 Builder::App robot;
 
+
 int main(void) {
 #ifdef AVR
     cli();
@@ -32,3 +33,4 @@ int main(void) {
     }
     return -1;
 }
+

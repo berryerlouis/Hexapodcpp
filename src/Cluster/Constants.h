@@ -36,7 +36,11 @@ namespace Cluster
 
     static constexpr uint8_t NB_COMMANDS_BATTERY = 2U;
 
-    enum EBodyCommands { SET_BODY_POS_ROT = 0x00U, SET_LEG_POS_ROT, SET_WALK_STATUS };
+    enum EBodyCommands {
+        SET_BODY_POS_ROT = 0x00U,
+        SET_LEG_POS_ROT,
+        SET_WALK_STATUS
+    };
 
     static constexpr uint8_t NB_COMMANDS_BODY = 3U;
 
