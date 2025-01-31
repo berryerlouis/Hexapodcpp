@@ -1,7 +1,8 @@
 #include "SocketInterface.h"
-#include "tiny_websockets/server.hpp"
+#ifndef GTEST
 #include "tiny_websockets/client.hpp"
-#include <vector>
+#endif
+
 
 struct addrinfo;
 
@@ -16,6 +17,7 @@ namespace Driver
 
             ~Socket() = default;
 
+#ifndef GTEST
             virtual Core::Status Initialize(void) final override;
 
             virtual void Update(const uint64_t currentTime) final override;
@@ -29,6 +31,19 @@ namespace Driver
             virtual uint8_t DataAvailable(void) final override;
 
             static void onMessage(websockets::WebsocketsClient &client, websockets::WebsocketsMessage message);
+#else
+            virtual Core::Status Initialize(void) final override {return Core::Status::CORE_OK; }
+
+            virtual void Update(const uint64_t currentTime) final override {}
+
+            virtual void Send(const char *data, const size_t len) final override {}
+
+            virtual void Send(const uint8_t data) final override {}
+
+            virtual uint8_t Read(void) final override {return 0;}
+
+            virtual uint8_t DataAvailable(void) final override {return 0;}
+#endif
 
         private:
         };

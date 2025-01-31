@@ -1,7 +1,7 @@
-#include <iostream>
-
 #include "Socket.h"
-
+#ifndef GTEST
+#include "tiny_websockets/server.hpp"
+#endif
 namespace Driver
 {
     namespace Socket
