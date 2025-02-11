@@ -181,7 +181,7 @@ namespace Component
             EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 0U);
         }
 
-        TEST_F(UT_CMP_SOUND, Hit_3_Update_Ok) {
+        TEST_F(UT_CMP_SOUND, Hit_4_Update_Ok) {
             HitTest(SOUND_RIGHT, LOUD, 120U);
             HitTest(SOUND_LEFT, LOUD, 130U);
             HitTest(SOUND_RIGHT, NO_SOUND, 150U);

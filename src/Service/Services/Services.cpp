@@ -1,6 +1,3 @@
-#ifdef AVR
-#include <avr/interrupt.h>
-#endif
 #include "../../Misc/Logger/Logger.h"
 #include "Services.h"
 
@@ -24,24 +21,24 @@ namespace Service
                 , Event::MessageInterface &messageListener) :
             mTick(tick)
             , mServices{
-                    {GENERAL, &serviceGeneral},
-                    {PROXIMITY, &serviceProximity},
-                    {CONTROL, &serviceControl},
-                    {COMMUNICATION, &serviceCommunication},
-                    {ORIENTATION, &serviceOrientation},
-                    {BATTERY, &serviceBattery},
-                    {DISPLAY, &serviceDisplay},
-                    {BODY, &serviceBody},
-                    {BUTTON, &serviceButton},
-                    {SOUND, &serviceSound}},
+                    {&serviceGeneral},
+                    {&serviceProximity},
+                    {&serviceControl},
+                    {&serviceCommunication},
+                    {&serviceOrientation},
+                    {&serviceBattery},
+                    {&serviceDisplay},
+                    {&serviceBody},
+                    {&serviceButton},
+                    {&serviceSound}},
             mMessageListener(messageListener) {
         }
 
         Core::Status Services::Initialize(void) {
             Core::Status success = Core::Status::CORE_ERROR;
 
-            for (const ServiceItem item: this->mServices) {
-                success = item.service->Initialize();
+            for (Service *service: this->mServices) {
+                success = service->Initialize();
                 if (success != Core::Status::CORE_OK) {
 #ifdef DEBUG
                     const char serviceId[2U] = {static_cast<const char>(item.serviceId + 0x30U), ' '};
@@ -57,18 +54,15 @@ namespace Service
         }
 
         void Services::Update(const uint64_t currentTime) {
-            for (const ServiceItem item: this->mServices) {
-                if (item.service->NeedUpdate(currentTime) == Core::Status::CORE_OK) {
-                    item.service->Update(currentTime);
-                    item.service->SetNewUpdateTime(this->mTick.GetMs(), item.serviceId);
-                }
+            for (Service *service: this->mServices) {
+                service->UpdateService(this->mTick, currentTime);
             }
         }
 
         Service *Services::Get(const EServices serviceId) {
-            for (const ServiceItem &item: this->mServices) {
-                if (item.serviceId == serviceId) {
-                    return (item.service);
+            for (Service *service: this->mServices) {
+                if (service->GetServiceId() == serviceId) {
+                    return (service);
                 }
             }
             return (nullptr);

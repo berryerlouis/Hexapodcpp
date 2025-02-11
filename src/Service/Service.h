@@ -1,21 +1,35 @@
 #pragma once
 
-#include "../Cluster/Constants.h"
 #include "Constants.h"
 #include "Event/MessageInterface.h"
 #include "ServiceInterface.h"
 #include "../Cluster/General/ClusterGeneral.h"
+#include "../Driver/Tick/TickInterface.h"
 
 namespace Service
 {
     class Service : public ServiceInterface {
     public:
-        Service(const uint64_t updateTime, Event::MessageInterface &messageListener) :
-            mUpdateTime(updateTime), mDeltaTime(0U), mInitialized(false), mPreviousTime(0UL), mMinDeltaTime(10000UL),
-            mMaxDeltaTime(0UL), mMessageListener(messageListener) {
+        Service(const EServices serviceId, const uint64_t updateTime, Event::MessageInterface &messageListener) :
+            mUpdateTime(updateTime)
+            , mDeltaTime(0U)
+            , mInitialized(false)
+            , mServiceId(serviceId)
+            , mPreviousTime(0UL)
+            , mMinDeltaTime(10000UL)
+            , mMaxDeltaTime(0UL)
+            , mMessageListener(messageListener) {
         }
 
         ~Service() = default;
+
+        void
+        UpdateService(Driver::Tick::TickInterface &tick, const uint64_t currentTime) {
+            if (this->NeedUpdate(currentTime) == Core::Status::CORE_OK) {
+                this->Update(currentTime);
+                this->SetNewUpdateTime(tick.GetMs(), this->mServiceId);
+            }
+        }
 
         Core::Status
         NeedUpdate(const uint64_t currentTime) const {
@@ -39,12 +53,12 @@ namespace Service
             if (this->mDeltaTime < this->mMinDeltaTime) {
                 this->SetMinTime(this->mDeltaTime);
                 Frame response;
-                General::ClusterGeneral::BuildFrameGetMinTime(serviceId, this->mDeltaTime, response);
+                Cluster::General::ClusterGeneral::BuildFrameGetMinTime(serviceId, this->mDeltaTime, response);
                 this->SendMessage(response);
             } else if (this->mDeltaTime > this->mMaxDeltaTime) {
                 this->SetMaxTime(this->mDeltaTime);
                 Frame response;
-                General::ClusterGeneral::BuildFrameGetMaxTime(serviceId, this->mDeltaTime, response);
+                Cluster::General::ClusterGeneral::BuildFrameGetMaxTime(serviceId, this->mDeltaTime, response);
                 this->SendMessage(response);
             }
         }
@@ -85,6 +99,11 @@ namespace Service
             this->mMaxDeltaTime = time;
         }
 
+        EServices
+        GetServiceId(void) const {
+            return this->mServiceId;
+        }
+
     protected:
         void
         SendMessage(const Frame &message) const {
@@ -94,6 +113,7 @@ namespace Service
         volatile uint64_t mUpdateTime;
         volatile uint64_t mDeltaTime;
         bool mInitialized;
+        EServices mServiceId;
 
     private:
         volatile uint64_t mPreviousTime;

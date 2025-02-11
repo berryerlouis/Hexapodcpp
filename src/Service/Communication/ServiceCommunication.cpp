@@ -1,10 +1,4 @@
 #include "ServiceCommunication.h"
-#include "../../Cluster/Battery/ClusterBattery.h"
-#include "../../Cluster/Body/ClusterBody.h"
-#include "../../Cluster/General/ClusterGeneral.h"
-#include "../../Cluster/Imu/ClusterImu.h"
-#include "../../Cluster/Proximity/ClusterProximity.h"
-#include "../../Cluster/Servo/ClusterServo.h"
 
 namespace Service
 {
@@ -13,7 +7,9 @@ namespace Service
         ServiceCommunication::ServiceCommunication(CommunicationInterface &communication,
                                                    Clusters::ClustersInterface &clusters,
                                                    Event::MessageInterface &messageListener) :
-            Service(1U, messageListener), mClusters(clusters), mCommunication(communication) {
+            Service(COMMUNICATION, 1U, messageListener)
+            , mClusters(clusters)
+            , mCommunication(communication) {
         }
 
         Core::Status ServiceCommunication::Initialize(void) {

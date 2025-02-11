@@ -8,7 +8,9 @@ namespace Service
     {
         ServiceProximity::ServiceProximity(SensorProximityMultipleInterface &proximity,
                                            Event::MessageInterface &messageListener) :
-            Service(25U, messageListener), mProximity(proximity), mTimeoutDetection{0xFFU, 0xFFU, 0xFFU} {
+            Service(PROXIMITY, 25U, messageListener)
+            , mProximity(proximity)
+            , mTimeoutDetection{0xFFU, 0xFFU, 0xFFU} {
         }
 
         Core::Status ServiceProximity::Initialize(void) {

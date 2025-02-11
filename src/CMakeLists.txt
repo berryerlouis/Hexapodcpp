@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-set(CMAKE_SYSTEM_NAME Generic)
+
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 if (${CROSS})
     message(INFO " => Compilation for ${TARGET} in ${CMAKE_BUILD_TYPE} mode for ${PROJECT_NAME} using Cross Compiler")
@@ -9,46 +9,39 @@ endif ()
 set(CMAKE_FIND_DEBUG_MODE false)
 
 
-if (${CROSS})
-
-    set(CMAKE_SYSTEM_NAME Linux)
-    set(CMAKE_SYSTEM_PROCESSOR arm)
-    set(CMAKE_LIBRARY_ARCHITECTURE arm-linux-gnueabihf)
-    set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE armhf)
-    
-    set(CMAKE_SYSROOT /home/louis/sysroot)
-
-    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-    set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
-    #include_directories(/usr/arm-linux-gnueabihf/include/)
-    find_package(OpenSSL REQUIRED)
-    find_package(Threads REQUIRED)
-endif ()
-
 if (${TARGET} STREQUAL "X64")
-    set(CMAKE_CXX_STANDARD 11)
-    set(CMAKE_CXX_STANDARD_REQUIRED True)
-    set(CMAKE_CXX_COMPILER /usr/bin/g++)
-    set(CMAKE_C_COMPILER /usr/bin/gcc)
-
     include(FetchContent)
-
     FetchContent_Declare(
             TinyWebsockets
             GIT_REPOSITORY https://github.com/berryerlouis/TinyWebsockets.git
             GIT_TAG master
     )
-
     FetchContent_MakeAvailable(TinyWebsockets)
 
     # using GCC
-    add_compile_definitions(GTEST)
     add_compile_definitions(X64)
     add_compile_options(-Wall -Wextra -std=c++17 -Wno-cast-align -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O0 -g)
 
 elseif (${TARGET} STREQUAL "RPI")
+
+    if (${CROSS})
+
+        set(CMAKE_SYSTEM_NAME Linux)
+        set(CMAKE_SYSTEM_PROCESSOR arm)
+        set(CMAKE_LIBRARY_ARCHITECTURE arm-linux-gnueabihf)
+        set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE armhf)
+
+        set(CMAKE_SYSROOT /home/louis/sysroot)
+
+        set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+        set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+        set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+        set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+        #include_directories(/usr/arm-linux-gnueabihf/include/)
+        find_package(OpenSSL REQUIRED)
+        find_package(Threads REQUIRED)
+    endif ()
+
     set(CMAKE_CXX_STANDARD 11)
     set(CMAKE_CXX_STANDARD_REQUIRED True)
     # WiringPi
@@ -165,17 +158,11 @@ set(SRC_FILES
         ${SRC_FILES_SERVICES}
 )
 
-find_package(Threads REQUIRED)
-if (THREADS_HAVE_PTHREAD_ARG)
-    set("vdfvdfqsvdqsr<" ${THREADS_HAVE_PTHREAD_ARG})
-    target_compile_options(${PROJECT_NAME} PUBLIC "-pthread")
-endif ()
-if (CMAKE_THREAD_LIBS_INIT)
-    set("vdfvdfqsvdqsr<" ${CMAKE_THREAD_LIBS_INIT})
-    target_link_libraries(${PROJECT_NAME} "${CMAKE_THREAD_LIBS_INIT}")
-endif ()
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
-target_link_libraries(${PROJECT_NAME} wiringPi tiny_websockets_lib)
-
+if (${TARGET} STREQUAL "RPI")
+    target_link_libraries(${PROJECT_NAME} wiringPi tiny_websockets_lib)
+else ()
+    target_link_libraries(${PROJECT_NAME} tiny_websockets_lib)
+endif ()
 set(CMAKE_FIND_DEBUG_MODE FALSE)

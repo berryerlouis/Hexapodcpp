@@ -32,7 +32,7 @@ namespace Component
 
         Core::Status Ads1115::Initialize(void) {
             this->SetGain(0U);
-            this->SetMode(0U);
+            this->SetMode(ADS1X15_MODE_CONTINUE);
             this->SetDataRate(7U);
             return (Core::Status::CORE_OK);
         }
@@ -49,13 +49,19 @@ namespace Component
             return this->ReadADC(PIN_1);
         }
 
-        bool Ads1115::IsReady(void) {
+        bool Ads1115::IsReady(void) const {
             uint16_t value = 0U;
-            this->mTwi.ReadRegister16Bits(this->mAddress, ADS1X15_REG_CONVERT, value);
+            uint8_t timeout = 0U;
+
+            while ((timeout < 100U) && (value & ADS1X15_OS_NOT_BUSY) == 0U) {
+                usleep(10U);
+                timeout++;
+                this->mTwi.ReadRegister16Bits(this->mAddress, ADS1X15_REG_CONVERT, value);
+            }
             return ((value & ADS1X15_OS_NOT_BUSY) > 0U);
         }
 
-        void Ads1115::SetConfig(const Ads1115Pin pin) {
+        void Ads1115::SetConfig(const Ads1115Pin pin) const {
             const uint16_t mode = (4U + pin) << 12U;
             uint16_t config = 0x8000U; //  bit 15     force wake up if needed
             config |= mode; //  bit 12-14
@@ -69,15 +75,15 @@ namespace Component
             this->mTwi.WriteRegister16Bits(this->mAddress, ADS1X15_REG_CONFIG, config);
         }
 
-        int16_t Ads1115::ReadADC(const Ads1115Pin pin) {
+        int16_t Ads1115::ReadADC(const Ads1115Pin pin) const {
             this->SetConfig(pin);
             //delay 8
-            while (this->IsReady() == false) {
-                usleep(100U);
-            }
+            const bool ready = this->IsReady();
 
             uint16_t raw = 0U;
-            this->mTwi.ReadRegister16Bits(this->mAddress, ADS1X15_REG_CONVERT, raw);
+            if (true == ready) {
+                this->mTwi.ReadRegister16Bits(this->mAddress, ADS1X15_REG_CONVERT, raw);
+            }
             return raw;
         }
 

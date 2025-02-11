@@ -4,10 +4,6 @@ namespace Driver
 {
     namespace InputCapture
     {
-        static InputCapture *inputCapture[2U] = {};
-        static uint8_t inputCaptureIndex = 0U;
-
-
         InputCapture::InputCapture(Gpio::GpioInterface &gpio, Tick::TickInterface &tick) :
             mGpio(gpio), mTick(tick), mState(false), mStartTime(0UL), mDelay(0UL) {
         }

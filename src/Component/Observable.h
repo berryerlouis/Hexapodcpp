@@ -11,10 +11,8 @@ namespace Component
     public:
         Observable() :
             mIndexList(0U) {
-            if (MAX_OBSERVERS > 0U) {
-                for (auto obeserver: mListObserver) {
-                    obeserver = nullptr;
-                }
+            for (size_t i = 0; i < MAX_OBSERVERS; i++) {
+                mListObserver[i] = nullptr;
             }
         }
 

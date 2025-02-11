@@ -43,9 +43,9 @@ namespace Component
             virtual uint16_t GetIntensity(void) final override;
 
         private:
-            bool IsReady(void);
+            bool IsReady(void) const;
 
-            void SetConfig(const Ads1115Pin pin);
+            void SetConfig(const Ads1115Pin pin) const;
 
             void SetGain(uint8_t gain);
 
@@ -53,7 +53,7 @@ namespace Component
 
             void SetDataRate(const uint8_t dataRate);
 
-            int16_t ReadADC(const Ads1115Pin pin);
+            int16_t ReadADC(const Ads1115Pin pin) const;
 
         private:
             Driver::Twi::TwiInterface &mTwi;

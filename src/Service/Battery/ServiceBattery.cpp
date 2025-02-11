@@ -8,7 +8,7 @@ namespace Service
     {
         ServiceBattery::ServiceBattery(BatteryInterface &batteryInterface,
                                        Event::MessageInterface &messageListener) :
-            Service(100U, messageListener)
+            Service(BATTERY, 100U, messageListener)
             , mBatteryInterface(batteryInterface) {
         }
 

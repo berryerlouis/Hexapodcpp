@@ -22,9 +22,12 @@ namespace Component
                     , const uint8_t address) :
                 mI2c(i2c), mLed(led), mTick(tick), mAddress(address), mDistance(0), mThreshold(DISTANCE_THRESHOLD),
                 mMeasurementTimingBudget(0U), mStop(0U) {
+#ifdef RPI
 #ifndef GTEST
                 this->mAddress = wiringPiI2CSetup(address);
 #endif
+#endif
+
             }
 
             Core::Status Vl53l0x::Initialize(void) {

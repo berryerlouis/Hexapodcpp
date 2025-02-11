@@ -10,7 +10,7 @@ namespace Service
                                        , SoundInterface &soundInterfaceRight
                                        , SensorProximityMultipleInterface &sensors
                                        , Event::MessageInterface &messageListener) :
-            Service(20U, messageListener)
+            Service(DISPLAY, 20U, messageListener)
             , mSsd1306(ssd1306)
             , mButton(button)
             , mSoundInterfaceLeft(soundInterfaceLeft)

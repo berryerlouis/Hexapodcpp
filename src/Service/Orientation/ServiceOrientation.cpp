@@ -6,7 +6,9 @@ namespace Service
     {
         ServiceOrientation::ServiceOrientation(Mpu9150Interface &imu, BarometerInterface &barometer,
                                                Event::MessageInterface &messageListener) :
-            Service(20U, messageListener), mImu(imu), mBarometer(barometer) {
+            Service(ORIENTATION, 20U, messageListener)
+            , mImu(imu)
+            , mBarometer(barometer) {
         }
 
         Core::Status ServiceOrientation::Initialize(void) {

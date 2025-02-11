@@ -28,15 +28,6 @@ namespace Service
         using namespace ::Service::Button;
         using namespace ::Service::Sound;
 
-        struct ServiceItem {
-            EServices serviceId;
-            Service *service;
-
-            ServiceItem() = default;
-
-            ~ServiceItem() = default;
-        };
-
         class Services : public ServiceInterface {
         public:
             Services(
@@ -63,7 +54,7 @@ namespace Service
             Service *Get(const EServices serviceId);
 
             Tick::TickInterface &mTick;
-            ServiceItem mServices[NB_SERVICES];
+            Service *mServices[NB_SERVICES];
             Event::MessageInterface &mMessageListener;
         };
     }

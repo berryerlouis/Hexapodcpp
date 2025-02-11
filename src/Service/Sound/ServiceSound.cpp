@@ -8,7 +8,7 @@ namespace Service
     {
         ServiceSound::ServiceSound(SoundInterface &soundInterfaceLeft, SoundInterface &soundInterfaceRight,
                                    Event::MessageInterface &messageListener) :
-            Service(10U, messageListener)
+            Service(SOUND, 10U, messageListener)
             , mSoundInterfaceLeft(soundInterfaceLeft)
             , mSoundInterfaceRight(soundInterfaceRight) {
         }

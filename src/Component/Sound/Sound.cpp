@@ -1,5 +1,4 @@
 #include "Sound.h"
-#include <stdlib.h>
 
 namespace Component
 {
