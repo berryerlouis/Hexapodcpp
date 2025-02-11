@@ -38,11 +38,11 @@ namespace Service
             }
         }
 
-        void ServiceProximity::Detect(const SensorsId &sensorId, const uint16_t distance) {
+        void ServiceProximity::Notified(const SensorsStruct &sensor) {
             Frame response;
-            Cluster::Proximity::ClusterProximity::BuildFrameDistance(sensorId, distance, response);
+            Cluster::Proximity::ClusterProximity::BuildFrameDistance(sensor.id, sensor.distance, response);
             this->SendMessage(response);
-            this->mTimeoutDetection[sensorId] = 0U;
+            this->mTimeoutDetection[sensor.id] = 0U;
         }
     } // namespace Proximity
 } // namespace Service

@@ -25,9 +25,9 @@ namespace Service
             this->mBatteryInterface.Update(currentTime);
         }
 
-        void ServiceBattery::UpdatedBatteryState(const BatteryState &batteryState, const uint16_t voltage) {
+        void ServiceBattery::Notified(const BatteryStruct &battery) {
             Frame response;
-            Cluster::Battery::ClusterBattery::BuildFrameState(batteryState, voltage, response);
+            Cluster::Battery::ClusterBattery::BuildFrameState(battery.state, battery.voltage, response);
             this->SendMessage(response);
         }
     } // namespace Battery

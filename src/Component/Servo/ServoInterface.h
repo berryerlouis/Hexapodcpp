@@ -6,7 +6,7 @@ namespace Component
 {
     namespace Servo
     {
-        class ServoInterface : public ComponentInterface {
+        class ServoInterface : public ComponentInterface<0U, nullptr_t> {
         public:
             ServoInterface() = default;
 

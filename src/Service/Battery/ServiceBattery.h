@@ -2,15 +2,16 @@
 
 #include "../Service.h"
 #include "../../Component/Battery/BatteryInterface.h"
-#include "../../Component/Battery/BatteryObserverInterface.h"
+#include "../../Component/ObserverInterface.h"
 
 namespace Service
 {
     namespace Battery
     {
+        using namespace Component;
         using namespace Component::Battery;
 
-        class ServiceBattery : public Service, public BatteryObserverInterface {
+        class ServiceBattery : public Service, ObserverInterface<BatteryStruct> {
         public:
             ServiceBattery(BatteryInterface &batteryInterface,
                            Event::MessageInterface &messageListener);
@@ -21,7 +22,7 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void UpdatedBatteryState(const BatteryState &batteryState, const uint16_t voltage) final override;
+            virtual void Notified(const BatteryStruct &battery) final override;
 
         protected:
             BatteryInterface &mBatteryInterface;

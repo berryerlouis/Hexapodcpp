@@ -11,7 +11,7 @@ namespace Bot
     {
         using namespace Misc::Maths;
 
-        class BodyInterface : public Component::ComponentInterface {
+        class BodyInterface : public Component::ComponentInterface<0u, nullptr_t> {
         public:
             BodyInterface() = default;
 

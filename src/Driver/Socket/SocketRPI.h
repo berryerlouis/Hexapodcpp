@@ -31,6 +31,9 @@ namespace Driver
             virtual uint8_t DataAvailable(void) final override;
 
             static void onMessage(websockets::WebsocketsClient &client, websockets::WebsocketsMessage message);
+
+            static void onEvent(websockets::WebsocketsClient &client, websockets::WebsocketsEvent event,
+                                websockets::WSInterfaceString data);
 #else
             virtual Core::Status Initialize(void) final override {return Core::Status::CORE_OK; }
 

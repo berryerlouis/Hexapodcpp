@@ -13,5 +13,10 @@ namespace Component
             SRF_RIGHT,
             VLX
         };
+
+        struct SensorsStruct {
+            const SensorsId &id;
+            const uint16_t distance;
+        };
     }
 }

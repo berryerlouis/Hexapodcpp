@@ -3,7 +3,6 @@
 #include "../../Driver/Gpio/GpioInterface.h"
 #include "../../Driver/Tick/TickInterface.h"
 #include "ButtonInterface.h"
-#include "ButtonObservable.h"
 
 namespace Component
 {
@@ -23,17 +22,12 @@ namespace Component
 
             virtual ButtonState Get(void) const final override;
 
-            virtual Core::Status Attach(ButtonObserverInterface *observer) final override;
-
-            virtual void Notify(const ButtonState &state, const uint16_t voltage) final override;
-
 
             void Hit(void);
 
         private:
             Gpio::GpioInterface &mGpioButton;
             Tick::TickInterface &mTick;
-            ButtonObservable mObservable;
             uint64_t mPushTime;
 
         public:

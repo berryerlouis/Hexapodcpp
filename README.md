@@ -62,9 +62,33 @@ The following tools are used:
  usbipd.exe unbind --hardware-id=10c4:ea60
  ```
 
-## Communication settings
+## Serial Communication settings
 
 - baud: 500000
 - bytes: 8
 - parity: None
 - stop bit: 1
+
+## Websocket
+
+- port: 8080
+
+### WSL Cross compilation:
+
+``` shell
+#toolchain
+sudo apt-get install gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
+
+#copy needed lib
+sudo scp -r hexabot:/usr/lib/arm-linux-gnueabihf/libssl* /usr/arm-linux-gnueabihf/lib/
+sudo scp -r hexabot:/usr/lib/arm-linux-gnueabihf/libcrypt* /usr/arm-linux-gnueabihf/lib/
+sudo ln -sf libcrypt.so.1 /usr/arm-linux-gnueabihf/lib/libcrypt.so
+
+#copy needed include
+sudo scp -r hexabot:/usr/include/openssl/ /usr/arm-linux-gnueabihf/include/openssl
+sudo scp -r hexabot:/usr/include/arm-linux-gnueabihf/openssl/ /usr/arm-linux-gnueabihf/include/openssl
+
+#copy wiring pi
+sudo scp -r hexabot:/usr/usr/lib/libwiringPi* /usr/arm-linux-gnueabihf/lib/
+sudo ln -sf /usr/arm-linux-gnueabihf/lib/libwiringPi.so.3.12 /usr/arm-linux-gnueabihf/lib/libwiringPi.so
+```

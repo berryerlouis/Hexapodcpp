@@ -8,6 +8,7 @@ namespace Driver
     namespace Twi
     {
         Twi::Twi(const EI2cFreq &freq) {
+            (void) freq;
         }
 
         Core::Status Twi::Initialize(void) {

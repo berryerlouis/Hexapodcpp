@@ -1,14 +1,14 @@
 #pragma once
 
-#include "SoundObservable.h"
 #include "../ComponentInterface.h"
+#include "SoundState.h"
 
 namespace Component
 {
     namespace Sound
     {
 
-        class SoundInterface : public ComponentInterface, public SoundObservableInterface {
+        class SoundInterface : public ComponentInterface<5U, SoundStruct> {
         public:
             SoundInterface() = default;
 
@@ -18,13 +18,11 @@ namespace Component
 
             virtual void Update(const uint64_t currentTime) = 0;
 
-            virtual SoundState Get() const = 0;
+            virtual SoundState GetStatus() const = 0;
 
             virtual uint64_t GetLastStartTimeHit(void) const = 0;
 
-            virtual Core::Status Attach(SoundObserverInterface *observer) = 0;
-
-            virtual void Notify(const SoundId &soundId, const SoundState &soundState, const uint16_t period) = 0;
+            virtual uint64_t GetIntervalSoundHit(void) const = 0;
         };
     }
 }

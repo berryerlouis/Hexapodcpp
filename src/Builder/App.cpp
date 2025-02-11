@@ -3,11 +3,11 @@
 
 using namespace Driver::Gpio;
 
-Gpio ledStatus = Gpio({16}, OUT);
+Gpio ledStatus = Gpio({19}, OUT);
 Gpio ledCenter = Gpio({12}, OUT);
 Gpio ledLeft = Gpio({13}, OUT);
 Gpio ledMiddleLeft = Gpio({6}, OUT);
-Gpio ledRight = Gpio({19}, OUT);
+Gpio ledRight = Gpio({16}, OUT);
 Gpio ledMiddleRight = Gpio({5}, OUT);
 Gpio enablePwm = Gpio({17}, OUT);
 Gpio echoLeftPin = Gpio({8}, IN);
@@ -16,7 +16,6 @@ Gpio triggerLeftPin = Gpio({7}, OUT);
 Gpio triggerRightPin = Gpio({21}, OUT);
 Gpio soundLeftPin = Gpio({23}, IN);
 Gpio soundRightPin = Gpio({24}, IN);
-Gpio adcPinBattery = Gpio({0}, IN);
 Gpio buttonPin = Gpio({4}, IN);
 
 
@@ -27,18 +26,20 @@ namespace Builder
         , mUart()
         , mSocket()
         , mTwi(Driver::Twi::EI2cFreq::FREQ_400_KHZ)
-        , mAdc(adcPinBattery)
         , mEnablePwm(enablePwm)
         , mGpioButton(buttonPin)
         , mGpioSoundLeft(soundLeftPin)
         , mGpioSoundRight(soundRightPin)
+        , mGpioTriggerUsLeft(triggerLeftPin)
+        , mGpioTriggerUsRight(triggerRightPin)
         , mLedStatus(ledStatus)
         , mLedCenter(ledCenter)
         , mLedLeft(ledLeft)
         , mLedMiddleLeft(ledMiddleLeft)
         , mLedRight(ledRight)
         , mLedMiddleRight(ledMiddleRight)
-        , mBattery(mAdc)
+        , mAds1115(mTwi)
+        , mBattery(mAds1115)
         , mButton(mGpioButton, mTick)
         , mSoundLeft(Component::Sound::SoundId::SOUND_LEFT, mGpioSoundLeft, mLedMiddleLeft, mTick)
         , mSoundRight(Component::Sound::SoundId::SOUND_RIGHT, mGpioSoundRight, mLedMiddleRight, mTick)
@@ -46,8 +47,8 @@ namespace Builder
         , mInputCaptureRight(echoRightPin, mTick)
         , mMpu9150(mTwi, mTick)
         , mBarometer(mTwi)
-        , mSrf05Left(Cluster::EProximityCommands::US_LEFT, triggerLeftPin, mInputCaptureLeft, mLedLeft, mTick)
-        , mSrf05Right(Cluster::EProximityCommands::US_RIGHT, triggerRightPin, mInputCaptureRight, mLedRight, mTick)
+        , mSrf05Left(Cluster::EProximityCommands::US_LEFT, mGpioTriggerUsLeft, mInputCaptureLeft, mLedLeft, mTick)
+        , mSrf05Right(Cluster::EProximityCommands::US_RIGHT, mGpioTriggerUsRight, mInputCaptureRight, mLedRight, mTick)
         , mVl53l0x(mTwi, mLedCenter, mTick)
         , mSensorProximity(mSrf05Left, mSrf05Right, mVl53l0x)
         , mSsd1306(mTwi)

@@ -10,10 +10,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install gcc and avr-gcc
+      - name: Install gcc
         run: |
           sudo apt update
-          sudo apt install build-essential binutils gcc-avr avr-libc
+          sudo apt install build-essential binutils
           mkdir archive/
 
       - name: Build Release

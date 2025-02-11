@@ -36,7 +36,6 @@ export class MessageManager {
     }
 
     read(message: Message) {
-        message.setDate();
         let asyncMessageIncoming = true;
         if (this.currentMessagesToSent) {
             if (message.cluster.code === this.currentMessagesToSent.message.cluster.code) {

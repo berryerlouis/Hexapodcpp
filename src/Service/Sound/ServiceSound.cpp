@@ -31,10 +31,9 @@ namespace Service
             this->mSoundInterfaceRight.Update(currentTime);
         }
 
-        void ServiceSound::UpdatedSoundState(const SoundId &soundId, const SoundState &SoundState,
-                                             const uint16_t period) {
+        void ServiceSound::Notified(const SoundStruct &sound) {
             Frame response;
-            Cluster::Sound::ClusterSound::BuildFrameGetSoundState(soundId, SoundState, response);
+            Cluster::Sound::ClusterSound::BuildFrameGetSoundState(sound.id, sound.state, response);
             this->SendMessage(response);
         }
     } // namespace Sound

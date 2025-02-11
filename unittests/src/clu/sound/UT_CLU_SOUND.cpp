@@ -45,7 +45,7 @@ namespace Cluster
             request.Set1ByteParam(SOUND_LEFT);
             Frame response;
 
-            EXPECT_CALL(mMockSoundLeft, Get()).WillOnce(Return(NO_SOUND));
+            EXPECT_CALL(mMockSoundLeft, GetStatus()).WillOnce(Return(NO_SOUND));
 
             success = mClusterSound.ExecuteFrame(request, response);
 
@@ -63,7 +63,7 @@ namespace Cluster
             request.Set1ByteParam(SOUND_RIGHT);
             Frame response;
 
-            EXPECT_CALL(mMockSoundRight, Get()).WillOnce(Return(NO_SOUND));
+            EXPECT_CALL(mMockSoundRight, GetStatus()).WillOnce(Return(NO_SOUND));
 
             success = mClusterSound.ExecuteFrame(request, response);
 
@@ -81,7 +81,7 @@ namespace Cluster
             request.Set1ByteParam(SOUND_LEFT);
             Frame response;
 
-            EXPECT_CALL(mMockSoundLeft, Get()).WillOnce(Return(LOUD));
+            EXPECT_CALL(mMockSoundLeft, GetStatus()).WillOnce(Return(LOUD));
 
             success = mClusterSound.ExecuteFrame(request, response);
 
@@ -99,7 +99,7 @@ namespace Cluster
             request.Set1ByteParam(SOUND_RIGHT);
             Frame response;
 
-            EXPECT_CALL(mMockSoundRight, Get()).WillOnce(Return(LOUD));
+            EXPECT_CALL(mMockSoundRight, GetStatus()).WillOnce(Return(LOUD));
 
             success = mClusterSound.ExecuteFrame(request, response);
 

@@ -13,16 +13,19 @@ import Canvas from "./ui/Canvas.js";
 import Compass from "./ui/Compass.js";
 import Hexapod from "./ui/hexapod/hexapod.js";
 import { Message } from "./protocol/Message.js";
-import { Pane } from 'tweakpane';
-import { ClusterName, CommandGeneral, CommandImu, CommandServo } from "./protocol/Cluster.js";
+import Controls from "./ui/gui/Controls.js";
+import { Logger } from './ui/logger/Logger.js';
+import { ClusterName, CommandGeneral } from "./protocol/Cluster.js";
 const socketInterface = new SocketInterface();
 const messageManager = new MessageManager(socketInterface);
 const canvas = new Canvas(window.innerWidth, window.innerHeight - Number($('#header').height()) - Number($('#footer').height()));
 const hexapod = new Hexapod(canvas.groupBody);
 const compass = new Compass();
+const robot = new Hexapod(canvas.groupBody);
+const guiControls = new Controls(messageManager, robot);
+const logger = new Logger(messageManager);
 function init() {
     animate();
-    const pane = new Pane();
 }
 function update() {
     canvas.animate();
@@ -32,32 +35,36 @@ function update() {
 function animate() {
     requestAnimationFrame(animate);
     update();
+    guiControls.updateDisplay();
 }
 init();
 $('#connect-button').click(() => __awaiter(void 0, void 0, void 0, function* () {
     //await serialInterface.init(navigator);
     ///messageManager.write(new Message().build("Tx", ClusterName.BATTERY, CommandBattery.STATUS));
     messageManager.write(new Message().build("Tx", ClusterName.GENERAL, CommandGeneral.VERSION));
-    messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.PRESSURE));
+    /*messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.PRESSURE));
     messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.ALTITUDE));
     messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.TMPBAR));
     messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.TMP));
     messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_ALL));
     //walk.init();
+
     setTimeout(() => {
         setInterval(() => {
             messageManager.write(new Message().build("Tx", ClusterName.SERVO, CommandServo.GET_ALL));
             //messageManager.write(new Message().build("Tx", ClusterName.GENERAL, CommandGeneral.VERSION));
         }, 1000);
+
         setInterval(() => {
             messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.ALL));
             messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.YAWPITCHROLL));
         }, 1000);
+
         setInterval(() => {
             //messageManager.write(new Message().build("Tx", ClusterName.BATTERY, CommandBattery.STATUS));
             messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.PRESSURE));
             messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.ALTITUDE));
             messageManager.write(new Message().build("Tx", ClusterName.IMU, CommandImu.TMPBAR));
         }, 10000);
-    }, 1000);
+    }, 1000);*/
 }));

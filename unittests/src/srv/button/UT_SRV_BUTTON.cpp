@@ -29,7 +29,6 @@ namespace Service
                 EXPECT_EQ(Core::Status::CORE_ERROR, mServiceButton.Initialize());
 
                 EXPECT_CALL(mMockButton, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockButton, Attach( _ )).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_EQ(Core::Status::CORE_OK, mServiceButton.Initialize());
             }
 
@@ -58,7 +57,7 @@ namespace Service
             Frame response;
             Cluster::Button::ClusterButton::BuildFrameGetButtonState(ButtonState, response);
             EXPECT_CALL(mMockEventListener, SendMessage(response)).Times(1U);
-            mServiceButton.UpdatedButtonState(ButtonState, 10U);
+            mServiceButton.Notified({ButtonState, 10U});
         }
     }
 }

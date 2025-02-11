@@ -15,6 +15,16 @@ namespace Driver
             bufferMessage += message.data();
         }
 
+        void Socket::onEvent(websockets::WebsocketsClient &client, websockets::WebsocketsEvent event,
+                             websockets::WSInterfaceString data) {
+            (void) client;
+            (void) data;
+            if (event == websockets::WebsocketsEvent::ConnectionOpened || event ==
+                websockets::WebsocketsEvent::ConnectionClosed) {
+                bufferMessage.clear();
+            }
+        }
+
         Socket::Socket(void) {
         }
 
@@ -29,6 +39,7 @@ namespace Driver
                 if (server.poll()) {
                     client = server.accept();
                     client.onMessage(onMessage);
+                    client.onEvent(onEvent);
                 }
                 client.poll();
             }
@@ -47,9 +58,12 @@ namespace Driver
         }
 
         uint8_t Socket::Read(void) {
-            const uint8_t value = bufferMessage.c_str()[0U];
-            bufferMessage = bufferMessage.substr(1);
-            return value;
+            if (bufferMessage.length() > 0U) {
+                const uint8_t value = bufferMessage.c_str()[0U];
+                bufferMessage = bufferMessage.substr(1);
+                return value;
+            }
+            return 0xFFU;
         }
 
         uint8_t Socket::DataAvailable(void) {

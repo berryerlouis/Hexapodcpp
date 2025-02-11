@@ -1,9 +1,37 @@
 cmake_minimum_required(VERSION 3.22)
+set(CMAKE_SYSTEM_NAME Generic)
+#set(CMAKE_VERBOSE_MAKEFILE ON)
+if (${CROSS})
+    message(INFO " => Compilation for ${TARGET} in ${CMAKE_BUILD_TYPE} mode for ${PROJECT_NAME} using Cross Compiler")
+else ()
+    message(INFO " => Compilation for ${TARGET} in ${CMAKE_BUILD_TYPE} mode for ${PROJECT_NAME} using native Compiler")
+endif ()
+set(CMAKE_FIND_DEBUG_MODE false)
 
-message(INFO " => Compilation with ${TARGET} in ${CMAKE_BUILD_TYPE} mode for ${PROJECT_NAME}")
+
+if (${CROSS})
+
+    set(CMAKE_SYSTEM_NAME Linux)
+    set(CMAKE_SYSTEM_PROCESSOR arm)
+    set(CMAKE_LIBRARY_ARCHITECTURE arm-linux-gnueabihf)
+    set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE armhf)
+    
+    set(CMAKE_SYSROOT /home/louis/sysroot)
+
+    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+    #include_directories(/usr/arm-linux-gnueabihf/include/)
+    find_package(OpenSSL REQUIRED)
+    find_package(Threads REQUIRED)
+endif ()
+
 if (${TARGET} STREQUAL "X64")
     set(CMAKE_CXX_STANDARD 11)
     set(CMAKE_CXX_STANDARD_REQUIRED True)
+    set(CMAKE_CXX_COMPILER /usr/bin/g++)
+    set(CMAKE_C_COMPILER /usr/bin/gcc)
 
     include(FetchContent)
 
@@ -18,12 +46,12 @@ if (${TARGET} STREQUAL "X64")
     # using GCC
     add_compile_definitions(GTEST)
     add_compile_definitions(X64)
-    add_compile_options(-DF_CPU=${F_CPU} -Wall -Wextra -std=c++17 -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O0 -g)
-elseif (${TARGET} STREQUAL "RPI")
+    add_compile_options(-Wall -Wextra -std=c++17 -Wno-cast-align -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O0 -g)
 
+elseif (${TARGET} STREQUAL "RPI")
     set(CMAKE_CXX_STANDARD 11)
     set(CMAKE_CXX_STANDARD_REQUIRED True)
-    #WiringPi
+    # WiringPi
     include(FetchContent)
     FetchContent_Declare(
             wiringPi
@@ -33,33 +61,16 @@ elseif (${TARGET} STREQUAL "RPI")
     FetchContent_MakeAvailable(wiringPi)
     include_directories(${wiringpi_SOURCE_DIR})
 
-    #TinyWebsockets
+    # TinyWebsockets
     FetchContent_Declare(
             TinyWebsockets
             GIT_REPOSITORY https://github.com/berryerlouis/TinyWebsockets.git
             GIT_TAG master
     )
     FetchContent_MakeAvailable(TinyWebsockets)
-
-    add_compile_definitions(X64)
     add_compile_definitions(RPI)
+    #add_compile_options(-Wall -Wextra -std=c++17 -Wno-cast-align -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O0 -g)
 
-else ()
-    # using AVR GCC
-    set(CMAKE_SYSTEM_NAME Generic)
-    set(CMAKE_CXX_COMPILER avr-g++)
-    set(CMAKE_C_COMPILER avr-gcc)
-    set(CMAKE_ASM_COMPILER avr-gcc)
-    set(F_CPU 20000000UL)
-    set(MCU atmega1284p)
-    set(CMAKE_EXE_LINKER_FLAGS -mmcu=${MCU})
-
-    add_compile_definitions(AVR)
-
-    if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-        add_compile_definitions(DEBUG)
-    endif ()
-    add_compile_options(-mmcu=${MCU} -DF_CPU=${F_CPU} -Wall -Wextra -std=c++17 -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O1 -g)
 endif ()
 
 # Concatenate all src files
@@ -100,6 +111,7 @@ set(SRC_FILES_COMPONENT
         Component/Barometer/Barometer.cpp
         Component/Battery/Battery.cpp
         Component/Sound/Sound.cpp
+        Component/Adc/Ads1115.cpp
         Component/Button/Button.cpp
         Component/Communication/Communication.cpp
         Component/Display/Ssd1306.cpp
@@ -153,19 +165,17 @@ set(SRC_FILES
         ${SRC_FILES_SERVICES}
 )
 
-add_executable(${PROJECT_NAME} ${SRC_FILES})
-target_link_libraries(${PROJECT_NAME} tiny_websockets_lib)
-if (${TARGET} STREQUAL "RPI")
-    target_link_libraries(${PROJECT_NAME} wiringPi)
-else ()
-    # Rename the output to .elf as we will create multiple files
-    set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME}.elf)
-
-    # Strip binary for upload
-    add_custom_target(strip ALL avr-strip ${PROJECT_NAME}.elf DEPENDS ${PROJECT_NAME})
-
-    add_custom_target(hex ALL avr-objcopy -R .eeprom -O ihex ${PROJECT_NAME}.elf ${PROJECT_NAME}.hex DEPENDS strip)
-
-    # Upload the firmware with avrdude
-    add_custom_target(upload avrdude.exe -c arduino -P COM4 -b 500000 -p m1284p -U flash:w:build/avr-debug/src/Hexapodcpp.elf DEPEND hex)
+find_package(Threads REQUIRED)
+if (THREADS_HAVE_PTHREAD_ARG)
+    set("vdfvdfqsvdqsr<" ${THREADS_HAVE_PTHREAD_ARG})
+    target_compile_options(${PROJECT_NAME} PUBLIC "-pthread")
 endif ()
+if (CMAKE_THREAD_LIBS_INIT)
+    set("vdfvdfqsvdqsr<" ${CMAKE_THREAD_LIBS_INIT})
+    target_link_libraries(${PROJECT_NAME} "${CMAKE_THREAD_LIBS_INIT}")
+endif ()
+
+add_executable(${PROJECT_NAME} ${SRC_FILES})
+target_link_libraries(${PROJECT_NAME} wiringPi tiny_websockets_lib)
+
+set(CMAKE_FIND_DEBUG_MODE FALSE)

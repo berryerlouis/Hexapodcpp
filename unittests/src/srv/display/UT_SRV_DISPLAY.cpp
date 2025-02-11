@@ -37,12 +37,13 @@ namespace Service
                 EXPECT_EQ(Core::Status::CORE_ERROR, mServiceDisplay.Initialize());
 
                 EXPECT_CALL(mMockSsd1306, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockButton, Attach(_)).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockSoundLeft, Attach(_)).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockSoundRight, Attach(_)).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockSensorProximity, Attach(_)).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockSsd1306,
                             DrawLine( 0, 10U, SCREEN_WIDTH, 10U, Bitmap::Bitmaps::Color::COLOR_WHITE )).Times(1U);
+                EXPECT_CALL(mMockSsd1306,
+                            DrawLine( 18U, 0U, 18U, SCREEN_HEIGHT, Bitmap::Bitmaps::Color::COLOR_WHITE )).Times(1U);
+                EXPECT_CALL(mMockSsd1306,
+                            DrawLine( SCREEN_WIDTH - 18U, 0U, SCREEN_WIDTH- 18U , SCREEN_HEIGHT, Bitmap::Bitmaps::Color
+                                ::COLOR_WHITE )).Times(1U);
                 EXPECT_CALL(mMockSsd1306,
                             DrawBitmap( _, 0U, 0U, Bitmap::Bitmaps::Color::COLOR_WHITE )).Times(1U);
                 EXPECT_CALL(mMockSsd1306,

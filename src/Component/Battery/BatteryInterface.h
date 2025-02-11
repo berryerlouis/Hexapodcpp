@@ -1,13 +1,15 @@
 #pragma once
 
 #include "../ComponentInterface.h"
-#include "BatteryObservableInterface.h"
+#include "BatteryState.h"
 
 namespace Component
 {
     namespace Battery
     {
-        class BatteryInterface : public ComponentInterface, public BatteryObservableInterface {
+
+
+        class BatteryInterface : public ComponentInterface<5U, BatteryStruct> {
         public:
             BatteryInterface(void) = default;
 
@@ -20,10 +22,6 @@ namespace Component
             virtual BatteryState GetState() = 0;
 
             virtual uint16_t GetVoltage() = 0;
-
-            virtual Core::Status Attach(BatteryObserverInterface *observer) = 0;
-
-            virtual void Notify(const BatteryState &state, const uint16_t voltage) = 0;
         };
     }
 }

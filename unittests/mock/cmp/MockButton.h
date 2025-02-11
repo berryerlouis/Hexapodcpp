@@ -12,9 +12,6 @@ namespace Component
 			MOCK_METHOD1(Update, void( const uint64_t ));
 
 			MOCK_CONST_METHOD0(Get, ButtonState (void));
-
-			MOCK_METHOD1(Attach, Core::Status( ButtonObserverInterface * ));
-			MOCK_METHOD2(Notify, void( const ButtonState &, const uint16_t ));
 		};
 	}
 }

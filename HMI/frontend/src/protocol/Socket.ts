@@ -13,7 +13,7 @@ export class SocketInterface {
         this.listOfCallbackRead = [];
         this.listOfCallbackWrite = [];
         this.buffer = '';
-        this.socket = new WebSocket('ws://127.0.0.1:8081');
+        this.socket = new WebSocket('ws://192.168.1.170:8080');
 
         this.socket.addEventListener('open', (event) => {
             console.log('Connected to the WebSocket server');
@@ -21,6 +21,7 @@ export class SocketInterface {
 
         this.socket.addEventListener('message', (event) => {
             let frame = Protocol.decode("Rx", event.data);
+            frame.setDate();
             this.notifyRead(frame);
         });
 

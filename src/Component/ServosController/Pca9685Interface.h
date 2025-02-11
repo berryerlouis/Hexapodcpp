@@ -6,7 +6,7 @@ namespace Component
 {
     namespace ServosController
     {
-        class Pca9685Interface : public ComponentInterface {
+        class Pca9685Interface : public ComponentInterface<0U, nullptr_t> {
         public:
             Pca9685Interface(void) = default;
 

@@ -3,9 +3,8 @@
 #include "../../Driver/Gpio/GpioInterface.h"
 #include "../../Driver/Tick/TickInterface.h"
 #include "../Led/LedInterface.h"
-#include "SoundsId.h"
+#include "SoundState.h"
 #include "SoundInterface.h"
-#include "SoundObservable.h"
 
 namespace Component
 {
@@ -23,27 +22,27 @@ namespace Component
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual SoundState Get(void) const final override;
+            virtual SoundState GetStatus(void) const final override;
 
             virtual uint64_t GetLastStartTimeHit(void) const final override;
 
-            virtual Core::Status Attach(SoundObserverInterface *observer) final override;
-
-            virtual void
-            Notify(const SoundId &soundId, const SoundState &soundState, const uint16_t voltage) final override;
+            virtual uint64_t GetIntervalSoundHit(void) const final override;
 
             void Hit(void);
 
-            static SoundId soundIdHit;
+            static uint8_t soundIndex;
 
         private:
+            constexpr static uint8_t NB_MAX_INTERVAL_SOUND_TIME = 100U;
             SoundId mSoundId;
             Gpio::GpioInterface &mGpioSound;
             Led::LedInterface &mLed;
             Tick::TickInterface &mTick;
-            SoundObservable mObservable;
             uint64_t mStartSoundTime;
             uint64_t mStopSoundTime;
+            uint64_t mIntervalSoundTimeArray[NB_MAX_INTERVAL_SOUND_TIME];
+            uint8_t mIntervalSoundTimeArrayIndex;
+            uint64_t mAverageIntervalSoundTime;
             SoundState mState;
         };
     }

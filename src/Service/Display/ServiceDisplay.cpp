@@ -11,11 +11,11 @@ namespace Service
                                        , SensorProximityMultipleInterface &sensors
                                        , Event::MessageInterface &messageListener) :
             Service(20U, messageListener)
+            , mSsd1306(ssd1306)
             , mButton(button)
             , mSoundInterfaceLeft(soundInterfaceLeft)
             , mSoundInterfaceRight(soundInterfaceRight)
             , mSensors(sensors)
-            , mSsd1306(ssd1306)
             , mBmpBatteryLevel{.bmp = const_cast<uint8_t *>(Bitmaps::Battery0), .width = 16U, .height = 7U}
             , mBmpCommunication{.bmp = const_cast<uint8_t *>(Bitmaps::Communication), .width = 16U, .height = 8U}
             , mBmpProximity{.bmp = const_cast<uint8_t *>(Bitmaps::ArrowCenter), .width = 16U, .height = 6U}
@@ -49,21 +49,24 @@ namespace Service
             this->mSsd1306.Update(currentTime);
         }
 
-        void ServiceDisplay::UpdatedButtonState(const ButtonState &buttonState, const uint16_t period) {
-            this->DisplayButtonBmp(buttonState);
+        void ServiceDisplay::Notified(const ButtonStruct &button) {
+            this->DisplayButtonBmp(button.state);
         }
 
-        void ServiceDisplay::Detect(const SensorsId &sensorId, const uint16_t distance) {
-            this->DisplayProximitySensor(sensorId, distance);
+        void ServiceDisplay::Notified(const SoundStruct &sound) {
+            this->DisplaySound(sound.id, sound.state, sound.delay);
         }
 
-        void ServiceDisplay::UpdatedSoundState(const SoundId &soundId, const SoundState &soundState,
-                                               const uint16_t period) {
-            this->DisplaySound(soundId, soundState, period);
+        void ServiceDisplay::Notified(const SensorsStruct &sensor) {
+            this->DisplayProximitySensor(sensor.id, sensor.distance);
         }
+
 
         void ServiceDisplay::DisplayBackground(void) const {
-            this->mSsd1306.DrawLine(0, 10U, SCREEN_WIDTH, 10U, Bitmaps::Color::COLOR_WHITE);
+            this->mSsd1306.DrawLine(0U, 10U, SCREEN_WIDTH, 10U, Bitmaps::Color::COLOR_WHITE);
+            this->mSsd1306.DrawLine(18U, 0U, 18U, SCREEN_HEIGHT, Bitmaps::Color::COLOR_WHITE);
+            this->mSsd1306.DrawLine(SCREEN_WIDTH - 18U, 0U, SCREEN_WIDTH - 18U, SCREEN_HEIGHT,
+                                    Bitmaps::Color::COLOR_WHITE);
         }
 
         void ServiceDisplay::DisplayButtonBmp(const ButtonState &buttonState) {
@@ -141,6 +144,7 @@ namespace Service
         }
 
         void ServiceDisplay::DisplaySound(const SoundId &soundId, const SoundState &soundState, const uint16_t period) {
+            (void) period;
             if (soundId == SOUND_RIGHT) {
                 if (soundState == NO_SOUND) {
                     this->mSsd1306.EraseArea((SCREEN_WIDTH) - (this->mBmpSound.width),

@@ -2,15 +2,16 @@
 
 #include "../Service.h"
 #include "../../Component/Sound/SoundInterface.h"
-#include "../../Component/Sound/SoundObserverInterface.h"
+#include "../../Component/ObserverInterface.h"
 
 namespace Service
 {
     namespace Sound
     {
+        using namespace Component;
         using namespace Component::Sound;
 
-        class ServiceSound : public Service, public SoundObserverInterface {
+        class ServiceSound : public Service, ObserverInterface<SoundStruct> {
         public:
             ServiceSound(SoundInterface &soundInterfaceLeft, SoundInterface &soundInterfaceRight,
                          Event::MessageInterface &messageListener);
@@ -21,8 +22,7 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void UpdatedSoundState(const SoundId &soundId, const SoundState &SoundState,
-                                           const uint16_t period) final override;
+            virtual void Notified(const SoundStruct &sound) final override;
 
         protected:
             SoundInterface &mSoundInterfaceLeft;

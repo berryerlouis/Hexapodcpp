@@ -2,15 +2,16 @@
 
 #include "../Service.h"
 #include "../../Component/Button/ButtonInterface.h"
-#include "../../Component/Button/ButtonObserverInterface.h"
+#include "../../Component/ObserverInterface.h"
 
 namespace Service
 {
     namespace Button
     {
+        using namespace Component;
         using namespace Component::Button;
 
-        class ServiceButton : public Service, public ButtonObserverInterface {
+        class ServiceButton : public Service, ObserverInterface<ButtonStruct> {
         public:
             ServiceButton(ButtonInterface &ButtonInterface,
                           Event::MessageInterface &messageListener);
@@ -21,7 +22,7 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void UpdatedButtonState(const ButtonState &ButtonState, const uint16_t period) final override;
+            virtual void Notified(const ButtonStruct &button) final override;
 
         protected:
             ButtonInterface &mButtonInterface;

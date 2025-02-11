@@ -95,7 +95,6 @@ namespace Component
             Twi::TwiInterface &mTwi;
             uint8_t mAddress;
             uint8_t mBufferScreen[2U][BUFFER_DISPLAY_LENGTH];
-            uint8_t mBufferIndexDisplayed;
             bool mNeedToUpdate;
             uint16_t mUpdateIndex;
         };

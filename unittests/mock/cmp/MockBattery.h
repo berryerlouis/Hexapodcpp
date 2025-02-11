@@ -13,9 +13,6 @@ namespace Component
 
 			MOCK_METHOD0(GetState, BatteryState( void ));
 			MOCK_METHOD0(GetVoltage, uint16_t( void ));
-
-			MOCK_METHOD1(Attach, Core::Status( BatteryObserverInterface * ));
-			MOCK_METHOD2(Notify, void( const BatteryState &, const uint16_t ));
 		};
 	}
 }

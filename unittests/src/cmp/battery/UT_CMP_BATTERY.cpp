@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 
-#include "../../../mock/drv/MockAdc.h"
+#include "../../../mock/cmp/MockAds1115.h"
 #include "../../../../src/Component/Battery/Battery.h"
 
 using ::testing::_;
@@ -11,73 +11,78 @@ using ::testing::StrictMock;
 
 namespace Component
 {
-	namespace Battery
-	{
-		class UT_CMP_BATTERY : public ::testing::Test {
-		protected:
-			UT_CMP_BATTERY() : mMockAdc(),
-			                   mBattery(mMockAdc) {
-			}
+    namespace Battery
+    {
+        class UT_CMP_BATTERY : public ::testing::Test {
+        protected:
+            UT_CMP_BATTERY() :
+                mMockAdc(),
+                mBattery(mMockAdc) {
+            }
 
-			virtual void SetUp() {
-				EXPECT_CALL(mMockAdc, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
-				EXPECT_EQ(mBattery.Initialize(), Core::Status::CORE_OK);
-			}
+            virtual void
+            SetUp() {
+                EXPECT_CALL(mMockAdc, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_EQ(mBattery.Initialize(), Core::Status::CORE_OK);
+            }
 
-			virtual void TearDown() {
-			}
+            virtual void
+            TearDown() {
+            }
 
-			virtual ~UT_CMP_BATTERY() = default;
+            virtual ~UT_CMP_BATTERY() = default;
 
-			/* Mocks */
-			StrictMock<Driver::Adc::MockAdc> mMockAdc;
+            /* Mocks */
+            StrictMock<Component::Adc::MockAds1115> mMockAdc;
 
-			/* Test class */
-			Battery mBattery;
-		};
-
-
-		TEST_F(UT_CMP_BATTERY, GetStateAfterInit) {
-			BatteryState state = mBattery.GetState();
-			EXPECT_EQ(state, BatteryState::UNKNOWN);
-		}
+            /* Test class */
+            Battery mBattery;
+        };
 
 
-		TEST_F(UT_CMP_BATTERY, GetStateAfterUpdateCritical) {
-			EXPECT_CALL(mMockAdc, Read()).WillOnce(Return(740U));
+        TEST_F(UT_CMP_BATTERY, GetStateAfterInit) {
+            BatteryState state = mBattery.GetState();
+            EXPECT_EQ(state, BatteryState::UNKNOWN);
+        }
 
-			mBattery.Update(0UL);
-			BatteryState state = mBattery.GetState();
 
-			EXPECT_EQ(state, BatteryState::CRITICAL);
-		}
+        TEST_F(UT_CMP_BATTERY, GetStateAfterUpdateCritical) {
+            EXPECT_CALL(mMockAdc, GetVoltage()).WillOnce(Return(740U));
+            EXPECT_CALL(mMockAdc, GetIntensity()).WillOnce(Return(740U));
 
-		TEST_F(UT_CMP_BATTERY, GetStateAfterUpdateWarning) {
-			EXPECT_CALL(mMockAdc, Read()).WillOnce(Return(799U));
+            mBattery.Update(0UL);
+            const BatteryState state = mBattery.GetState();
+            EXPECT_EQ(state, BatteryState::CRITICAL);
+        }
 
-			mBattery.Update(0UL);
-			BatteryState state = mBattery.GetState();
+        TEST_F(UT_CMP_BATTERY, GetStateAfterUpdateWarning) {
+            EXPECT_CALL(mMockAdc, GetVoltage()).WillOnce(Return(799U));
+            EXPECT_CALL(mMockAdc, GetIntensity()).WillOnce(Return(799U));
 
-			EXPECT_EQ(state, BatteryState::WARNING);
-		}
+            mBattery.Update(0UL);
+            const BatteryState state = mBattery.GetState();
+            EXPECT_EQ(state, BatteryState::WARNING);
+        }
 
-		TEST_F(UT_CMP_BATTERY, GetStateAfterUpdateNominal) {
-			EXPECT_CALL(mMockAdc, Read()).WillOnce(Return(900U));
+        TEST_F(UT_CMP_BATTERY, GetStateAfterUpdateNominal) {
+            EXPECT_CALL(mMockAdc, GetVoltage()).WillOnce(Return(900U));
+            EXPECT_CALL(mMockAdc, GetIntensity()).WillOnce(Return(900U));
 
-			mBattery.Update(0UL);
-			BatteryState state = mBattery.GetState();
+            mBattery.Update(0UL);
 
-			EXPECT_EQ(state, BatteryState::NOMINAL);
-		}
+            const BatteryState state = mBattery.GetState();
+            EXPECT_EQ(state, BatteryState::NOMINAL);
+        }
 
-		TEST_F(UT_CMP_BATTERY, GetStateAfterUpdateNominalTwice) {
-			EXPECT_CALL(mMockAdc, Read()).WillRepeatedly(Return(900U));
+        TEST_F(UT_CMP_BATTERY, GetStateAfterUpdateNominalTwice) {
+            EXPECT_CALL(mMockAdc, GetVoltage()).WillRepeatedly(Return(900U));
+            EXPECT_CALL(mMockAdc, GetIntensity()).WillRepeatedly(Return(900U));
 
-			mBattery.Update(0UL);
-			mBattery.Update(0UL);
-			BatteryState state = mBattery.GetState();
+            mBattery.Update(0UL);
+            mBattery.Update(0UL);
+            const BatteryState state = mBattery.GetState();
 
-			EXPECT_EQ(state, BatteryState::NOMINAL);
-		}
-	}
+            EXPECT_EQ(state, BatteryState::NOMINAL);
+        }
+    }
 }

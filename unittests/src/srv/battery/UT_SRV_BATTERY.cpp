@@ -29,7 +29,6 @@ namespace Service
                 EXPECT_EQ(Core::Status::CORE_ERROR, mServiceBattery.Initialize());
 
                 EXPECT_CALL(mMockBattery, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockBattery, Attach( _ )).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_EQ(Core::Status::CORE_OK, mServiceBattery.Initialize());
             }
 
@@ -55,11 +54,11 @@ namespace Service
 
         TEST_F(UT_SRV_BATTERY, UpdatedBatteryState) {
             constexpr BatteryState batteryState = BatteryState::WARNING;
-            constexpr uint8_t voltage = 10U;
+            constexpr uint8_t delay = 10U;
             Frame response;
-            Cluster::Battery::ClusterBattery::BuildFrameState(batteryState, voltage, response);
+            Cluster::Battery::ClusterBattery::BuildFrameState(batteryState, delay, response);
             EXPECT_CALL(mMockEventListener, SendMessage(response)).Times(1U);
-            mServiceBattery.UpdatedBatteryState(batteryState, 10U);
+            mServiceBattery.Notified({batteryState, delay});
         }
     }
 }

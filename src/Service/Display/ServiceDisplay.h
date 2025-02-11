@@ -4,12 +4,10 @@
 #include "../../Component/Display/Ssd1306Interface.h"
 #include "../../Component/Battery/BatteryState.h"
 #include "../../Component/Button/ButtonInterface.h"
-#include "../../Component/Button/ButtonObserverInterface.h"
 #include "../../Component/Proximity/SensorsId.h"
 #include "../../Component/Proximity/SensorProximityInterface.h"
-#include "../../Component/Proximity/SensorProximityObserverInterface.h"
 #include "../../Component/Sound/SoundInterface.h"
-#include "../../Component/Sound/SoundObserverInterface.h"
+#include "../../Component/ObserverInterface.h"
 #include "../../Misc/Bitmap/Bitmaps.h"
 #include "../Service.h"
 
@@ -27,9 +25,9 @@ namespace Service
         using namespace Component;
 
         class ServiceDisplay : public Service
-                               , private ButtonObserverInterface
-                               , private SoundObserverInterface
-                               , private SensorProximityObserverInterface {
+                               , ObserverInterface<ButtonStruct>
+                               , ObserverInterface<SoundStruct>
+                               , ObserverInterface<SensorsStruct> {
         public:
             ServiceDisplay(Ssd1306Interface &ssd1306
                            , ButtonInterface &button
@@ -44,12 +42,11 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void UpdatedButtonState(const ButtonState &buttonState, const uint16_t period) final override;
+            virtual void Notified(const ButtonStruct &button) final override;
 
-            virtual void Detect(const SensorsId &sensorId, const uint16_t distance) final override;
+            virtual void Notified(const SoundStruct &sound) final override;
 
-            virtual void UpdatedSoundState(const SoundId &soundId, const SoundState &soundState,
-                                           const uint16_t period) final override;
+            virtual void Notified(const SensorsStruct &sensor) final override;
 
             void DisplayBackground(void) const;
 

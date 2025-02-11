@@ -1,4 +1,4 @@
-import { Clusters, Cluster} from './Cluster.js';
+import { Clusters, Cluster, Command} from './Cluster.js';
 import { Message } from './Message.js';
 
 export class Protocol {
@@ -37,14 +37,14 @@ export class Protocol {
         }
     }
 
-    static encode(cluster: any, command: any, size: number, params: string[]): string {
+    static encode(cluster: Cluster, command: Command, size: number, params: string[]): string {
         let messageToEncode = '<';
-        messageToEncode += cluster.code.toString(16).padStart(2, '0').toUpperCase();
-        messageToEncode += command.code.toString(16).padStart(2, '0').toUpperCase();
-        messageToEncode += (!size ? '00' : size.toString(16).padStart(2, '0')).toUpperCase();
+        messageToEncode += parseInt(cluster.code, 16).toString(16).padStart(2, '0').toUpperCase();
+        messageToEncode += parseInt(command.code, 16).toString(16).padStart(2, '0').toUpperCase();
+        messageToEncode += size.toString(16).padStart(2, '0').toUpperCase();
         if (params) {
-            for (let param of params) {
-                messageToEncode += Number(param).toString(16).padStart(2, '0').toUpperCase();
+            for ( let param of params) {
+                messageToEncode += parseInt(param, 16).toString(16).padStart(2, '0').toUpperCase();
             }
         }
         messageToEncode += '>';

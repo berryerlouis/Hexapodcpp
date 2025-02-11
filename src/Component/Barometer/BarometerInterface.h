@@ -14,7 +14,7 @@ namespace Component
             MS5611_ULTRA_LOW_POWER = 0x00U
         };
 
-        class BarometerInterface : public ComponentInterface {
+        class BarometerInterface : public ComponentInterface<0U, nullptr_t> {
         public:
             BarometerInterface() = default;
 

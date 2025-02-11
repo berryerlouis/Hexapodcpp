@@ -1,13 +1,13 @@
 #pragma once
 
 #include "../ComponentInterface.h"
-#include "SensorProximityObservable.h"
+#include "SensorsId.h"
 
 namespace Component
 {
     namespace Proximity
     {
-        class SensorProximityInterface : public ComponentInterface, public SensorProximityObservable {
+        class SensorProximityInterface : public ComponentInterface<5U, SensorsStruct> {
         public:
             SensorProximityInterface(void) = default;
 
@@ -24,7 +24,7 @@ namespace Component
             virtual Core::Status SetThreshold(const uint16_t threshold) = 0;
         };
 
-        class SensorProximityMultipleInterface : public ComponentInterface {
+        class SensorProximityMultipleInterface : public ComponentInterface<5U, SensorsStruct> {
         public:
             SensorProximityMultipleInterface(void) = default;
 
@@ -39,8 +39,6 @@ namespace Component
             virtual uint16_t GetThreshold(const SensorsId &sensorId) = 0;
 
             virtual Core::Status SetThreshold(const SensorsId &sensorId, const uint16_t threshold) = 0;
-
-            virtual Core::Status Attach(SensorProximityObserverInterface *observer) = 0;
         };
     }
 }

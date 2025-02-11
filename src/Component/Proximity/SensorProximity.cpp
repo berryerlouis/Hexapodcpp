@@ -18,7 +18,7 @@ namespace Component
                 }
             }
 
-            return ((success == NB_SENSORS) ? Core::Status::CORE_OK : Core::Status::CORE_ERROR);
+            return ((success >= NB_SENSORS - 1U) ? Core::Status::CORE_OK : Core::Status::CORE_ERROR);
         }
 
         void SensorProximity::Update(const uint64_t currentTime) {
@@ -39,16 +39,5 @@ namespace Component
             return (this->mSensors[sensorId]->GetThreshold());
         }
 
-        Core::Status SensorProximity::Attach(SensorProximityObserverInterface *observer) {
-            uint8_t success = 0U;
-
-            for (SensorProximityInterface *sensor: this->mSensors) {
-                if (sensor->Attach(observer) == Core::Status::CORE_OK) {
-                    success++;
-                }
-            }
-
-            return ((success == NB_SENSORS) ? Core::Status::CORE_OK : Core::Status::CORE_ERROR);
-        }
     }
 }

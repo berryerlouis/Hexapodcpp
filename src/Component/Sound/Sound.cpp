@@ -5,13 +5,14 @@ namespace Component
 {
     namespace Sound
     {
-        static Sound *sound[3U] = {};
-        static uint8_t soundIndex = 0U;
-        SoundId Sound::soundIdHit = SOUND_NONE;
+        static Sound *sound[NB_SENSORS_SOUND] = {};
+        uint8_t Sound::soundIndex = 0U;
 
-        void InterruptGpioBp(void) {
-            for (size_t i = 0U; i < soundIndex; i++) {
-                sound[i]->Hit();
+        void InterruptGpioSoundHit(void) {
+            for (size_t i = 0U; i < Sound::soundIndex; i++) {
+                if (sound[i] != nullptr) {
+                    sound[i]->Hit();
+                }
             }
         }
 
@@ -23,6 +24,9 @@ namespace Component
             , mTick(tick)
             , mStartSoundTime(0U)
             , mStopSoundTime(0U)
+            , mIntervalSoundTimeArray{0U}
+            , mIntervalSoundTimeArrayIndex(0U)
+            , mAverageIntervalSoundTime(0U)
             , mState(NO_SOUND) {
             sound[soundId] = this;
             soundIndex++;
@@ -31,55 +35,91 @@ namespace Component
         Core::Status Sound::Initialize(void) {
             const Core::Status success = this->mLed.Initialize();
             this->mLed.Off();
-            this->mGpioSound.SetInterruptPin(&InterruptGpioBp);
+            this->mGpioSound.SetInterruptPin(&InterruptGpioSoundHit);
             return (success);
         }
 
         void Sound::Hit(void) {
-            if (this->mGpioSound.Get() == true) {
+            if (this->mGpioSound.Get() == false) {
                 this->mStartSoundTime = this->mTick.GetUs();
                 this->mLed.On();
-                this->mState = LOUD;
             } else {
                 this->mStopSoundTime = this->mTick.GetUs();
                 this->mLed.Off();
-                this->mState = NO_SOUND;
-            }
-
-            // check time delay between the 2 sensors hits, or if difference is bigger than 50 us
-            if ((sound[SOUND_LEFT]->Get() == LOUD) && (sound[SOUND_RIGHT]->Get() == LOUD)) {
-                if (sound[SOUND_LEFT]->GetLastStartTimeHit() < sound[SOUND_RIGHT]->GetLastStartTimeHit()) {
-                    Sound::soundIdHit = SOUND_LEFT;
-                    this->Notify(SOUND_LEFT, LOUD, sound[SOUND_LEFT]->GetLastStartTimeHit());
-                } else {
-                    Sound::soundIdHit = SOUND_RIGHT;
-                    this->Notify(SOUND_RIGHT, LOUD, sound[SOUND_RIGHT]->GetLastStartTimeHit());
-                }
-            } else if (abs(static_cast<int64_t>(this->mStartSoundTime - this->mStopSoundTime)) >= 50U) {
-                if (sound[SOUND_LEFT]->GetLastStartTimeHit() > sound[SOUND_RIGHT]->GetLastStartTimeHit()) {
-                    Sound::soundIdHit = SOUND_LEFT;
-                    this->Notify(SOUND_LEFT, LOUD, sound[SOUND_LEFT]->GetLastStartTimeHit());
-                } else {
-                    Sound::soundIdHit = SOUND_RIGHT;
-                    this->Notify(SOUND_RIGHT, LOUD, sound[SOUND_RIGHT]->GetLastStartTimeHit());
+                if (this->mStartSoundTime != 0U
+                    && this->mIntervalSoundTimeArrayIndex < NB_MAX_INTERVAL_SOUND_TIME) {
+                    this->mIntervalSoundTimeArray[this->mIntervalSoundTimeArrayIndex] =
+                            this->mStopSoundTime - this->mStartSoundTime;
+                    this->mIntervalSoundTimeArrayIndex++;
                 }
             }
         }
 
         void Sound::Update(const uint64_t currentTime) {
-            (void) currentTime;
 
-            // Notify one second after last hit
-            if ((this->mState == NO_SOUND) &&
-                (this->mStartSoundTime != this->mStopSoundTime) &&
-                (this->mTick.GetUs() / 1000U) - (this->mStartSoundTime / 1000U) > 1000U) {
-                const uint64_t delayMs = this->mStopSoundTime - this->mStartSoundTime;
-                this->Notify(this->mSoundId, this->mState, delayMs);
-                this->mStartSoundTime = this->mStopSoundTime;
+            // 100ms after the first hit compare the average interval of hits
+            if (((sound[SOUND_LEFT]->mStartSoundTime != 0U) ||
+                 (sound[SOUND_RIGHT]->mStartSoundTime != 0U)) &&
+                (currentTime - (sound[SOUND_LEFT]->mStartSoundTime / 1000U) >= 100U) &&
+                (currentTime - (sound[SOUND_RIGHT]->mStartSoundTime / 1000U) >= 100U)
+            ) {
+                // If the sound is still present count up to now
+                if (this->mStopSoundTime < this->mStartSoundTime) {
+                    this->mStopSoundTime = this->mTick.GetUs();
+                    if (this->mIntervalSoundTimeArrayIndex < NB_MAX_INTERVAL_SOUND_TIME) {
+                        this->mIntervalSoundTimeArray[this->mIntervalSoundTimeArrayIndex] =
+                                this->mStopSoundTime - this->mStartSoundTime;
+                        this->mIntervalSoundTimeArrayIndex++;
+                    }
+                }
+
+                // Make the average
+                for (size_t i = 0U; i < soundIndex; i++) {
+                    if (sound[i]->mIntervalSoundTimeArrayIndex > 0U) {
+                        //make the average of all hits interval
+                        sound[i]->mAverageIntervalSoundTime = 0U;
+                        for (uint8_t indexInterval = 0U;
+                             indexInterval < sound[i]->mIntervalSoundTimeArrayIndex;
+                             indexInterval++) {
+                            sound[i]->mAverageIntervalSoundTime += sound[i]->mIntervalSoundTimeArray[indexInterval];
+                        }
+                        sound[i]->mAverageIntervalSoundTime /= sound[i]->mIntervalSoundTimeArrayIndex;
+                    }
+                }
+
+                // Notify
+                if (sound[SOUND_LEFT]->mAverageIntervalSoundTime > sound[SOUND_RIGHT]->mAverageIntervalSoundTime) {
+                    sound[SOUND_LEFT]->mState = LOUD;
+                    sound[SOUND_RIGHT]->mState = NO_SOUND;
+                } else if (sound[SOUND_LEFT]->mAverageIntervalSoundTime < sound[SOUND_RIGHT]->
+                           mAverageIntervalSoundTime) {
+                    sound[SOUND_LEFT]->mState = NO_SOUND;
+                    sound[SOUND_RIGHT]->mState = LOUD;
+                } else {
+                    sound[SOUND_LEFT]->mState = LOUD;
+                    sound[SOUND_RIGHT]->mState = LOUD;
+                }
+                this->Notify({sound[SOUND_LEFT]->mSoundId,
+                              sound[SOUND_LEFT]->mState,
+                              sound[SOUND_LEFT]->mAverageIntervalSoundTime});
+                this->Notify({sound[SOUND_RIGHT]->mSoundId,
+                              sound[SOUND_RIGHT]->mState,
+                              sound[SOUND_RIGHT]->mAverageIntervalSoundTime});
+                this->mStartSoundTime = 0U;
+                this->mIntervalSoundTimeArrayIndex = 0U;
+            } else {
+                // Do it once
+                if (this->mAverageIntervalSoundTime != 0U) {
+                    this->mState = NO_SOUND;
+                    this->Notify({this->mSoundId,
+                                  this->mState,
+                                  this->mAverageIntervalSoundTime});
+                }
+                this->mAverageIntervalSoundTime = 0U;
             }
         }
 
-        SoundState Sound::Get() const {
+        SoundState Sound::GetStatus() const {
             return (this->mState);
         }
 
@@ -87,12 +127,8 @@ namespace Component
             return (this->mStartSoundTime);
         }
 
-        Core::Status Sound::Attach(SoundObserverInterface *observer) {
-            return (this->mObservable.Attach(observer));
-        }
-
-        void Sound::Notify(const SoundId &soundId, const SoundState &soundState, const uint16_t voltage) {
-            this->mObservable.Notify(soundId, soundState, voltage);
+        uint64_t Sound::GetIntervalSoundHit(void) const {
+            return (this->mAverageIntervalSoundTime);
         }
 
     }

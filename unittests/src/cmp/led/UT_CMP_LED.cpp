@@ -22,7 +22,7 @@ namespace Component
 
             virtual void
             SetUp() {
-                EXPECT_CALL(mMockGpio, Set()).WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockGpio, Reset()).WillOnce(Return(Core::Status::CORE_OK));
                 Core::Status success = mLed.Initialize();
                 EXPECT_EQ(success, Core::Status::CORE_OK);
             }
@@ -44,7 +44,7 @@ namespace Component
         TEST_F(UT_CMP_LED, On) {
             Core::Status success = Core::Status::CORE_ERROR;
 
-            EXPECT_CALL(mMockGpio, Reset()).WillOnce(Return(Core::Status::CORE_OK));
+            EXPECT_CALL(mMockGpio, Set()).WillOnce(Return(Core::Status::CORE_OK));
 
             success = mLed.On();
 
@@ -57,7 +57,7 @@ namespace Component
         TEST_F(UT_CMP_LED, Off) {
             Core::Status success = Core::Status::CORE_ERROR;
 
-            EXPECT_CALL(mMockGpio, Set()).WillRepeatedly(Return(Core::Status::CORE_OK));
+            EXPECT_CALL(mMockGpio, Reset()).WillRepeatedly(Return(Core::Status::CORE_OK));
 
             success = mLed.Off();
 
@@ -70,7 +70,7 @@ namespace Component
         TEST_F(UT_CMP_LED, Toggle) {
             Core::Status success = Core::Status::CORE_ERROR;
 
-            EXPECT_CALL(mMockGpio, Reset()).WillOnce(Return(Core::Status::CORE_OK));
+            EXPECT_CALL(mMockGpio, Set()).WillOnce(Return(Core::Status::CORE_OK));
 
             success = mLed.Toggle();
 

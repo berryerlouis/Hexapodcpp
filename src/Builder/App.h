@@ -12,6 +12,7 @@
 #include "../Component/Button/Button.h"
 #include "../Component/Led/Led.h"
 #include "../Component/Sound/Sound.h"
+#include "../Component/Adc/Ads1115.h"
 #include "../Component/Barometer/Barometer.h"
 #include "../Component/Imu/Mpu9150.h"
 #include "../Component/ServosController/Pca9685.h"
@@ -55,17 +56,19 @@ namespace Builder
         Driver::Uart::Uart mUart;
         Driver::Socket::Socket mSocket;
         Driver::Twi::Twi mTwi;
-        Driver::Adc::Adc mAdc;
         Driver::Gpio::Gpio mEnablePwm;
         Driver::Gpio::Gpio mGpioButton;
         Driver::Gpio::Gpio mGpioSoundLeft;
         Driver::Gpio::Gpio mGpioSoundRight;
+        Driver::Gpio::Gpio mGpioTriggerUsLeft;
+        Driver::Gpio::Gpio mGpioTriggerUsRight;
         Component::Led::Led mLedStatus;
         Component::Led::Led mLedCenter;
         Component::Led::Led mLedLeft;
         Component::Led::Led mLedMiddleLeft;
         Component::Led::Led mLedRight;
         Component::Led::Led mLedMiddleRight;
+        Component::Adc::Ads1115 mAds1115;
         Component::Battery::Battery mBattery;
         Component::Button::Button mButton;
         Component::Sound::Sound mSoundLeft;

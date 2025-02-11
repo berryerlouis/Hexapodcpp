@@ -22,21 +22,15 @@ namespace Component
                     , const uint8_t address) :
                 mI2c(i2c), mLed(led), mTick(tick), mAddress(address), mDistance(0), mThreshold(DISTANCE_THRESHOLD),
                 mMeasurementTimingBudget(0U), mStop(0U) {
-
-
-#ifdef RPI
 #ifndef GTEST
                 this->mAddress = wiringPiI2CSetup(address);
-#endif
 #endif
             }
 
             Core::Status Vl53l0x::Initialize(void) {
                 Core::Status success = Core::Status::CORE_ERROR;
                 uint8_t data = 0U;
-#ifdef RPI
                 this->mLed.Initialize();
-#endif
                 this->mI2c.ReadRegister(this->mAddress, VL53L0X_IDENTIFICATION_MODEL_ID, data);
                 if (data == 0xEE) {
                     this->mI2c.ReadRegister(this->mAddress, VL53L0X_VHV_CONFIG_PAD_SCL_SDA_EXTSUP_HV, data);
@@ -140,14 +134,10 @@ namespace Component
                 this->mDistance = this->GetDistance();
                 const bool detection = this->mDistance != 0U && this->mDistance <= this->mThreshold;
                 if (true == detection) {
-#ifdef RPI
                     this->mLed.On();
-#endif
-                    this->Notify(VLX, this->mDistance);
+                    this->Notify({VLX, this->mDistance});
                 } else {
-#ifdef RPI
                     this->mLed.Off();
-#endif
                 }
             }
 

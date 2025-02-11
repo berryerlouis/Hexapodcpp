@@ -6,7 +6,7 @@ namespace Component
     {
         Led::Led(Driver::Gpio::GpioInterface &gpio) :
             mGpio(gpio)
-            , mState(Led::LedState::OFF) {
+            , mState(OFF) {
         }
 
         Core::Status Led::Initialize(void) {
@@ -20,12 +20,12 @@ namespace Component
 
         Core::Status Led::On() {
             this->mState = ON;
-            return (this->mGpio.Reset());
+            return (this->mGpio.Set());
         }
 
         Core::Status Led::Off() {
             this->mState = OFF;
-            return (this->mGpio.Set());
+            return (this->mGpio.Reset());
         }
 
         Core::Status Led::Toggle() {

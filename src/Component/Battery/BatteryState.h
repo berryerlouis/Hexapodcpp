@@ -10,5 +10,11 @@ namespace Component
             CRITICAL,
             UNKNOWN = 0xFFU
         };
+
+        struct BatteryStruct {
+            const BatteryState &state;
+            const uint16_t voltage;
+            const uint16_t intensity;
+        };
     }
 }

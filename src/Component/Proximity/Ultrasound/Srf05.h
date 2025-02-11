@@ -43,6 +43,7 @@ namespace Component
                 Driver::Tick::TickInterface &mTick;
                 Led::LedInterface &mLed;
                 uint16_t mThreshold;
+                bool mDetect;
             };
         }
     }

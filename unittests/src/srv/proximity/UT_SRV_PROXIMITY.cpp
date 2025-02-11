@@ -30,7 +30,6 @@ namespace Service
                 EXPECT_EQ(Core::Status::CORE_ERROR, mServiceProximity.Initialize());
 
                 EXPECT_CALL(mMockSensorProximity, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockSensorProximity, Attach( _ )).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_EQ(Core::Status::CORE_OK, mServiceProximity.Initialize());
             }
 
@@ -60,7 +59,7 @@ namespace Service
             Frame response;
             Cluster::Proximity::ClusterProximity::BuildFrameDistance(sensorId, distance, response);
             EXPECT_CALL(mMockEventListener, SendMessage(response)).Times(1U);
-            mServiceProximity.Detect(sensorId, distance);
+            mServiceProximity.Notified({sensorId, distance});
         }
     }
 }

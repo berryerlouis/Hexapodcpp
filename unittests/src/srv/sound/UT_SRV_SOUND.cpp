@@ -32,8 +32,6 @@ namespace Service
 
                 EXPECT_CALL(mMockSoundLeft, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockSoundRight, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockSoundLeft, Attach( _ )).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockSoundRight, Attach( _ )).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_EQ(Core::Status::CORE_OK, mServiceSound.Initialize());
             }
 
@@ -64,7 +62,7 @@ namespace Service
             Frame response;
             Cluster::Sound::ClusterSound::BuildFrameGetSoundState(SOUND_LEFT, soundState, response);
             EXPECT_CALL(mMockEventListener, SendMessage(response)).Times(1U);
-            mServiceSound.UpdatedSoundState(SOUND_LEFT, soundState, 10U);
+            mServiceSound.Notified({SOUND_LEFT, soundState, 10U});
         }
     }
 }

@@ -8,5 +8,10 @@ namespace Component
             RELEASE = 0U,
             PUSH
         };
+
+        struct ButtonStruct {
+            const ButtonState &state;
+            const uint64_t delayMs;
+        };
     }
 }

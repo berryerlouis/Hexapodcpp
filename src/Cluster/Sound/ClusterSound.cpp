@@ -21,10 +21,10 @@ namespace Cluster
                 SoundState state;
                 const SoundId soundId = static_cast<SoundId>(request.params[0U]);
                 if (soundId == SOUND_LEFT) {
-                    state = this->mSoundLeft.Get();
+                    state = this->mSoundLeft.GetStatus();
                 } else {
 
-                    state = this->mSoundRight.Get();
+                    state = this->mSoundRight.GetStatus();
                 }
                 success = BuildFrameGetSoundState(soundId, state, response);
             }

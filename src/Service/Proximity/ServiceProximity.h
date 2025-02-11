@@ -2,16 +2,18 @@
 
 #include "../../Component/Proximity/SensorProximityInterface.h"
 #include "../Service.h"
+#include "../../Component/ObserverInterface.h"
 
 namespace Service
 {
     namespace Proximity
     {
+        using namespace Component;
         using namespace Component::Proximity;
 
         constexpr uint8_t MAX_TIMEOUT_DETECTION = 10U;
 
-        class ServiceProximity : public Service, public SensorProximityObserverInterface {
+        class ServiceProximity : public Service, ObserverInterface<SensorsStruct> {
         public:
             ServiceProximity(SensorProximityMultipleInterface &proximity,
                              Event::MessageInterface &messageListener);
@@ -22,7 +24,7 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void Detect(const SensorsId &sensorId, const uint16_t distance) final override;
+            virtual void Notified(const SensorsStruct &sensor) final override;
 
         protected:
             SensorProximityMultipleInterface &mProximity;

@@ -15,7 +15,6 @@ export class MessageManager {
         this.listMessagesToSent.unshift({ message, cbResponse });
     }
     read(message) {
-        message.setDate();
         let asyncMessageIncoming = true;
         if (this.currentMessagesToSent) {
             if (message.cluster.code === this.currentMessagesToSent.message.cluster.code) {

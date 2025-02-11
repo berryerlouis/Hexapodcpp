@@ -7,8 +7,7 @@ export default class Controls {
     constructor(messageManager, robot) {
 
         this.robot = robot;
-        this.gui = new GUI();
-        const pane = new Pane();
+        const gui = new Pane();
         this.gui.domElement.id = 'gui';
         new ClusterCommand(this, messageManager, robot);
     }

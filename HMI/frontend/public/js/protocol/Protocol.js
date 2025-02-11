@@ -31,12 +31,12 @@ export class Protocol {
     }
     static encode(cluster, command, size, params) {
         let messageToEncode = '<';
-        messageToEncode += cluster.code.toString(16).padStart(2, '0').toUpperCase();
-        messageToEncode += command.code.toString(16).padStart(2, '0').toUpperCase();
-        messageToEncode += (!size ? '00' : size.toString(16).padStart(2, '0')).toUpperCase();
+        messageToEncode += parseInt(cluster.code, 16).toString(16).padStart(2, '0').toUpperCase();
+        messageToEncode += parseInt(command.code, 16).toString(16).padStart(2, '0').toUpperCase();
+        messageToEncode += size.toString(16).padStart(2, '0').toUpperCase();
         if (params) {
             for (let param of params) {
-                messageToEncode += Number(param).toString(16).padStart(2, '0').toUpperCase();
+                messageToEncode += parseInt(param, 16).toString(16).padStart(2, '0').toUpperCase();
             }
         }
         messageToEncode += '>';

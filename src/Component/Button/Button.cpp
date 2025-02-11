@@ -31,12 +31,12 @@ namespace Component
             if (this->mGpioButton.Get() == true) {
                 this->mState = PUSH;
                 this->mPushTime = this->mTick.GetUs();
-                this->Notify(this->mState, 0U);
+                this->Notify({this->mState, 0U});
             } else {
                 if (this->mState == PUSH) {
                     this->mState = RELEASE;
                     const uint64_t delayMs = this->mTick.GetUs() - this->mPushTime;
-                    this->Notify(this->mState, delayMs);
+                    this->Notify({this->mState, delayMs});
                 }
             }
         }
@@ -47,14 +47,6 @@ namespace Component
 
         ButtonState Button::Get() const {
             return (this->mState);
-        }
-
-        Core::Status Button::Attach(ButtonObserverInterface *observer) {
-            return (this->mObservable.Attach(observer));
-        }
-
-        void Button::Notify(const ButtonState &state, const uint16_t voltage) {
-            this->mObservable.Notify(state, voltage);
         }
 
     }

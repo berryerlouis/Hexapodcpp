@@ -9,7 +9,7 @@ namespace Component
     {
         using namespace Misc::Maths;
 
-        class Mpu9150Interface : public ComponentInterface {
+        class Mpu9150Interface : public ComponentInterface<0U, nullptr_t> {
         public:
             Mpu9150Interface(void) = default;
 

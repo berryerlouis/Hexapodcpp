@@ -9,7 +9,7 @@ namespace Component
     {
         using namespace Cluster;
 
-        class CommunicationInterface : public ComponentInterface {
+        class CommunicationInterface : public ComponentInterface<0U, nullptr_t> {
         public:
             CommunicationInterface(void) = default;
 

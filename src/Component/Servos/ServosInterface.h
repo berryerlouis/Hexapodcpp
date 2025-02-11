@@ -8,7 +8,7 @@ namespace Component
 {
     namespace Servos
     {
-        class ServosInterface : public ComponentInterface {
+        class ServosInterface : public ComponentInterface<0U, nullptr_t> {
         public:
             ServosInterface() = default;
 

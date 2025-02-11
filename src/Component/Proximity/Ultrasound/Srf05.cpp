@@ -8,13 +8,14 @@ namespace Component
         {
             Srf05::Srf05(const Cluster::EProximityCommands side, Driver::Gpio::GpioInterface &gpioTrigger,
                          Driver::InputCapture::InputCaptureInterface &gpioEcho, Led::LedInterface &led,
-                         Driver::Tick::TickInterface &tick)
-                : mSide(side)
-                  , mGpioTrigger(gpioTrigger)
-                  , mGpioEcho(gpioEcho)
-                  , mTick(tick)
-                  , mLed(led)
-                  , mThreshold(DISTANCE_THRESHOLD) {
+                         Driver::Tick::TickInterface &tick) :
+                mSide(side)
+                , mGpioTrigger(gpioTrigger)
+                , mGpioEcho(gpioEcho)
+                , mTick(tick)
+                , mLed(led)
+                , mThreshold(DISTANCE_THRESHOLD)
+                , mDetect(false) {
             }
 
             Core::Status Srf05::Initialize(void) {
@@ -30,8 +31,13 @@ namespace Component
                 const bool detection = (distance != 0U && distance <= this->mThreshold);
                 if (true == detection) {
                     this->mLed.On();
-                    this->Notify(static_cast<SensorsId>(this->mSide), distance);
+                    this->mDetect = true;
+                    this->Notify({static_cast<SensorsId>(this->mSide), distance});
                 } else {
+                    if (this->mDetect == true) {
+                        this->mDetect = false;
+                        this->Notify({static_cast<SensorsId>(this->mSide), distance});
+                    }
                     this->mLed.Off();
                 }
             }

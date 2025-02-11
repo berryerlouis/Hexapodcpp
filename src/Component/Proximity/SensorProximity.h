@@ -26,8 +26,6 @@ namespace Component
 
             virtual uint16_t GetThreshold(const SensorsId &sensorId) final override;
 
-            virtual Core::Status Attach(SensorProximityObserverInterface *observer) final override;
-
         private:
             SensorProximityInterface *mSensors[NB_SENSORS];
         };

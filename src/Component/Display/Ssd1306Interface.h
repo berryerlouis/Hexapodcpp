@@ -12,7 +12,7 @@ namespace Component
 #define SCREEN_WIDTH     128U                                // OLED display width, in pixels
 #define SCREEN_HEIGHT    32U                                 // OLED display height, in pixels
 
-        class Ssd1306Interface : public ComponentInterface {
+        class Ssd1306Interface : public ComponentInterface<0U, nullptr_t> {
         public:
             Ssd1306Interface() = default;
 

@@ -24,9 +24,9 @@ namespace Service
             this->mButtonInterface.Update(currentTime);
         }
 
-        void ServiceButton::UpdatedButtonState(const ButtonState &ButtonState, const uint16_t period) {
+        void ServiceButton::Notified(const ButtonStruct &button) {
             Frame response;
-            Cluster::Button::ClusterButton::BuildFrameGetButtonState(ButtonState, response);
+            Cluster::Button::ClusterButton::BuildFrameGetButtonState(button.state, response);
             this->SendMessage(response);
         }
     } // namespace Button

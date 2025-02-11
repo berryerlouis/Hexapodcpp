@@ -6,7 +6,7 @@ namespace Component
 {
     namespace Led
     {
-        class LedInterface : public ComponentInterface {
+        class LedInterface : public ComponentInterface<0U, nullptr_t> {
         public:
             enum LedState {
                 ON = 0,
