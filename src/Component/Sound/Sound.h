@@ -22,17 +22,17 @@ namespace Component
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual SoundState GetStatus(void) const final override;
-
-            virtual uint64_t GetLastStartTimeHit(void) const final override;
-
-            virtual uint64_t GetIntervalSoundHit(void) const final override;
+            virtual uint64_t GetIntervalSoundHit(void) const;
 
             void Hit(void);
+
+            static SoundStruct ComputeAndNotifyMaxSound(void);
 
             static uint8_t soundIndex;
 
         private:
+            static void InterruptGpioSoundHit(void);
+
             constexpr static uint8_t NB_MAX_INTERVAL_SOUND_TIME = 100U;
             SoundId mSoundId;
             Gpio::GpioInterface &mGpioSound;
@@ -43,7 +43,6 @@ namespace Component
             uint64_t mIntervalSoundTimeArray[NB_MAX_INTERVAL_SOUND_TIME];
             uint8_t mIntervalSoundTimeArrayIndex;
             uint64_t mAverageIntervalSoundTime;
-            SoundState mState;
         };
     }
 }

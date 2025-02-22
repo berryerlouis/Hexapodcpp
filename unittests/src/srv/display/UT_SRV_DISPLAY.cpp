@@ -9,6 +9,7 @@
 
 #include "../../../../src/Component/Proximity/SensorProximity.h"
 #include "../../../../src/Service/Display/ServiceDisplay.h"
+#include "../../../mock/cmp/MockCommunication.h"
 
 using ::testing::_;
 using ::testing::Return;
@@ -22,12 +23,14 @@ namespace Service
         protected:
             UT_SRV_DISPLAY() :
                 mMockSsd1306(),
+                mMockCommunication(),
                 mMockButton(),
                 mMockSoundLeft(),
                 mMockSoundRight(),
                 mMockSensorProximity(),
                 mMockEventListener(),
-                mServiceDisplay(mMockSsd1306, mMockButton, mMockSoundLeft, mMockSoundRight, mMockSensorProximity,
+                mServiceDisplay(mMockSsd1306, mMockCommunication, mMockButton, mMockSoundLeft, mMockSoundRight,
+                                mMockSensorProximity,
                                 mMockEventListener) {
             }
 
@@ -40,9 +43,9 @@ namespace Service
                 EXPECT_CALL(mMockSsd1306,
                             DrawLine( 0, 10U, SCREEN_WIDTH, 10U, Bitmap::Bitmaps::Color::COLOR_WHITE )).Times(1U);
                 EXPECT_CALL(mMockSsd1306,
-                            DrawLine( 18U, 0U, 18U, SCREEN_HEIGHT, Bitmap::Bitmaps::Color::COLOR_WHITE )).Times(1U);
+                            DrawLine( 18U, 10U, 18U, SCREEN_HEIGHT, Bitmap::Bitmaps::Color::COLOR_WHITE )).Times(1U);
                 EXPECT_CALL(mMockSsd1306,
-                            DrawLine( SCREEN_WIDTH - 18U, 0U, SCREEN_WIDTH- 18U , SCREEN_HEIGHT, Bitmap::Bitmaps::Color
+                            DrawLine( SCREEN_WIDTH - 18U, 10U, SCREEN_WIDTH- 18U , SCREEN_HEIGHT, Bitmap::Bitmaps::Color
                                 ::COLOR_WHITE )).Times(1U);
                 EXPECT_CALL(mMockSsd1306,
                             DrawBitmap( _, 0U, 0U, Bitmap::Bitmaps::Color::COLOR_WHITE )).Times(1U);
@@ -62,6 +65,7 @@ namespace Service
 
             /* Mocks */
             StrictMock<Component::Display::MockSsd1306> mMockSsd1306;
+            StrictMock<Component::Communication::MockCommunication> mMockCommunication;
             StrictMock<Component::Button::MockButton> mMockButton;
             StrictMock<Component::Sound::MockSound> mMockSoundLeft;
             StrictMock<Component::Sound::MockSound> mMockSoundRight;

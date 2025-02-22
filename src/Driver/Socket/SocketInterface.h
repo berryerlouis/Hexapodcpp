@@ -1,12 +1,20 @@
 #pragma once
 
 #include "../DriverInterface.h"
+#include "../../Core/Observable.h"
 
 namespace Driver
 {
     namespace Socket
     {
-        class SocketInterface : public DriverInterface {
+        enum SocketStruct {
+            NO_CLIENT = 0U,
+            CLIENT_CONNECTED = 1U,
+        };
+
+
+        template<uint8_t MAX_OBSERVERS, class T>
+        class SocketInterface : public DriverInterface, public Core::Observable<MAX_OBSERVERS, T> {
         public:
             SocketInterface() = default;
 

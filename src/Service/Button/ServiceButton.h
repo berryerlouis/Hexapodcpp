@@ -2,7 +2,7 @@
 
 #include "../Service.h"
 #include "../../Component/Button/ButtonInterface.h"
-#include "../../Component/ObserverInterface.h"
+#include "../../Core/ObserverInterface.h"
 
 namespace Service
 {
@@ -11,7 +11,7 @@ namespace Service
         using namespace Component;
         using namespace Component::Button;
 
-        class ServiceButton : public Service, ObserverInterface<ButtonStruct> {
+        class ServiceButton : public Service, Core::ObserverInterface<ButtonStruct> {
         public:
             ServiceButton(ButtonInterface &ButtonInterface,
                           Event::MessageInterface &messageListener);

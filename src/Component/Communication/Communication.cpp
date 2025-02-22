@@ -5,14 +5,21 @@ namespace Component
 {
     namespace Communication
     {
-        Communication::Communication(Socket::SocketInterface &socket, Clusters::ClustersInterface &clusters,
+        Communication::Communication(Socket::SocketInterface<1U, Socket::SocketStruct> &socket,
+                                     Clusters::ClustersInterface &clusters,
                                      Led::LedInterface &ledStatus) :
-            mSocket(socket), mClusters(clusters), mLedStatus(ledStatus), mBufferRx{0U}, mBufferTx{0U}, mIndexBufferRx(0U),
+            mSocket(socket), mClusters(clusters), mLedStatus(ledStatus), mBufferRx{0U}, mBufferTx{0U},
+            mIndexBufferRx(0U),
             mBeginIncomingFrame(false) {
         }
 
         Core::Status Communication::Initialize(void) {
+            this->mSocket.Attach(this);
             return (this->mLedStatus.Initialize());
+        }
+
+        void Communication::Notified(const Socket::SocketStruct &state) {
+            this->Notify(state == Socket::SocketStruct::CLIENT_CONNECTED ? CLIENT_CONNECTED : NO_CLIENT);
         }
 
         void Communication::Update(const uint64_t currentTime) {
@@ -38,13 +45,13 @@ namespace Component
                         response.clusterId = frameClusterID;
                         response.commandId = static_cast<uint8_t>(GENERIC);
                         response.nbParams = 1U;
-                        response.params[0] = false;
+                        response.params[0U] = false;
                     }
                 } else {
                     response.clusterId = 0xFFU;
                     response.commandId = static_cast<uint8_t>(GENERIC);
                     response.nbParams = 1U;
-                    response.params[0] = parsedStatus;
+                    response.params[0U] = parsedStatus;
                 }
                 this->SendMessage(response);
                 this->mLedStatus.Off();
@@ -69,7 +76,7 @@ namespace Component
                     this->mBeginIncomingFrame = true;
                     this->mIndexBufferRx = 0U;
                 } else if (rc != '>') {
-                    if ((rc >= 48U && rc <= 57U) || (rc >= 65U && rc <= 70U)) {
+                    if ((rc >= '0' && rc <= '9') || (rc >= 'A' && rc <= 'F')) {
                         if (this->mIndexBufferRx < sizeof(this->mBufferRx) - 1) {
                             this->mBufferRx[this->mIndexBufferRx++] = rc;
                         } else {

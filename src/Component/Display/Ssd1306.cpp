@@ -221,12 +221,7 @@ namespace Component
                     if (i & 7U) {
                         b <<= 1U;
                     } else {
-#ifdef RPI
                         b = bmp->bmp[j * byteWidth + i / 8U];
-#endif
-#ifdef AVR
-                        b = pgm_read_byte(&bmp->bmp[j * byteWidth + i / 8U]);
-#endif
                     }
                     if (b & 0x80) {
                         this->DrawPixel(x + i, y, color);

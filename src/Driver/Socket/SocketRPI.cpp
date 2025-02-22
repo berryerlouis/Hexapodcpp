@@ -1,7 +1,5 @@
 #include "Socket.h"
-#ifndef GTEST
 #include "tiny_websockets/server.hpp"
-#endif
 namespace Driver
 {
     namespace Socket
@@ -9,6 +7,7 @@ namespace Driver
         websockets::WebsocketsServer server;
         websockets::WebsocketsClient client;
         static websockets::WSInterfaceString bufferMessage;
+        static bool once = false;
 
         void Socket::onMessage(websockets::WebsocketsClient &client, websockets::WebsocketsMessage message) {
             (void) client;
@@ -22,7 +21,9 @@ namespace Driver
             if (event == websockets::WebsocketsEvent::ConnectionOpened || event ==
                 websockets::WebsocketsEvent::ConnectionClosed) {
                 bufferMessage.clear();
+                once = false;
             }
+
         }
 
         Socket::Socket(void) {
@@ -40,8 +41,15 @@ namespace Driver
                     client = server.accept();
                     client.onMessage(onMessage);
                     client.onEvent(onEvent);
+                    this->Notify(CLIENT_CONNECTED);
                 }
-                client.poll();
+                if (client.available() == false) {
+                    if (once == false) {
+                        this->Notify(NO_CLIENT);
+                        once = true;
+                    }
+                    client.poll();
+                }
             }
         }
 

@@ -8,18 +8,16 @@ namespace Service
     {
         ServiceSound::ServiceSound(SoundInterface &soundInterfaceLeft, SoundInterface &soundInterfaceRight,
                                    Event::MessageInterface &messageListener) :
-            Service(SOUND, 10U, messageListener)
-            , mSoundInterfaceLeft(soundInterfaceLeft)
-            , mSoundInterfaceRight(soundInterfaceRight) {
+            Service(SOUND, 500U, messageListener)
+            , mSoundLeft(soundInterfaceLeft)
+            , mSoundRight(soundInterfaceRight) {
         }
 
         Core::Status ServiceSound::Initialize(void) {
-            const Core::Status successLeft = this->mSoundInterfaceLeft.Initialize();
-            const Core::Status successRight = this->mSoundInterfaceRight.Initialize();
+            const Core::Status successLeft = this->mSoundLeft.Initialize();
+            const Core::Status successRight = this->mSoundRight.Initialize();
             Core::Status success = Core::Status::CORE_ERROR;
-            if (IsSucess(successLeft) && IsSucess(successRight)) {
-                this->mSoundInterfaceLeft.Attach(this);
-                this->mSoundInterfaceRight.Attach(this);
+            if (Core::IsSuccess(successLeft) && Core::IsSuccess(successRight)) {
                 this->mInitialized = true;
                 success = Core::CORE_OK;
             }
@@ -27,14 +25,18 @@ namespace Service
         }
 
         void ServiceSound::Update(const uint64_t currentTime) {
-            this->mSoundInterfaceLeft.Update(currentTime);
-            this->mSoundInterfaceRight.Update(currentTime);
+            this->mSoundLeft.Update(currentTime);
+            this->mSoundRight.Update(currentTime);
+            this->SendMaxSound();
         }
 
-        void ServiceSound::Notified(const SoundStruct &sound) {
-            Frame response;
-            Cluster::Sound::ClusterSound::BuildFrameGetSoundState(sound.id, sound.state, response);
-            this->SendMessage(response);
+        void ServiceSound::SendMaxSound(void) const {
+            const SoundStruct maxSound = Component::Sound::Sound::ComputeAndNotifyMaxSound();
+            if (maxSound.id != SOUND_NONE) {
+                Frame response;
+                Cluster::Sound::ClusterSound::BuildFrameGetSoundState(maxSound.id, maxSound.delay, response);
+                this->SendMessage(response);
+            }
         }
     } // namespace Sound
 } // namespace Service

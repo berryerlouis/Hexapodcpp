@@ -40,8 +40,9 @@ namespace Driver
         void Gpio::SetInterruptPin(void) {
         }
 
-        void Gpio::SetInterruptPin(void (*function)(void)) {
-            wiringPiISR(this->mGpio.pin, INT_EDGE_BOTH, function);
+        void Gpio::SetInterruptPin(const InterruptCallback callback) {
+            wiringPiISR(this->mGpio.pin, INT_EDGE_BOTH, callback);
+            (void) callback;
         }
 
         void Gpio::ResetInterruptPin(void) {

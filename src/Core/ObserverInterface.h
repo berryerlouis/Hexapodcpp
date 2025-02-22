@@ -2,7 +2,7 @@
 
 #include "stdint.h"
 
-namespace Component
+namespace Core
 {
 
     template<class T>

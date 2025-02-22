@@ -2,12 +2,13 @@
 
 
 #include "../../Component/Display/Ssd1306Interface.h"
+#include "../../Component/Communication/CommunicationInterface.h"
 #include "../../Component/Battery/BatteryState.h"
 #include "../../Component/Button/ButtonInterface.h"
 #include "../../Component/Proximity/SensorsId.h"
 #include "../../Component/Proximity/SensorProximityInterface.h"
 #include "../../Component/Sound/SoundInterface.h"
-#include "../../Component/ObserverInterface.h"
+#include "../../Core/ObserverInterface.h"
 #include "../../Misc/Bitmap/Bitmaps.h"
 #include "../Service.h"
 
@@ -20,16 +21,19 @@ namespace Service
         using namespace Component::Display;
         using namespace Component::Proximity;
         using namespace Component::Sound;
+        using namespace Component::Communication;
         using namespace Misc::Bitmap;
 
         using namespace Component;
 
         class ServiceDisplay : public Service
-                               , ObserverInterface<ButtonStruct>
-                               , ObserverInterface<SoundStruct>
-                               , ObserverInterface<SensorsStruct> {
+                               , Core::ObserverInterface<ButtonStruct>
+                               , Core::ObserverInterface<SoundStruct>
+                               , Core::ObserverInterface<SensorsStruct>
+                               , Core::ObserverInterface<CommunicationStruct> {
         public:
             ServiceDisplay(Ssd1306Interface &ssd1306
+                           , CommunicationInterface &communication
                            , ButtonInterface &button
                            , SoundInterface &soundInterfaceLeft
                            , SoundInterface &soundInterfaceRight
@@ -48,6 +52,8 @@ namespace Service
 
             virtual void Notified(const SensorsStruct &sensor) final override;
 
+            virtual void Notified(const CommunicationStruct &state) final override;
+
             void DisplayBackground(void) const;
 
             void DisplayCommunicationBmp(void);
@@ -58,13 +64,14 @@ namespace Service
 
             void DisplayProximitySensor(const Component::Proximity::SensorsId sensorId, const uint16_t distance);
 
-            void DisplaySound(const SoundId &soundId, const SoundState &soundState, const uint16_t period);
+            void DisplaySound(const SoundStruct &soundStruct);
 
         private:
             Ssd1306Interface &mSsd1306;
+            CommunicationInterface &mCommunication;
             ButtonInterface &mButton;
-            SoundInterface &mSoundInterfaceLeft;
-            SoundInterface &mSoundInterfaceRight;
+            SoundInterface &mSoundLeft;
+            SoundInterface &mSoundRight;
             SensorProximityMultipleInterface &mSensors;
             Bitmaps::SBitmap mBmpBatteryLevel;
             Bitmaps::SBitmap mBmpCommunication;
@@ -73,6 +80,7 @@ namespace Service
             Bitmaps::SBitmap mBmpSound;
             uint64_t mPreviousTime;
             uint32_t mToggleCommunicationBmp;
+            CommunicationStruct mState;
         };
     }
 }

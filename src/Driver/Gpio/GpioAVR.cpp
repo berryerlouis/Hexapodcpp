@@ -54,7 +54,8 @@ namespace Driver
             *(this->mGpioRegister.pcmsk) |= _BV(this->mGpio.pin);
         }
 
-        void Gpio::SetInterruptPin(void (*function)(void)) {
+        void Gpio::SetInterruptPin(const InterruptCallback callback) {
+            (void) callback;
         }
 
         void Gpio::ResetInterruptPin(void) {

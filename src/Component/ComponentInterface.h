@@ -1,12 +1,11 @@
 #pragma once
 #include "../Core/CoreInterface.h"
-#include "../Misc/Logger/Logger.h"
-#include "Observable.h"
+#include "../Core/Observable.h"
 
 namespace Component
 {
     template<uint8_t MAX_OBSERVERS, class T>
-    class ComponentInterface : public Core::CoreInterface, public Observable<MAX_OBSERVERS, T> {
+    class ComponentInterface : public Core::CoreInterface, public Core::Observable<MAX_OBSERVERS, T> {
     public:
         ComponentInterface() = default;
 

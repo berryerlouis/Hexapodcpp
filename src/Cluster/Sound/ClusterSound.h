@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../ClusterBase.h"
-#include "../../Component/Sound/SoundInterface.h"
+#include "../../Component/Sound/Sound.h"
 
 namespace Cluster
 {
@@ -17,7 +17,8 @@ namespace Cluster
 
             virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override;
 
-            static Core::Status BuildFrameGetSoundState(const SoundId &soundId, const SoundState &soundState, Frame &response);
+            static Core::Status BuildFrameGetSoundState(const SoundId &soundId, const uint64_t &soundDelay,
+                                                        Frame &response);
 
         private:
             SoundInterface &mSoundLeft;

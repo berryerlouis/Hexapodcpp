@@ -18,10 +18,6 @@ namespace Component
 
             virtual void Update(const uint64_t currentTime) = 0;
 
-            virtual SoundState GetStatus() const = 0;
-
-            virtual uint64_t GetLastStartTimeHit(void) const = 0;
-
             virtual uint64_t GetIntervalSoundHit(void) const = 0;
         };
     }

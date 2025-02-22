@@ -14,11 +14,16 @@ namespace Component
 
             for (SensorProximityInterface *sensor: this->mSensors) {
                 if (sensor->Initialize() == Core::Status::CORE_OK) {
+                    sensor->Attach(this);
                     success++;
                 }
             }
 
             return ((success >= NB_SENSORS - 1U) ? Core::Status::CORE_OK : Core::Status::CORE_ERROR);
+        }
+
+        void SensorProximity::Notified(const SensorsStruct &sensor) {
+            this->Notify(sensor);
         }
 
         void SensorProximity::Update(const uint64_t currentTime) {

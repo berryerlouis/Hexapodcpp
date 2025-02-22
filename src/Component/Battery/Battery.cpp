@@ -23,7 +23,7 @@ namespace Component
             (void) currentTime;
             this->mVoltage = this->mAdc.GetVoltage();
             this->mIntensity = this->mAdc.GetIntensity();
-            const BatteryState state = this->mState;
+            const BatteryState prevState = this->mState;
             if (this->mVoltage >= NOMINAL_LEVEL) {
                 this->mState = NOMINAL;
             } else if (this->mVoltage >= WARNING_LEVEL) {
@@ -31,7 +31,7 @@ namespace Component
             } else {
                 this->mState = CRITICAL;
             }
-            if (state != this->mState) {
+            if (prevState != this->mState) {
                 this->Notify({this->mState, this->mVoltage, this->mIntensity});
             }
         }

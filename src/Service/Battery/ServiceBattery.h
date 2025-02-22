@@ -2,7 +2,7 @@
 
 #include "../Service.h"
 #include "../../Component/Battery/BatteryInterface.h"
-#include "../../Component/ObserverInterface.h"
+#include "../../Core/ObserverInterface.h"
 
 namespace Service
 {
@@ -11,7 +11,7 @@ namespace Service
         using namespace Component;
         using namespace Component::Battery;
 
-        class ServiceBattery : public Service, ObserverInterface<BatteryStruct> {
+        class ServiceBattery : public Service, Core::ObserverInterface<BatteryStruct> {
         public:
             ServiceBattery(BatteryInterface &batteryInterface,
                            Event::MessageInterface &messageListener);

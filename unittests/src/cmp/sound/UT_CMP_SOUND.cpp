@@ -24,19 +24,22 @@ namespace Component
                 mSoundRight(SOUND_RIGHT, mMockGpio, mMockLed, mMockTick) {
             }
 
+            enum SoundState {
+                LOUD = 0x00U,
+                NO_SOUND
+            };
+
             virtual void
             SetUp() {
                 EXPECT_CALL(mMockLed, Initialize()).Times(1U);
                 EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockGpio, SetInterruptPin(_)).Times(1U);
                 EXPECT_EQ(mSoundLeft.Initialize(), Core::Status::CORE_OK);
-                EXPECT_EQ(mSoundLeft.GetStatus(), NO_SOUND);
 
                 EXPECT_CALL(mMockLed, Initialize()).Times(1U);
                 EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockGpio, SetInterruptPin(_)).Times(1U);
                 EXPECT_EQ(mSoundRight.Initialize(), Core::Status::CORE_OK);
-                EXPECT_EQ(mSoundRight.GetStatus(), NO_SOUND);
             }
 
             virtual void
@@ -81,8 +84,6 @@ namespace Component
 
             mSoundLeft.Update(1000U);
             mSoundRight.Update(1000U);
-            EXPECT_EQ(mSoundLeft.GetStatus(), LOUD);
-            EXPECT_EQ(mSoundRight.GetStatus(), NO_SOUND);
             EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 54U);
             EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 0U);
         }
@@ -96,8 +97,6 @@ namespace Component
             EXPECT_CALL(mMockTick, GetUs()).Times(1U).WillOnce(Return(1000U));
             mSoundRight.Update(1000U);
 
-            EXPECT_EQ(mSoundLeft.GetStatus(), NO_SOUND);
-            EXPECT_EQ(mSoundRight.GetStatus(), LOUD);
             EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 20U);
             EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 890U);
         }
@@ -111,8 +110,6 @@ namespace Component
             mSoundLeft.Update(1000U);
             mSoundRight.Update(1000U);
 
-            EXPECT_EQ(mSoundLeft.GetStatus(), LOUD);
-            EXPECT_EQ(mSoundRight.GetStatus(), NO_SOUND);
             EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 890U);
             EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 10U);
         }
@@ -125,8 +122,6 @@ namespace Component
             mSoundLeft.Update(1000U);
             mSoundRight.Update(1000U);
 
-            EXPECT_EQ(mSoundLeft.GetStatus(), LOUD);
-            EXPECT_EQ(mSoundRight.GetStatus(), NO_SOUND);
             EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 30U);
             EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 10U);
         }
@@ -139,8 +134,6 @@ namespace Component
             mSoundLeft.Update(1000U);
             mSoundRight.Update(1000U);
 
-            EXPECT_EQ(mSoundLeft.GetStatus(), LOUD);
-            EXPECT_EQ(mSoundRight.GetStatus(), LOUD);
             EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 30U);
             EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 30U);
         }
@@ -153,8 +146,6 @@ namespace Component
             mSoundLeft.Update(1000U);
             mSoundRight.Update(1000U);
 
-            EXPECT_EQ(mSoundLeft.GetStatus(), LOUD);
-            EXPECT_EQ(mSoundRight.GetStatus(), LOUD);
             EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 30U);
             EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 30U);
         }
@@ -167,18 +158,14 @@ namespace Component
             mSoundLeft.Update(1000U);
             mSoundRight.Update(1000U);
 
-            EXPECT_EQ(mSoundLeft.GetStatus(), LOUD);
-            EXPECT_EQ(mSoundRight.GetStatus(), LOUD);
             EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 30U);
             EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 30U);
 
             mSoundLeft.Update(2000U);
             mSoundRight.Update(2000U);
 
-            EXPECT_EQ(mSoundLeft.GetStatus(), NO_SOUND);
-            EXPECT_EQ(mSoundRight.GetStatus(), NO_SOUND);
-            EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 0U);
-            EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 0U);
+            EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 30U);
+            EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 30U);
         }
 
         TEST_F(UT_CMP_SOUND, Hit_4_Update_Ok) {
@@ -189,18 +176,14 @@ namespace Component
             mSoundLeft.Update(1000U);
             mSoundRight.Update(1000U);
 
-            EXPECT_EQ(mSoundLeft.GetStatus(), LOUD);
-            EXPECT_EQ(mSoundRight.GetStatus(), LOUD);
             EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 30U);
             EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 30U);
 
             mSoundLeft.Update(2000U);
             mSoundRight.Update(2000U);
 
-            EXPECT_EQ(mSoundLeft.GetStatus(), NO_SOUND);
-            EXPECT_EQ(mSoundRight.GetStatus(), NO_SOUND);
-            EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 0U);
-            EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 0U);
+            EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 30U);
+            EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 30U);
 
             HitTest(SOUND_RIGHT, LOUD, 3120U);
             HitTest(SOUND_LEFT, LOUD, 3130U);
@@ -209,8 +192,6 @@ namespace Component
             mSoundLeft.Update(3000U);
             mSoundRight.Update(3000U);
 
-            EXPECT_EQ(mSoundLeft.GetStatus(), LOUD);
-            EXPECT_EQ(mSoundRight.GetStatus(), LOUD);
             EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 30U);
             EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 30U);
 
@@ -221,8 +202,6 @@ namespace Component
             mSoundLeft.Update(4000U);
             mSoundRight.Update(4000U);
 
-            EXPECT_EQ(mSoundLeft.GetStatus(), LOUD);
-            EXPECT_EQ(mSoundRight.GetStatus(), NO_SOUND);
             EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 40U);
             EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 30U);
         }

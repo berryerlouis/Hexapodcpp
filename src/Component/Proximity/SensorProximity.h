@@ -7,7 +7,7 @@ namespace Component
 {
     namespace Proximity
     {
-        class SensorProximity : public SensorProximityMultipleInterface {
+        class SensorProximity : public SensorProximityMultipleInterface, Core::ObserverInterface<SensorsStruct> {
         public:
             static constexpr uint8_t NB_SENSORS = 3U;
 
@@ -26,8 +26,11 @@ namespace Component
 
             virtual uint16_t GetThreshold(const SensorsId &sensorId) final override;
 
+            virtual void Notified(const SensorsStruct &sensor) final override;
+
         private:
             SensorProximityInterface *mSensors[NB_SENSORS];
         };
+
     } // namespace Proximity
 } // namespace Component

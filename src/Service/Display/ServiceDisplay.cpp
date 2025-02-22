@@ -5,6 +5,7 @@ namespace Service
     namespace Display
     {
         ServiceDisplay::ServiceDisplay(Ssd1306Interface &ssd1306
+                                       , CommunicationInterface &communication
                                        , ButtonInterface &button
                                        , SoundInterface &soundInterfaceLeft
                                        , SoundInterface &soundInterfaceRight
@@ -12,9 +13,10 @@ namespace Service
                                        , Event::MessageInterface &messageListener) :
             Service(DISPLAY, 20U, messageListener)
             , mSsd1306(ssd1306)
+            , mCommunication(communication)
             , mButton(button)
-            , mSoundInterfaceLeft(soundInterfaceLeft)
-            , mSoundInterfaceRight(soundInterfaceRight)
+            , mSoundLeft(soundInterfaceLeft)
+            , mSoundRight(soundInterfaceRight)
             , mSensors(sensors)
             , mBmpBatteryLevel{.bmp = const_cast<uint8_t *>(Bitmaps::Battery0), .width = 16U, .height = 7U}
             , mBmpCommunication{.bmp = const_cast<uint8_t *>(Bitmaps::Communication), .width = 16U, .height = 8U}
@@ -22,16 +24,18 @@ namespace Service
             , mBmpButton{.bmp = const_cast<uint8_t *>(Bitmaps::ButtonRelease), .width = 16U, .height = 7U}
             , mBmpSound{.bmp = const_cast<uint8_t *>(Bitmaps::SoundLeft), .width = 16U, .height = 7U}
             , mPreviousTime(0UL)
-            , mToggleCommunicationBmp(false) {
+            , mToggleCommunicationBmp(false)
+            , mState(NO_CLIENT) {
         }
 
         Core::Status ServiceDisplay::Initialize(void) {
             Core::Status success = Core::Status::CORE_ERROR;
             if (this->mSsd1306.Initialize() == Core::Status::CORE_OK) {
                 this->mButton.Attach(this);
-                this->mSoundInterfaceLeft.Attach(this);
-                this->mSoundInterfaceRight.Attach(this);
+                this->mSoundLeft.Attach(this);
+                this->mSoundRight.Attach(this);
                 this->mSensors.Attach(this);
+                this->mCommunication.Attach(this);
                 this->DisplayBackground();
                 this->DisplayBatteryLevel(UNKNOWN);
                 this->DisplayButtonBmp(RELEASE);
@@ -54,18 +58,25 @@ namespace Service
         }
 
         void ServiceDisplay::Notified(const SoundStruct &sound) {
-            this->DisplaySound(sound.id, sound.state, sound.delay);
+            this->DisplaySound(sound);
         }
 
         void ServiceDisplay::Notified(const SensorsStruct &sensor) {
             this->DisplayProximitySensor(sensor.id, sensor.distance);
         }
 
+        void ServiceDisplay::Notified(const CommunicationStruct &state) {
+            this->mState = state;
+            if (state == CLIENT_CONNECTED) {
+                this->mSsd1306.DrawBitmap(&this->mBmpCommunication, SCREEN_WIDTH - this->mBmpCommunication.width, 0U,
+                                          Bitmaps::Color::COLOR_WHITE);
+            }
+        }
 
         void ServiceDisplay::DisplayBackground(void) const {
             this->mSsd1306.DrawLine(0U, 10U, SCREEN_WIDTH, 10U, Bitmaps::Color::COLOR_WHITE);
-            this->mSsd1306.DrawLine(18U, 0U, 18U, SCREEN_HEIGHT, Bitmaps::Color::COLOR_WHITE);
-            this->mSsd1306.DrawLine(SCREEN_WIDTH - 18U, 0U, SCREEN_WIDTH - 18U, SCREEN_HEIGHT,
+            this->mSsd1306.DrawLine(18U, 10U, 18U, SCREEN_HEIGHT, Bitmaps::Color::COLOR_WHITE);
+            this->mSsd1306.DrawLine(SCREEN_WIDTH - 18U, 10U, SCREEN_WIDTH - 18U, SCREEN_HEIGHT,
                                     Bitmaps::Color::COLOR_WHITE);
         }
 
@@ -84,14 +95,17 @@ namespace Service
         }
 
         void ServiceDisplay::DisplayCommunicationBmp(void) {
-            if (this->mToggleCommunicationBmp == true) {
-                this->mSsd1306.DrawBitmap(&this->mBmpCommunication, SCREEN_WIDTH - this->mBmpCommunication.width, 0U,
-                                          Bitmaps::Color::COLOR_WHITE);
-                this->mToggleCommunicationBmp = false;
-            } else {
-                this->mSsd1306.EraseArea(SCREEN_WIDTH - this->mBmpCommunication.width, 0U,
-                                         this->mBmpCommunication.width, 8U);
-                this->mToggleCommunicationBmp = true;
+            if (this->mState == NO_CLIENT) {
+                if (this->mToggleCommunicationBmp == true) {
+                    this->mSsd1306.DrawBitmap(&this->mBmpCommunication, SCREEN_WIDTH - this->mBmpCommunication.width,
+                                              0U,
+                                              Bitmaps::Color::COLOR_WHITE);
+                    this->mToggleCommunicationBmp = false;
+                } else {
+                    this->mSsd1306.EraseArea(SCREEN_WIDTH - this->mBmpCommunication.width, 0U,
+                                             this->mBmpCommunication.width, 8U);
+                    this->mToggleCommunicationBmp = true;
+                }
             }
         }
 
@@ -109,61 +123,56 @@ namespace Service
         void ServiceDisplay::DisplayProximitySensor(const Component::Proximity::SensorsId sensorId,
                                                     const uint16_t distance) {
             if (sensorId == Component::Proximity::SensorsId::SRF_LEFT) {
-                if (distance > 30) {
-                    this->mSsd1306.EraseArea((SCREEN_WIDTH / 2U) - (this->mBmpProximity.width / 2U) -
-                                             this->mBmpProximity.width,
-                                             0U, this->mBmpProximity.width, 8U);
+                if (distance > 30U) {
+                    this->mSsd1306.EraseArea(0U,
+                                             SCREEN_HEIGHT - 10U, this->mBmpProximity.width, 8U);
                 } else {
                     this->mBmpProximity.bmp = const_cast<uint8_t *>(Bitmaps::ArrowLeft);
                     this->mSsd1306.DrawBitmap(&this->mBmpProximity,
-                                              (SCREEN_WIDTH / 2U) - (this->mBmpProximity.width / 2U) -
-                                              this->mBmpProximity.width,
-                                              0U, Bitmaps::Color::COLOR_WHITE);
+                                              0U,
+                                              SCREEN_HEIGHT - 10U, Bitmaps::Color::COLOR_WHITE);
                 }
             } else if (sensorId == Component::Proximity::SensorsId::VLX) {
-                if (distance > 300) {
-                    this->mSsd1306.EraseArea((SCREEN_WIDTH / 2U) - (this->mBmpProximity.width / 2U), 0U,
+                if (distance > 300U) {
+                    this->mSsd1306.EraseArea((SCREEN_WIDTH / 2U) - (this->mBmpProximity.width / 2U),
+                                             SCREEN_HEIGHT - 10U,
                                              this->mBmpProximity.width, 8U);
                 } else {
                     this->mBmpProximity.bmp = const_cast<uint8_t *>(Bitmaps::ArrowUp);
                     this->mSsd1306.DrawBitmap(&this->mBmpProximity,
-                                              (SCREEN_WIDTH / 2U) - (this->mBmpProximity.width / 2U), 0U,
+                                              (SCREEN_WIDTH / 2U) - (this->mBmpProximity.width / 2U),
+                                              SCREEN_HEIGHT - 10U,
                                               Bitmaps::Color::COLOR_WHITE);
                 }
             } else if (sensorId == Component::Proximity::SensorsId::SRF_RIGHT) {
-                if (distance > 30) {
-                    this->mSsd1306.EraseArea((SCREEN_WIDTH / 2U) + (this->mBmpProximity.width / 2U), 0U,
+                if (distance > 30U) {
+                    this->mSsd1306.EraseArea((SCREEN_WIDTH - this->mBmpProximity.width),
+                                             SCREEN_HEIGHT - 10U,
                                              this->mBmpProximity.width, 8U);
                 } else {
                     this->mBmpProximity.bmp = const_cast<uint8_t *>(Bitmaps::ArrowRight);
                     this->mSsd1306.DrawBitmap(&this->mBmpProximity,
-                                              (SCREEN_WIDTH / 2U) + (this->mBmpProximity.width / 2U), 0U,
+                                              (SCREEN_WIDTH - this->mBmpProximity.width),
+                                              SCREEN_HEIGHT - 10U,
                                               Bitmaps::Color::COLOR_WHITE);
                 }
             }
         }
 
-        void ServiceDisplay::DisplaySound(const SoundId &soundId, const SoundState &soundState, const uint16_t period) {
-            (void) period;
-            if (soundId == SOUND_RIGHT) {
-                if (soundState == NO_SOUND) {
-                    this->mSsd1306.EraseArea((SCREEN_WIDTH) - (this->mBmpSound.width),
-                                             12U, this->mBmpSound.width, 8U);
-                } else {
-                    this->mBmpSound.bmp = const_cast<uint8_t *>(Bitmaps::SoundRight);
-                    this->mSsd1306.DrawBitmap(&this->mBmpSound, (SCREEN_WIDTH) - (this->mBmpSound.width),
-                                              12U, Bitmaps::Color::COLOR_WHITE);
-                }
+        void ServiceDisplay::DisplaySound(const SoundStruct &soundStruct) {
+            if (soundStruct.id == SOUND_RIGHT) {
+                this->mBmpSound.bmp = const_cast<uint8_t *>(Bitmaps::SoundRight);
+                this->mSsd1306.DrawBitmap(&this->mBmpSound, (SCREEN_WIDTH) - (this->mBmpSound.width),
+                                          12U, Bitmaps::Color::COLOR_WHITE);
+            } else if (soundStruct.id == SOUND_LEFT) {
+                this->mBmpSound.bmp = const_cast<uint8_t *>(Bitmaps::SoundLeft);
+                this->mSsd1306.DrawBitmap(&this->mBmpSound, 0U, 12U,
+                                          Bitmaps::Color::COLOR_WHITE);
             } else {
-                if (soundState == NO_SOUND) {
-                    this->mSsd1306.EraseArea(0U, 12U, this->mBmpSound.width, 8U);
-                } else {
-                    this->mBmpSound.bmp = const_cast<uint8_t *>(Bitmaps::SoundLeft);
-                    this->mSsd1306.DrawBitmap(&this->mBmpSound, 0U, 12U,
-                                              Bitmaps::Color::COLOR_WHITE);
-                }
+                this->mSsd1306.EraseArea(0U, 12U, this->mBmpSound.width, 8U);
+                this->mSsd1306.EraseArea((SCREEN_WIDTH) - (this->mBmpSound.width),
+                                         12U, this->mBmpSound.width, 8U);
             }
         }
-
     } // namespace Display
 } // namespace Service

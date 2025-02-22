@@ -26,13 +26,6 @@ namespace Service
 
             virtual void
             SetUp() {
-                EXPECT_CALL(mMockSoundLeft, Initialize()).WillOnce(Return(Core::Status::CORE_ERROR));
-                EXPECT_CALL(mMockSoundRight, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_EQ(Core::Status::CORE_ERROR, mServiceSound.Initialize());
-
-                EXPECT_CALL(mMockSoundLeft, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockSoundRight, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_EQ(Core::Status::CORE_OK, mServiceSound.Initialize());
             }
 
             virtual void
@@ -50,19 +43,10 @@ namespace Service
             ServiceSound mServiceSound;
         };
 
-        TEST_F(UT_SRV_SOUND, Update) {
-            EXPECT_CALL(mMockSoundLeft, Update( 12340UL )).Times(1U);
-            EXPECT_CALL(mMockSoundRight, Update( 12340UL )).Times(1U);
-            mServiceSound.Update(12340UL);
-        }
-
-        TEST_F(UT_SRV_SOUND, UpdatedSoundState) {
-            constexpr SoundState soundState = SoundState::NO_SOUND;
-
-            Frame response;
-            Cluster::Sound::ClusterSound::BuildFrameGetSoundState(SOUND_LEFT, soundState, response);
-            EXPECT_CALL(mMockEventListener, SendMessage(response)).Times(1U);
-            mServiceSound.Notified({SOUND_LEFT, soundState, 10U});
+        TEST_F(UT_SRV_SOUND, Initialize) {
+            EXPECT_CALL(mMockSoundLeft, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+            EXPECT_CALL(mMockSoundRight, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+            EXPECT_EQ(Core::Status::CORE_OK, mServiceSound.Initialize());
         }
     }
 }

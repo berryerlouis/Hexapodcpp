@@ -18,27 +18,26 @@ namespace Cluster
         Core::Status ClusterSound::ExecuteFrame(const Frame &request, Frame &response) {
             Core::Status success = Core::Status::CORE_ERROR;
             if (request.commandId == ESoundCommands::GET_SOUND_STATUS) {
-                SoundState state;
+                uint64_t sound;
                 const SoundId soundId = static_cast<SoundId>(request.params[0U]);
                 if (soundId == SOUND_LEFT) {
-                    state = this->mSoundLeft.GetStatus();
+                    sound = this->mSoundLeft.GetIntervalSoundHit();
                 } else {
-
-                    state = this->mSoundRight.GetStatus();
+                    sound = this->mSoundRight.GetIntervalSoundHit();
                 }
-                success = BuildFrameGetSoundState(soundId, state, response);
+                success = BuildFrameGetSoundState(soundId, sound, response);
             }
             return success;
         }
 
-        Core::Status ClusterSound::BuildFrameGetSoundState(const SoundId &soundId, const SoundState &soundState,
+        Core::Status ClusterSound::BuildFrameGetSoundState(const SoundId &soundId, const uint64_t &soundDelay,
                                                            Frame &response) {
             const Core::Status success = response.Build(
                     EClusters::SOUND,
                     ESoundCommands::GET_SOUND_STATUS);
             if (success == Core::Status::CORE_OK) {
                 response.Set1ByteParam(soundId);
-                response.Set1ByteParam(soundState);
+                response.Set8BytesParam(soundDelay);
             }
             return (success);
         }

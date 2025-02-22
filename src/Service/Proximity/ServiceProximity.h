@@ -2,7 +2,7 @@
 
 #include "../../Component/Proximity/SensorProximityInterface.h"
 #include "../Service.h"
-#include "../../Component/ObserverInterface.h"
+#include "../../Core/ObserverInterface.h"
 
 namespace Service
 {
@@ -13,7 +13,7 @@ namespace Service
 
         constexpr uint8_t MAX_TIMEOUT_DETECTION = 10U;
 
-        class ServiceProximity : public Service, ObserverInterface<SensorsStruct> {
+        class ServiceProximity : public Service, Core::ObserverInterface<SensorsStruct> {
         public:
             ServiceProximity(SensorProximityMultipleInterface &proximity,
                              Event::MessageInterface &messageListener);

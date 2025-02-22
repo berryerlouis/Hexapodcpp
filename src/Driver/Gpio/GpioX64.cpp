@@ -4,10 +4,9 @@ namespace Driver
 {
     namespace Gpio
     {
-        static bool once = false;
-
         Gpio::Gpio(const SGpio &gpio, const EPortDirection &portDirection) :
             mGpio(gpio) {
+            (void) portDirection;
         }
 
         SGpio &Gpio::GetPin(void) {
@@ -29,7 +28,8 @@ namespace Driver
         void Gpio::SetInterruptPin(void) {
         }
 
-        void Gpio::SetInterruptPin(void (*function)(void)) {
+        void Gpio::SetInterruptPin(const InterruptCallback callback) {
+            (void) callback;
         }
 
         void Gpio::ResetInterruptPin(void) {

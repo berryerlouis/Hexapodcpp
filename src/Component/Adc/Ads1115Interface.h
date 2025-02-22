@@ -2,7 +2,7 @@
 
 #include "../ComponentInterface.h"
 #include "Ads1115Id.h"
-#include "../Observable.h"
+#include "../../Core/Observable.h"
 
 namespace Component
 {

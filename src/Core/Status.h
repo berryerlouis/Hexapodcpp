@@ -14,7 +14,7 @@ namespace Core
         CORE_ERROR_DISABLE = (-8)
     };
 
-    static inline bool IsSucess(const Status status) {
+    static inline bool IsSuccess(const Status status) {
         return (status == CORE_OK);
     }
 }

@@ -22,7 +22,7 @@ namespace Driver
 
             virtual void SetInterruptPin(void) final override;
 
-            virtual void SetInterruptPin(void (*function)(void)) final override;
+            virtual void SetInterruptPin(const InterruptCallback callback) final override;
 
             virtual void ResetInterruptPin(void) final override;
 

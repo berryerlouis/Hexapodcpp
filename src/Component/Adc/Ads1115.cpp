@@ -56,7 +56,7 @@ namespace Component
             while ((timeout < 100U) && (value & ADS1X15_OS_NOT_BUSY) == 0U) {
                 usleep(10U);
                 timeout++;
-                this->mTwi.ReadRegister16Bits(this->mAddress, ADS1X15_REG_CONVERT, value);
+                this->mTwi.ReadRegister16Bits(this->mAddress, ADS1X15_REG_CONFIG, value);
             }
             return ((value & ADS1X15_OS_NOT_BUSY) > 0U);
         }
@@ -83,6 +83,9 @@ namespace Component
             uint16_t raw = 0U;
             if (true == ready) {
                 this->mTwi.ReadRegister16Bits(this->mAddress, ADS1X15_REG_CONVERT, raw);
+                uint16_t value = raw << 8;
+                value += raw;
+                raw = value / 2047U;
             }
             return raw;
         }

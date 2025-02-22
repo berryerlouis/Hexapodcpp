@@ -1,11 +1,10 @@
 #pragma once
-#include "../Core/CoreInterface.h"
+#include "CoreInterface.h"
 #include "ObservableInterface.h"
 #include "ObserverInterface.h"
 
-namespace Component
+namespace Core
 {
-
     template<uint8_t MAX_OBSERVERS, class T>
     class Observable : public ObservableInterface<T> {
     public:
@@ -29,6 +28,7 @@ namespace Component
             return (success);
         }
 
+    protected:
         virtual void
         Notify(const T item) final override {
             for (size_t i = 0; i < this->mIndexList; i++) {

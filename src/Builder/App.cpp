@@ -1,5 +1,4 @@
 #include "App.h"
-#include "../Misc/Logger/Logger.h"
 
 using namespace Driver::Gpio;
 
@@ -84,7 +83,8 @@ namespace Builder
         , mServiceOrientation(mMpu9150, mBarometer, mMessageListener)
         , mServiceBattery(mBattery, mMessageListener)
         , mServiceBody(mBody, mMessageListener)
-        , mServiceDisplay(mSsd1306, mButton, mSoundLeft, mSoundRight, mSensorProximity, mMessageListener)
+        , mServiceDisplay(mSsd1306, mCommunication, mButton, mSoundLeft, mSoundRight, mSensorProximity,
+                          mMessageListener)
         , mServiceGeneral(mSoftware, mMessageListener)
         , mServices(
                 mTick,
@@ -99,7 +99,6 @@ namespace Builder
                 mServiceButton,
                 mServiceSound,
                 mMessageListener) {
-        INIT_LOGGER(mSocket);
     }
 
     Core::Status App::Initialize(void) {
@@ -111,7 +110,6 @@ namespace Builder
             success = mServices.Initialize();
         }
         if (success != Core::Status::CORE_OK) {
-            LOG("<error>");
         }
         return (success);
     }

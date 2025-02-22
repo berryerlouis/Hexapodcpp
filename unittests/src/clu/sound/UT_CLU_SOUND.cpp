@@ -45,15 +45,23 @@ namespace Cluster
             request.Set1ByteParam(SOUND_LEFT);
             Frame response;
 
-            EXPECT_CALL(mMockSoundLeft, GetStatus()).WillOnce(Return(NO_SOUND));
+            EXPECT_CALL(mMockSoundLeft, GetIntervalSoundHit()).WillOnce(Return(1110U));
 
             success = mClusterSound.ExecuteFrame(request, response);
 
             EXPECT_EQ(response.clusterId, SOUND);
             EXPECT_EQ(response.commandId, GET_SOUND_STATUS);
-            EXPECT_EQ(response.nbParams, 2U);
+            EXPECT_EQ(response.nbParams, 9U);
             EXPECT_EQ(response.params[0U], SOUND_LEFT);
-            EXPECT_EQ(response.params[1U], NO_SOUND);
+            EXPECT_EQ(response.params[1U], 0x56);
+            EXPECT_EQ(response.params[2U], 0x04);
+            EXPECT_EQ(response.params[3U], 0x00);
+            EXPECT_EQ(response.params[4U], 0x00);
+            EXPECT_EQ(response.params[5U], 0x00);
+            EXPECT_EQ(response.params[6U], 0x00);
+            EXPECT_EQ(response.params[7U], 0x00);
+            EXPECT_EQ(response.params[8U], 0x00);
+            EXPECT_EQ(response.params[9U], 0x00);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
@@ -63,51 +71,23 @@ namespace Cluster
             request.Set1ByteParam(SOUND_RIGHT);
             Frame response;
 
-            EXPECT_CALL(mMockSoundRight, GetStatus()).WillOnce(Return(NO_SOUND));
+            EXPECT_CALL(mMockSoundRight, GetIntervalSoundHit()).WillOnce(Return(1110U));
 
             success = mClusterSound.ExecuteFrame(request, response);
 
             EXPECT_EQ(response.clusterId, SOUND);
             EXPECT_EQ(response.commandId, GET_SOUND_STATUS);
-            EXPECT_EQ(response.nbParams, 2U);
+            EXPECT_EQ(response.nbParams, 9U);
             EXPECT_EQ(response.params[0U], SOUND_RIGHT);
-            EXPECT_EQ(response.params[1U], NO_SOUND);
-            EXPECT_EQ(success, Core::Status::CORE_OK);
-        }
-
-        TEST_F(UT_CLU_SOUND, Execute_Command_status_Left_Loud_Ok) {
-            Core::Status success = Core::Status::CORE_ERROR;
-            Frame request(SOUND, GET_SOUND_STATUS);
-            request.Set1ByteParam(SOUND_LEFT);
-            Frame response;
-
-            EXPECT_CALL(mMockSoundLeft, GetStatus()).WillOnce(Return(LOUD));
-
-            success = mClusterSound.ExecuteFrame(request, response);
-
-            EXPECT_EQ(response.clusterId, SOUND);
-            EXPECT_EQ(response.commandId, GET_SOUND_STATUS);
-            EXPECT_EQ(response.nbParams, 2U);
-            EXPECT_EQ(response.params[0U], SOUND_LEFT);
-            EXPECT_EQ(response.params[1U], LOUD);
-            EXPECT_EQ(success, Core::Status::CORE_OK);
-        }
-
-        TEST_F(UT_CLU_SOUND, Execute_Command_status_Right_Loud_Ok) {
-            Core::Status success = Core::Status::CORE_ERROR;
-            Frame request(SOUND, GET_SOUND_STATUS);
-            request.Set1ByteParam(SOUND_RIGHT);
-            Frame response;
-
-            EXPECT_CALL(mMockSoundRight, GetStatus()).WillOnce(Return(LOUD));
-
-            success = mClusterSound.ExecuteFrame(request, response);
-
-            EXPECT_EQ(response.clusterId, SOUND);
-            EXPECT_EQ(response.commandId, GET_SOUND_STATUS);
-            EXPECT_EQ(response.nbParams, 2U);
-            EXPECT_EQ(response.params[0U], SOUND_RIGHT);
-            EXPECT_EQ(response.params[1U], LOUD);
+            EXPECT_EQ(response.params[1U], 0x56);
+            EXPECT_EQ(response.params[2U], 0x04);
+            EXPECT_EQ(response.params[3U], 0x00);
+            EXPECT_EQ(response.params[4U], 0x00);
+            EXPECT_EQ(response.params[5U], 0x00);
+            EXPECT_EQ(response.params[6U], 0x00);
+            EXPECT_EQ(response.params[7U], 0x00);
+            EXPECT_EQ(response.params[8U], 0x00);
+            EXPECT_EQ(response.params[9U], 0x00);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 

@@ -2,7 +2,7 @@
 
 #include "ObserverInterface.h"
 
-namespace Component
+namespace Core
 {
 
     template<class T>

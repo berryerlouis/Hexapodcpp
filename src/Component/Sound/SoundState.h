@@ -13,15 +13,9 @@ namespace Component
             SOUND_NONE
         };
 
-        enum SoundState {
-            NO_SOUND = 0U,
-            LOUD
-        };
-
         struct SoundStruct {
-            const SoundId &id;
-            const SoundState state;
-            const uint64_t delay;
+            SoundId id;
+            uint64_t delay;
         };
     }
 }
