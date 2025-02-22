@@ -6,8 +6,9 @@ NC='\033[0m'
 
 bin/dev/prebuild.sh test ${1}
 
-cd build/
 ls -al
+#cd build/
+#ls -al
 cd unittests/
 
 ls -al
