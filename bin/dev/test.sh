@@ -7,7 +7,7 @@ NC='\033[0m'
 bin/dev/prebuild.sh test ${1}
 
 pwd
-
+ls
 cd build/unittest/unittests
 
 pwd
