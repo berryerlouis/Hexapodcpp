@@ -14,7 +14,7 @@ else
         # If only one argument is provided
         if [ $# -eq 1 ]; then
             # Run cmake with DEBUG build type, specifying target and disabling GTest
-            cmake -DCMAKE_BUILD_TYPE=DEBUG -DTARGET="${1}" -DGTEST=0 -S . -B build/hexapod
+            cmake -DCMAKE_BUILD_TYPE=DEBUG -DTARGET="${1}" -DGTEST=0 -S . -B build
         else
             # If the third argument is "CLEAN"
             if [ $3 = "CLEAN" ]; then
@@ -22,7 +22,7 @@ else
                 cmake --build . --target clean
             else
                 # Run cmake with the specified build type, target, and disabling GTest
-                cmake -DCMAKE_BUILD_TYPE=${3} -DTARGET="${1}" -DGTEST=0 -S . -B build/hexapod
+                cmake -DCMAKE_BUILD_TYPE=${3} -DTARGET="${1}" -DGTEST=0 -S . -B build
             fi
         fi
     fi
