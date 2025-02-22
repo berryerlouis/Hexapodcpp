@@ -5,14 +5,8 @@ GREEN='\033[0;32m'
 NC='\033[0m'
 
 bin/dev/prebuild.sh test ${1}
-pwd
-ls
-cd build/
-ls
 
-cd build/unittest/unittests
-
-pwd
+cd build/unittests/unittests
 
 if [ $# -eq 0 ]; then
     make -j16 ${1}
@@ -23,7 +17,7 @@ else
         if [ $1 = "all" ]; then
             ./HexapodcppTest --gtest_color=yes -j16 --rerun-failed --output-on-failure --gtest_shuffle
         fi
-    else 
+    else
         make -j16
         ./HexapodcppTest --gtest_color=yes -j16 --rerun-failed --output-on-failure --gtest_shuffle
     fi

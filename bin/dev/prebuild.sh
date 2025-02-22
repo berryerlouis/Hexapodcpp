@@ -4,7 +4,6 @@
 # 1: target (AVR, X64, RPI)
 # 2: source or test
 # 3: DEBUG, RELEASE, or CLEAN
-
 # Check if no arguments are provided
 if [ $# -eq 0 ]; then
     # Run cmake with DEBUG build type, specifying source and build directories
@@ -34,10 +33,10 @@ else
         # If the third argument is "all", "clean", or "help"
         if [ $3 = "all" ] || [ $3 = "clean" ] || [ $3 = "help" ]; then
             # Run cmake with GTest samples enabled, DEBUG build type, and build all unit tests
-            cmake -Dgtest_build_samples=ON -DCMAKE_BUILD_TYPE=Debug -DUT_TO_BUILD="all" -S . -B build
+            cmake -Dgtest_build_samples=ON -DCMAKE_BUILD_TYPE=Debug -DUT_TO_BUILD="all" -S . -B build -Wno-dev
         else
             # Run cmake with GTest samples enabled, DEBUG build type, and build specified unit tests
-            cmake -Dgtest_build_samples=ON -DCMAKE_BUILD_TYPE=Debug -DUT_TO_BUILD=${3} -S . -B build
+            cmake -Dgtest_build_samples=ON -DCMAKE_BUILD_TYPE=Debug -DUT_TO_BUILD=${3} -S . -B build -Wno-dev
         fi
     fi
 fi

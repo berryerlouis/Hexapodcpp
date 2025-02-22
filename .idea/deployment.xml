@@ -17,12 +17,14 @@
             <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-rpi" />
             <excludedPath local="true" path="$PROJECT_DIR$/images" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/unittest" />
+            <excludedPath local="true" path="$PROJECT_DIR$/images" />
             <excludedPath local="true" path="$PROJECT_DIR$/unittests" />
             <excludedPath local="true" path="$PROJECT_DIR$/node" />
+            <excludedPath local="true" path="$PROJECT_DIR$/bin" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build/unittests" />
             <excludedPath local="true" path="$PROJECT_DIR$/HMI-copy" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-gcc-cross-compile-debug" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/gcc-debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/unittest" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-gcc-debug" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/rpi" />
             <excludedPath local="true" path="$PROJECT_DIR$/node" />
