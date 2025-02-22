@@ -15,11 +15,11 @@ else
     if [ $1 = "all" ] || [ $1 = "clean" ] || [ $1 = "help" ]; then
         make -j16 ${1}
         if [ $1 = "all" ]; then
-            ./HexapodcppTest --gtest_color=yes -j16 --rerun-failed --output-on-failure --gtest_shuffle
+            ./HexapodcppTest --gtest_color=yes -j16 --rerun-failed --output-on-failure --gtest_shuffle --gtest_output="xml:../test_results.xml"
         fi
     else
         make -j16
-        ./HexapodcppTest --gtest_color=yes -j16 --rerun-failed --output-on-failure --gtest_shuffle
+        ./HexapodcppTest --gtest_color=yes -j16 --rerun-failed --output-on-failure --gtest_shuffle --gtest_output="xml:../test_results.xml"
     fi
 fi
 
