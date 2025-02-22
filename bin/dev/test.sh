@@ -6,14 +6,8 @@ NC='\033[0m'
 
 bin/dev/prebuild.sh test ${1}
 
-ls -al
-#cd build/
-#ls -al
-cd unittests/
-
-ls -al
-cd unittests/
-ls -al
+ls -al build/
+ls -al unittests/
 
 if [ $# -eq 0 ]; then
     make -j16 ${1}

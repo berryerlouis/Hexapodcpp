@@ -30,8 +30,8 @@ else
     if [ $2 = "test" ]; then
         # Change directory to unittests
         cd unittests
-        # If the third argument is "all", "clean", or "help"
-        if [ $3 = "all" ] || [ $3 = "clean" ] || [ $3 = "help" ]; then
+        # If the third argument is "all", "clean"
+        if [ $3 = "all" ] || [ $3 = "CLEAN" ]; then
             # Run cmake with GTest samples enabled, DEBUG build type, and build all unit tests
             cmake -Dgtest_build_samples=ON -DCMAKE_BUILD_TYPE=Debug -DUT_TO_BUILD="all" -S . -B build -Wno-dev
         else
