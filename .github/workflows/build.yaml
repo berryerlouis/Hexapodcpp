@@ -20,7 +20,7 @@ jobs:
         run: |
           bin/dev/build.sh RPI sources RELEASE install
 
-      - name: Run Test
+      - name: Run Google Test
         run: |
           bin/dev/test.sh all
 

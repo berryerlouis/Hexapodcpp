@@ -10,8 +10,24 @@ The following tools are used:
 
 - Install VS-code or CLion
 - If you are using VS-code install serial-monitor extension
-- Install
-  avr-gcc [(link windows)](https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/avr8-gnu-toolchain-3.7.0.1796-win32.any.x86_64.zip) [(link linux)](https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/avr8-gnu-toolchain-3.7.0.1796-linux.any.x86_64.tar.gz)
+
+# Yocto
+
+Install kas
+
+``` shell
+sudo pip install kas
+```
+
+Clone repo and build sdk
+
+``` shell
+git clone git@github.com:berryerlouis/yocto-rpiw.git
+cd yocto-rpiw
+kas build meta-raspberrypi/kas-poky-rpi.yml -c populate_sdk
+cd build/tmp/deploy/sdk/
+./poky-glibc-x86_64-core-image-base-arm1176jzfshf-vfp-raspberrypi0-wifi-toolchain-5.1.sh
+```
 
 # Architecture
 
@@ -33,62 +49,11 @@ The following tools are used:
 ## Google Test
 
  ``` shell
- bin/dev/test.sh
+ bin/dev/test.sh all
  ```
 
-# Serial
-
-## CLI to write firmware
-
- ``` shell
- bin/stack/avrdude.exe -c arduino -P COM4 -b 500000 -p m1284p -U flash:w:build/avr-debug/src/Hexapodcpp.elf
- ```
-
-## On WSL
-
-### Attach to wsl
-
- ``` shell
- usbipd.exe bind --hardware-id=10c4:ea60 
- ```
-
- ``` shell
- usbipd.exe --wsl attach --hardware-id=10c4:ea60
-  ```
-
-### Detach to wsl
-
- ``` shell
- usbipd.exe unbind --hardware-id=10c4:ea60
- ```
-
-## Serial Communication settings
-
-- baud: 500000
-- bytes: 8
-- parity: None
-- stop bit: 1
+# Communication
 
 ## Websocket
 
 - port: 8080
-
-### WSL Cross compilation:
-
-``` shell
-#toolchain
-sudo apt-get install gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
-
-#copy needed lib
-sudo scp -r hexabot:/usr/lib/arm-linux-gnueabihf/libssl* /usr/arm-linux-gnueabihf/lib/
-sudo scp -r hexabot:/usr/lib/arm-linux-gnueabihf/libcrypt* /usr/arm-linux-gnueabihf/lib/
-sudo ln -sf libcrypt.so.1 /usr/arm-linux-gnueabihf/lib/libcrypt.so
-
-#copy needed include
-sudo scp -r hexabot:/usr/include/openssl/ /usr/arm-linux-gnueabihf/include/openssl
-sudo scp -r hexabot:/usr/include/arm-linux-gnueabihf/openssl/ /usr/arm-linux-gnueabihf/include/openssl
-
-#copy wiring pi
-sudo scp -r hexabot:/usr/usr/lib/libwiringPi* /usr/arm-linux-gnueabihf/lib/
-sudo ln -sf /usr/arm-linux-gnueabihf/lib/libwiringPi.so.3.12 /usr/arm-linux-gnueabihf/lib/libwiringPi.so
-```

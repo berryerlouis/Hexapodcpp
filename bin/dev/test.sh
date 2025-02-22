@@ -6,8 +6,7 @@ NC='\033[0m'
 
 bin/dev/prebuild.sh X64 test ${1}
 
-ls -al build/hexapodTest/
-cd build/hexapodTest/
+cd build/hexapodTest/unittests
 
 if [ $# -eq 0 ]; then
     make -j16 ${1}

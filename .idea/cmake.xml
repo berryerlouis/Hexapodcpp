@@ -4,7 +4,7 @@
     <configurations>
       <configuration PROFILE_NAME="Rpi Debug" ENABLED="true" GENERATION_DIR="build/rpi-debug" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Rpi" GENERATION_OPTIONS="-DTARGET=&quot;RPI&quot; -Wno-dev" BUILD_OPTIONS="--verbose -- -j 1" />
       <configuration PROFILE_NAME="X64 Debug" ENABLED="true" GENERATION_DIR="build/gcc-debug" CONFIG_NAME="Debug" TOOLCHAIN_NAME="WSL" GENERATION_OPTIONS="-DTARGET=&quot;X64&quot; -Wno-dev" BUILD_OPTIONS="-- -j 16" />
-      <configuration PROFILE_NAME="TEST" ENABLED="true" GENERATION_DIR="build/unittests" CONFIG_NAME="Debug" TOOLCHAIN_NAME="WSL" GENERATION_OPTIONS="-DGTEST=1 -Wno-dev" BUILD_OPTIONS="-- -j 16" />
+      <configuration PROFILE_NAME="TEST" ENABLED="true" GENERATION_DIR="build/hexapodTest" CONFIG_NAME="Debug" TOOLCHAIN_NAME="WSL" GENERATION_OPTIONS="-DGTEST=1 -Wno-dev" BUILD_OPTIONS="-- -j 16" />
       <configuration PROFILE_NAME="RPI CrossCompilation" ENABLED="true" GENERATION_DIR="build/rpi-gcc-cross-compile-debug" CONFIG_NAME="Debug" TOOLCHAIN_NAME="WSL yocto" GENERATION_OPTIONS="-DTARGET=&quot;RPI&quot; -Wno-dev -DCROSS=1" BUILD_OPTIONS="-- -j 16" />
       <configuration PROFILE_NAME="RPI CrossCompilation Win" ENABLED="false" GENERATION_DIR="build/rpi-gcc-cross-compile-win-debug" CONFIG_NAME="Debug" TOOLCHAIN_NAME="WIN RPI  armelf_linux_eabi" GENERATION_OPTIONS="-DTARGET=&quot;RPI&quot; -Wno-dev -DCROSS=1" BUILD_OPTIONS="-- -j 16" NO_GENERATOR="true" />
       <configuration PROFILE_NAME="AVR Debug" ENABLED="false" GENERATION_DIR="build/avr-debug" CONFIG_NAME="Debug" TOOLCHAIN_NAME="WSL AVR" GENERATION_OPTIONS="-DTARGET=&quot;AVR&quot;" BUILD_OPTIONS="-- -j 16" />
