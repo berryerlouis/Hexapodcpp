@@ -5,9 +5,11 @@ GREEN='\033[0;32m'
 NC='\033[0m'
 
 bin/dev/prebuild.sh test ${1}
-
 pwd
 ls
+cd build/
+ls
+
 cd build/unittest/unittests
 
 pwd
