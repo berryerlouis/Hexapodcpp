@@ -4,10 +4,10 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 
-bin/dev/prebuild.sh test ${1}
+bin/dev/prebuild.sh X64 test ${1}
 
-ls -al build/
-ls -al unittests/
+ls -al build/hexapodTest/
+cd build/hexapodTest/
 
 if [ $# -eq 0 ]; then
     make -j16 ${1}
