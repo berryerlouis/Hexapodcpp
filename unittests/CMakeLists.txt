@@ -18,7 +18,7 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_compile_definitions(RPI)
+add_compile_definitions(X64)
 add_compile_definitions(GTEST)
 
 enable_testing()

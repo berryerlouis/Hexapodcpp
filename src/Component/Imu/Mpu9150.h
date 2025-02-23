@@ -121,46 +121,52 @@ namespace Component
 
             void Update(const uint64_t currentTime);
 
-            inline virtual Vector3 ReadAcc(void) final override {
-                return (this->mAccRaw);
+            inline virtual Vector3
+            ReadAcc(void) final override {
+                return (this->UpdateAcc());
             }
 
-            inline virtual Vector3 ReadGyr(void) final override {
-                return (this->mGyrRaw);
+            inline virtual Vector3
+            ReadGyr(void) final override {
+                return (this->UpdateGyr());
             }
 
-            inline virtual Vector3 ReadMag(void) final override {
-                return (this->mMagRaw);
+            inline virtual Vector3
+            ReadMag(void) final override {
+                return (this->UpdateMag());
             }
 
-            inline virtual int16_t ReadTemp(void) final override {
+            inline virtual int16_t
+            ReadTemp(void) final override {
                 return (this->mTmp);
             }
 
-            inline virtual Position3D ReadYawPitchRoll(void) final override {
+            inline virtual Position3D
+            ReadYawPitchRoll(void) final override {
                 return (this->mYawPitchRoll);
             }
 
-            inline virtual void StartCalibrationMag(const bool enable) {
+            inline virtual void
+            StartCalibrationMag(const bool enable) {
                 this->mStartMagCalib = enable;
-				if(enable == false)
-				{
-					this->mMagOffset.x = (this->mMagCalibMax.x - this->mMagCalibMin.x) / 2U;
-					this->mMagOffset.y = (this->mMagCalibMax.y - this->mMagCalibMin.y) / 2U;
-					this->mMagOffset.z = (this->mMagCalibMax.z - this->mMagCalibMin.z) / 2U;
-				}
+                if (enable == false) {
+                    this->mMagOffset.x = (this->mMagCalibMax.x - this->mMagCalibMin.x) / 2U;
+                    this->mMagOffset.y = (this->mMagCalibMax.y - this->mMagCalibMin.y) / 2U;
+                    this->mMagOffset.z = (this->mMagCalibMax.z - this->mMagCalibMin.z) / 2U;
+                }
             }
 
-            inline virtual Vector3F ReadCalibrationMag(const bool min) {
+            inline virtual Vector3F
+            ReadCalibrationMag(const bool min) {
                 if (min == true) {
                     return this->mMagCalibMin;
                 }
                 return this->mMagCalibMax;
             }
 
-        private:		
-			void UpdateAll(void);
-			
+        private:
+            void UpdateAll(void);
+
             Vector3 UpdateAcc(void);
 
             Vector3 UpdateGyr(void);
@@ -235,9 +241,6 @@ namespace Component
             bool mStartMagCalib;
             Vector3F mMagCalibMin;
             Vector3F mMagCalibMax;
-            Vector3 mAccRaw;
-            Vector3 mGyrRaw;
-            Vector3 mMagRaw;
             Vector3F mAcc;
             Vector3F mGyr;
             Vector3F mMag;
@@ -245,7 +248,7 @@ namespace Component
             uint64_t mLastLoopTime;
             Ahrs mAhrs;
             Position3D mYawPitchRoll;
-			bool mDoComputation;
+            bool mDoComputation;
         };
     }
 }

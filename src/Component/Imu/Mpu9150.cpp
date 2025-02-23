@@ -10,11 +10,24 @@ namespace Component
 #define NB_SAMPLES 20
 
         Mpu9150::Mpu9150(Twi::TwiInterface &i2c, Tick::TickInterface &tick, const uint8_t address) :
-            mI2c(i2c), mTick(tick), mAddress(address), mAddressMag(AK8963_I2C_ADDRESS), mAccOffset{0, 0, 0},
-            mGyrOffset{0, -0, -0}, mMagOffset{40.0F, 177.5F, -101.5F}, mMagBias{0, 0, 0}, mStartMagCalib(false),
-            mMagCalibMin{100000, 100000, 100000}, mMagCalibMax{0, 0, 0}, mAccRaw{0, 0, 0}, mGyrRaw{0, 0, 0},
-            mMagRaw{0, 0, 0}, mAcc{0, 0, 0}, mGyr{0, 0, 0}, mMag{0, 0, 0}, mTmp(0U), mLastLoopTime(0U), mAhrs(),
-            mYawPitchRoll{0, 0, 0}, mDoComputation(false) {
+            mI2c(i2c)
+            , mTick(tick)
+            , mAddress(address)
+            , mAddressMag(AK8963_I2C_ADDRESS)
+            , mAccOffset{0, 0, 0}
+            , mGyrOffset{0, -0, -0}
+            , mMagOffset{40.0F, 177.5F, -101.5F}
+            , mMagBias{0, 0, 0}
+            , mStartMagCalib(false)
+            , mMagCalibMin{100000, 100000, 100000}
+            , mMagCalibMax{0, 0, 0}
+            , mAcc{0, 0, 0}
+            , mGyr{0, 0, 0}, mMag{0, 0, 0}
+            , mTmp(0U)
+            , mLastLoopTime(0U)
+            , mAhrs()
+            , mYawPitchRoll{0, 0, 0}
+            , mDoComputation(false) {
 #ifdef RPI
             this->mAddress = wiringPiI2CSetup(address);
 #endif
@@ -22,13 +35,13 @@ namespace Component
 
         Core::Status Mpu9150::Initialize(void) {
             uint8_t whoAmI = 0x00U;
-            uint8_t reg = 0x00U;
             Core::Status success = Core::Status::CORE_ERROR;
 
             // check device
             this->mI2c.ReadRegister(this->mAddress, ERegister::WHO_AM_I, whoAmI);
 
             if (whoAmI == MPU9150_I2C_ADDRESS - 1U) {
+                uint8_t reg = 0x00U;
                 // setClockSource
                 this->mI2c.ReadRegister(this->mAddress, ERegister::PWR_MGMT_1, reg);
                 reg |= (ERegisterGyro::CLOCK_PLL_XGYRO << ERegister::PWR1_CLKSEL_BIT);
@@ -120,50 +133,54 @@ namespace Component
             uint8_t allSensors[14U] = {0};
             if (this->mI2c.ReadRegisters(this->mAddress, ERegister::ACCEL_XOUT_H,
                                          reinterpret_cast<uint8_t *>(&allSensors), 14U)) {
-                this->mAccRaw.x = ((allSensors[0U] << 8U) | ((allSensors[1U]) & 0xFF)) - mAccOffset.x;
-                this->mAccRaw.y = ((allSensors[2U] << 8U) | ((allSensors[3U]) & 0xFF)) - mAccOffset.y;
-                this->mAccRaw.z = ((allSensors[4U] << 8U) | ((allSensors[5U]) & 0xFF)) - mAccOffset.z;
-                this->mAcc.x = (this->mAccRaw.x * 2.0F) / 32768.0F;
-                this->mAcc.y = -(this->mAccRaw.y * 2.0F) / 32768.0F;
-                this->mAcc.z = (this->mAccRaw.z * 2.0F) / 32768.0F;
+                Vector3 accRaw;
+                accRaw.x = ((allSensors[0U] << 8U) | ((allSensors[1U]) & 0xFF)) - mAccOffset.x;
+                accRaw.y = ((allSensors[2U] << 8U) | ((allSensors[3U]) & 0xFF)) - mAccOffset.y;
+                accRaw.z = ((allSensors[4U] << 8U) | ((allSensors[5U]) & 0xFF)) - mAccOffset.z;
+                this->mAcc.x = (accRaw.x * 2.0F) / 32768.0F;
+                this->mAcc.y = -(accRaw.y * 2.0F) / 32768.0F;
+                this->mAcc.z = (accRaw.z * 2.0F) / 32768.0F;
 
                 this->mTmp = static_cast<int16_t>((allSensors[6U] << 8U) | ((allSensors[7U] >> 8) & 0xFF));
                 this->mTmp = (this->mTmp / 340.0F) + 35U;
 
-                this->mGyrRaw.x = ((allSensors[8U] << 8U) | ((allSensors[9U]) & 0xFF)) - mGyrOffset.x;
-                this->mGyrRaw.y = -((allSensors[10U] << 8U) | ((allSensors[11U]) & 0xFF)) - mGyrOffset.y;
-                this->mGyrRaw.z = ((allSensors[12U] << 8U) | ((allSensors[13U]) & 0xFF)) - mGyrOffset.z;
-                this->mGyr.x = (this->mGyrRaw.x * 250.0F) / 32768.0F;
-                this->mGyr.y = -(this->mGyrRaw.y * 250.0F) / 32768.0F;
-                this->mGyr.z = (this->mGyrRaw.z * 250.0F) / 32768.0F;
+                Vector3 gyrRaw;
+                gyrRaw.x = ((allSensors[8U] << 8U) | ((allSensors[9U]) & 0xFF)) - mGyrOffset.x;
+                gyrRaw.y = -((allSensors[10U] << 8U) | ((allSensors[11U]) & 0xFF)) - mGyrOffset.y;
+                gyrRaw.z = ((allSensors[12U] << 8U) | ((allSensors[13U]) & 0xFF)) - mGyrOffset.z;
+                this->mGyr.x = (gyrRaw.x * 250.0F) / 32768.0F;
+                this->mGyr.y = -(gyrRaw.y * 250.0F) / 32768.0F;
+                this->mGyr.z = (gyrRaw.z * 250.0F) / 32768.0F;
             }
         }
 
         Vector3 Mpu9150::UpdateAcc(void) {
+            Vector3 accRaw;
             if (this->mI2c.ReadRegisters(this->mAddress, ERegister::ACCEL_XOUT_H,
-                                         reinterpret_cast<uint8_t *>(&this->mAccRaw), 6U)) {
-                this->mAccRaw.x = ((this->mAccRaw.x << 8U) | ((this->mAccRaw.x >> 8) & 0xFF)) - mAccOffset.x;
-                this->mAccRaw.y = ((this->mAccRaw.y << 8U) | ((this->mAccRaw.y >> 8) & 0xFF)) - mAccOffset.y;
-                this->mAccRaw.z = ((this->mAccRaw.z << 8U) | ((this->mAccRaw.z >> 8) & 0xFF)) - mAccOffset.z;
+                                         reinterpret_cast<uint8_t *>(&accRaw), 6U)) {
+                accRaw.x = ((accRaw.x << 8U) | ((accRaw.x >> 8) & 0xFF)) - mAccOffset.x;
+                accRaw.y = ((accRaw.y << 8U) | ((accRaw.y >> 8) & 0xFF)) - mAccOffset.y;
+                accRaw.z = ((accRaw.z << 8U) | ((accRaw.z >> 8) & 0xFF)) - mAccOffset.z;
             }
-            this->mAcc.x = (this->mAccRaw.x * 2.0F) / 32768.0F;
-            this->mAcc.y = -(this->mAccRaw.y * 2.0F) / 32768.0F;
-            this->mAcc.z = (this->mAccRaw.z * 2.0F) / 32768.0F;
-            return (this->mAccRaw);
+            this->mAcc.x = (accRaw.x * 2.0F) / 32768.0F;
+            this->mAcc.y = -(accRaw.y * 2.0F) / 32768.0F;
+            this->mAcc.z = (accRaw.z * 2.0F) / 32768.0F;
+            return (accRaw);
         }
 
         Vector3 Mpu9150::UpdateGyr(void) {
+            Vector3 gyrRaw;
             if (this->mI2c.ReadRegisters(this->mAddress, ERegister::GYRO_XOUT_H,
-                                         reinterpret_cast<uint8_t *>(&this->mGyrRaw), 6U)) {
-                this->mGyrRaw.x = ((this->mGyrRaw.x << 8U) | ((this->mGyrRaw.x >> 8) & 0xFF)) - mGyrOffset.x;
-                this->mGyrRaw.y = ((this->mGyrRaw.y << 8U) | ((this->mGyrRaw.y >> 8) & 0xFF)) - mGyrOffset.y;
-                this->mGyrRaw.z = ((this->mGyrRaw.z << 8U) | ((this->mGyrRaw.z >> 8) & 0xFF)) - mGyrOffset.z;
+                                         reinterpret_cast<uint8_t *>(&gyrRaw), 6U)) {
+                gyrRaw.x = ((gyrRaw.x << 8U) | ((gyrRaw.x >> 8) & 0xFF)) - mGyrOffset.x;
+                gyrRaw.y = ((gyrRaw.y << 8U) | ((gyrRaw.y >> 8) & 0xFF)) - mGyrOffset.y;
+                gyrRaw.z = ((gyrRaw.z << 8U) | ((gyrRaw.z >> 8) & 0xFF)) - mGyrOffset.z;
             }
 
-            this->mGyr.x = -this->mGyrRaw.x * 250.0F / 32768.0F;
-            this->mGyr.y = -this->mGyrRaw.y * 250.0F / 32768.0F;
-            this->mGyr.z = this->mGyrRaw.z * 250.0F / 32768.0F;
-            return (this->mGyrRaw);
+            this->mGyr.x = -gyrRaw.x * 250.0F / 32768.0F;
+            this->mGyr.y = -gyrRaw.y * 250.0F / 32768.0F;
+            this->mGyr.z = gyrRaw.z * 250.0F / 32768.0F;
+            return (gyrRaw);
         }
 
         void Mpu9150::AdjustingMag(void) {
@@ -177,26 +194,27 @@ namespace Component
 
         Vector3 Mpu9150::UpdateMag(void) {
             uint8_t dataIsReady = 0;
+            Vector3 magRaw;
 
             this->mI2c.ReadRegister(this->mAddressMag, 0x02, dataIsReady);
             if (dataIsReady == 1U && this->mI2c.ReadRegisters(this->mAddressMag, ERegisterMag::XOUT_L,
-                                                              reinterpret_cast<uint8_t *>(&this->mMagRaw), 6U)) {
-                if ((abs(this->mMagRaw.x) + abs(this->mMagRaw.y) + abs(this->mMagRaw.z)) >= 4912.0) {
-                    return (this->mMagRaw);
+                                                              reinterpret_cast<uint8_t *>(&magRaw), 6U)) {
+                if ((abs(magRaw.x) + abs(magRaw.y) + abs(magRaw.z)) >= 4912.0) {
+                    return (magRaw);
                 }
                 if (this->mStartMagCalib == false) {
-                    this->mMag.y = this->mMagBias.x * (this->mMagRaw.x - this->mMagOffset.x);
-                    this->mMag.x = this->mMagBias.y * (this->mMagRaw.y - this->mMagOffset.y);
-                    this->mMag.z = this->mMagBias.z * (this->mMagRaw.z - this->mMagOffset.z);
+                    this->mMag.y = this->mMagBias.x * (magRaw.x - this->mMagOffset.x);
+                    this->mMag.x = this->mMagBias.y * (magRaw.y - this->mMagOffset.y);
+                    this->mMag.z = this->mMagBias.z * (magRaw.z - this->mMagOffset.z);
                 } else {
-                    this->mMag.y = this->mMagRaw.x;
-                    this->mMag.x = this->mMagRaw.y;
-                    this->mMag.z = this->mMagRaw.z;
+                    this->mMag.y = magRaw.x;
+                    this->mMag.x = magRaw.y;
+                    this->mMag.z = magRaw.z;
                 }
 
                 this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x01);
             }
-            return (this->mMagRaw);
+            return (magRaw);
         }
 
         int16_t Mpu9150::UpdateTemp(void) {
