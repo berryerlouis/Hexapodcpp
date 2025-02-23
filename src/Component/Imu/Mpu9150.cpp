@@ -1,12 +1,6 @@
 #include "Mpu9150.h"
-#ifdef AVR
-#include <avr/interrupt.h>
-#else
 #ifdef RPI
-#ifndef GTEST
 #include "wiringPi/wiringPiI2C.h"
-#endif
-#endif
 #endif
 
 namespace Component

@@ -5,7 +5,7 @@ namespace Misc
 {
     namespace Bitmap
     {
-        const uint8_t PROGMEM Bitmaps::Battery100[] =
+        const uint8_t Bitmaps::Battery100[] =
         {
                 XXXXXXXX, XXXXXXX_,
                 X_______, ______X_,
@@ -16,7 +16,7 @@ namespace Misc
                 XXXXXXXX, XXXXXXX_
         };
 
-        const uint8_t PROGMEM Bitmaps::Battery75[] =
+        const uint8_t Bitmaps::Battery75[] =
         {
                 XXXXXXXX, XXXXXXX_,
                 X_______, ______X_,
@@ -27,7 +27,7 @@ namespace Misc
                 XXXXXXXX, XXXXXXX_
         };
 
-        const uint8_t PROGMEM Bitmaps::Battery50[] =
+        const uint8_t Bitmaps::Battery50[] =
         {
                 XXXXXXXX, XXXXXXX_,
                 X_______, ______X_,
@@ -38,7 +38,7 @@ namespace Misc
                 XXXXXXXX, XXXXXXX_
         };
 
-        const uint8_t PROGMEM Bitmaps::Battery25[] =
+        const uint8_t Bitmaps::Battery25[] =
         {
                 XXXXXXXX, XXXXXXX_,
                 X_______, ______X_,
@@ -49,7 +49,7 @@ namespace Misc
                 XXXXXXXX, XXXXXXX_
         };
 
-        const uint8_t PROGMEM Bitmaps::Battery0[] =
+        const uint8_t Bitmaps::Battery0[] =
         {
                 XXXXXXXX, XXXXXXX_,
                 X_______, ______X_,
@@ -60,7 +60,7 @@ namespace Misc
                 XXXXXXXX, XXXXXXX_
         };
 
-        const uint8_t PROGMEM Bitmaps::Usb[] =
+        const uint8_t Bitmaps::Usb[] =
         {
                 ________, ________,
                 _____XXX, XXXXX___,
@@ -71,7 +71,7 @@ namespace Misc
                 ________, ________,
         };
 
-        const uint8_t PROGMEM Bitmaps::ArrowRight[] =
+        const uint8_t Bitmaps::ArrowRight[] =
         {
                 ________, _XXX____,
                 ________, __XXX___,
@@ -81,7 +81,7 @@ namespace Misc
                 ________, _XXX____
         };
 
-        const uint8_t PROGMEM Bitmaps::ArrowLeft[] =
+        const uint8_t Bitmaps::ArrowLeft[] =
         {
                 ____XXX_, ________,
                 ___XXX__, ________,
@@ -91,7 +91,7 @@ namespace Misc
                 ____XXX_, ________
         };
 
-        const uint8_t PROGMEM Bitmaps::ArrowUp[] =
+        const uint8_t Bitmaps::ArrowUp[] =
         {
                 _______X, X_______,
                 ______XX, XX______,
@@ -101,7 +101,7 @@ namespace Misc
                 _______X, X_______
         };
 
-        const uint8_t PROGMEM Bitmaps::ArrowDown[] =
+        const uint8_t Bitmaps::ArrowDown[] =
         {
                 _______X, X_______,
                 _______X, X_______,
@@ -111,7 +111,7 @@ namespace Misc
                 _______X, X_______
         };
 
-        const uint8_t PROGMEM Bitmaps::ArrowCenter[] =
+        const uint8_t Bitmaps::ArrowCenter[] =
         {
                 _______X, X_______,
                 _____XXX, XXX_____,
@@ -121,7 +121,7 @@ namespace Misc
                 _______X, X_______
         };
 
-        const uint8_t PROGMEM Bitmaps::Communication[] =
+        const uint8_t Bitmaps::Communication[] =
         {
                 ________, ________,
                 ____XXX_, ____XX__,
@@ -133,7 +133,7 @@ namespace Misc
                 ________, ________
         };
 
-        const uint8_t PROGMEM Bitmaps::ButtonRelease[] =
+        const uint8_t Bitmaps::ButtonRelease[] =
         {
                 _____XXX, XXX_____,
                 _______X, X_______,
@@ -144,7 +144,7 @@ namespace Misc
                 ____XX__, __XX____
         };
 
-        const uint8_t PROGMEM Bitmaps::ButtonPush[] =
+        const uint8_t Bitmaps::ButtonPush[] =
         {
                 ________, ________,
                 ________, ________,
@@ -155,7 +155,7 @@ namespace Misc
                 ____XX__, __XX____
         };
 
-        const uint8_t PROGMEM Bitmaps::SoundLeft[] =
+        const uint8_t Bitmaps::SoundLeft[] =
         {
                 ____X___, ________,
                 ___X___X, ________,
@@ -166,7 +166,7 @@ namespace Misc
                 ____X___, ________,
         };
 
-        const uint8_t PROGMEM Bitmaps::SoundRight[] =
+        const uint8_t Bitmaps::SoundRight[] =
         {
                 ________, ___X____,
                 ________, X___X___,

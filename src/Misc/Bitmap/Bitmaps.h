@@ -1,11 +1,5 @@
 #pragma once
 
-#ifdef AVR
-#include <avr/pgmspace.h>
-#else
-#define PROGMEM
-#endif
-
 #include <stdint.h>
 #include "Pixel.h"
 
@@ -26,27 +20,22 @@ namespace Misc
                 COLOR_WHITE,
             };
 
-#ifdef RPI
-#undef PROGMEM
-#define PROGMEM
-#endif
-
-            static const uint8_t PROGMEM Battery100[];
-            static const uint8_t PROGMEM Battery75[];
-            static const uint8_t PROGMEM Battery50[];
-            static const uint8_t PROGMEM Battery25[];
-            static const uint8_t PROGMEM Battery0[];
-            static const uint8_t PROGMEM Usb[];
-            static const uint8_t PROGMEM ArrowRight[];
-            static const uint8_t PROGMEM ArrowLeft[];
-            static const uint8_t PROGMEM ArrowUp[];
-            static const uint8_t PROGMEM ArrowDown[];
-            static const uint8_t PROGMEM ArrowCenter[];
-            static const uint8_t PROGMEM Communication[];
-            static const uint8_t PROGMEM ButtonRelease[];
-            static const uint8_t PROGMEM ButtonPush[];
-            static const uint8_t PROGMEM SoundLeft[];
-            static const uint8_t PROGMEM SoundRight[];
+            static const uint8_t Battery100[];
+            static const uint8_t Battery75[];
+            static const uint8_t Battery50[];
+            static const uint8_t Battery25[];
+            static const uint8_t Battery0[];
+            static const uint8_t Usb[];
+            static const uint8_t ArrowRight[];
+            static const uint8_t ArrowLeft[];
+            static const uint8_t ArrowUp[];
+            static const uint8_t ArrowDown[];
+            static const uint8_t ArrowCenter[];
+            static const uint8_t Communication[];
+            static const uint8_t ButtonRelease[];
+            static const uint8_t ButtonPush[];
+            static const uint8_t SoundLeft[];
+            static const uint8_t SoundRight[];
         };
     } // namespace Bitmap
 } // namespace Misc
