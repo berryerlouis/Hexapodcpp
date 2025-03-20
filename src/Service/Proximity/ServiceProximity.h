@@ -28,7 +28,6 @@ namespace Service
 
         protected:
             SensorProximityMultipleInterface &mProximity;
-            uint8_t mTimeoutDetection[NB_SENSORS];
         };
     }
 }

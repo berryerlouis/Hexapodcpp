@@ -7,7 +7,6 @@ namespace Component
         static Sound *sound[NB_SENSORS_SOUND] = {};
         uint8_t Sound::soundIndex = 0U;
 
-
         Sound::Sound(const SoundId &soundId, Gpio::GpioInterface &gpio, Led::LedInterface &led,
                      Tick::TickInterface &tick) :
             mSoundId(soundId)
@@ -80,19 +79,28 @@ namespace Component
             SoundStruct soundStruct = {.id = SOUND_NONE, .delay = 0U};
             const uint64_t soundLeft = sound[SOUND_LEFT]->GetIntervalSoundHit();
             const uint64_t soundRight = sound[SOUND_RIGHT]->GetIntervalSoundHit();
+            sound[SOUND_LEFT]->mStartSoundTime = 0U;
+            sound[SOUND_RIGHT]->mStartSoundTime = 0U;
+            sound[SOUND_LEFT]->mAverageIntervalSoundTime = 0U;
+            sound[SOUND_RIGHT]->mAverageIntervalSoundTime = 0U;
+            for (uint8_t indexInterval = 0U;
+                 indexInterval < 100U;
+                 indexInterval++) {
+                sound[SOUND_LEFT]->mIntervalSoundTimeArray[indexInterval] = 0U;
+                sound[SOUND_RIGHT]->mIntervalSoundTimeArray[indexInterval] = 0U;
+            }
 
-            if (soundLeft > 10000 && soundRight > 10000) {
+            if (soundLeft > 1000U || soundRight > 1000U) {
                 if (soundLeft > soundRight) {
                     soundStruct.id = SOUND_LEFT;
                     soundStruct.delay = soundLeft;
                 } else {
                     soundStruct.id = SOUND_RIGHT;
-                    soundStruct.delay = soundLeft;
+                    soundStruct.delay = soundRight;
                 }
+                sound[soundStruct.id]->Notify(soundStruct);
             }
-            sound[soundStruct.id]->Notify(soundStruct);
             return soundStruct;
-
         }
 
         void Sound::InterruptGpioSoundHit(void) {
@@ -103,5 +111,4 @@ namespace Component
             }
         }
     }
-
 }

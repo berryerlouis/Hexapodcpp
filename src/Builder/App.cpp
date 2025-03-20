@@ -1,5 +1,6 @@
 #include "App.h"
 
+
 using namespace Driver::Gpio;
 
 Gpio ledStatus = Gpio({19}, OUT);
@@ -46,8 +47,10 @@ namespace Builder
         , mInputCaptureRight(echoRightPin, mTick)
         , mMpu9150(mTwi, mTick)
         , mBarometer(mTwi)
-        , mSrf05Left(Cluster::EProximityCommands::US_LEFT, mGpioTriggerUsLeft, mInputCaptureLeft, mLedLeft, mTick)
-        , mSrf05Right(Cluster::EProximityCommands::US_RIGHT, mGpioTriggerUsRight, mInputCaptureRight, mLedRight, mTick)
+        , mSrf05Left(Cluster::EProximityCommands::US_LEFT, mGpioTriggerUsLeft, mInputCaptureLeft, mLedLeft,
+                     mTick)
+        , mSrf05Right(Cluster::EProximityCommands::US_RIGHT, mGpioTriggerUsRight, mInputCaptureRight,
+                      mLedRight, mTick)
         , mVl53l0x(mTwi, mLedCenter, mTick)
         , mSensorProximity(mSrf05Left, mSrf05Right, mVl53l0x)
         , mSsd1306(mTwi)
@@ -84,7 +87,7 @@ namespace Builder
         , mServiceBattery(mBattery, mMessageListener)
         , mServiceBody(mBody, mMessageListener)
         , mServiceDisplay(mSsd1306, mCommunication, mButton, mSoundLeft, mSoundRight, mSensorProximity,
-                          mMessageListener)
+                          mMessageListener, mTick)
         , mServiceGeneral(mSoftware, mMessageListener)
         , mServices(
                 mTick,
@@ -102,22 +105,35 @@ namespace Builder
     }
 
     Core::Status App::Initialize(void) {
-        Core::Status success = mSocket.Initialize();
+        Core::Status success = this->mSocket.Initialize();
         if (success == Core::Status::CORE_OK) {
-            success = mTwi.Initialize();
+            success = this->mTwi.Initialize();
         }
         if (success == Core::Status::CORE_OK) {
-            success = mServices.Initialize();
+            success = this->mServices.Initialize();
         }
         if (success != Core::Status::CORE_OK) {
         }
         return (success);
     }
 
-    void App::Update(void) {
-        mLedStatus.Toggle();
-        const uint64_t currentTime = mTick.GetMs();
-        mServices.Update(currentTime);
-    }
+    uint64_t lastTime = 0U;
+    constexpr uint8_t maxInterval = 6U;
+    uint8_t indexInterval = 0U;
+    uint64_t interval[maxInterval] = {200, 100, 200, 500, 50, 50};
+    float speedInterval = 1;
 
+    void App::Update(void) {
+        const uint64_t currentTime = mTick.GetMs();
+        this->mServices.Update(currentTime);
+        if (currentTime > lastTime + (interval[indexInterval] * speedInterval)) {
+            lastTime = currentTime;
+            this->mLedStatus.Toggle();
+            indexInterval++;
+            if (indexInterval == maxInterval) {
+                indexInterval = 0U;
+            }
+        }
+        this->mTick.DelayUs(100U);
+    }
 } // namespace Builder

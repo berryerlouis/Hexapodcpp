@@ -104,12 +104,14 @@ namespace Component
         void Servo::Update(const uint64_t currentTime) {
             if (this->IsMoving()) {
                 this->mAngle = this->GetAngleFromDeltaTime(currentTime);
-                const uint16_t pwm = Misc::Utils::Map(this->mAngle + this->mOffset,
-                                                      Servo::SERVO_ANGLE_MIN,
-                                                      Servo::SERVO_ANGLE_MAX,
-                                                      Servo::SERVO_PWM_MIN,
-                                                      Servo::SERVO_PWM_MAX);
-                this->mPca9685.SetPwm(this->mServoId, pwm);
+                if (this->mEnable) {
+                    const uint16_t pwm = Misc::Utils::Map(this->mAngle + this->mOffset,
+                                                          Servo::SERVO_ANGLE_MIN,
+                                                          Servo::SERVO_ANGLE_MAX,
+                                                          Servo::SERVO_PWM_MIN,
+                                                          Servo::SERVO_PWM_MAX);
+                    this->mPca9685.SetPwm(this->mServoId, pwm);
+                }
             }
         }
 
@@ -130,10 +132,6 @@ namespace Component
         }
 
         Core::Status Servo::SetAngle(const uint8_t angle, const uint16_t travelTime) {
-            if (false == this->mEnable) {
-                this->mIsMoving = false;
-                return (Core::Status::CORE_ERROR_DISABLE);
-            }
             if (angle < this->mMin) {
                 this->mIsMoving = false;
                 return (Core::Status::CORE_ERROR_MIN);
@@ -142,8 +140,7 @@ namespace Component
                 this->mIsMoving = false;
                 return (Core::Status::CORE_ERROR_MAX);
             }
-            if ((true == this->mEnable) &&
-                (angle >= this->mMin) &&
+            if ((angle >= this->mMin) &&
                 (angle <= this->mMax)) {
                 this->mTargetAngle = angle;
                 if (true == this->mReverse) {
@@ -211,6 +208,11 @@ namespace Component
 
         void Servo::SetEnable(const bool enable) {
             this->mEnable = enable;
+            if (this->mEnable == true) {
+                this->SetAngle(this->mAngle);
+            } else {
+                this->mPca9685.SetPwm(this->mServoId, 4096U);
+            }
         }
 
         bool Servo::IsEnable(void) {

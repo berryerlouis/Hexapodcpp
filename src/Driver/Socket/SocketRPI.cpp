@@ -1,5 +1,6 @@
 #include "Socket.h"
 #include "tiny_websockets/server.hpp"
+
 namespace Driver
 {
     namespace Socket
@@ -48,8 +49,8 @@ namespace Driver
                         this->Notify(NO_CLIENT);
                         once = true;
                     }
-                    client.poll();
                 }
+                client.poll();
             }
         }
 

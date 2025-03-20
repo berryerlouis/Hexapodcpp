@@ -38,7 +38,8 @@ namespace Service
                            , SoundInterface &soundInterfaceLeft
                            , SoundInterface &soundInterfaceRight
                            , SensorProximityMultipleInterface &sensors
-                           , Event::MessageInterface &messageListener);
+                           , Event::MessageInterface &messageListener
+                           , Tick::TickInterface &tick);
 
             ~ServiceDisplay() = default;
 
@@ -73,6 +74,7 @@ namespace Service
             SoundInterface &mSoundLeft;
             SoundInterface &mSoundRight;
             SensorProximityMultipleInterface &mSensors;
+            Tick::TickInterface &mTick;
             Bitmaps::SBitmap mBmpBatteryLevel;
             Bitmaps::SBitmap mBmpCommunication;
             Bitmaps::SBitmap mBmpProximity;
@@ -81,6 +83,12 @@ namespace Service
             uint64_t mPreviousTime;
             uint32_t mToggleCommunicationBmp;
             CommunicationStruct mState;
+            uint64_t mNotifiedTimeProximityUsLeft;
+            uint64_t mNotifiedTimeProximityUsRight;
+            uint64_t mNotifiedTimeProximityLaser;
+            uint64_t mNotifiedTimeSoundLeft;
+            uint64_t mNotifiedTimeSoundRight;
+
         };
     }
 }

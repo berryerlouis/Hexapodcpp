@@ -29,6 +29,8 @@ namespace Component
             static SoundStruct ComputeAndNotifyMaxSound(void);
 
             static uint8_t soundIndex;
+            static SoundId soundNotificationOff;
+            static bool soundNotificationDone;
 
         private:
             static void InterruptGpioSoundHit(void);

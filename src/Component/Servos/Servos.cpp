@@ -37,7 +37,7 @@ namespace Component
             uint8_t success = 0UL;
             this->mPca9685Left.Initialize();
             this->mPca9685Right.Initialize();
-
+            this->Disable();
             for (size_t servoId = 0U; servoId < NB_SERVOS; servoId++) {
                 if (this->mServos[servoId]->Initialize() == Core::Status::CORE_OK) {
                     success++;
@@ -55,15 +55,15 @@ namespace Component
         }
 
         void Servos::Enable(void) {
-            this->mEnablePwmPin.Set();
-        }
-
-        void Servos::Disable(void) {
             this->mEnablePwmPin.Reset();
         }
 
+        void Servos::Disable(void) {
+            this->mEnablePwmPin.Set();
+        }
+
         bool Servos::GetState(void) {
-            return this->mEnablePwmPin.Get();
+            return this->mEnablePwmPin.Get() == false;
         }
 
         Servo::Servo &Servos::GetServo(const uint8_t servoId) {

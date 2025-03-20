@@ -233,7 +233,7 @@ namespace Component
             Twi::TwiInterface &mI2c;
             Tick::TickInterface &mTick;
             uint8_t mAddress;
-            const uint8_t mAddressMag;
+            uint8_t mAddressMag;
             Vector3 mAccOffset;
             Vector3 mGyrOffset;
             Vector3F mMagOffset;

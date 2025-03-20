@@ -8,7 +8,11 @@ namespace Component
         Communication::Communication(Socket::SocketInterface<1U, Socket::SocketStruct> &socket,
                                      Clusters::ClustersInterface &clusters,
                                      Led::LedInterface &ledStatus) :
-            mSocket(socket), mClusters(clusters), mLedStatus(ledStatus), mBufferRx{0U}, mBufferTx{0U},
+            mSocket(socket),
+            mClusters(clusters),
+            mLedStatus(ledStatus),
+            mBufferRx{0U},
+            mBufferTx{0U},
             mIndexBufferRx(0U),
             mBeginIncomingFrame(false) {
         }
@@ -25,27 +29,33 @@ namespace Component
         void Communication::Update(const uint64_t currentTime) {
             this->mSocket.Update(currentTime);
             if (true == this->ReceivedStringFrame()) {
-                this->mLedStatus.On();
+                //this->mLedStatus.On();
                 Frame request;
                 Frame response;
                 const Core::Status parsedStatus =
                         Protocol::Decode(const_cast<const char *>(this->mBufferRx), request);
                 if (parsedStatus == Core::Status::CORE_OK) {
-                    bool success = false;
                     const uint8_t frameClusterID = request.clusterId;
                     if (frameClusterID < NB_CLUSTERS) {
                         const auto cluster = this->mClusters.GetCluster(static_cast<EClusters>(frameClusterID));
                         if (cluster != nullptr) {
-                            if (cluster->Execute(request, response) == Core::Status::CORE_OK) {
-                                success = true;
+                            if (cluster->Execute(request, response) != Core::Status::CORE_OK) {
+                                response.clusterId = frameClusterID;
+                                response.commandId = static_cast<uint8_t>(GENERIC);
+                                response.nbParams = 1U;
+                                response.params[0U] = Core::Status::CORE_ERROR_ARGUMENT;
                             }
+                        } else {
+                            response.clusterId = frameClusterID;
+                            response.commandId = static_cast<uint8_t>(GENERIC);
+                            response.nbParams = 1U;
+                            response.params[0U] = Core::Status::CORE_ERROR_NULLPTR;
                         }
-                    }
-                    if (success == false) {
-                        response.clusterId = frameClusterID;
+                    } else {
+                        response.clusterId = 0xFFU;
                         response.commandId = static_cast<uint8_t>(GENERIC);
                         response.nbParams = 1U;
-                        response.params[0U] = false;
+                        response.params[0U] = Core::Status::CORE_ERROR_UNKNOWN_CLUSTER;
                     }
                 } else {
                     response.clusterId = 0xFFU;
@@ -54,13 +64,13 @@ namespace Component
                     response.params[0U] = parsedStatus;
                 }
                 this->SendMessage(response);
-                this->mLedStatus.Off();
+                //this->mLedStatus.Off();
             }
         }
 
         Core::Status Communication::SendMessage(const Frame &message) {
             const size_t size = Protocol::Encode(message, const_cast<char *>(this->mBufferTx));
-            if (size != 0) {
+            if (size != 0U) {
                 this->mSocket.Send(const_cast<const char *>(this->mBufferTx), size);
                 return (Core::Status::CORE_OK);
             }

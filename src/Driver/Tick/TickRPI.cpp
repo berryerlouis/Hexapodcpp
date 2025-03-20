@@ -1,37 +1,37 @@
 #include "Tick.h"
 #include <chrono>
-
+#include <thread>
 
 namespace Driver
 {
     namespace Tick
     {
         uint64_t start;
-        std::chrono::time_point<std::chrono::system_clock> now;
+        std::chrono::time_point<std::chrono::steady_clock> start_time;
 
         Tick::Tick(void) {
-            now = std::chrono::system_clock::now();
+            start_time = std::chrono::steady_clock::now();
             start = GetMs();
         }
 
         uint64_t Tick::GetUs(void) {
-            auto duration = now.time_since_epoch();
-            now = std::chrono::system_clock::now();
-            return std::chrono::duration_cast<std::chrono::microseconds>(duration).count() - start;
+            const auto now = std::chrono::steady_clock::now();
+            const auto duration = now - start_time;
+            return std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
         }
 
         uint64_t Tick::GetMs(void) {
-            auto duration = now.time_since_epoch();
-            now = std::chrono::system_clock::now();
-            return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() - start;
+            const auto now = std::chrono::steady_clock::now();
+            const auto duration = now - start_time;
+            return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
         }
 
         void Tick::DelayMs(const uint64_t delayMs) {
-            (void) delayMs;
+            std::this_thread::sleep_for(std::chrono::milliseconds(delayMs));
         }
 
         void Tick::DelayUs(const uint64_t delayUs) {
-            (void) delayUs;
+            std::this_thread::sleep_for(std::chrono::microseconds(delayUs));
         }
     }
 }

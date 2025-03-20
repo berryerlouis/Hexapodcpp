@@ -55,11 +55,9 @@ namespace Cluster
             static Core::Status BuildFrameSetReverse(const uint8_t servoId, const bool reversed,
                                                      Frame &response);
 
-            static Core::Status BuildFrameGetStatePca(const uint8_t servoId, const bool state,
-                                                      Frame &response);
+            static Core::Status BuildFrameGetStatePca(const bool state, Frame &response);
 
-            static Core::Status BuildFrameSetStatePca(const uint8_t servoId, const bool state,
-                                                      Frame &response);
+            static Core::Status BuildFrameSetStatePca(const bool state, Frame &response);
 
         private:
             ServosInterface &mServosInterface;

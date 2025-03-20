@@ -6,18 +6,20 @@
 #include "../../Led/LedInterface.h"
 #include "../SensorProximityInterface.h"
 
-namespace Component
-{
-    namespace Proximity
-    {
-        namespace Laser
-        {
+namespace Component {
+    namespace Proximity {
+        namespace Laser {
             using namespace Driver;
 
             class Vl53l0x : public SensorProximityInterface {
             public:
                 static constexpr uint8_t VL53L0X_ADDRESS = 0x29U;
                 static constexpr uint16_t DISTANCE_THRESHOLD = 300U;
+
+                typedef enum {
+                    CALIBRATION_TYPE_VHV,
+                    CALIBRATION_TYPE_PHASE
+                } calibration_type_t;
 
                 Vl53l0x(Twi::TwiInterface &i2c, Led::LedInterface &led, Tick::TickInterface &tick,
                         const uint8_t address = 0x29U);
@@ -45,57 +47,15 @@ namespace Component
                 uint32_t mMeasurementTimingBudget = 0U;
                 uint8_t mStop;
 
-                struct SequenceStepEnables {
-                    bool tcc;
-                    bool msrc;
-                    bool dss;
-                    bool pre_range;
-                    bool final_range;
-                };
-
-                struct SequenceStepTimeouts {
-                    uint16_t pre_range_vcsel_period_pclks, final_range_vcsel_period_pclks;
-                    uint16_t msrc_dss_tcc_mclks, pre_range_mclks, final_range_mclks;
-                    uint32_t msrc_dss_tcc_us, pre_range_us, final_range_us;
-                };
-
-                enum VcselPeriodType {
-                    VcselPeriodPreRange,
-                    VcselPeriodFinalRange
-                };
-
-
-                void StartContinuous(uint32_t period_ms = 50U);
-
                 void Tune(void);
 
-                void GetSequenceStepEnables(SequenceStepEnables *enables);
+                bool PerformSingleRefCalibration(calibration_type_t calib);
 
-                void GetSequenceStepTimeouts(SequenceStepEnables const *enables, SequenceStepTimeouts *timeouts);
+                bool WriteRegister16Bits(const uint8_t reg, const uint16_t &data);
 
-                uint16_t DecodeTimeout(uint16_t reg_val);
+                bool WriteRegister32Bits(const uint8_t reg, const uint32_t &data);
 
-                uint16_t EncodeTimeout(const uint32_t timeout_mclks);
-
-                uint8_t GetVcselPulsePeriod(VcselPeriodType type);
-
-                uint32_t TimeoutMclksToMicroseconds(uint16_t timeout_period_mclks, uint8_t vcsel_period_pclks);
-
-                uint32_t TimeoutMicrosecondsToMclks(uint32_t timeout_period_us, uint8_t vcsel_period_pclks);
-
-                bool SetSignalRateLimit(float limit_Mcps);
-
-                float GetSignalRateLimit(void);
-
-                bool GetSpadInfo(uint8_t *count, bool *type_is_aperture);
-
-                bool SetMeasurementTimingBudget(uint32_t budget_us);
-
-                uint32_t GetMeasurementTimingBudget(void);
-
-                bool PerformSingleRefCalibration(uint8_t vhv_init_byte);
-
-                bool SetVcselPulsePeriod(VcselPeriodType type, uint8_t period_pclks);
+                bool ReadRegister16Bits(const uint8_t reg, uint16_t &data);
 
             public:
                 static constexpr uint8_t VL53L0X_SYSRANGE_START = 0x00U;

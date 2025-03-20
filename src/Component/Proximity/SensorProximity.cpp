@@ -1,12 +1,11 @@
 #include "SensorProximity.h"
 
-namespace Component
-{
-    namespace Proximity
-    {
+namespace Component {
+    namespace Proximity {
         SensorProximity::SensorProximity(SensorProximityInterface &srf05Left, SensorProximityInterface &srf05Right,
-                                         SensorProximityInterface &Vl53l0x) :
-            mSensors{&srf05Left, &srf05Right, &Vl53l0x} {
+                                         SensorProximityInterface &Vl53l0x) : mSensors{
+            &srf05Left, &srf05Right, &Vl53l0x
+        } {
         }
 
         Core::Status SensorProximity::Initialize(void) {
@@ -26,9 +25,12 @@ namespace Component
             this->Notify(sensor);
         }
 
+        size_t sensorId = 0U;
+
         void SensorProximity::Update(const uint64_t currentTime) {
-            for (size_t sensorId = 0; sensorId < NB_SENSORS; sensorId++) {
-                this->mSensors[sensorId]->Update(currentTime);
+            this->mSensors[sensorId++]->Update(currentTime);
+            if (sensorId == NB_SENSORS) {
+                sensorId = 0U;
             }
         }
 
@@ -43,6 +45,5 @@ namespace Component
         uint16_t SensorProximity::GetThreshold(const SensorsId &sensorId) {
             return (this->mSensors[sensorId]->GetThreshold());
         }
-
     }
 }

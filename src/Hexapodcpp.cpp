@@ -1,4 +1,3 @@
-#include <unistd.h>
 #include "Builder/App.h"
 
 using namespace Builder;
@@ -11,7 +10,6 @@ int main(void) {
         while (true) {
             // hexapod loop update
             robot.Update();
-            usleep(1000);
         }
     }
     return -1;

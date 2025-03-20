@@ -60,16 +60,16 @@ namespace Component
         TEST_F(UT_CMP_COMMUNICATION, Update_Ok_Noframe) {
             EXPECT_CALL(mMockSocket, Update(0U));
             EXPECT_CALL(mMockSocket, DataAvailable()).WillOnce(Return(0U));
-            EXPECT_CALL(mMockLed, On()).Times(0U);
-            EXPECT_CALL(mMockLed, Off()).Times(0U);
+            //EXPECT_CALL(mMockLed, On()).Times(0U);
+            //EXPECT_CALL(mMockLed, Off()).Times(0U);
             mCommunication.Update(0UL);
         }
 
         TEST_F(UT_CMP_COMMUNICATION, Update_Ok_1frame_with_unknwon_char) {
             const char *bufferRx = "<00z000>";
             EXPECT_CALL(mMockSocket, Update(0U));
-            EXPECT_CALL(mMockLed, On()).Times(0U);
-            EXPECT_CALL(mMockLed, Off()).Times(0U);
+            //EXPECT_CALL(mMockLed, On()).Times(0U);
+            //EXPECT_CALL(mMockLed, Off()).Times(0U);
             EXPECT_CALL(mMockSocket, DataAvailable()).WillOnce(Return(strlen(bufferRx)));
 
             ::testing::Sequence s;
@@ -84,8 +84,8 @@ namespace Component
             const char *bufferRx = "<000000>";
 
             EXPECT_CALL(mMockSocket, Update(0U));
-            EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::Status::CORE_OK));
-            EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
+            //EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::Status::CORE_OK));
+            //EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
             EXPECT_CALL(mMockSocket, Send( Matcher <const char *>( _ ), _ )).Times(1U);
             EXPECT_CALL(mMockClusters, GetCluster( GENERAL )).Times(1U);
 
@@ -101,8 +101,8 @@ namespace Component
             const char *bufferRx = "<010000>";
 
             EXPECT_CALL(mMockSocket, Update(0U));
-            EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::Status::CORE_OK));
-            EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
+            //EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::Status::CORE_OK));
+            //EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
             EXPECT_CALL(mMockSocket, Send( Matcher <const char *>( _ ), _ )).Times(1U);
             EXPECT_CALL(mMockClusters, GetCluster( IMU )).Times(1U);
 
@@ -135,8 +135,8 @@ namespace Component
             const char *bufferRx = "<05000ECEFF3200CEFFE2FF1E00ECFFF401>";
 
             EXPECT_CALL(mMockSocket, Update(0U));
-            EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::Status::CORE_OK));
-            EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
+            //EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::Status::CORE_OK));
+            //EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
             EXPECT_CALL(mMockSocket, Send( Matcher <const char *>( _ ), _ )).Times(1U);
             EXPECT_CALL(mMockClusters, GetCluster( Cluster::EClusters::BODY )).WillOnce(Return(&mClusterBody));
             EXPECT_CALL(mMockBody, SetBodyPositionRotation( position, rotation, travelTime )).Times(1U);

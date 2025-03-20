@@ -25,7 +25,8 @@ namespace Component
             uint8_t init1[] = {
                     SSD1306_DISPLAYOFF,
                     SSD1306_SETDISPLAYCLOCKDIV, 0x80U,
-                    SSD1306_SETMULTIPLEX, SCREEN_HEIGHT - 1};
+                    SSD1306_SETMULTIPLEX, SCREEN_HEIGHT - 1
+            };
             this->mTwi.WriteRegisters(this->mAddress, SSD1306_SEND_COMMAND, init1, sizeof(init1));
 
             uint8_t init2[] = {SSD1306_SETDISPLAYOFFSET, 0x0, SSD1306_SETSTARTLINE | 0x0, SSD1306_CHARGEPUMP};
@@ -41,9 +42,11 @@ namespace Component
             this->mTwi.WriteRegister(this->mAddress, SSD1306_SEND_COMMAND, SSD1306_SETPRECHARGE);
             this->mTwi.WriteRegister(this->mAddress, SSD1306_SEND_COMMAND, 0xF1);
 
-            uint8_t init5[] = {SSD1306_SETVCOMDETECT, 0x40,
-                               SSD1306_DISPLAYALLON_RESUME, SSD1306_NORMALDISPLAY,
-                               SSD1306_DEACTIVATE_SCROLL, SSD1306_DISPLAYON};
+            uint8_t init5[] = {
+                    SSD1306_SETVCOMDETECT, 0x40,
+                    SSD1306_DISPLAYALLON_RESUME, SSD1306_NORMALDISPLAY,
+                    SSD1306_DEACTIVATE_SCROLL, SSD1306_DISPLAYON
+            };
             this->mTwi.WriteRegisters(this->mAddress, SSD1306_SEND_COMMAND, init5, sizeof(init5));
 
             return (Core::Status::CORE_OK);
@@ -70,7 +73,7 @@ namespace Component
                 if (this->mUpdateIndex == 0U) {
                     this->mNeedToUpdate = false;
                     this->mUpdateIndex = BUFFER_DISPLAY_LENGTH;
-                    memcpy(this->mBufferScreen[0U], this->mBufferScreen[1U],BUFFER_DISPLAY_LENGTH);
+                    //memcpy(this->mBufferScreen[0U], this->mBufferScreen[1U],BUFFER_DISPLAY_LENGTH);
                 }
             }
         }
@@ -93,17 +96,17 @@ namespace Component
             if ((x < SCREEN_WIDTH) && (y < SCREEN_HEIGHT)) {
                 switch (color) {
                     case Bitmap::Bitmaps::Color::COLOR_WHITE:
-                        this->mBufferScreen[1U][x + (y / 8U) * SCREEN_WIDTH]
+                        this->mBufferScreen[0U][x + (y / 8U) * SCREEN_WIDTH]
                                 |= (1U << (y & 7U));
                         break;
 
                     case Bitmap::Bitmaps::Color::COLOR_BLACK:
-                        this->mBufferScreen[1U][x + (y / 8U) * SCREEN_WIDTH]
+                        this->mBufferScreen[0U][x + (y / 8U) * SCREEN_WIDTH]
                                 &= ~(1U << (y & 7U));
                         break;
 
                     case INVERSE:
-                        this->mBufferScreen[1U][x + (y / 8U) * SCREEN_WIDTH]
+                        this->mBufferScreen[0U][x + (y / 8U) * SCREEN_WIDTH]
                                 ^= (1U << (y & 7U));
                         break;
                     default:

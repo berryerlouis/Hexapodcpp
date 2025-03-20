@@ -1,3 +1,4 @@
+#include "unistd.h"
 #include "Mpu9150.h"
 #ifdef RPI
 #include "wiringPi/wiringPiI2C.h"
@@ -30,6 +31,7 @@ namespace Component
             , mDoComputation(false) {
 #ifdef RPI
             this->mAddress = wiringPiI2CSetup(address);
+            this->mAddressMag = wiringPiI2CSetup(AK8963_I2C_ADDRESS);
 #endif
         }
 
@@ -78,16 +80,17 @@ namespace Component
                 reg |= (1U << 0U);
                 this->mI2c.WriteRegister(this->mAddress, ERegister::INT_ENABLE, reg);
 
+                //Connect Magnetometer
                 this->mI2c.WriteRegister(this->mAddress, ERegister::INT_PIN_CFG, 0x02);
+                usleep(2000);
                 this->mI2c.ReadRegister(this->mAddressMag, ERegisterMag::WHO_AM_I, whoAmI);
 
-                //check if the mag is connected
-                //if (whoAmI == 0x48U) {
-                this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x0F);
-                this->AdjustingMag();
-                this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x01);
-                success = Core::Status::CORE_OK;
-                //}
+                if (whoAmI == 0x48U) {
+                    this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x0F);
+                    this->AdjustingMag();
+                    this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x01);
+                    success = Core::Status::CORE_OK;
+                }
             }
             return (success);
         }

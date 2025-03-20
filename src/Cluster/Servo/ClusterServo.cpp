@@ -23,8 +23,8 @@ namespace Cluster
             this->AddClusterItem((ClusterItem){.commandId = EServoCommands::SET_STATE, .expectedSize = 2U});
             this->AddClusterItem((ClusterItem){.commandId = EServoCommands::GET_REVERSE, .expectedSize = 1U});
             this->AddClusterItem((ClusterItem){.commandId = EServoCommands::SET_REVERSE, .expectedSize = 2U});
+            this->AddClusterItem((ClusterItem){.commandId = EServoCommands::GET_STATE_PCA, .expectedSize = 0U});
             this->AddClusterItem((ClusterItem){.commandId = EServoCommands::GET_STATE_PCA, .expectedSize = 1U});
-            this->AddClusterItem((ClusterItem){.commandId = EServoCommands::GET_STATE_PCA, .expectedSize = 2U});
         }
 
 
@@ -107,19 +107,17 @@ namespace Cluster
                 return this->BuildFrameSetReverse(servoId, reversed, response);
             }
             if (request.commandId == EServoCommands::GET_STATE_PCA) {
-                const uint8_t servoId = request.params[0U];
                 const bool state = this->mServosInterface.GetState();
-                return this->BuildFrameGetStatePca(servoId, state, response);
+                return this->BuildFrameGetStatePca(state, response);
             }
             if (request.commandId == EServoCommands::SET_STATE_PCA) {
-                const uint8_t servoId = request.params[0U];
-                const bool state = request.params[1U];
+                const bool state = request.params[0U];
                 if (state == true) {
                     this->mServosInterface.Enable();
                 } else {
                     this->mServosInterface.Disable();
                 }
-                return this->BuildFrameSetStatePca(servoId, state, response);
+                return this->BuildFrameSetStatePca(state, response);
             }
             return Core::Status::CORE_ERROR;
         }
@@ -278,25 +276,21 @@ namespace Cluster
             return (success);
         }
 
-        Core::Status ClusterServo::BuildFrameGetStatePca(const uint8_t servoId, const bool state,
-                                                         Frame &response) {
+        Core::Status ClusterServo::BuildFrameGetStatePca(const bool state, Frame &response) {
             const Core::Status success = response.Build(
                     EClusters::SERVO,
                     EServoCommands::GET_STATE_PCA);
             if (success == Core::Status::CORE_OK) {
-                response.Set1ByteParam(servoId);
                 response.Set1ByteParam(state);
             }
             return (success);
         }
 
-        Core::Status ClusterServo::BuildFrameSetStatePca(const uint8_t servoId, const bool state,
-                                                         Frame &response) {
+        Core::Status ClusterServo::BuildFrameSetStatePca(const bool state, Frame &response) {
             const Core::Status success = response.Build(
                     EClusters::SERVO,
                     EServoCommands::GET_STATE_PCA);
             if (success == Core::Status::CORE_OK) {
-                response.Set1ByteParam(servoId);
                 response.Set1ByteParam(state);
             }
             return (success);

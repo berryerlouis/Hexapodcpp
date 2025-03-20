@@ -11,7 +11,8 @@ namespace Core
         CORE_ERROR_SIZE = (-5),
         CORE_ERROR_MIN = (-6),
         CORE_ERROR_MAX = (-7),
-        CORE_ERROR_DISABLE = (-8)
+        CORE_ERROR_DISABLE = (-8),
+        CORE_ERROR_UNKNOWN_CLUSTER = (-9),
     };
 
     static inline bool IsSuccess(const Status status) {
