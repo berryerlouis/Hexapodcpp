@@ -31,7 +31,7 @@ namespace Component
 
                 EXPECT_CALL(mMockPca9685_0, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockPca9685_1, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
-
+                EXPECT_CALL(mMockGpio, Set()).Times(1U);
                 success = mServos.Initialize();
                 EXPECT_EQ(success, Core::Status::CORE_OK);
             }
@@ -53,10 +53,9 @@ namespace Component
         };
 
         TEST_F(UT_CMP_SERVOS, Update_Ok) {
-            EXPECT_CALL(mMockTick, GetMs()).Times(NB_SERVOS).WillRepeatedly(Return(0U));
             for (size_t i = 0; i < NB_SERVOS; i++) {
+                EXPECT_CALL(mMockTick, GetMs()).Times(1U).WillRepeatedly(Return(0U));
                 mServos.GetServo(i).SetEnable(true);
-                mServos.GetServo(i).SetAngle(91U);
             }
 
             EXPECT_CALL(mMockPca9685_0, SetPwm( _, _ )).Times(NB_SERVOS / 2U);

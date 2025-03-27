@@ -20,16 +20,19 @@ namespace Cluster
     {
         class UT_CLU_SERVO : public ::testing::Test {
         protected:
-            UT_CLU_SERVO() : mMockServos(),
-                             mMockTick(),
-                             mMockPca9685(),
-                             mClusterServo(mMockServos) {
+            UT_CLU_SERVO() :
+                mMockServos(),
+                mMockTick(),
+                mMockPca9685(),
+                mClusterServo(mMockServos) {
             }
 
-            virtual void SetUp() {
+            virtual void
+            SetUp() {
             }
 
-            virtual void TearDown() {
+            virtual void
+            TearDown() {
             }
 
             virtual ~UT_CLU_SERVO() = default;
@@ -102,8 +105,8 @@ namespace Cluster
             Frame request(SERVO, SET_ANGLE);
             request.Set1ByteParam(servoId);
             request.Set1ByteParam(angle);
-            Component::Servo::MockServo mockServo;
             Component::Servo::Servo servo(mMockPca9685, mMockTick, servoId, 11U);
+            EXPECT_CALL(mMockTick, GetMs()).Times(1U);
             servo.SetEnable(true);
             EXPECT_CALL(mMockServos, GetServo( servoId )).Times(2U).WillRepeatedly(ReturnRef(servo));
             EXPECT_CALL(mMockTick, GetMs()).Times(1U);
@@ -253,9 +256,9 @@ namespace Cluster
             Frame request(SERVO, SET_STATE);
             request.Set1ByteParam(servoId);
             request.Set1ByteParam(true);
-            Component::Servo::MockServo mockServo;
             Component::Servo::Servo servo(mMockPca9685, mMockTick, servoId, 11U);
             EXPECT_CALL(mMockServos, GetServo( servoId )).WillOnce(ReturnRef(servo));
+            EXPECT_CALL(mMockTick, GetMs()).Times(1U);
 
             success = mClusterServo.ExecuteFrame(request, response);
 

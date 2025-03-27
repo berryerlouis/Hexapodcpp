@@ -53,6 +53,11 @@ namespace Driver
             return (true);
         }
 
+        bool Twi::Write(const uint8_t address, const uint8_t reg) {
+            wiringPiI2CWrite(address, reg);
+            return (true);
+        }
+
         bool Twi::WriteRegister(const uint8_t address, const uint8_t reg, uint8_t data) {
             wiringPiI2CWriteReg8(address, reg, data);
             return (true);

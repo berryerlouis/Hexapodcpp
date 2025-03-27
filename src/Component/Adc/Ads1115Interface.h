@@ -18,9 +18,7 @@ namespace Component
 
             virtual void Update(const uint64_t currentTime) = 0;
 
-            virtual uint16_t GetVoltage(void) = 0;
-
-            virtual uint16_t GetIntensity(void) = 0;
+            virtual float ReadADC(const Ads1115Pin pin) const = 0;
         };
     } // namespace Adc
 } // namespace Driver

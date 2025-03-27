@@ -30,11 +30,12 @@ namespace Cluster
     static constexpr uint8_t NB_COMMANDS_GENERAL = 4U;
 
     enum EBatteryCommands {
-        GET_VOLTAGE = 0x00U,
-        GET_BAT_STATUS,
+        GET_BAT_STATUS = 0x00U,
+        GET_VOLTAGE = 0x01U,
+        GET_CURRENT = 0x02U,
     };
 
-    static constexpr uint8_t NB_COMMANDS_BATTERY = 2U;
+    static constexpr uint8_t NB_COMMANDS_BATTERY = 3U;
 
     enum EBodyCommands {
         SET_BODY_POS_ROT = 0x00U,

@@ -21,8 +21,8 @@ namespace Component
 
         void Battery::Update(const uint64_t currentTime) {
             (void) currentTime;
-            this->mVoltage = this->mAdc.GetVoltage();
-            this->mIntensity = this->mAdc.GetIntensity();
+            this->mVoltage = static_cast<uint16_t>(this->mAdc.ReadADC(Adc::PIN_1) * 0.46F);
+            this->mIntensity = static_cast<uint16_t>((this->mAdc.ReadADC(Adc::PIN_0) - 250.0F) * 0.066F);
             const BatteryState prevState = this->mState;
             if (this->mVoltage >= NOMINAL_LEVEL) {
                 this->mState = NOMINAL;
@@ -43,5 +43,10 @@ namespace Component
         uint16_t Battery::GetVoltage(void) {
             return (this->mVoltage);
         }
+
+        uint16_t Battery::GetCurrent(void) {
+            return (this->mIntensity);
+        }
+
     }
 }

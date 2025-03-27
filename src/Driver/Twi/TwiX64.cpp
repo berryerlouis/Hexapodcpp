@@ -60,6 +60,12 @@ namespace Driver
             return (true);
         }
 
+        bool Twi::Write(const uint8_t address, const uint8_t reg) {
+            (void) address;
+            (void) reg;
+            return (true);
+        }
+
         bool Twi::WriteRegister(const uint8_t address, const uint8_t reg, uint8_t data) {
             (void) address;
             (void) reg;
