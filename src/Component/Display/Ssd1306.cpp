@@ -57,6 +57,7 @@ namespace Component
             static constexpr uint16_t NB_BYTES = 64U;
             if (this->mNeedToUpdate == true) {
                 if (this->mUpdateIndex == BUFFER_DISPLAY_LENGTH) {
+                    memcpy(this->mBufferScreen[1U], this->mBufferScreen[0U],BUFFER_DISPLAY_LENGTH);
                     uint8_t screenConfig[] = {SSD1306_PAGEADDR, 0U, 0xFFU, SSD1306_COLUMNADDR, 0U, SCREEN_WIDTH - 1U};
                     this->mTwi.WriteRegisters(this->mAddress, SSD1306_SEND_COMMAND, screenConfig,
                                               sizeof(screenConfig));
@@ -64,7 +65,7 @@ namespace Component
 
                 if (this->mUpdateIndex >= NB_BYTES) {
                     this->mTwi.WriteRegisters(this->mAddress, SSD1306_SETSTARTLINE,
-                                              &this->mBufferScreen[0U][
+                                              &this->mBufferScreen[1U][
                                                   BUFFER_DISPLAY_LENGTH - this->mUpdateIndex],
                                               NB_BYTES);
                     this->mUpdateIndex -= NB_BYTES;
@@ -73,7 +74,6 @@ namespace Component
                 if (this->mUpdateIndex == 0U) {
                     this->mNeedToUpdate = false;
                     this->mUpdateIndex = BUFFER_DISPLAY_LENGTH;
-                    //memcpy(this->mBufferScreen[0U], this->mBufferScreen[1U],BUFFER_DISPLAY_LENGTH);
                 }
             }
         }
