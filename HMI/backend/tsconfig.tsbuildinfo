@@ -1,1 +1,0 @@
-{"root":["./src/app.ts","./src/tcpclient.ts","./src/websocket.ts","./src/controllers/commandsController.ts","./src/models/userModels.ts","./src/routes/commandsRoutes.ts","./src/services/userServices.ts","./src/utils/logger.ts"],"errors":true,"version":"5.7.3"}
