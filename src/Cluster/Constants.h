@@ -55,8 +55,7 @@ namespace Cluster
         PRESSURE,
         ALTITUDE,
         TMP_BAR,
-        CALIB_MAG_MIN_MAX,
-        START_STOP_MAG_CALIB,
+        CALIB_SENSOR,
     };
 
     static constexpr uint8_t NB_COMMANDS_IMU = 11U;

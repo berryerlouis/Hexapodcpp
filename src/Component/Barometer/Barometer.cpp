@@ -22,17 +22,17 @@ namespace Component
 
         void Barometer::Update(const uint64_t currentTime) {
             (void) currentTime;
-            static uint64_t lastTime = false;
-            static bool toggleReadTempPresure = false;
+            static uint64_t lastTime = 0UL;
+            static bool toggleReadTempPressure = false;
 
             if (currentTime > lastTime + 10000U) {
                 lastTime = currentTime;
-                if (toggleReadTempPresure == false) {
-                    toggleReadTempPresure = true;
+                if (toggleReadTempPressure == false) {
+                    toggleReadTempPressure = true;
                     this->mRawTemp = this->ReadRawTemp();
                     this->mI2c.SendCommand(this->mAddress, MS5611_CMD_CONV_D1 + this->mResolution);
                 } else {
-                    toggleReadTempPresure = false;
+                    toggleReadTempPressure = false;
                     this->mRawPressure = this->ReadRawPressure();
                     this->mI2c.SendCommand(this->mAddress, MS5611_CMD_CONV_D2 + this->mResolution);
                 }
@@ -62,26 +62,28 @@ namespace Component
             }
         }
 
-        void Barometer::Reset(void) const { this->mI2c.WriteRegister(this->mAddress, MS5611_CMD_RESET, 0U); }
+        void Barometer::Reset(void) const {
+            this->mI2c.WriteRegister(this->mAddress, MS5611_CMD_RESET, 0U);
+        }
 
         void Barometer::ReadProm(void) {
             for (size_t offset = 0; offset < 6; offset++) {
-                uint16_t data;
-                this->mI2c.ReadRegister16Bits(this->mAddress, MS5611_CMD_READ_PROM + (offset * 2U), data);
-                this->mProm[offset] = data;
+                uint8_t data[2U] = {0U};
+                this->mI2c.ReadRegisters(this->mAddress, MS5611_CMD_READ_PROM + (offset * 2U), data, 2U);
+                this->mProm[offset] = ((data[0U] << 8U) | data[1U]);
             }
         }
 
         uint32_t Barometer::ReadRawTemp(void) const {
-            uint32_t rawTemp = 0U;
-            this->mI2c.ReadRegister24Bits(this->mAddress, MS5611_CMD_ADC_READ, rawTemp);
-            return rawTemp;
+            uint8_t data[3U] = {0U};
+            this->mI2c.ReadRegisters(this->mAddress, MS5611_CMD_ADC_READ, data, 3U);
+            return ((data[0U] << 16U) | ((data[1U] << 8U)) | ((data[0U])));
         }
 
         uint32_t Barometer::ReadRawPressure(void) const {
-            uint32_t rawPressure = 0U;
-            this->mI2c.ReadRegister24Bits(this->mAddress, MS5611_CMD_ADC_READ, rawPressure);
-            return rawPressure;
+            uint8_t data[3U] = {0U};
+            this->mI2c.ReadRegisters(this->mAddress, MS5611_CMD_ADC_READ, data, 3U);
+            return ((data[0U] << 16U) | ((data[1U] << 8U)) | ((data[0U])));
         }
     } // namespace Barometer
 } // namespace Component

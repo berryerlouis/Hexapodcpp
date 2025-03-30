@@ -38,7 +38,6 @@ namespace Driver
         bool Twi::ReadRegister24Bits(const uint8_t address, const uint8_t reg, uint32_t &data) {
             data = wiringPiI2CReadReg16(address, reg);
             data |= (wiringPiI2CReadReg8(address, reg + 2U) << 16U);
-            data &= 0xFFFFFFU;
             return true;
         }
 

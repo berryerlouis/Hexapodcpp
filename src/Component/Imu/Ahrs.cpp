@@ -5,33 +5,33 @@ namespace Component
 {
     namespace Imu
     {
-        Ahrs::Ahrs()
-            : mQuaternion{1.0F, 0.0F, 0.0F, 0.0F}
-              , mGyroMeasError(M_PI * (40.0F / 180.0F))
-              , mBeta(sqrt(3.0F / 4.0F) * mGyroMeasError) {
+        Ahrs::Ahrs() :
+            mQuaternion{1.0F, 0.0F, 0.0F, 0.0F}
+            , mGyroMeasError(M_PI * (40.0F / 180.0F))
+            , mBeta(sqrt(3.0F / 4.0F) * mGyroMeasError) {
         }
 
         void Ahrs::GetYawPitchRoll(Position3D &ypr) const {
             ypr.yaw = atan2(
-                2.0F * (this->mQuaternion[1] * this->mQuaternion[2] + this->mQuaternion[0] * this->mQuaternion[3]),
-                this->mQuaternion[0] * this->mQuaternion[0] + this->mQuaternion[1] * this->mQuaternion[1] - this->
-                mQuaternion[2] * this->mQuaternion[2] - this->mQuaternion[3] * this->mQuaternion[3]);
+                    2.0F * (this->mQuaternion[1] * this->mQuaternion[2] + this->mQuaternion[0] * this->mQuaternion[3]),
+                    this->mQuaternion[0] * this->mQuaternion[0] + this->mQuaternion[1] * this->mQuaternion[1] - this->
+                    mQuaternion[2] * this->mQuaternion[2] - this->mQuaternion[3] * this->mQuaternion[3]);
             ypr.pitch = -asin(
-                2.0F * (this->mQuaternion[1] * this->mQuaternion[3] - this->mQuaternion[0] * this->mQuaternion[2]));
+                    2.0F * (this->mQuaternion[1] * this->mQuaternion[3] - this->mQuaternion[0] * this->mQuaternion[2]));
             ypr.roll = atan2(
-                2.0F * (this->mQuaternion[0] * this->mQuaternion[1] + this->mQuaternion[2] * this->mQuaternion[3]),
-                this->mQuaternion[0] * this->mQuaternion[0] - this->mQuaternion[1] * this->mQuaternion[1] - this->
-                mQuaternion[2] * this->mQuaternion[2] + this->mQuaternion[3] * this->mQuaternion[3]);
+                    2.0F * (this->mQuaternion[0] * this->mQuaternion[1] + this->mQuaternion[2] * this->mQuaternion[3]),
+                    this->mQuaternion[0] * this->mQuaternion[0] - this->mQuaternion[1] * this->mQuaternion[1] - this->
+                    mQuaternion[2] * this->mQuaternion[2] + this->mQuaternion[3] * this->mQuaternion[3]);
 
-            ypr.yaw *= 180.0F / M_PI + 2.06F;
+            ypr.yaw *= 180.0F / M_PI; // + 2.06F;
             //2° 47' E  ± 0° 22 Declination Chirens declination_offset = degrees   minutes / 60
             ypr.pitch *= 180.0F / M_PI;
             ypr.roll *= 180.0F / M_PI;
         }
 
-        void Ahrs::MadgwickQuaternionUpdate(Vector3F &acc,
-                                            Vector3F &gyr,
-                                            Vector3F &mag,
+        void Ahrs::MadgwickQuaternionUpdate(Vector3F acc,
+                                            Vector3F gyr,
+                                            Vector3F mag,
                                             const float deltaTime) {
             float q1 = this->mQuaternion[0U];
             float q2 = this->mQuaternion[1U];
@@ -73,7 +73,8 @@ namespace Component
 
             // Normalise accelerometer measurement
             norm = sqrt(acc.x * acc.x + acc.y * acc.y + acc.z * acc.z);
-            if (norm == 0.0F) return; // handle NaN
+            if (norm == 0.0F)
+                return; // handle NaN
             norm = 1.0F / norm;
             acc.x *= norm;
             acc.y *= norm;
@@ -81,7 +82,8 @@ namespace Component
 
             // Normalise magnetometer measurement
             norm = sqrt(mag.x * mag.x + mag.y * mag.y + mag.z * mag.z);
-            if (norm == 0.0F) return; // handle NaN
+            if (norm == 0.0F)
+                return; // handle NaN
             norm = 1.0F / norm;
             mag.x *= norm;
             mag.y *= norm;
@@ -141,7 +143,8 @@ namespace Component
             q3 += qDot3 * deltaTime;
             q4 += qDot4 * deltaTime;
             norm = sqrt(q1 * q1 + q2 * q2 + q3 * q3 + q4 * q4); // normalise quaternion
-            if (norm == 0.0F) return; // handle NaN
+            if (norm == 0.0F)
+                return; // handle NaN
             norm = 1.0F / norm;
             this->mQuaternion[0U] = q1 * norm;
             this->mQuaternion[1U] = q2 * norm;

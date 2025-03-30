@@ -9,6 +9,7 @@
 
 #include "../../../../src/Component/Proximity/SensorProximity.h"
 #include "../../../../src/Service/Display/ServiceDisplay.h"
+#include "../../../mock/cmp/MockBattery.h"
 #include "../../../mock/cmp/MockCommunication.h"
 #include "../../../mock/drv/MockTick.h"
 
@@ -25,13 +26,15 @@ namespace Service
             UT_SRV_DISPLAY() :
                 mMockSsd1306(),
                 mMockCommunication(),
+                mMockBattery(),
                 mMockButton(),
                 mMockSoundLeft(),
                 mMockSoundRight(),
                 mMockSensorProximity(),
                 mMockEventListener(),
                 mMockTick(),
-                mServiceDisplay(mMockSsd1306, mMockCommunication, mMockButton, mMockSoundLeft, mMockSoundRight,
+                mServiceDisplay(mMockSsd1306, mMockCommunication, mMockBattery, mMockButton, mMockSoundLeft,
+                                mMockSoundRight,
                                 mMockSensorProximity, mMockEventListener, mMockTick) {
             }
 
@@ -67,6 +70,7 @@ namespace Service
             /* Mocks */
             StrictMock<Component::Display::MockSsd1306> mMockSsd1306;
             StrictMock<Component::Communication::MockCommunication> mMockCommunication;
+            StrictMock<Component::Battery::MockBattery> mMockBattery;
             StrictMock<Component::Button::MockButton> mMockButton;
             StrictMock<Component::Sound::MockSound> mMockSoundLeft;
             StrictMock<Component::Sound::MockSound> mMockSoundRight;

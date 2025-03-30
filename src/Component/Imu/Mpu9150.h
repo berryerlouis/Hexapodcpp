@@ -121,48 +121,21 @@ namespace Component
 
             void Update(const uint64_t currentTime);
 
-            inline virtual Vector3
-            ReadAcc(void) final override {
-                return (this->UpdateAcc());
-            }
 
-            inline virtual Vector3
-            ReadGyr(void) final override {
-                return (this->UpdateGyr());
-            }
+            virtual Vector3 ReadAcc(void) const final override;
 
-            inline virtual Vector3
-            ReadMag(void) final override {
-                return (this->UpdateMag());
-            }
+            virtual Vector3 ReadGyr(void) const final override;
 
-            inline virtual int16_t
-            ReadTemp(void) final override {
-                return (this->mTmp);
-            }
+            virtual Vector3 ReadMag(void) const final override;
+
+            virtual int16_t ReadTemp(void) const final override;
 
             inline virtual Position3D
             ReadYawPitchRoll(void) final override {
                 return (this->mYawPitchRoll);
             }
 
-            inline virtual void
-            StartCalibrationMag(const bool enable) {
-                this->mStartMagCalib = enable;
-                if (enable == false) {
-                    this->mMagOffset.x = (this->mMagCalibMax.x - this->mMagCalibMin.x) / 2U;
-                    this->mMagOffset.y = (this->mMagCalibMax.y - this->mMagCalibMin.y) / 2U;
-                    this->mMagOffset.z = (this->mMagCalibMax.z - this->mMagCalibMin.z) / 2U;
-                }
-            }
-
-            inline virtual Vector3F
-            ReadCalibrationMag(const bool min) {
-                if (min == true) {
-                    return this->mMagCalibMin;
-                }
-                return this->mMagCalibMax;
-            }
+            virtual void StartCalibration(const SensorsImu sensor, const bool enable) final override;
 
         private:
             void UpdateAll(void);
@@ -234,11 +207,13 @@ namespace Component
             Tick::TickInterface &mTick;
             uint8_t mAddress;
             uint8_t mAddressMag;
-            Vector3 mAccOffset;
-            Vector3 mGyrOffset;
+            Vector3F mAccOffset;
+            Vector3F mGyrOffset;
             Vector3F mMagOffset;
             Vector3F mMagBias;
-            bool mStartMagCalib;
+            uint16_t mIndexCalib;
+            bool mStartCalib;
+            SensorsImu mSensorToCalib;
             Vector3F mMagCalibMin;
             Vector3F mMagCalibMax;
             Vector3F mAcc;

@@ -3,7 +3,7 @@
 
 #include "../../Component/Display/Ssd1306Interface.h"
 #include "../../Component/Communication/CommunicationInterface.h"
-#include "../../Component/Battery/BatteryState.h"
+#include "../../Component/Battery/BatteryInterface.h"
 #include "../../Component/Button/ButtonInterface.h"
 #include "../../Component/Proximity/SensorsId.h"
 #include "../../Component/Proximity/SensorProximityInterface.h"
@@ -27,6 +27,7 @@ namespace Service
         using namespace Component;
 
         class ServiceDisplay : public Service
+                               , Core::ObserverInterface<BatteryStruct>
                                , Core::ObserverInterface<ButtonStruct>
                                , Core::ObserverInterface<SoundStruct>
                                , Core::ObserverInterface<SensorsStruct>
@@ -34,6 +35,7 @@ namespace Service
         public:
             ServiceDisplay(Ssd1306Interface &ssd1306
                            , CommunicationInterface &communication
+                           , BatteryInterface &battery
                            , ButtonInterface &button
                            , SoundInterface &soundInterfaceLeft
                            , SoundInterface &soundInterfaceRight
@@ -55,6 +57,8 @@ namespace Service
 
             virtual void Notified(const CommunicationStruct &state) final override;
 
+            virtual void Notified(const BatteryStruct &state) final override;
+
             void DisplayBackground(void) const;
 
             void DisplayCommunicationBmp(void);
@@ -70,6 +74,7 @@ namespace Service
         private:
             Ssd1306Interface &mSsd1306;
             CommunicationInterface &mCommunication;
+            BatteryInterface &mBattery;
             ButtonInterface &mButton;
             SoundInterface &mSoundLeft;
             SoundInterface &mSoundRight;

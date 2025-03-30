@@ -86,7 +86,7 @@ namespace Builder
         , mServiceOrientation(mMpu9150, mBarometer, mMessageListener)
         , mServiceBattery(mBattery, mMessageListener)
         , mServiceBody(mBody, mMessageListener)
-        , mServiceDisplay(mSsd1306, mCommunication, mButton, mSoundLeft, mSoundRight, mSensorProximity,
+        , mServiceDisplay(mSsd1306, mCommunication, mBattery, mButton, mSoundLeft, mSoundRight, mSensorProximity,
                           mMessageListener, mTick)
         , mServiceGeneral(mSoftware, mMessageListener)
         , mServices(

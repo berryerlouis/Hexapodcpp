@@ -1,11 +1,13 @@
 #include "ServiceDisplay.h"
 
+
 namespace Service
 {
     namespace Display
     {
         ServiceDisplay::ServiceDisplay(Ssd1306Interface &ssd1306
                                        , CommunicationInterface &communication
+                                       , BatteryInterface &battery
                                        , ButtonInterface &button
                                        , SoundInterface &soundInterfaceLeft
                                        , SoundInterface &soundInterfaceRight
@@ -15,6 +17,7 @@ namespace Service
             Service(DISPLAY, 10U, messageListener)
             , mSsd1306(ssd1306)
             , mCommunication(communication)
+            , mBattery(battery)
             , mButton(button)
             , mSoundLeft(soundInterfaceLeft)
             , mSoundRight(soundInterfaceRight)
@@ -43,6 +46,7 @@ namespace Service
                 this->mSoundRight.Attach(this);
                 this->mSensors.Attach(this);
                 this->mCommunication.Attach(this);
+                this->mBattery.Attach(this);
                 this->DisplayBackground();
                 this->DisplayBatteryLevel(UNKNOWN);
                 this->DisplayButtonBmp(RELEASE);
@@ -99,6 +103,10 @@ namespace Service
                 this->mSsd1306.DrawBitmap(&this->mBmpCommunication, SCREEN_WIDTH - this->mBmpCommunication.width, 0U,
                                           Bitmaps::Color::COLOR_WHITE);
             }
+        }
+
+        void ServiceDisplay::Notified(const BatteryStruct &state) {
+            this->DisplayBatteryLevel(state.state);
         }
 
         void ServiceDisplay::DisplayBackground(void) const {
