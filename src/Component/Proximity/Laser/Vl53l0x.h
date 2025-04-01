@@ -47,9 +47,9 @@ namespace Component {
                 uint32_t mMeasurementTimingBudget = 0U;
                 uint8_t mStop;
 
-                void Tune(void);
+                void Tune(void) const;
 
-                bool PerformSingleRefCalibration(calibration_type_t calib);
+                bool PerformSingleRefCalibration(const calibration_type_t calib) const;
 
                 bool WriteRegister16Bits(const uint8_t reg, const uint16_t &data);
 

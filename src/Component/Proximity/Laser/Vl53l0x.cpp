@@ -1,4 +1,3 @@
-#include "unistd.h"
 #include "Vl53l0x.h"
 #ifdef RPI
 #include "wiringPi/wiringPiI2C.h"
@@ -31,6 +30,7 @@ namespace Component
             Core::Status Vl53l0x::Initialize(void) {
                 Core::Status success = Core::Status::CORE_ERROR;
                 uint8_t data = 0U;
+                uint8_t timeout = 0U;
                 this->mLed.Initialize();
 
                 // reset
@@ -42,8 +42,9 @@ namespace Component
                 this->mI2c.WriteRegister(this->mAddress, 0xBF, 0x01);
                 this->mTick.DelayMs(1U);
                 do {
+                    timeout++;
                     this->mI2c.ReadRegister(this->mAddress, VL53L0X_IDENTIFICATION_MODEL_ID, data);
-                } while (data != 0xEEU);
+                } while (data != 0xEEU && timeout < 100U);
 
                 if (data == 0xEEU) {
                     this->mI2c.ReadRegister(this->mAddress, VL53L0X_VHV_CONFIG_PAD_SCL_SDA_EXTSUP_HV, data);
@@ -115,24 +116,32 @@ namespace Component
 
                 this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSRANGE_START, 0x01);
 
+                uint8_t timeout = 0U;
                 uint8_t sysrange_start = 0;
                 do {
                     this->mI2c.ReadRegister(this->mAddress, VL53L0X_SYSRANGE_START, sysrange_start);
-                } while (sysrange_start & 0x01);
+                    timeout++;
+                } while (sysrange_start & 0x01 && timeout < 100U);
 
+                if (timeout >= 100U) {
+                    return (this->mDistance);
+                }
                 uint8_t interrupt_status = 0;
+                timeout = 0U;
                 do {
                     this->mI2c.ReadRegister(this->mAddress, VL53L0X_RESULT_INTERRUPT_STATUS, interrupt_status);
-                } while ((interrupt_status & 0x07) == 0);
+                    timeout++;
+                } while ((interrupt_status & 0x07) == 0 && timeout < 100U);
 
+                if (timeout >= 100U) {
+                    return (this->mDistance);
+                }
                 this->ReadRegister16Bits(VL53L0X_RESULT_RANGE_STATUS + 10, this->mDistance);
-
                 this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSTEM_INTERRUPT_CLEAR, 0x01U);
-
                 return (this->mDistance);
             }
 
-            bool Vl53l0x::PerformSingleRefCalibration(calibration_type_t calib) {
+            bool Vl53l0x::PerformSingleRefCalibration(const calibration_type_t calib) const {
                 uint8_t sysrange_start = 0;
                 uint8_t sequence_config = 0;
                 switch (calib) {
@@ -148,19 +157,22 @@ namespace Component
                 this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSTEM_SEQUENCE_CONFIG, sequence_config);
 
                 this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSRANGE_START, sysrange_start);
-                /* Wait for interrupt */
                 uint8_t interrupt_status = 0;
+                uint8_t timeout = 0U;
                 do {
                     this->mI2c.ReadRegister(this->mAddress, VL53L0X_RESULT_INTERRUPT_STATUS, interrupt_status);
-                } while ((interrupt_status & 0x07) == 0);
+                    timeout++;
+                } while ((interrupt_status & 0x07) == 0 && timeout < 100U);
 
-                this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSTEM_INTERRUPT_CLEAR, 0x01);
-
-                this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSRANGE_START, 0x00);
-                return true;
+                if (timeout < 100U) {
+                    this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSTEM_INTERRUPT_CLEAR, 0x01);
+                    this->mI2c.WriteRegister(this->mAddress, VL53L0X_SYSRANGE_START, 0x00);
+                    return true;
+                }
+                return false;
             }
 
-            void Vl53l0x::Tune(void) {
+            void Vl53l0x::Tune(void) const {
                 this->mI2c.WriteRegister(this->mAddress, 0xFFU, 0x01U);
                 this->mI2c.WriteRegister(this->mAddress, 0x00U, 0x00U);
                 this->mI2c.WriteRegister(this->mAddress, 0xFFU, 0x00U);
