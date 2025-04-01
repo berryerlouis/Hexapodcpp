@@ -8,15 +8,16 @@ namespace Component
 {
     namespace Imu
     {
-#define NB_SAMPLES 1000U
+#define NB_SAMPLES_ACC_GYR  100U
+#define NB_SAMPLES_MAG      1000U
 
         Vector3F accRawCalib;
         Vector3F gyrRawCalib;
 
 
         Vector3 accSign = {-1, 1, 1};
-        Vector3 gyrSign = {1, -1, 1};
-        Vector3 magSign = {1, 1, 1};
+        Vector3 gyrSign = {1, -1, -1};
+        Vector3 magSign = {-1, -1, 1};
 
         Mpu9150::Mpu9150(Twi::TwiInterface &i2c, Tick::TickInterface &tick, const uint8_t address) :
             mI2c(i2c)
@@ -121,27 +122,13 @@ namespace Component
                     this->mLastLoopTime = now;
                     this->mDoComputation = true;
                 } else if (this->mDoComputation == true) {
-                    /*this->mAhrs.MadgwickQuaternionUpdate(this->mAcc, this->mGyr, this->mMag, deltaTime);
-                    this->mAhrs.GetYawPitchRoll(this->mYawPitchRoll);*/
-
-                    float a_roll = atan2(mAcc.y, mAcc.z);
-                    float a_pitch = atan2(-mAcc.x, sqrt(mAcc.y * mAcc.y + mAcc.z * mAcc.z));
-                    float mx = mMag.x * cos(a_pitch) + mMag.z * sin(a_pitch);
-                    float my = mMag.x * sin(a_roll) * sin(a_pitch) + mMag.y * cos(a_roll) - mMag.z * sin(a_roll) * cos(
-                                       a_pitch);
-                    float myaw = atan2(my, mx);
-                    float g_roll = mGyr.x * deltaTime;
-                    float g_pitch = mGyr.y * deltaTime;
-                    float g_yaw = mGyr.z * deltaTime;
-
-                    this->mYawPitchRoll.roll = a_roll * 0.98F + g_roll * 0.02F;
-                    this->mYawPitchRoll.pitch = a_pitch * 0.98F + g_pitch * 0.02F;
-                    this->mYawPitchRoll.yaw = myaw * 0.98F + g_yaw * 0.02F;
-
-                    this->mYawPitchRoll.yaw *= 180.0F / M_PI; // + 2.06F;
-                    this->mYawPitchRoll.pitch *= 180.0F / M_PI;
-                    this->mYawPitchRoll.roll *= 180.0F / M_PI;
-
+                    // convert to radian gyrometer measurement
+                    Vector3F gyr = this->mGyr;
+                    gyr.x *= M_PI / 180.0F;
+                    gyr.y *= M_PI / 180.0F;
+                    gyr.z *= M_PI / 180.0F;
+                    this->mAhrs.Update(this->mAcc, gyr, this->mMag, deltaTime);
+                    this->mAhrs.GetRollPitchYaw(this->mYawPitchRoll);
                     this->mDoComputation = false;
                 }
             } else {
@@ -173,7 +160,7 @@ namespace Component
                         this->mMagCalibMax.z = this->mMag.z;
                     }
                 }
-                if (++this->mIndexCalib == NB_SAMPLES) {
+                if (++this->mIndexCalib == (this->mSensorToCalib == MAG ? NB_SAMPLES_MAG : NB_SAMPLES_ACC_GYR)) {
                     this->mStartCalib = false;
                     this->StartCalibration(this->mSensorToCalib, false);
                 }
@@ -195,13 +182,13 @@ namespace Component
                 }
             } else {
                 if (this->mSensorToCalib == ACCEL) {
-                    mAccOffset.x = accRawCalib.x / NB_SAMPLES;
-                    mAccOffset.y = accRawCalib.y / NB_SAMPLES;
-                    mAccOffset.z = accRawCalib.z / NB_SAMPLES;
+                    mAccOffset.x = accRawCalib.x / NB_SAMPLES_ACC_GYR;
+                    mAccOffset.y = accRawCalib.y / NB_SAMPLES_ACC_GYR;
+                    mAccOffset.z = accRawCalib.z / NB_SAMPLES_ACC_GYR;
                 } else if (this->mSensorToCalib == GYRO) {
-                    mGyrOffset.x = gyrRawCalib.x / NB_SAMPLES;
-                    mGyrOffset.y = gyrRawCalib.y / NB_SAMPLES;
-                    mGyrOffset.z = gyrRawCalib.z / NB_SAMPLES;
+                    mGyrOffset.x = gyrRawCalib.x / NB_SAMPLES_ACC_GYR;
+                    mGyrOffset.y = gyrRawCalib.y / NB_SAMPLES_ACC_GYR;
+                    mGyrOffset.z = gyrRawCalib.z / NB_SAMPLES_ACC_GYR;
                 } else if (this->mSensorToCalib == MAG) {
                     this->mMagOffset.x = (this->mMagCalibMax.x + this->mMagCalibMin.x) / 2U;
                     this->mMagOffset.y = (this->mMagCalibMax.y + this->mMagCalibMin.y) / 2U;
@@ -211,7 +198,6 @@ namespace Component
             }
         }
 
-        //https://github.com/berryerlouis/Hexapodcpp/blob/b32453094e281d4dfb2b46db7f0548f6cc94bc90/src/Component/Imu/Mpu9150.cpp
         void Mpu9150::UpdateAll(void) {
             uint8_t data[14U] = {0};
             if (this->mI2c.ReadRegisters(this->mAddress, ERegister::ACCEL_XOUT_H,
@@ -287,9 +273,9 @@ namespace Component
                 }
                 constexpr float res = 10.0F * 1229.0F / 4096.0F;
                 if (this->mStartCalib == false) {
-                    this->mMag.y = (magRaw.x * res * this->mMagBias.x - this->mMagOffset.x) * magSign.x;
-                    this->mMag.x = (magRaw.y * res * this->mMagBias.y - this->mMagOffset.y) * magSign.y;
-                    this->mMag.z = (magRaw.z * res * this->mMagBias.z - this->mMagOffset.z) * magSign.z;
+                    this->mMag.x = ((magRaw.x - this->mMagOffset.x) * res * this->mMagBias.x) * magSign.x;
+                    this->mMag.y = ((magRaw.y - this->mMagOffset.y) * res * this->mMagBias.y) * magSign.y;
+                    this->mMag.z = ((magRaw.z - this->mMagOffset.z) * res * this->mMagBias.z) * magSign.z;
                 } else {
                     this->mMag.x = magRaw.x;
                     this->mMag.y = magRaw.y;

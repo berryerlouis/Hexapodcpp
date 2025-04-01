@@ -13,12 +13,12 @@ namespace Component
 
             ~Ahrs() = default;
 
-            void MadgwickQuaternionUpdate(Vector3F acc,
-                                          Vector3F gyr,
-                                          Vector3F mag,
-                                          const float deltaTime);
+            void Update(Vector3F acc,
+                        Vector3F gyr,
+                        Vector3F mag,
+                        const float deltaTime);
 
-            void GetYawPitchRoll(Position3D &ypr) const;
+            void GetRollPitchYaw(Position3D &ypr) const;
 
         private:
             float mQuaternion[4U];

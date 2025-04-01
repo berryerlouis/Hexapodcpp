@@ -11,7 +11,7 @@ namespace Component
             , mBeta(sqrt(3.0F / 4.0F) * mGyroMeasError) {
         }
 
-        void Ahrs::GetYawPitchRoll(Position3D &ypr) const {
+        void Ahrs::GetRollPitchYaw(Position3D &ypr) const {
             ypr.yaw = atan2(
                     2.0F * (this->mQuaternion[1] * this->mQuaternion[2] + this->mQuaternion[0] * this->mQuaternion[3]),
                     this->mQuaternion[0] * this->mQuaternion[0] + this->mQuaternion[1] * this->mQuaternion[1] - this->
@@ -23,16 +23,17 @@ namespace Component
                     this->mQuaternion[0] * this->mQuaternion[0] - this->mQuaternion[1] * this->mQuaternion[1] - this->
                     mQuaternion[2] * this->mQuaternion[2] + this->mQuaternion[3] * this->mQuaternion[3]);
 
-            ypr.yaw *= 180.0F / M_PI; // + 2.06F;
+            ypr.yaw *= 180.0F / M_PI + 2.06F;
             //2° 47' E  ± 0° 22 Declination Chirens declination_offset = degrees   minutes / 60
             ypr.pitch *= 180.0F / M_PI;
             ypr.roll *= 180.0F / M_PI;
         }
 
-        void Ahrs::MadgwickQuaternionUpdate(Vector3F acc,
-                                            Vector3F gyr,
-                                            Vector3F mag,
-                                            const float deltaTime) {
+        void Ahrs::Update(Vector3F acc,
+                          Vector3F gyr,
+                          Vector3F mag,
+                          const float deltaTime) {
+
             float q1 = this->mQuaternion[0U];
             float q2 = this->mQuaternion[1U];
             float q3 = this->mQuaternion[2U];
@@ -65,11 +66,6 @@ namespace Component
             const float q3q3 = q3 * q3;
             const float q3q4 = q3 * q4;
             const float q4q4 = q4 * q4;
-
-            // convert to radian gyrometer measurement
-            gyr.x *= M_PI / 180.0F;
-            gyr.y *= M_PI / 180.0F;
-            gyr.z *= M_PI / 180.0F;
 
             // Normalise accelerometer measurement
             norm = sqrt(acc.x * acc.x + acc.y * acc.y + acc.z * acc.z);

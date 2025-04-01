@@ -59,6 +59,9 @@ namespace Cluster
 
             static Core::Status BuildFrameSetStatePca(const bool state, Frame &response);
 
+            static Core::Status BuildFrameSetError(const Core::Status error, const uint8_t servoId,
+                                                   const uint8_t angle, Frame &response);
+
         private:
             ServosInterface &mServosInterface;
         };
