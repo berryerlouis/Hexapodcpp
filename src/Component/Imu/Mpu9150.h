@@ -135,7 +135,9 @@ namespace Component
                 return (this->mYawPitchRoll);
             }
 
-            virtual void StartCalibration(const SensorsImu sensor, const bool enable) final override;
+            virtual void StartCalibration(const SensorsImu sensor) final override;
+
+            virtual void StopCalibration(const SensorsImu sensor) final override;
 
         private:
             void UpdateAll(void);
@@ -151,6 +153,8 @@ namespace Component
             int16_t UpdateTemp(void);
 
             bool IsDataReady(void) const;
+
+            void UpdateCalibration(const SensorsImu sensor);
 
             struct ERegisterAccel {
                 static constexpr uint8_t ACCEL_FS_2 = 0x00;
@@ -223,7 +227,6 @@ namespace Component
             uint64_t mLastLoopTime;
             Ahrs mAhrs;
             Position3D mYawPitchRoll;
-            bool mDoComputation;
         };
     }
 }

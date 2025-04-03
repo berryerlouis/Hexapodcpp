@@ -33,11 +33,28 @@
               </div>
           </div>
           <div class="header-right">
-              <button id="connect-button">Connect</button>
+              Queue:
+              <div class="progressbar">
+                  <div class="progressbar-container" id="progress-message-queue" style="width:0"></div>
+                  <div class="progressbar-value" id="progress-message-queue-val"></div>
+              </div>
           </div>
         </div>
         <div class="app"><canvas></canvas></div>
         <div class="footer"></div>
+
+        <div class="container-carousel">
+            <div class="carousel">
+                <div class="carousel-items">
+                    <div class="carousel-item">Battery</div>
+                    <div class="carousel-item">Imu</div>
+                    <div class="carousel-item select">Body</div>
+                    <div class="carousel-item">Control</div>
+                    <div class="carousel-item">Others</div>
+                </div>
+            </div>
+        </div>
+
         <script type="module" src="./src/main.ts"></script>
     </body>
 </html>

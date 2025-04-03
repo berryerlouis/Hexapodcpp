@@ -7,6 +7,7 @@ import {getErrorName} from "./clusters/clusters.ts";
 
 type Callback = (message: any) => void;
 type CallbackStarted = () => void;
+type CallbackStopped = () => void;
 
 interface SpecificCallback {
     callback: Callback;
@@ -20,28 +21,30 @@ export default class Socket {
     private listOfSpecificCallbackRead: SpecificCallback[];
     private listOfCallbackRead: Callback[];
     private listOfCallbackWrite: Callback[];
-    private readonly callbackStarted: CallbackStarted;
+    private listOfCallbackStarted: CallbackStarted[];
+    private listOfCallbackStopped: CallbackStopped[];
     private socket: WebSocket;
     private messagesList: Message[];
 
-    constructor(callbackStarted:CallbackStarted) {
+    constructor() {
         this.listOfCallbackRead = [];
         this.listOfCallbackWrite = [];
         this.listOfSpecificCallbackRead = [];
+        this.listOfCallbackStarted = [];
+        this.listOfCallbackStopped = [];
         this.messagesList = []
-        this.callbackStarted = callbackStarted;
         this.socket = new WebSocket('ws://192.168.1.170:8080');
 
         this.socket.addEventListener('open', () => {
             console.log('Connected to the WebSocket server');
             openPopupInfo('Connected!');
-            this.callbackStarted && this.callbackStarted();
+            this.notifyCallbackStarted();
         });
 
         this.socket.addEventListener('message', (event) => {
             let frame = Protocol.decode(Direction.RX, event.data);
             frame.setDate();
-            this.notifyRead(frame);
+            //this.notifyRead(frame);
 
             if(this.messagesList.length > 0) {
                 if ( frame.command?.name == ClusterGenericCommands.GENERIC ||
@@ -63,6 +66,8 @@ export default class Socket {
         this.socket.addEventListener('close', () => {
             console.log('Disconnected from the WebSocket server');
             openPopupWarning('WebSocket disconnected!');
+            this.notifyCallbackStopped();
+            this.messagesList = [];
         });
 
         this.socket.addEventListener('error', (event) => {
@@ -77,6 +82,25 @@ export default class Socket {
 
     addCallbackRead(cb: Callback) {
         this.listOfCallbackRead.push(cb);
+    }
+
+    addCallbackStarted(cb: CallbackStarted) {
+        this.listOfCallbackStarted.push(cb);
+    }
+
+    notifyCallbackStarted() {
+        this.listOfCallbackStarted.forEach((speCb) => {
+            speCb();
+        });
+    }
+    addCallbackStopped(cb: CallbackStarted) {
+        this.listOfCallbackStopped.push(cb);
+    }
+
+    notifyCallbackStopped() {
+        this.listOfCallbackStopped.forEach((speCb) => {
+            speCb();
+        });
     }
 
     addSpecificCallbackRead(cluster:ClusterName, command:CommandName , cb: Callback, params?: number[]) {
@@ -143,9 +167,18 @@ export default class Socket {
 
     write(message: Message)  {
         this.messagesList.push(message);
+        let pb:HTMLElement = document.getElementById('progress-message-queue')!;
+        let pbv:HTMLElement = document.getElementById('progress-message-queue-val')!;
+        if(pb) {
+            pb.setAttribute('style', 'width: ' + (this.messagesList.length>100?100:this.messagesList.length) + '%');
+            pbv.innerText = (this.messagesList.length>100?100:this.messagesList.length) + '%';
+        }
+        if (this.messagesList.length >= 100) {
+            //openPopupWarning('WebSocket Messages list full!');
+        }
         if (this.messagesList.length !== 1) {
             return;
         }
-        this.writeOnSocket(message).then();
+        //this.writeOnSocket(message).then();
     }
 }

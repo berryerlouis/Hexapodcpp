@@ -7,19 +7,15 @@ import Message from "./communication/message.ts";
 import {ClusterServoCommands} from "./communication/clusters/clusterServo.ts";
 
 
-const socket:Socket = new Socket(()=>{
-    init();
+const socket:Socket = new Socket();
+new Ui(socket);
 
+socket.addCallbackStarted(()=>{
+    init();
     socket.addSpecificCallbackRead(ClusterName.GENERAL, ClusterGeneralCommands.VERSION, (message:Message) => {
         document.getElementById('version')!.innerText = "V"+ message.params[0].toString() + "." + message.params[1].toString() ;
     });
 });
-new Ui(socket);
-
-
-document.getElementById('connect-button')!.addEventListener('click',(() : void => {
-    init();
-}));
 
 function init() {
     socket.write(new Message(Direction.TX, ClusterName.SERVO, ClusterServoCommands.GET_STATE_PCA));

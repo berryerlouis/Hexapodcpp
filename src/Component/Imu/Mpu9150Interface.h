@@ -36,7 +36,9 @@ namespace Component
 
             virtual Position3D ReadYawPitchRoll(void) = 0;
 
-            virtual void StartCalibration(const SensorsImu sensor, const bool enable) = 0;
+            virtual void StartCalibration(const SensorsImu sensor) = 0;
+
+            virtual void StopCalibration(const SensorsImu sensor) = 0;
         };
     }
 }

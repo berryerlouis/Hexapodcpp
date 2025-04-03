@@ -59,7 +59,11 @@ namespace Cluster
             } else if (request.commandId == EImuCommands::CALIB_SENSOR) {
                 const SensorsImu sensor = static_cast<SensorsImu>(request.Get1ByteParam(0U));
                 const bool enable = request.Get1ByteParam(1U);
-                this->mImu.StartCalibration(sensor, enable);
+                if (enable == true) {
+                    this->mImu.StartCalibration(sensor);
+                } else {
+                    this->mImu.StopCalibration(sensor);
+                }
                 success = this->BuildFrameStartCalibMag(response);
             }
             return success;

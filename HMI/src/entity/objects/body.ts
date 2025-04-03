@@ -10,6 +10,10 @@ import {
 } from 'three'
 import Legs from "./legs.ts";
 import Socket from "../../communication/socket.ts";
+import {ClusterName} from "../../communication/clusters/clusterType.ts";
+import {ClusterServoCommands} from "../../communication/clusters/clusterServo.ts";
+import Message from "../../communication/message.ts";
+import {Direction} from "../../communication/protocol.ts";
 
 interface BodyStruct {
     width: number;
@@ -20,6 +24,7 @@ interface BodyStruct {
 }
 export default class Body extends Object3D {
 
+    interval: number;
     params:BodyStruct = {
         width: 1.4,
         widthMiddle: 1.8,
@@ -32,8 +37,9 @@ export default class Body extends Object3D {
     z: number = 0;
     socket:Socket;
     members: Legs;
-    constructor(x: number, y: number, z: number, socket: Socket) {
+    constructor(x: number, y: number, z: number, socket: Socket, intervalCommand:number) {
         super();
+        this.interval = 0;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -43,6 +49,26 @@ export default class Body extends Object3D {
         this.add(this.members);
 
         this.drawBody();
+
+        this.socket.addSpecificCallbackRead(ClusterName.SERVO, ClusterServoCommands.GET_ALL,(message:Message) => {
+            if(message.params && message.params.length == 18) {
+                for (let i = 0; i < 6; i++) {
+                    for (let j = 0; j < 3; j++) {
+                        this.members.legs.leg[i].legData.servos[j].angle = message.params[i * 3 + j];
+                    }
+                }
+            }
+        });
+
+        this.socket.addCallbackStarted(()=>{
+            this.interval = setInterval(()=>{
+                this.socket.write(new Message(Direction.TX, ClusterName.SERVO, ClusterServoCommands.GET_ALL));
+            },intervalCommand);
+        });
+
+        this.socket.addCallbackStopped(()=> {
+            clearInterval(this.interval);
+        });
     }
 
     drawBody(): void {

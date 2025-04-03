@@ -9,6 +9,7 @@ import {ClusterProximityCommands} from "../communication/clusters/clusterProximi
 import {ClusterServoCommands} from "../communication/clusters/clusterServo.ts";
 import {ClusterGeneralCommands} from "../communication/clusters/clusterGeneral.ts";
 import {ClusterImuCommands} from "../communication/clusters/clusterImu.ts";
+import {ClusterBodyCommands} from "../communication/clusters/clusterBody.ts";
 
 export default class Panel extends Pane {
     hexapod:Hexapod;
@@ -275,7 +276,29 @@ export default class Panel extends Pane {
             title: 'Rotation',
             expanded: false,
         });
-        bodyRotationFolder.addBinding(this.hexapod.hexapodStruct.rotation, 'x', {min: -Math.PI/4, max: Math.PI/4, step: 0.01});
+        bodyRotationFolder.addBinding(this.hexapod.hexapodStruct.rotation, 'x', {min: -Math.PI/4, max: Math.PI/4, step: 0.01}).on('change', (ev) => {
+            if (this.initDone) {
+                this.socket.write(new Message(Direction.TX, ClusterName.BODY, ClusterBodyCommands.SET_BODY_X_Y_Z, 14,
+                    [
+                        Math.floor(ev.value * 10),
+                        this.hexapod.hexapodStruct.rotation.y,
+                        this.hexapod.hexapodStruct.rotation.z,
+                        this.hexapod.hexapodStruct.position.x,
+                        this.hexapod.hexapodStruct.position.y,
+                        this.hexapod.hexapodStruct.position.z,
+                        1000
+                    ],
+                    [
+                        0xFFFF,
+                        0xFFFF,
+                        0xFFFF,
+                        0xFFFF,
+                        0xFFFF,
+                        0xFFFF,
+                        0xFFFF,
+                    ]));
+            }
+        });
         bodyRotationFolder.addBinding(this.hexapod.hexapodStruct.rotation, 'y', {min: -Math.PI/4, max: Math.PI/4, step: 0.01});
         bodyRotationFolder.addBinding(this.hexapod.hexapodStruct.rotation, 'z', {min: -Math.PI/4, max: Math.PI/4, step: 0.01});
     }

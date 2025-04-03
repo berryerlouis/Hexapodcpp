@@ -14,6 +14,8 @@ export class DecodingError extends Error {
     }
 }
 
+export type Encoding = 0xFF | 0xFFFF | 0xFFFFFF | 0xFFFFFFFF;
+
 export default class Protocol {
     constructor() {
 
@@ -55,7 +57,7 @@ export default class Protocol {
     }
 
 
-    static encode(cluster: Cluster, command: Command, size: number = 0, params: number[] = []): string {
+    static encode(cluster: Cluster, command: Command, size: number = 0, params: number[] = [], encoding?: Encoding[]): string {
         let messageToEncode = '<';
         messageToEncode += parseInt(cluster.code, 16).toString(16).padStart(2, '0').toUpperCase();
         messageToEncode += parseInt(command.code, 16).toString(16).padStart(2, '0').toUpperCase();
@@ -66,8 +68,30 @@ export default class Protocol {
         {
             messageToEncode += size.toString(16).padStart(2, '0').toUpperCase();
             if (params && params.length > 0) {
-                for ( let param of params) {
-                    messageToEncode += param.toString(16).padStart(2, '0').toUpperCase();
+                if(params.length == encoding?.length) {
+                    for (let i = 0; i < params.length; i++) {
+                        let encode: Encoding = 0xFF;
+                        if(encoding) {
+                            encode = encoding[i];
+                        }
+                        if(params[i] < 0 ) {
+                            params[i] = (params[i] & encode);
+                        }
+
+                        let encodedSize = 0;
+                        if(encode == 0xFF)
+                            encodedSize = 2;
+                        else if(encode == 0xFFFF)
+                            encodedSize = 4;
+                        else if(encode == 0xFFFFFF)
+                            encodedSize = 6;
+                        else if(encode == 0xFFFFFFFF)
+                            encodedSize = 8;
+
+                        messageToEncode += params[i].toString(16).padStart(encodedSize, '0').toUpperCase();
+                    }
+                } else {
+                    throw new Error(`Encoding length ${encoding?.length} does not match params length ${params.length}`);
                 }
             }
         }

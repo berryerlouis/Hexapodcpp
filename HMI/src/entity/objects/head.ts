@@ -71,16 +71,15 @@ export default class Head extends Object3D {
     }
     addSoundCallbacks() {
         this.socket.addSpecificCallbackRead(ClusterName.SOUND, ClusterSoundCommands.SOUND_STATUS ,(message:Message) => {
-            if(message.params)
-                if(message.params[0] == 0) {
+            if(message.params) {
+                if (message.params[0] == 0) {
                     this.sensors.sound.left = message.params[1] +
                         (message.params[2] << 8) +
                         (message.params[3] << 16) +
                         (message.params[4] << 24);
                     let val = Math.min(Math.max(Math.ceil(this.sensors.sound.right / 2000), 1), 3);
                     this.sound.show(val, SoundSide.left);
-                }
-                else {
+                } else {
                     this.sensors.sound.right = message.params[1] +
                         (message.params[2] << 8) +
                         (message.params[3] << 16) +
@@ -88,6 +87,7 @@ export default class Head extends Object3D {
                     let val = Math.min(Math.max(Math.ceil(this.sensors.sound.right / 2000), 1), 3);
                     this.sound.show(val, SoundSide.right);
                 }
+            }
         });
     }
 

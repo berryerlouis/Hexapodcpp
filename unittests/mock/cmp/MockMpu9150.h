@@ -17,7 +17,8 @@ namespace Component
 			MOCK_CONST_METHOD0(ReadMag, Vector3( void ));
 			MOCK_CONST_METHOD0(ReadTemp, int16_t( void ));
 			MOCK_METHOD0(ReadYawPitchRoll, Position3D( void ));
-			MOCK_METHOD2(StartCalibration, void( const SensorsImu, const bool ));
+			MOCK_METHOD1(StartCalibration, void( const SensorsImu));
+			MOCK_METHOD1(StopCalibration, void( const SensorsImu));
 		};
 	}
 }

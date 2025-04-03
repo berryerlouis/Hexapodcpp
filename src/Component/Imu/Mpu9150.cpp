@@ -39,8 +39,7 @@ namespace Component
             , mTmp(0U)
             , mLastLoopTime(0U)
             , mAhrs()
-            , mYawPitchRoll{0, 0, 0}
-            , mDoComputation(false) {
+            , mYawPitchRoll{0, 0, 0} {
 #ifdef RPI
             this->mAddress = wiringPiI2CSetup(address);
             this->mAddressMag = wiringPiI2CSetup(AK8963_I2C_ADDRESS);
@@ -111,90 +110,90 @@ namespace Component
             (void) currentTime;
             static float deltaTime;
             if (this->mStartCalib == false) {
-                if (this->IsDataReady() == true && this->mDoComputation == false) {
-                    this->UpdateAcc();
-                    this->UpdateGyr();
+                if (this->IsDataReady() == true) {
+                    this->UpdateAll();
                     this->UpdateMag();
-                    this->UpdateTemp();
-
                     const uint64_t now = this->mTick.GetUs();
                     deltaTime = ((now - this->mLastLoopTime) / 1000000.0F);
-                    this->mLastLoopTime = now;
-                    this->mDoComputation = true;
-                } else if (this->mDoComputation == true) {
-                    // convert to radian gyrometer measurement
                     Vector3F gyr = this->mGyr;
                     gyr.x *= M_PI / 180.0F;
                     gyr.y *= M_PI / 180.0F;
                     gyr.z *= M_PI / 180.0F;
                     this->mAhrs.Update(this->mAcc, gyr, this->mMag, deltaTime);
                     this->mAhrs.GetRollPitchYaw(this->mYawPitchRoll);
-                    this->mDoComputation = false;
+                    this->mLastLoopTime = now;
                 }
             } else {
-                if (this->mSensorToCalib == ACCEL) {
-                    this->UpdateAcc();
-                    accRawCalib.x += this->mAcc.x;
-                    accRawCalib.y += this->mAcc.y;
-                    accRawCalib.z += this->mAcc.z;
-                } else if (this->mSensorToCalib == GYRO) {
-                    this->UpdateGyr();
-                    gyrRawCalib.x += this->mGyr.x;
-                    gyrRawCalib.y += this->mGyr.y;
-                    gyrRawCalib.z += this->mGyr.z;
-                } else if (this->mSensorToCalib == MAG) {
-                    this->UpdateMag();
-                    if (this->mMag.x < this->mMagCalibMin.x) {
-                        this->mMagCalibMin.x = this->mMag.x;
-                    } else if (this->mMag.x > this->mMagCalibMax.x) {
-                        this->mMagCalibMax.x = this->mMag.x;
-                    }
-                    if (this->mMag.y < this->mMagCalibMin.y) {
-                        this->mMagCalibMin.y = this->mMag.y;
-                    } else if (this->mMag.y > this->mMagCalibMax.y) {
-                        this->mMagCalibMax.y = this->mMag.y;
-                    }
-                    if (this->mMag.z < this->mMagCalibMin.z) {
-                        this->mMagCalibMin.z = this->mMag.z;
-                    } else if (this->mMag.z > this->mMagCalibMax.z) {
-                        this->mMagCalibMax.z = this->mMag.z;
-                    }
-                }
-                if (++this->mIndexCalib == (this->mSensorToCalib == MAG ? NB_SAMPLES_MAG : NB_SAMPLES_ACC_GYR)) {
-                    this->mStartCalib = false;
-                    this->StartCalibration(this->mSensorToCalib, false);
-                }
+                this->UpdateCalibration(this->mSensorToCalib);
             }
         }
 
-        void Mpu9150::StartCalibration(const SensorsImu sensor, const bool enable) {
-            this->mStartCalib = enable;
-            this->mSensorToCalib = sensor;
-            if (this->mStartCalib == true) {
-                this->mIndexCalib = 0U;
-                if (this->mSensorToCalib == ACCEL) {
-                    this->mAccOffset = {0, 0, 0};
-                } else if (this->mSensorToCalib == GYRO) {
-                    this->mGyrOffset = {0, 0, 0};
-                } else if (this->mSensorToCalib == MAG) {
-                    this->mMagCalibMin = {100000, 100000, 100000};
-                    this->mMagCalibMax = {0, 0, 0};
+        void Mpu9150::UpdateCalibration(const SensorsImu sensor) {
+            if (sensor == ACCEL) {
+                const Vector3 acc = this->UpdateAcc();
+                accRawCalib.x += acc.x;
+                accRawCalib.y += acc.y;
+                accRawCalib.z += acc.z;
+            } else if (sensor == GYRO) {
+                const Vector3 gyr = this->UpdateGyr();
+                gyrRawCalib.x += gyr.x;
+                gyrRawCalib.y += gyr.y;
+                gyrRawCalib.z += gyr.z;
+            } else if (sensor == MAG) {
+                this->UpdateMag();
+                if (this->mMag.x < this->mMagCalibMin.x) {
+                    this->mMagCalibMin.x = this->mMag.x;
+                } else if (this->mMag.x > this->mMagCalibMax.x) {
+                    this->mMagCalibMax.x = this->mMag.x;
                 }
-            } else {
-                if (this->mSensorToCalib == ACCEL) {
-                    mAccOffset.x = accRawCalib.x / NB_SAMPLES_ACC_GYR;
-                    mAccOffset.y = accRawCalib.y / NB_SAMPLES_ACC_GYR;
-                    mAccOffset.z = accRawCalib.z / NB_SAMPLES_ACC_GYR;
-                } else if (this->mSensorToCalib == GYRO) {
-                    mGyrOffset.x = gyrRawCalib.x / NB_SAMPLES_ACC_GYR;
-                    mGyrOffset.y = gyrRawCalib.y / NB_SAMPLES_ACC_GYR;
-                    mGyrOffset.z = gyrRawCalib.z / NB_SAMPLES_ACC_GYR;
-                } else if (this->mSensorToCalib == MAG) {
-                    this->mMagOffset.x = (this->mMagCalibMax.x + this->mMagCalibMin.x) / 2U;
-                    this->mMagOffset.y = (this->mMagCalibMax.y + this->mMagCalibMin.y) / 2U;
-                    this->mMagOffset.z = (this->mMagCalibMax.z + this->mMagCalibMin.z) / 2U;
+                if (this->mMag.y < this->mMagCalibMin.y) {
+                    this->mMagCalibMin.y = this->mMag.y;
+                } else if (this->mMag.y > this->mMagCalibMax.y) {
+                    this->mMagCalibMax.y = this->mMag.y;
                 }
+                if (this->mMag.z < this->mMagCalibMin.z) {
+                    this->mMagCalibMin.z = this->mMag.z;
+                } else if (this->mMag.z > this->mMagCalibMax.z) {
+                    this->mMagCalibMax.z = this->mMag.z;
+                }
+            }
+            if (++this->mIndexCalib == (this->mSensorToCalib == MAG ? NB_SAMPLES_MAG : NB_SAMPLES_ACC_GYR)) {
+                this->mStartCalib = false;
+                this->StopCalibration(this->mSensorToCalib);
                 this->mSensorToCalib = NONE;
+            }
+        }
+
+        void Mpu9150::StopCalibration(const SensorsImu sensor) {
+            this->mStartCalib = false;
+            if (sensor == ACCEL) {
+                mAccOffset.x = accRawCalib.x / NB_SAMPLES_ACC_GYR;
+                mAccOffset.y = accRawCalib.y / NB_SAMPLES_ACC_GYR;
+                mAccOffset.z = (accRawCalib.z / NB_SAMPLES_ACC_GYR) - ERegisterAccel::ACCEL_1G_2G;
+            } else if (sensor == GYRO) {
+                mGyrOffset.x = gyrRawCalib.x / NB_SAMPLES_ACC_GYR;
+                mGyrOffset.y = gyrRawCalib.y / NB_SAMPLES_ACC_GYR;
+                mGyrOffset.z = gyrRawCalib.z / NB_SAMPLES_ACC_GYR;
+            } else if (sensor == MAG) {
+                this->mMagOffset.x = (this->mMagCalibMax.x + this->mMagCalibMin.x) / 2U;
+                this->mMagOffset.y = (this->mMagCalibMax.y + this->mMagCalibMin.y) / 2U;
+                this->mMagOffset.z = (this->mMagCalibMax.z + this->mMagCalibMin.z) / 2U;
+            }
+        }
+
+        void Mpu9150::StartCalibration(const SensorsImu sensor) {
+            this->mStartCalib = true;
+            this->mSensorToCalib = sensor;
+            this->mIndexCalib = 0U;
+            if (this->mSensorToCalib == ACCEL) {
+                this->mAccOffset = {0, 0, 0};
+                accRawCalib = {0, 0, 0};
+            } else if (this->mSensorToCalib == GYRO) {
+                this->mGyrOffset = {0, 0, 0};
+                gyrRawCalib = {0, 0, 0};
+            } else if (this->mSensorToCalib == MAG) {
+                this->mMagCalibMin = {100000, 100000, 100000};
+                this->mMagCalibMax = {0, 0, 0};
             }
         }
 
@@ -206,17 +205,19 @@ namespace Component
                 accRaw.x = ((data[0U] << 8U) | ((data[1U]))) - mAccOffset.x;
                 accRaw.y = ((data[2U] << 8U) | ((data[3U]))) - mAccOffset.y;
                 accRaw.z = ((data[4U] << 8U) | ((data[5U]))) - mAccOffset.z;
-                this->mAcc.x = (accRaw.x * 2.0F) / 32768.0F;
-                this->mAcc.y = (accRaw.y * 2.0F) / 32768.0F;
-                this->mAcc.z = (accRaw.z * 2.0F) / 32768.0F;
+                float res = 2.0F / 32768.0F;
+                this->mAcc.x = accRaw.x * res * accSign.x;
+                this->mAcc.y = accRaw.y * res * accSign.y;
+                this->mAcc.z = accRaw.z * res * accSign.z;
 
                 Vector3 gyrRaw;
+                res = 250.0F / 32768.0F;
                 gyrRaw.x = ((data[8U] << 8U) | ((data[9U]))) - mGyrOffset.x;
                 gyrRaw.y = ((data[10U] << 8U) | ((data[11U]))) - mGyrOffset.y;
                 gyrRaw.z = ((data[12U] << 8U) | ((data[13U]))) - mGyrOffset.z;
-                this->mGyr.x = (gyrRaw.x * 250.0F) / 32768.0F;
-                this->mGyr.y = (gyrRaw.y * 250.0F) / 32768.0F;
-                this->mGyr.z = (gyrRaw.z * 250.0F) / 32768.0F;
+                this->mGyr.x = gyrRaw.x * res * gyrSign.x;
+                this->mGyr.y = gyrRaw.y * res * gyrSign.y;
+                this->mGyr.z = gyrRaw.z * res * gyrSign.z;
 
                 this->mTmp = static_cast<uint8_t>((((data[6U] << 8U) | ((data[7U]))) / 340.0F) + 36.5F);
             }

@@ -12,12 +12,12 @@ interface BatteryStruct {
 
 
 export default class Battery {
-
+    interval:number;
     socket:Socket;
     batteryData: BatteryStruct = {status: 0, voltage: 0, current: 0};
-    constructor(socket: Socket) {
+    constructor(socket: Socket, intervalCommand:number) {
         this.socket = socket;
-
+        this.interval = 0;
         socket.addSpecificCallbackRead(ClusterName.BATTERY, ClusterBatteryCommands.VOLTAGE, (message:Message) => {
             this.batteryData.voltage = (message.params[0] + (message.params[1] << 8))/100;
             document.getElementById('voltage')!.innerText = (this.batteryData.voltage).toFixed(2);
@@ -30,10 +30,16 @@ export default class Battery {
             this.batteryData.status = message.params[0];
         });
 
-        setInterval(()=>{
-            this.socket.write(new Message(Direction.TX, ClusterName.BATTERY, ClusterBatteryCommands.STATUS));
-            this.socket.write(new Message(Direction.TX, ClusterName.BATTERY, ClusterBatteryCommands.VOLTAGE));
-            this.socket.write(new Message(Direction.TX, ClusterName.BATTERY, ClusterBatteryCommands.CURRENT));
-        },1000);
+        this.socket.addCallbackStopped(()=> {
+            clearInterval(this.interval);
+        });
+
+        this.socket.addCallbackStarted(()=>{
+            this.interval = setInterval(()=>{
+                this.socket.write(new Message(Direction.TX, ClusterName.BATTERY, ClusterBatteryCommands.STATUS));
+                this.socket.write(new Message(Direction.TX, ClusterName.BATTERY, ClusterBatteryCommands.VOLTAGE));
+                this.socket.write(new Message(Direction.TX, ClusterName.BATTERY, ClusterBatteryCommands.CURRENT));
+            },intervalCommand);
+        });
     }
 }

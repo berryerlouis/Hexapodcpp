@@ -17,6 +17,8 @@ interface ImuStruct {
 
 export default class Imu {
 
+    intervalPrimary: number;
+    intervalSecondary: number;
     socket: Socket;
     imuData: ImuStruct = {
         accel: {x: 0, y: 0, z: 0},
@@ -27,9 +29,10 @@ export default class Imu {
         altitude : 0,
         pressure : 0
     }
-    constructor(socket: Socket) {
+    constructor(socket: Socket, intervalCommand:number) {
         this.socket = socket;
-
+        this.intervalPrimary = 0;
+        this.intervalSecondary = 0;
 
         socket.addSpecificCallbackRead(ClusterName.IMU, ClusterImuCommands.ALL, (message:Message) => {
             this.imuData.accel.x = this.fetchInt16S(message.params[0], message.params[1]);
@@ -61,16 +64,23 @@ export default class Imu {
             this.imuData.ypr.yaw = this.fetchInt16S(message.params[4], message.params[5])/10;
         });
 
-        setInterval(()=>{
-            this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.ALTITUDE));
-            this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.PRESSURE));
-            this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.TMPBAR));
-        },5000);
+        this.socket.addCallbackStopped(()=> {
+            clearInterval(this.intervalPrimary);
+            clearInterval(this.intervalSecondary);
+        });
 
-        setInterval(()=>{
-            this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.ALL));
-            this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.YAWPITCHROLL));
-        },5000);
+        this.socket.addCallbackStarted(()=> {
+            this.intervalPrimary = setInterval(()=>{
+                this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.ALTITUDE));
+                this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.PRESSURE));
+                this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.TMPBAR));
+            },intervalCommand);
+
+            this.intervalSecondary = setInterval(()=>{
+                this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.ALL));
+                this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.YAWPITCHROLL));
+            },intervalCommand);
+        });
     }
     fetchInt16U(param0:number, param1:number) {
         return (param0<<8) + param1;

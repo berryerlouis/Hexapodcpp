@@ -77,13 +77,13 @@ namespace Component
         uint32_t Barometer::ReadRawTemp(void) const {
             uint8_t data[3U] = {0U};
             this->mI2c.ReadRegisters(this->mAddress, MS5611_CMD_ADC_READ, data, 3U);
-            return ((data[0U] << 16U) | ((data[1U] << 8U)) | ((data[0U])));
+            return ((data[0U] << 16U) | ((data[1U] << 8U)) | ((data[2U])));
         }
 
         uint32_t Barometer::ReadRawPressure(void) const {
             uint8_t data[3U] = {0U};
             this->mI2c.ReadRegisters(this->mAddress, MS5611_CMD_ADC_READ, data, 3U);
-            return ((data[0U] << 16U) | ((data[1U] << 8U)) | ((data[0U])));
+            return ((data[0U] << 16U) | ((data[1U] << 8U)) | ((data[2U])));
         }
     } // namespace Barometer
 } // namespace Component

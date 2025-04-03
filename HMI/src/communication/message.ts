@@ -1,4 +1,4 @@
-import Protocol, {Direction} from "./protocol.ts";
+import Protocol, {Direction, Encoding} from "./protocol.ts";
 import {Cluster, ClusterName, Command, CommandName} from "./clusters/clusterType.ts";
 import {getClusterByName, getCommandByName} from "./clusters/clusters.ts";
 
@@ -15,18 +15,25 @@ export default class Message {
     command: Command;
     size: number;
     params: number[];
+    encode: Encoding[];
     raw: string;
     timeout: number = 0;
     retry: number = 0;
 
 
-    constructor(direction: Direction, clusterName: ClusterName, commandName: CommandName, size :number = 0, params: (number) [] = []){
+    constructor(direction: Direction, clusterName: ClusterName, commandName: CommandName, size :number = 0, params: (number) [] = [], encode: (Encoding) [] = []){
         this.direction = direction;
         this.cluster = getClusterByName(clusterName);
         this.command = getCommandByName(this.cluster, commandName);
         this.size = size;
         this.params = params;
-        this.raw = Protocol.encode(this.cluster, this.command, this.size, this.params);
+        this.encode = encode;
+        if(params && this.encode.length == 0) {
+            for (let i = 0; i < params.length; i++) {
+                this.encode[i] = 0xFF;
+            }
+        }
+        this.raw = Protocol.encode(this.cluster, this.command, this.size, this.params, this.encode );
         this.timeout = 0;
         this.retry = 0;
 

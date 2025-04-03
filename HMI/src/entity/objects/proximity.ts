@@ -93,49 +93,5 @@ export default class ProximityObject extends Object3D {
                 this.proximityRight.position.z = -1 - distance/10;
                 break;
         }
-
-
-
-
-        /*if(side == SoundSide.left) {
-            if(this.soundLeft.userData.playing == false) {
-                this.soundLeft.userData = {playing: true};
-                this.displaySoundMovement(delay, this.soundLeft, SoundSide.left, delay);
-            }
-        } else {
-            if(this.soundRight.userData.playing == false) {
-                this.soundRight.userData = {playing: true};
-                this.displaySoundMovement(delay, this.soundRight, SoundSide.right, delay);
-            }
-        }*/
     }
-/*
-    displaySoundMovement(delay: number, sound:Group, side:SoundSide, nbIteration:number) {
-        this.add(sound);
-        let soundComing = setInterval(() => {
-            if(side == SoundSide.left) {
-                sound.position.x += 0.025;
-                sound.position.z += 0.025;
-            } else {
-                sound.position.x -= 0.025;
-                sound.position.z += 0.025;
-            }
-
-        }, 50)
-        setTimeout(() => {
-            clearInterval(soundComing);
-            this.remove(sound);
-            if(side == SoundSide.left) {
-                sound.position.set(this.x - 1, this.y, this.z);
-            } else {
-                sound.position.set(this.x + 1, this.y, this.z);
-            }
-            if(nbIteration > 1) {
-                nbIteration = nbIteration - 1;
-                this.displaySoundMovement(delay, sound, side, nbIteration--);
-            } else {
-                sound.userData.playing = false;
-            }
-        }, 600)
-    }*/
 }

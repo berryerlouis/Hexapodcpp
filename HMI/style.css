@@ -41,6 +41,33 @@ body {
   max-height: 100vh;
 }
 
+.progressbar {
+  background-color: #f1f1f1;
+  width: 5vw;
+  border-radius: 5px;
+  margin-left: 1vw;
+  height:16px;
+  font-size: large;
+  color: #4d4f80;
+  position: relative;
+}
+
+.progressbar-container {
+  background-color: #4CAF50;
+  text-align: center;
+  border-radius: 5px;
+  height:16px;
+  line-height: 16px;
+  align-items: center;
+}
+
+.progressbar-value {
+  text-align: center;
+  position: absolute;
+  top: -25%;
+  width: 100%;
+}
+
 button {
     font-family: inherit;
     font-size: 1em;
@@ -102,7 +129,6 @@ button:hover {
   align-content: center;
   place-items: center;
   min-width: 100vw;
-  height: 8vh;
 }
 
 .header-left {
@@ -125,6 +151,9 @@ button:hover {
 .header-right {
   margin-left: auto;
   padding: 10px 25px 10px 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 .header-center-content {
     display: flex;
@@ -164,6 +193,59 @@ h1 {
   padding: 0;
   margin: 0;
 }
+
+.container-carousel {
+  left: 0;
+  bottom: 0;
+  position: absolute;
+}
+
+.carousel {
+  position: absolute;
+  bottom: 0;
+  width: 100vw;
+  height: 10vh;
+  background-color: #242424;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+}
+.carousel-items {
+  position: absolute;
+  top: -50px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  transform: translateY(50%);
+}
+.carousel-item {
+  width: 80px;
+  height: 80px;
+  background-color: #353878;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #747bff;
+  font-size: 1em;
+  transform-origin: bottom center;
+  cursor: pointer;
+}
+.carousel-item.select{
+  color: white;
+}
+
+.carousel-item:hover {
+  background-color: #747bff;
+  color: white;
+}
+
+.carousel-item:nth-child(1) { transform: rotate(-7deg) translateY(-9px); }
+.carousel-item:nth-child(2) { transform: rotate(-2deg) translateY(-25px); }
+.carousel-item:nth-child(3) { transform: translateY(-30px);}
+.carousel-item:nth-child(4) { transform: rotate(2deg) translateY(-25px); }
+.carousel-item:nth-child(5) { transform: rotate(7deg) translateY(-9px); }
 
 
 @media (prefers-color-scheme: light) {

@@ -28,16 +28,20 @@ namespace Component
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            inline virtual int16_t GetTemp(void) final override {
+            inline virtual int16_t
+            GetTemp(void) final override {
                 return (this->mTemp);
             }
 
-            inline virtual int32_t GetPressure(void) final override {
+            inline virtual int32_t
+            GetPressure(void) final override {
                 return (this->mPressure);
             }
 
-            inline virtual uint16_t GetAltitude(void) final override {
-                return (44330.0F * (1.0F - pow(static_cast<float>(this->mPressure) / 101325.0F, 0.1902949F)));
+            inline virtual uint16_t
+            GetAltitude(void) final override {
+                return ((pow((101325.0F / this->mPressure), 1.0F / 5.257F) - 1.0F) * (this->mTemp * 0.01F + 273.15F)) /
+                       0.0065F;
             }
 
         private:
