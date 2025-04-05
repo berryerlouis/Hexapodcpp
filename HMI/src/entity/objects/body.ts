@@ -62,7 +62,7 @@ export default class Body extends Object3D {
 
         this.socket.addCallbackStarted(()=>{
             this.interval = setInterval(()=>{
-                this.socket.write(new Message(Direction.TX, ClusterName.SERVO, ClusterServoCommands.GET_ALL));
+                this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_ALL));
             },intervalCommand);
         });
 

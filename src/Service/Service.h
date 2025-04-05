@@ -40,9 +40,9 @@ namespace Service
 
         void
         SetNewUpdateTime(const uint64_t currentTime, const EServices serviceId) {
-            this->mDeltaTime = abs(static_cast<uint16_t>(static_cast<int64_t>(currentTime) -
-                                                         static_cast<int64_t>(this->mPreviousTime) -
-                                                         static_cast<int64_t>(this->mUpdateTime)));
+            this->mDeltaTime = abs(static_cast<int64_t>(currentTime) -
+                                   static_cast<int64_t>(this->mPreviousTime) -
+                                   static_cast<int64_t>(this->mUpdateTime));
 
             if (this->mPreviousTime == 0U) {
                 this->mDeltaTime = 0U;
@@ -90,12 +90,12 @@ namespace Service
         }
 
         void
-        SetMinTime(const uint16_t time) {
+        SetMinTime(const uint64_t time) {
             this->mMinDeltaTime = time;
         }
 
         void
-        SetMaxTime(const uint16_t time) {
+        SetMaxTime(const uint64_t time) {
             this->mMaxDeltaTime = time;
         }
 

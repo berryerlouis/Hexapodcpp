@@ -125,9 +125,9 @@ namespace Cluster
 
         Core::Status ClusterImu::BuildFrameYawPitchRoll(const Position3D ypr, Frame &response) {
             Vector3 cmp;
-            cmp.x = static_cast<int16_t>(ypr.roll * 10U);
-            cmp.y = static_cast<int16_t>(ypr.pitch * 10U);
-            cmp.z = static_cast<int16_t>(ypr.yaw * 10U);
+            cmp.x = static_cast<int16_t>(ypr.roll * 100U);
+            cmp.y = static_cast<int16_t>(ypr.pitch * 100U);
+            cmp.z = static_cast<int16_t>(ypr.yaw * 100U);
             const Core::Status success = response.Build(
                     EClusters::IMU,
                     EImuCommands::YAW_PITCH_ROLL);

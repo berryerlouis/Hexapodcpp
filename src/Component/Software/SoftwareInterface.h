@@ -22,6 +22,10 @@ namespace Component
             virtual void Update(const uint64_t currentTime) = 0;
 
             virtual Version GetVersion(void) = 0;
+
+            virtual uint64_t GetMinTime(void) const = 0;
+
+            virtual uint64_t GetMaxTime(void) const = 0;
         };
     }
 }

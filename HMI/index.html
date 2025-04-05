@@ -6,6 +6,7 @@
         <title>Hexapod</title>
         <link rel="stylesheet" href="./style.css" type="text/css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <link rel="shortcut icon" href="./bot.ico">
     </head>
     <body>
         <div class="popup" id="popup"></div>
@@ -15,46 +16,72 @@
                 <h1>Hexapod<span id="version">V0.0</span></h1>
             </div>
           <div class="header-center">
-              <div class="header-center-content">
-                  <i class="bi bi-battery-full"></i>
-                  <div class="header-center-voltage">
-                      <h1>Voltage:<span id="voltage">0.00</span>V</h1>
-                      <h1>Current:<span id="current">0.00</span>A</h1>
-                  </div>
-              </div>
-              <div class="header-center-content">
-                  <i class="bi bi-thermometer"></i>
-                  <h1>Temperature:<span id="temperature">0.00</span>°C</h1>
-                  <i class="bi bi-airplane-engines"></i>
-                  <div class="header-center-voltage">
-                      <h1>Altitude:<span id="altitude">0.00</span>m</h1>
-                      <h1>Pressure:<span id="pressure">0</span>pa</h1>
-                  </div>
-              </div>
           </div>
           <div class="header-right">
-              Queue:
-              <div class="progressbar">
-                  <div class="progressbar-container" id="progress-message-queue" style="width:0"></div>
-                  <div class="progressbar-value" id="progress-message-queue-val"></div>
-              </div>
           </div>
         </div>
         <div class="app"><canvas></canvas></div>
-        <div class="footer"></div>
 
-        <div class="container-carousel">
+        <div class="footer">
             <div class="carousel">
                 <div class="carousel-items">
-                    <div class="carousel-item">Battery</div>
-                    <div class="carousel-item">Imu</div>
-                    <div class="carousel-item select">Body</div>
-                    <div class="carousel-item">Control</div>
-                    <div class="carousel-item">Others</div>
+                    <div class="carousel-item">
+                        <div class="carousel-item-content">
+                            <i class="bi bi-battery-full"></i>
+                            <div class="carousel-item-content-value">
+                                <div class="carousel-item-content-value-title"><span id="voltage">_</span>V</div>
+                                <div class="carousel-item-content-value-title"><span id="current">_</span>A</div>
+                                <div class="carousel-item-content-value-title"><span id="temperature">_</span>°C</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="carousel-item-content">
+                            <i class="bi bi-compass"></i>
+                            <div class="carousel-item-content-value">
+                                <div class="carousel-item-content-value-title">roll:<span id="roll">_</span>°</div>
+                                <div class="carousel-item-content-value-title">pitch:<span id="pitch">_</span>°</div>
+                                <div class="carousel-item-content-value-title">yaw:<span id="yaw">_</span>°</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="carousel-item-content">
+                            <i class="bi bi-activity"></i>
+                            <div class="carousel-item-content-value">
+                                <div class="carousel-item-content-value-title">msg:
+                                    <div class="carousel-item-content-value-content">
+                                        <div class="progressbar">
+                                            <div class="progressbar-container" id="progress-message-queue" style="width:0"></div>
+                                            <div class="progressbar-value" id="progress-message-queue-val"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="carousel-item-content-value-title">max:<span id="max-time">_</span>ms</div>
+                                <div class="carousel-item-content-value-title">min:<span id="min-time">_</span>ms</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="carousel-item-content">
+                            <i class="bi bi-motherboard"></i>
+                            <div class="carousel-item-content-value">
+                                <div class="carousel-item-content-value-title">BP:<span id="button">Released</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="carousel-item-content">
+                            <i class="bi bi-airplane-engines"></i>
+                            <div class="carousel-item-content-value">
+                                <div><span id="altitude">0.00</span>m</div>
+                                <div><span id="pressure">0.00</span>pa</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
         <script type="module" src="./src/main.ts"></script>
     </body>
 </html>

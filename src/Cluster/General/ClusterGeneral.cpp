@@ -1,4 +1,5 @@
 #include "ClusterGeneral.h"
+#include "../../Service/Constants.h"
 
 namespace Cluster
 {
@@ -12,8 +13,8 @@ namespace Cluster
             , mSoftware(software) {
             this->AddClusterItem({.commandId = EGeneralCommands::RESET, .expectedSize = 0U});
             this->AddClusterItem({.commandId = EGeneralCommands::VERSION, .expectedSize = 0U});
-            this->AddClusterItem({.commandId = EGeneralCommands::MIN_EXECUTION_TIME, .expectedSize = 1U});
-            this->AddClusterItem({.commandId = EGeneralCommands::MAX_EXECUTION_TIME, .expectedSize = 1U});
+            this->AddClusterItem({.commandId = EGeneralCommands::MIN_EXECUTION_TIME, .expectedSize = 0U});
+            this->AddClusterItem({.commandId = EGeneralCommands::MAX_EXECUTION_TIME, .expectedSize = 0U});
         }
 
 
@@ -25,11 +26,11 @@ namespace Cluster
                 const SoftwareInterface::Version version = this->mSoftware.GetVersion();
                 success = this->BuildFrameGetVersion(version, response);
             } else if (request.commandId == EGeneralCommands::MIN_EXECUTION_TIME) {
-                const uint8_t serviceId = request.params[0U];
-                success = this->BuildFrameGetMinTime(serviceId, 0, response);
+                success = this->BuildFrameGetMinTime(Service::EServices::GENERAL, this->mSoftware.GetMinTime(),
+                                                     response);
             } else if (request.commandId == EGeneralCommands::MAX_EXECUTION_TIME) {
-                const uint8_t serviceId = request.params[0U];
-                success = this->BuildFrameGetMaxTime(serviceId, 0, response);
+                success = this->BuildFrameGetMaxTime(Service::EServices::GENERAL, this->mSoftware.GetMaxTime(),
+                                                     response);
             }
             return success;
         }
@@ -56,26 +57,26 @@ namespace Cluster
             return (success);
         }
 
-        Core::Status ClusterGeneral::BuildFrameGetMinTime(const uint8_t serviceId, const uint16_t deltaTime,
+        Core::Status ClusterGeneral::BuildFrameGetMinTime(const uint8_t serviceId, const uint64_t deltaTime,
                                                           Frame &response) {
             const Core::Status success = response.Build(
                     EClusters::GENERAL,
                     EGeneralCommands::MIN_EXECUTION_TIME);
             if (success == Core::Status::CORE_OK) {
                 response.Set1ByteParam(serviceId);
-                response.Set2BytesParam(deltaTime);
+                response.Set8BytesParam(deltaTime);
             }
             return (success);
         }
 
-        Core::Status ClusterGeneral::BuildFrameGetMaxTime(const uint8_t serviceId, const uint16_t deltaTime,
+        Core::Status ClusterGeneral::BuildFrameGetMaxTime(const uint8_t serviceId, const uint64_t deltaTime,
                                                           Frame &response) {
             const Core::Status success = response.Build(
                     EClusters::GENERAL,
                     EGeneralCommands::MAX_EXECUTION_TIME);
             if (success == Core::Status::CORE_OK) {
                 response.Set1ByteParam(serviceId);
-                response.Set2BytesParam(deltaTime);
+                response.Set8BytesParam(deltaTime);
             }
             return (success);
         }

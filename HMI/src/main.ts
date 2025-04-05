@@ -18,14 +18,14 @@ socket.addCallbackStarted(()=>{
 });
 
 function init() {
-    socket.write(new Message(Direction.TX, ClusterName.SERVO, ClusterServoCommands.GET_STATE_PCA));
+    socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_STATE_PCA));
 
     for (let i = 0; i < 18; i++) {
-        socket.write(new Message(Direction.TX, ClusterName.SERVO, ClusterServoCommands.GET_ANGLE, 1, [i]));
-        socket.write(new Message(Direction.TX, ClusterName.SERVO, ClusterServoCommands.GET_MIN, 1, [i]));
-        socket.write(new Message(Direction.TX, ClusterName.SERVO, ClusterServoCommands.GET_MAX, 1, [i]));
-        socket.write(new Message(Direction.TX, ClusterName.SERVO, ClusterServoCommands.GET_STATE, 1, [i]));
+        socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_ANGLE, 1, [i]));
+        socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_MIN, 1, [i]));
+        socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_MAX, 1, [i]));
+        socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_STATE, 1, [i]));
     }
-    socket.write(new Message(Direction.TX, ClusterName.GENERAL, ClusterGeneralCommands.VERSION));
+    socket.write(new Message( ClusterName.GENERAL, ClusterGeneralCommands.VERSION));
 
 }

@@ -42,9 +42,10 @@ export default class Socket {
         });
 
         this.socket.addEventListener('message', (event) => {
-            let frame = Protocol.decode(Direction.RX, event.data);
+            let frame = Protocol.decode(event.data);
+            frame.direction = Direction.RX;
             frame.setDate();
-            //this.notifyRead(frame);
+            this.notifyRead(frame);
 
             if(this.messagesList.length > 0) {
                 if ( frame.command?.name == ClusterGenericCommands.GENERIC ||
@@ -168,17 +169,15 @@ export default class Socket {
     write(message: Message)  {
         this.messagesList.push(message);
         let pb:HTMLElement = document.getElementById('progress-message-queue')!;
-        let pbv:HTMLElement = document.getElementById('progress-message-queue-val')!;
         if(pb) {
             pb.setAttribute('style', 'width: ' + (this.messagesList.length>100?100:this.messagesList.length) + '%');
-            pbv.innerText = (this.messagesList.length>100?100:this.messagesList.length) + '%';
         }
         if (this.messagesList.length >= 100) {
-            //openPopupWarning('WebSocket Messages list full!');
+            openPopupWarning('WebSocket Messages list full!');
         }
         if (this.messagesList.length !== 1) {
             return;
         }
-        //this.writeOnSocket(message).then();
+        this.writeOnSocket(message).then();
     }
 }

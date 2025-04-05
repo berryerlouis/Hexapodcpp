@@ -36,9 +36,9 @@ export default class Battery {
 
         this.socket.addCallbackStarted(()=>{
             this.interval = setInterval(()=>{
-                this.socket.write(new Message(Direction.TX, ClusterName.BATTERY, ClusterBatteryCommands.STATUS));
-                this.socket.write(new Message(Direction.TX, ClusterName.BATTERY, ClusterBatteryCommands.VOLTAGE));
-                this.socket.write(new Message(Direction.TX, ClusterName.BATTERY, ClusterBatteryCommands.CURRENT));
+                this.socket.write(new Message( ClusterName.BATTERY, ClusterBatteryCommands.STATUS));
+                this.socket.write(new Message( ClusterName.BATTERY, ClusterBatteryCommands.VOLTAGE));
+                this.socket.write(new Message( ClusterName.BATTERY, ClusterBatteryCommands.CURRENT));
             },intervalCommand);
         });
     }

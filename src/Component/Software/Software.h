@@ -17,6 +17,15 @@ namespace Component
             virtual void Update(const uint64_t currentTime) final override;
 
             virtual Version GetVersion(void) final override;
+
+            virtual uint64_t GetMinTime(void) const override;
+
+            virtual uint64_t GetMaxTime(void) const override;
+
+        private:
+            uint64_t mLastLoopTime;
+            uint64_t mMinLoopTime;
+            uint64_t mMaxLoopTime;
         };
     }
 }

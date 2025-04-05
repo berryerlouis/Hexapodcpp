@@ -2,14 +2,14 @@
 
 # Hexapod
 
-![Hmi](images/HMI.png)
+![Hmi](images/HMI2.png)
 
 # Install
 
 The following tools are used:
 
 - Install VS-code or CLion
-- If you are using VS-code install serial-monitor extension
+- Install nodeJs and npm
 
 # Yocto
 
@@ -17,6 +17,12 @@ Install kas
 
 ``` shell
 sudo pip install kas
+```
+
+or
+
+``` shell
+sudo apt install kas
 ```
 
 Clone repo and build sdk
@@ -39,7 +45,7 @@ cd build/tmp/deploy/sdk/
 
  ``` shell
  # Arguments:
- # 1: target (AVR, X64, RPI)
+ # 1: target (X64, RPI)
  # 2: source or test
  # 3: DEBUG, RELEASE, or CLEAN
  # 4: RPI install wiring PI (optional)
@@ -53,6 +59,22 @@ cd build/tmp/deploy/sdk/
  ```
 
 # Communication
+
+## HMI
+
+Go to HMI folder
+
+ ``` shell
+ cd HMI
+ ```
+
+and run
+
+ ``` shell
+ npm run dev
+ ```
+
+- http://localhost:5173/
 
 ## Websocket
 

@@ -5,7 +5,7 @@ namespace Service
     namespace General
     {
         ServiceGeneral::ServiceGeneral(SoftwareInterface &software, Event::MessageInterface &messageListener) :
-            Service(GENERAL, 10000U, messageListener)
+            Service(GENERAL, 1U, messageListener)
             , mSoftware(software) {
         }
 
@@ -18,7 +18,7 @@ namespace Service
         }
 
         void ServiceGeneral::Update(const uint64_t currentTime) {
-            (void) currentTime;
+            this->mSoftware.Update(currentTime);
         }
 
     } // namespace General

@@ -7,6 +7,8 @@ import Imu from "./objects/imu.ts";
 import {ClusterName} from "../communication/clusters/clusterType.ts";
 import Message from "../communication/message.ts";
 import {ClusterBodyCommands} from "../communication/clusters/clusterBody.ts";
+import Button from "./objects/button.ts";
+import {ClusterGeneralCommands} from "../communication/clusters/clusterGeneral.ts";
 
 
 interface HexapodStruct {
@@ -19,25 +21,59 @@ export default class Hexapod extends Object3D {
         position: {x:0,y:0,z:0},
         rotation: {x:0,y:0,z:0}
     };
+    interval:number;
     body:Body;
     socket:Socket;
     head: Head;
     battery: Battery;
+    button:Button;
     imu: Imu;
+    servicesTimeMax:number;
+    servicesTimeMin:number;
     constructor(socket:Socket) {
         super();
+        this.interval = 0;
         this.socket = socket;
         this.body = new Body(0,1,0, this.socket, 1000);
-        this.head = new Head(this.socket);
         this.battery = new Battery(this.socket,5000);
         this.imu = new Imu(this.socket,1000);
+        this.head = new Head(this.socket);
+        this.button = new Button(this.socket);
+        this.servicesTimeMax = 0;
+        this.servicesTimeMin = 0;
+
         this.body.rotation.y = Math.PI/2;
         this.add(this.body);
         this.add(this.head);
 
-
         this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.SET_BODY_X_Y_Z, (message:Message) => {
             message;
+        });
+
+
+        this.socket.addSpecificCallbackRead(ClusterName.GENERAL, ClusterGeneralCommands.MAX_EXECUTION_TIME, (message:Message) => {
+            if(message.params[0] == 4) {
+                this.servicesTimeMax = message.params[1] + (message.params[2] << 8) ;
+                document.getElementById('max-time')!.innerText = this.servicesTimeMax.toString();
+            }
+        });
+
+        this.socket.addSpecificCallbackRead(ClusterName.GENERAL, ClusterGeneralCommands.MIN_EXECUTION_TIME, (message:Message) => {
+            if(message.params[0] == 4) {
+                this.servicesTimeMin = message.params[1] + (message.params[2] << 8) ;
+                document.getElementById('min-time')!.innerText = this.servicesTimeMin.toString();
+            }
+        });
+
+        this.socket.addCallbackStopped(()=> {
+            clearInterval(this.interval);
+        });
+
+        this.socket.addCallbackStarted(()=>{
+            this.interval = setInterval(()=>{
+                this.socket.write(new Message( ClusterName.GENERAL, ClusterGeneralCommands.MAX_EXECUTION_TIME));
+                this.socket.write(new Message( ClusterName.GENERAL, ClusterGeneralCommands.MIN_EXECUTION_TIME));
+            }, 10000);
         });
     }
 

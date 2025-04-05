@@ -1,5 +1,4 @@
 import Message from "../../communication/message.ts";
-import {Direction} from "../../communication/protocol.ts";
 import {ClusterName} from "../../communication/clusters/clusterType.ts";
 import Socket from "../../communication/socket.ts";
 import {ClusterImuCommands} from "../../communication/clusters/clusterImu.ts";
@@ -59,9 +58,12 @@ export default class Imu {
             document.getElementById('temperature')!.innerText = (this.imuData.temperature).toFixed(2);
         });
         socket.addSpecificCallbackRead(ClusterName.IMU, ClusterImuCommands.YAWPITCHROLL, (message:Message) => {
-            this.imuData.ypr.pitch = this.fetchInt16S(message.params[0], message.params[1])/10;
-            this.imuData.ypr.roll  = this.fetchInt16S(message.params[2], message.params[3])/10;
-            this.imuData.ypr.yaw = this.fetchInt16S(message.params[4], message.params[5])/10;
+            this.imuData.ypr.pitch = this.fetchInt16S(message.params[0], message.params[1])/100;
+            this.imuData.ypr.roll  = this.fetchInt16S(message.params[2], message.params[3])/100;
+            this.imuData.ypr.yaw = this.fetchInt16S(message.params[4], message.params[5])/100;
+            document.getElementById('yaw')!.innerText = (this.imuData.ypr.yaw).toFixed(2);
+            document.getElementById('pitch')!.innerText = (this.imuData.ypr.pitch).toFixed(2);
+            document.getElementById('roll')!.innerText = (this.imuData.ypr.roll).toFixed(2);
         });
 
         this.socket.addCallbackStopped(()=> {
@@ -71,14 +73,14 @@ export default class Imu {
 
         this.socket.addCallbackStarted(()=> {
             this.intervalPrimary = setInterval(()=>{
-                this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.ALTITUDE));
-                this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.PRESSURE));
-                this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.TMPBAR));
+                this.socket.write(new Message( ClusterName.IMU, ClusterImuCommands.ALTITUDE));
+                this.socket.write(new Message( ClusterName.IMU, ClusterImuCommands.PRESSURE));
+                this.socket.write(new Message( ClusterName.IMU, ClusterImuCommands.TMPBAR));
             },intervalCommand);
 
             this.intervalSecondary = setInterval(()=>{
-                this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.ALL));
-                this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.YAWPITCHROLL));
+                this.socket.write(new Message( ClusterName.IMU, ClusterImuCommands.ALL));
+                this.socket.write(new Message( ClusterName.IMU, ClusterImuCommands.YAWPITCHROLL));
             },intervalCommand);
         });
     }

@@ -4,7 +4,10 @@ namespace Component
 {
     namespace Software
     {
-        Software::Software() {
+        Software::Software() :
+            mLastLoopTime(0UL),
+            mMinLoopTime(0xFFFFFFFFUL),
+            mMaxLoopTime(0UL) {
         }
 
         Core::Status Software::Initialize(void) {
@@ -12,7 +15,21 @@ namespace Component
         }
 
         void Software::Update(const uint64_t currentTime) {
-            (void) currentTime;
+            const uint64_t currentLoopTime = currentTime - this->mLastLoopTime;
+            if (currentLoopTime < this->mMinLoopTime) {
+                this->mMinLoopTime = currentLoopTime;
+            } else if (currentLoopTime > this->mMaxLoopTime) {
+                this->mMaxLoopTime = currentLoopTime;
+            }
+            this->mLastLoopTime = currentTime;
+        }
+
+        uint64_t Software::GetMinTime(void) const {
+            return this->mMinLoopTime;
+        }
+
+        uint64_t Software::GetMaxTime(void) const {
+            return this->mMaxLoopTime;
         }
 
         SoftwareInterface::Version Software::GetVersion(void) {

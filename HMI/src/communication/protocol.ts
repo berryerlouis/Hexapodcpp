@@ -21,7 +21,7 @@ export default class Protocol {
 
     }
 
-    static decode(direction: Direction, data: string): Message {
+    static decode(data: string): Message {
         if (data.startsWith("<") && data.endsWith(">")) {
             const raw = data;
             // remove '<' and '>'
@@ -50,7 +50,7 @@ export default class Protocol {
             }
 
 
-            return new Message(direction, cluster.name, command.name, size, params);
+            return new Message(cluster.name, command.name, size, params);
         } else {
             throw new DecodingError(`Should start and end with "<" and ">": ${data}`);
         }

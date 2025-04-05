@@ -22,10 +22,10 @@ namespace Cluster
             static Core::Status BuildFrameGetVersion(const SoftwareInterface::Version version,
                                                      Frame &response);
 
-            static Core::Status BuildFrameGetMinTime(const uint8_t serviceId, const uint16_t deltaTime,
+            static Core::Status BuildFrameGetMinTime(const uint8_t serviceId, const uint64_t deltaTime,
                                                      Frame &response);
 
-            static Core::Status BuildFrameGetMaxTime(const uint8_t serviceId, const uint16_t deltaTime,
+            static Core::Status BuildFrameGetMaxTime(const uint8_t serviceId, const uint64_t deltaTime,
                                                      Frame &response);
 
         private:

@@ -77,9 +77,9 @@ export default class Panel extends Pane {
         servosFolder.addBinding(this.hexapod.body.members.legs, 'status', {label:'enable'}).on('change', (ev) => {
             if (this.initDone) {
                 if (!ev.value) {
-                    this.socket.write(new Message(Direction.TX, ClusterName.SERVO, ClusterServoCommands.SET_STATE_PCA, 1, [0]));
+                    this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_STATE_PCA, 1, [0]));
                 } else {
-                    this.socket.write(new Message(Direction.TX, ClusterName.SERVO, ClusterServoCommands.SET_STATE_PCA, 1, [1]));
+                    this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_STATE_PCA, 1, [1]));
                 }
             }
         });
@@ -132,9 +132,9 @@ export default class Panel extends Pane {
                 servoLegsFolder.addBinding(this.hexapod.body.members.legs.leg[i].legData.servos[j], 'status').on('change', (ev) => {
                     if (this.initDone) {
                         if (!ev.value) {
-                            this.socket.write(new Message(Direction.TX, ClusterName.SERVO, ClusterServoCommands.SET_STATE, 2, [servoId, 0]));
+                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_STATE, 2, [servoId, 0]));
                         } else {
-                            this.socket.write(new Message(Direction.TX, ClusterName.SERVO, ClusterServoCommands.SET_STATE, 2, [servoId, 1]));
+                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_STATE, 2, [servoId, 1]));
                         }
                     }
                 });
@@ -143,7 +143,7 @@ export default class Panel extends Pane {
                 }).on('change', (ev) => {
                     if (this.initDone && this.hexapod.body.members.legs.leg[i].legData.servos[j].status) {
                         if (ev.last) {
-                            this.socket.write(new Message(Direction.TX, ClusterName.SERVO, ClusterServoCommands.SET_ANGLE, 2, [servoId, ev.value]));
+                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_ANGLE, 2, [servoId, ev.value]));
                         }
                     }
                 });
@@ -159,7 +159,7 @@ export default class Panel extends Pane {
                 }).on('change', (ev) => {
                     if (this.initDone) {
                         if (ev.last) {
-                            this.socket.write(new Message(Direction.TX, ClusterName.SERVO, ClusterServoCommands.SET_MIN, 2, [servoId, ev.value]));
+                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_MIN, 2, [servoId, ev.value]));
                         }
                     }
                 });
@@ -168,7 +168,7 @@ export default class Panel extends Pane {
                 }).on('change', (ev) => {
                     if (this.initDone) {
                         if (ev.last) {
-                            this.socket.write(new Message(Direction.TX, ClusterName.SERVO, ClusterServoCommands.SET_MAX, 2, [servoId, ev.value]));
+                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_MAX, 2, [servoId, ev.value]));
                         }
                     }
                 });
@@ -209,7 +209,7 @@ export default class Panel extends Pane {
             label: 'status',   // optional
         }).on('click', () => {
             if (this.initDone) {
-                this.socket.write(new Message(Direction.TX, ClusterName.PROXIMITY, ClusterProximityCommands.US_LEFT));
+                this.socket.write(new Message( ClusterName.PROXIMITY, ClusterProximityCommands.US_LEFT));
             }
         });
         laserFront.addBinding(this.hexapod.head.sensors.proximity, 'front', {readonly: true});
@@ -218,7 +218,7 @@ export default class Panel extends Pane {
             label: 'status',   // optional
         }).on('click', () => {
             if (this.initDone) {
-                this.socket.write(new Message(Direction.TX, ClusterName.PROXIMITY, ClusterProximityCommands.LASER));
+                this.socket.write(new Message( ClusterName.PROXIMITY, ClusterProximityCommands.LASER));
             }
         });
         usRight.addBinding(this.hexapod.head.sensors.proximity, 'right', {readonly: true});
@@ -227,7 +227,7 @@ export default class Panel extends Pane {
             label: 'status',   // optional
         }).on('click', () => {
             if (this.initDone) {
-                this.socket.write(new Message(Direction.TX, ClusterName.PROXIMITY, ClusterProximityCommands.US_RIGHT));
+                this.socket.write(new Message( ClusterName.PROXIMITY, ClusterProximityCommands.US_RIGHT));
             }
         });
     }
@@ -247,7 +247,7 @@ export default class Panel extends Pane {
             label: 'status',   // optional
         }).on('click', () => {
             if (this.initDone) {
-                this.socket.write(new Message(Direction.TX, ClusterName.SOUND, ClusterSoundCommands.SOUND_STATUS, 1, [0]));
+                this.socket.write(new Message( ClusterName.SOUND, ClusterSoundCommands.SOUND_STATUS, 1, [0]));
             }
         });
         usRight.addBinding(this.hexapod.head.sensors.sound, 'right', {readonly: true});
@@ -256,7 +256,7 @@ export default class Panel extends Pane {
             label: 'status',   // optional
         }).on('click', () => {
             if (this.initDone) {
-                this.socket.write(new Message(Direction.TX, ClusterName.SOUND, ClusterSoundCommands.SOUND_STATUS, 1, [1]));
+                this.socket.write(new Message( ClusterName.SOUND, ClusterSoundCommands.SOUND_STATUS, 1, [1]));
             }
         });
     }
@@ -278,7 +278,7 @@ export default class Panel extends Pane {
         });
         bodyRotationFolder.addBinding(this.hexapod.hexapodStruct.rotation, 'x', {min: -Math.PI/4, max: Math.PI/4, step: 0.01}).on('change', (ev) => {
             if (this.initDone) {
-                this.socket.write(new Message(Direction.TX, ClusterName.BODY, ClusterBodyCommands.SET_BODY_X_Y_Z, 14,
+                this.socket.write(new Message( ClusterName.BODY, ClusterBodyCommands.SET_BODY_X_Y_Z, 14,
                     [
                         Math.floor(ev.value * 10),
                         this.hexapod.hexapodStruct.rotation.y,
@@ -339,17 +339,17 @@ export default class Panel extends Pane {
         });
         calibFolder.addButton({ title: 'Start', label: 'acc'}).on('click', () => {
             if (this.initDone) {
-                this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.START_CALIB, 2, [1,1]));
+                this.socket.write(new Message( ClusterName.IMU, ClusterImuCommands.START_CALIB, 2, [1,1]));
             }
         });
         calibFolder.addButton({ title: 'Start', label: 'gyro'}).on('click', () => {
             if (this.initDone) {
-                this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.START_CALIB, 2, [2,1]));
+                this.socket.write(new Message( ClusterName.IMU, ClusterImuCommands.START_CALIB, 2, [2,1]));
             }
         });
         calibFolder.addButton({ title: 'Start', label: 'mag'}).on('click', () => {
             if (this.initDone) {
-                this.socket.write(new Message(Direction.TX, ClusterName.IMU, ClusterImuCommands.START_CALIB, 2, [4,1]));
+                this.socket.write(new Message( ClusterName.IMU, ClusterImuCommands.START_CALIB, 2, [4,1]));
             }
         });
 
