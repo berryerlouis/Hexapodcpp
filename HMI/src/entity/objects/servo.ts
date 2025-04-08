@@ -38,23 +38,23 @@ export default class Servo extends Object3D {
 
     addServoCallbacks() {
         this.socket.addSpecificCallbackRead(ClusterName.SERVO, ClusterServoCommands.GET_ANGLE,(message:Message) => {
-            if(message.params && message.params[0] == this.servoData.id) {
-                this.servoData.angle = message.params[1];
+            if(message.getValueUint8(0) == this.servoData.id) {
+                this.servoData.angle = message.getValueUint8(1);
             }
         },[this.servoData.id]);
         this.socket.addSpecificCallbackRead(ClusterName.SERVO, ClusterServoCommands.GET_MIN,(message:Message) => {
-            if(message.params && message.params[0] == this.servoData.id) {
-                this.servoData.min = message.params[1];
+            if(message.getValueUint8(0) == this.servoData.id) {
+                this.servoData.min = message.getValueUint8(1);
             }
         },[this.servoData.id]);
         this.socket.addSpecificCallbackRead(ClusterName.SERVO, ClusterServoCommands.GET_MAX,(message:Message) => {
-            if(message.params && message.params[0] == this.servoData.id) {
-                this.servoData.max = message.params[1];
+            if(message.getValueUint8(0) == this.servoData.id) {
+                this.servoData.max = message.getValueUint8(1);
             }
         },[this.servoData.id]);
         this.socket.addSpecificCallbackRead(ClusterName.SERVO, ClusterServoCommands.GET_STATE,(message:Message) => {
-            if(message.params && message.params[0] == this.servoData.id) {
-                this.servoData.status = message.params[1]==1;
+            if(message.getValueUint8(0) == this.servoData.id) {
+                this.servoData.status = message.getValueBool(1);
             }
         },[this.servoData.id]);
     }

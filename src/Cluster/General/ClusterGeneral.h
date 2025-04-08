@@ -28,6 +28,8 @@ namespace Cluster
             static Core::Status BuildFrameGetMaxTime(const uint8_t serviceId, const uint64_t deltaTime,
                                                      Frame &response);
 
+            static Core::Status BuildFrameResetTime(const uint8_t serviceId, Frame &response);
+
         private:
             SoftwareInterface &mSoftware;
         };

@@ -26,6 +26,8 @@ namespace Component
             virtual uint64_t GetMinTime(void) const = 0;
 
             virtual uint64_t GetMaxTime(void) const = 0;
+
+            virtual void ResetTime(void) = 0;
         };
     }
 }

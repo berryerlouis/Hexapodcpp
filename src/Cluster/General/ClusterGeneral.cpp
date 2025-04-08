@@ -15,6 +15,7 @@ namespace Cluster
             this->AddClusterItem({.commandId = EGeneralCommands::VERSION, .expectedSize = 0U});
             this->AddClusterItem({.commandId = EGeneralCommands::MIN_EXECUTION_TIME, .expectedSize = 0U});
             this->AddClusterItem({.commandId = EGeneralCommands::MAX_EXECUTION_TIME, .expectedSize = 0U});
+            this->AddClusterItem({.commandId = EGeneralCommands::RESET_EXECUTION_TIME, .expectedSize = 0U});
         }
 
 
@@ -31,6 +32,8 @@ namespace Cluster
             } else if (request.commandId == EGeneralCommands::MAX_EXECUTION_TIME) {
                 success = this->BuildFrameGetMaxTime(Service::EServices::GENERAL, this->mSoftware.GetMaxTime(),
                                                      response);
+            } else if (request.commandId == EGeneralCommands::RESET_EXECUTION_TIME) {
+                success = this->BuildFrameResetTime(Service::EServices::GENERAL, response);
             }
             return success;
         }
@@ -77,6 +80,16 @@ namespace Cluster
             if (success == Core::Status::CORE_OK) {
                 response.Set1ByteParam(serviceId);
                 response.Set8BytesParam(deltaTime);
+            }
+            return (success);
+        }
+
+        Core::Status ClusterGeneral::BuildFrameResetTime(const uint8_t serviceId, Frame &response) {
+            const Core::Status success = response.Build(
+                    EClusters::GENERAL,
+                    EGeneralCommands::RESET_EXECUTION_TIME);
+            if (success == Core::Status::CORE_OK) {
+                response.Set1ByteParam(serviceId);
             }
             return (success);
         }

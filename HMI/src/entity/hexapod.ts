@@ -50,17 +50,16 @@ export default class Hexapod extends Object3D {
             message;
         });
 
-
         this.socket.addSpecificCallbackRead(ClusterName.GENERAL, ClusterGeneralCommands.MAX_EXECUTION_TIME, (message:Message) => {
-            if(message.params[0] == 4) {
-                this.servicesTimeMax = message.params[1] + (message.params[2] << 8) ;
+            if(message.getValueUint8(0) == 4) {
+                this.servicesTimeMax = message.getValueUint16(1);
                 document.getElementById('max-time')!.innerText = this.servicesTimeMax.toString();
             }
         });
 
         this.socket.addSpecificCallbackRead(ClusterName.GENERAL, ClusterGeneralCommands.MIN_EXECUTION_TIME, (message:Message) => {
-            if(message.params[0] == 4) {
-                this.servicesTimeMin = message.params[1] + (message.params[2] << 8) ;
+            if(message.getValueUint8(0) == 4) {
+                this.servicesTimeMin = message.getValueUint16(1);
                 document.getElementById('min-time')!.innerText = this.servicesTimeMin.toString();
             }
         });
@@ -70,11 +69,13 @@ export default class Hexapod extends Object3D {
         });
 
         this.socket.addCallbackStarted(()=>{
+            this.socket.write(new Message( ClusterName.GENERAL, ClusterGeneralCommands.RESET_TIME));
             this.interval = setInterval(()=>{
                 this.socket.write(new Message( ClusterName.GENERAL, ClusterGeneralCommands.MAX_EXECUTION_TIME));
                 this.socket.write(new Message( ClusterName.GENERAL, ClusterGeneralCommands.MIN_EXECUTION_TIME));
             }, 10000);
         });
+
     }
 
     update() {

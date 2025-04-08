@@ -34,33 +34,32 @@ export default class Imu {
         this.intervalSecondary = 0;
 
         socket.addSpecificCallbackRead(ClusterName.IMU, ClusterImuCommands.ALL, (message:Message) => {
-            this.imuData.accel.x = this.fetchInt16S(message.params[0], message.params[1]);
-            this.imuData.accel.y = this.fetchInt16S(message.params[2], message.params[3]);
-            this.imuData.accel.z = this.fetchInt16S(message.params[4], message.params[5]);
-            this.imuData.gyro.x = this.fetchInt16S(message.params[6], message.params[7]);
-            this.imuData.gyro.y = this.fetchInt16S(message.params[8], message.params[9]);
-            this.imuData.gyro.z = this.fetchInt16S(message.params[10], message.params[11]);
-            this.imuData.mag.x = this.fetchInt16S(message.params[12], message.params[13]);
-            this.imuData.mag.y = this.fetchInt16S(message.params[14], message.params[15]);
-            this.imuData.mag.z = this.fetchInt16S(message.params[16], message.params[17]);
-
+            this.imuData.accel.x = message.getValueInt16(0);
+            this.imuData.accel.y = message.getValueInt16(2);
+            this.imuData.accel.z = message.getValueInt16(4);
+            this.imuData.gyro.x = message.getValueInt16(6);
+            this.imuData.gyro.y = message.getValueInt16(8);
+            this.imuData.gyro.z = message.getValueInt16(10);
+            this.imuData.mag.x = message.getValueInt16(12);
+            this.imuData.mag.y = message.getValueInt16(14);
+            this.imuData.mag.z = message.getValueInt16(16);
         });
         socket.addSpecificCallbackRead(ClusterName.IMU, ClusterImuCommands.ALTITUDE, (message:Message) => {
-            this.imuData.altitude = this.fetchInt16S(message.params[0], message.params[1]);
+            this.imuData.altitude = message.getValueInt16(0);
             document.getElementById('altitude')!.innerText = (this.imuData.altitude).toFixed(1);
         });
         socket.addSpecificCallbackRead(ClusterName.IMU, ClusterImuCommands.PRESSURE, (message:Message) => {
-            this.imuData.pressure = (message.params[3]<<24) + (message.params[2]<<16) + (message.params[1]<<8) + (message.params[0]);
+            this.imuData.pressure = message.getValueUint32(0);
             document.getElementById('pressure')!.innerText = this.imuData.pressure.toString();
         });
         socket.addSpecificCallbackRead(ClusterName.IMU, ClusterImuCommands.TMPBAR, (message:Message) => {
-            this.imuData.temperature = ((message.params[1]<<8) + (message.params[0]))/100;
+            this.imuData.temperature = (message.getValueUint16(0))/100;
             document.getElementById('temperature')!.innerText = (this.imuData.temperature).toFixed(2);
         });
         socket.addSpecificCallbackRead(ClusterName.IMU, ClusterImuCommands.YAWPITCHROLL, (message:Message) => {
-            this.imuData.ypr.pitch = this.fetchInt16S(message.params[0], message.params[1])/100;
-            this.imuData.ypr.roll  = this.fetchInt16S(message.params[2], message.params[3])/100;
-            this.imuData.ypr.yaw = this.fetchInt16S(message.params[4], message.params[5])/100;
+            this.imuData.ypr.pitch = message.getValueInt16(0)/100;
+            this.imuData.ypr.roll  = message.getValueInt16(2)/100;
+            this.imuData.ypr.yaw = message.getValueInt16(4)/100;
             document.getElementById('yaw')!.innerText = (this.imuData.ypr.yaw).toFixed(2);
             document.getElementById('pitch')!.innerText = (this.imuData.ypr.pitch).toFixed(2);
             document.getElementById('roll')!.innerText = (this.imuData.ypr.roll).toFixed(2);
@@ -83,16 +82,5 @@ export default class Imu {
                 this.socket.write(new Message( ClusterName.IMU, ClusterImuCommands.YAWPITCHROLL));
             },intervalCommand);
         });
-    }
-    fetchInt16U(param0:number, param1:number) {
-        return (param0<<8) + param1;
-    }
-
-    fetchInt16S(param0:number, param1:number) {
-        let num = this.fetchInt16U(param1,param0);
-        if (num & 0x8000) {
-            num = -(0x10000 - num);
-        }
-        return num;
     }
 }

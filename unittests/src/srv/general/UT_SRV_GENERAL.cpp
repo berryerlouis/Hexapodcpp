@@ -47,6 +47,7 @@ namespace Service
         };
 
         TEST_F(UT_SRV_GENERAL, Update_Ok) {
+            EXPECT_CALL(mMockSoftware, Update(500U)).Times(1U);
             mServiceGeneral.Update(500U);
         }
     }

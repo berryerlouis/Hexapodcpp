@@ -7,6 +7,7 @@ import World from "./entity/world.ts";
 import Display from "./engine/scene.ts";
 import Panel from "./engine/panel.ts";
 import Socket from "./communication/socket.ts";
+import DirectionArrow from "./engine/directionArrow.ts";
 
 
 export default class Ui {
@@ -20,9 +21,11 @@ export default class Ui {
     socket:Socket;
     hexapod:Hexapod;
     panel:Panel;
+    directionArrow:DirectionArrow;
     constructor(socket:Socket) {
         this.socket = socket;
         this.hexapod = new Hexapod(socket);
+        this.directionArrow = new DirectionArrow(socket);
         this.panel = new Panel(document.getElementById('panel')!, this.hexapod, socket);
 
         this.scene.add( this.world );

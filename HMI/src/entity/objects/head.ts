@@ -52,19 +52,19 @@ export default class Head extends Object3D {
     addProximityCallbacks() {
         this.socket.addSpecificCallbackRead(ClusterName.PROXIMITY, ClusterProximityCommands.US_LEFT ,(message:Message) => {
             if(message.params) {
-                this.sensors.proximity.left = message.params[0] + (message.params[1] << 8);
+                this.sensors.proximity.left = message.getValueUint16(0);
                 this.proximity.show(this.sensors.proximity.left, ProximitySide.left);
             }
         });
         this.socket.addSpecificCallbackRead(ClusterName.PROXIMITY, ClusterProximityCommands.US_RIGHT ,(message:Message) => {
             if(message.params) {
-                this.sensors.proximity.right = message.params[0] + (message.params[1] << 8);
+                this.sensors.proximity.right = message.getValueUint16(0);
                 this.proximity.show(this.sensors.proximity.right, ProximitySide.right);
             }
         });
         this.socket.addSpecificCallbackRead(ClusterName.PROXIMITY, ClusterProximityCommands.LASER ,(message:Message) => {
             if(message.params) {
-                this.sensors.proximity.front = (message.params[0] + (message.params[1] << 8)) / 10;
+                this.sensors.proximity.front = message.getValueUint16(0) / 10;
                 this.proximity.show(this.sensors.proximity.front, ProximitySide.center);
             }
         });
@@ -72,18 +72,12 @@ export default class Head extends Object3D {
     addSoundCallbacks() {
         this.socket.addSpecificCallbackRead(ClusterName.SOUND, ClusterSoundCommands.SOUND_STATUS ,(message:Message) => {
             if(message.params) {
-                if (message.params[0] == 0) {
-                    this.sensors.sound.left = message.params[1] +
-                        (message.params[2] << 8) +
-                        (message.params[3] << 16) +
-                        (message.params[4] << 24);
+                if (message.getValueUint8(0) == 0) {
+                    this.sensors.sound.left = message.getValueUint24(1);
                     let val = Math.min(Math.max(Math.ceil(this.sensors.sound.right / 2000), 1), 3);
                     this.sound.show(val, SoundSide.left);
                 } else {
-                    this.sensors.sound.right = message.params[1] +
-                        (message.params[2] << 8) +
-                        (message.params[3] << 16) +
-                        (message.params[4] << 24);
+                    this.sensors.sound.right = message.getValueUint24(1);
                     let val = Math.min(Math.max(Math.ceil(this.sensors.sound.right / 2000), 1), 3);
                     this.sound.show(val, SoundSide.right);
                 }

@@ -24,10 +24,11 @@ namespace Cluster
         RESET = 0x00U,
         VERSION,
         MIN_EXECUTION_TIME,
-        MAX_EXECUTION_TIME
+        MAX_EXECUTION_TIME,
+        RESET_EXECUTION_TIME,
     };
 
-    static constexpr uint8_t NB_COMMANDS_GENERAL = 4U;
+    static constexpr uint8_t NB_COMMANDS_GENERAL = 5U;
 
     enum EBatteryCommands {
         GET_BAT_STATUS = 0x00U,

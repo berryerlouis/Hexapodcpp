@@ -23,57 +23,67 @@
         <div class="app"><canvas></canvas></div>
 
         <div class="footer">
-            <div class="carousel">
-                <div class="carousel-items">
-                    <div class="carousel-item">
-                        <div class="carousel-item-content">
+            <div class="cockpit">
+                <div class="cockpit-enable" id="enable">
+                    <i class="bi bi-toggle2-off" ></i>
+                </div>
+                <div class="cockpit-direction">
+                    <div class="up" id="up"><i class="bi bi-arrow-up-circle"></i></div>
+                    <div class="down" id="down"><i class="bi bi-arrow-down-circle"></i></div>
+                    <div class="left" id="left"><i class="bi bi-arrow-left-circle"></i></div>
+                    <div class="right" id="right"><i class="bi bi-arrow-right-circle"></i></div>
+                    <div class="stop" id="stop"><i class="bi bi-stop-circle"></i></div>
+                </div>
+                <div class="cockpit-items">
+                    <div class="cockpit-item">
+                        <div class="cockpit-item-content">
                             <i class="bi bi-battery-full"></i>
-                            <div class="carousel-item-content-value">
-                                <div class="carousel-item-content-value-title"><span id="voltage">_</span>V</div>
-                                <div class="carousel-item-content-value-title"><span id="current">_</span>A</div>
-                                <div class="carousel-item-content-value-title"><span id="temperature">_</span>°C</div>
+                            <div class="cockpit-item-content-value">
+                                <div class="cockpit-item-content-value-title"><span id="voltage">_</span>V</div>
+                                <div class="cockpit-item-content-value-title"><span id="current">_</span>A</div>
+                                <div class="cockpit-item-content-value-title"><span id="temperature">_</span>°C</div>
                             </div>
                         </div>
                     </div>
-                    <div class="carousel-item">
-                        <div class="carousel-item-content">
+                    <div class="cockpit-item">
+                        <div class="cockpit-item-content">
                             <i class="bi bi-compass"></i>
-                            <div class="carousel-item-content-value">
-                                <div class="carousel-item-content-value-title">roll:<span id="roll">_</span>°</div>
-                                <div class="carousel-item-content-value-title">pitch:<span id="pitch">_</span>°</div>
-                                <div class="carousel-item-content-value-title">yaw:<span id="yaw">_</span>°</div>
+                            <div class="cockpit-item-content-value">
+                                <div class="cockpit-item-content-value-title">roll:<span id="roll">_</span>°</div>
+                                <div class="cockpit-item-content-value-title">pitch:<span id="pitch">_</span>°</div>
+                                <div class="cockpit-item-content-value-title">yaw:<span id="yaw">_</span>°</div>
                             </div>
                         </div>
                     </div>
-                    <div class="carousel-item">
-                        <div class="carousel-item-content">
+                    <div class="cockpit-item">
+                        <div class="cockpit-item-content">
                             <i class="bi bi-activity"></i>
-                            <div class="carousel-item-content-value">
-                                <div class="carousel-item-content-value-title">msg:
-                                    <div class="carousel-item-content-value-content">
+                            <div class="cockpit-item-content-value">
+                                <div class="cockpit-item-content-value-title">msg:
+                                    <div class="cockpit-item-content-value-content">
                                         <div class="progressbar">
                                             <div class="progressbar-container" id="progress-message-queue" style="width:0"></div>
                                             <div class="progressbar-value" id="progress-message-queue-val"></div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="carousel-item-content-value-title">max:<span id="max-time">_</span>ms</div>
-                                <div class="carousel-item-content-value-title">min:<span id="min-time">_</span>ms</div>
+                                <div class="cockpit-item-content-value-title">max:<span id="max-time">_</span>ms</div>
+                                <div class="cockpit-item-content-value-title">min:<span id="min-time">_</span>ms</div>
                             </div>
                         </div>
                     </div>
-                    <div class="carousel-item">
-                        <div class="carousel-item-content">
+                    <div class="cockpit-item">
+                        <div class="cockpit-item-content">
                             <i class="bi bi-motherboard"></i>
-                            <div class="carousel-item-content-value">
-                                <div class="carousel-item-content-value-title">BP:<span id="button">Released</span></div>
+                            <div class="cockpit-item-content-value">
+                                <div class="cockpit-item-content-value-title">BP:<span id="button">Released</span></div>
                             </div>
                         </div>
                     </div>
-                    <div class="carousel-item">
-                        <div class="carousel-item-content">
+                    <div class="cockpit-item">
+                        <div class="cockpit-item-content">
                             <i class="bi bi-airplane-engines"></i>
-                            <div class="carousel-item-content-value">
+                            <div class="cockpit-item-content-value">
                                 <div><span id="altitude">0.00</span>m</div>
                                 <div><span id="pressure">0.00</span>pa</div>
                             </div>

@@ -11,6 +11,7 @@
     <inspection_tool class="CppEnforceForStatementBraces" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="CppEnforceFunctionDeclarationStyle" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="CppEnforceIfStatementBraces" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CppEnforceNestedNamespacesStyle" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppEnforceOverridingDestructorStyle" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="CppEnforceOverridingFunctionStyle" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="CppEnforceWhileStatementBraces" enabled="true" level="WARNING" enabled_by_default="true" />

@@ -2,7 +2,6 @@ import {FolderApi, Pane} from 'tweakpane';
 import Hexapod from "../entity/hexapod.ts";
 import Socket from "../communication/socket.ts";
 import Message from "../communication/message.ts";
-import {Direction} from "../communication/protocol.ts";
 import {ClusterGenericCommands, ClusterName} from "../communication/clusters/clusterType.ts";
 import {ClusterSoundCommands} from "../communication/clusters/clusterSound.ts";
 import {ClusterProximityCommands} from "../communication/clusters/clusterProximity.ts";
@@ -86,7 +85,7 @@ export default class Panel extends Pane {
         this.socket.addSpecificCallbackRead(ClusterName.SERVO, ClusterServoCommands.GET_STATE_PCA, (message:Message) => {
             if(message.params) {
                 for (let i = 0; i < 6; i++) {
-                    servosLegsFolder[i].disabled = message.params[0] == 0;
+                    servosLegsFolder[i].disabled = !message.getValueBool(0);
                 }
             }
         });
@@ -106,30 +105,28 @@ export default class Panel extends Pane {
                 });
 
                 this.socket.addSpecificCallbackRead(ClusterName.SERVO, ClusterServoCommands.GET_STATE, (message:Message) => {
-                    if(message.params) {
-                        servoLegFolder[message.params[0]]['angle'].disabled = message.params[1]==0;
-                        servoLegFolder[message.params[0]]['angle-graph'].disabled = message.params[1]==0;
-                        servoLegFolder[message.params[0]]['min'].disabled = message.params[1]==0;
-                        servoLegFolder[message.params[0]]['max'].disabled = message.params[1]==0;
-                    }
+                    servoLegFolder[message.getValueUint8(0)]['angle'].disabled = !message.getValueBool(1);
+                    servoLegFolder[message.getValueUint8(0)]['angle-graph'].disabled = !message.getValueBool(1);
+                    servoLegFolder[message.getValueUint8(0)]['min'].disabled = !message.getValueBool(1);
+                    servoLegFolder[message.getValueUint8(0)]['max'].disabled = !message.getValueBool(1);
                 },[servoId]);
                 this.socket.addSpecificCallbackRead(ClusterName.SERVO, ClusterServoCommands.SET_STATE, (message:Message) => {
                     if(message.params) {
-                        servoLegFolder[message.params[0]]['angle'].disabled = message.params[1]==0;
-                        servoLegFolder[message.params[0]]['angle-graph'].disabled = message.params[1]==0;
-                        servoLegFolder[message.params[0]]['min'].disabled = message.params[1]==0;
-                        servoLegFolder[message.params[0]]['max'].disabled = message.params[1]==0;
+                        servoLegFolder[message.getValueUint8(0)]['angle'].disabled = !message.getValueBool(1);
+                        servoLegFolder[message.getValueUint8(0)]['angle-graph'].disabled = !message.getValueBool(1);
+                        servoLegFolder[message.getValueUint8(0)]['min'].disabled = !message.getValueBool(1);
+                        servoLegFolder[message.getValueUint8(0)]['max'].disabled = !message.getValueBool(1);
                     }
                 },[servoId]);
 
                 this.socket.addSpecificCallbackRead(ClusterName.SERVO, ClusterGenericCommands.GENERIC, (message:Message) => {
                     if(message.params) {
-                        if (message.params[0] == servoId) {
-                            this.hexapod.body.members.legs.leg[i].legData.servos[j].angle = message.params[2];
+                        if (message.getValueUint8(0) == servoId) {
+                            this.hexapod.body.members.legs.leg[i].legData.servos[j].angle = message.getValueUint8(2);
                         }
                     }
                 },[servoId]);
-                servoLegsFolder.addBinding(this.hexapod.body.members.legs.leg[i].legData.servos[j], 'status').on('change', (ev) => {
+                servoLegFolder[servoId]['status'] = servoLegsFolder.addBinding(this.hexapod.body.members.legs.leg[i].legData.servos[j], 'status').on('change', (ev) => {
                     if (this.initDone) {
                         if (!ev.value) {
                             this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_STATE, 2, [servoId, 0]));
@@ -137,22 +134,6 @@ export default class Panel extends Pane {
                             this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_STATE, 2, [servoId, 1]));
                         }
                     }
-                });
-
-                servoLegFolder[servoId]['angle'] = servoLegsFolder.addBinding(this.hexapod.body.members.legs.leg[i].legData.servos[j], 'angle', {min: 0, max: 180, step: 1
-                }).on('change', (ev) => {
-                    if (this.initDone && this.hexapod.body.members.legs.leg[i].legData.servos[j].status) {
-                        if (ev.last) {
-                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_ANGLE, 2, [servoId, ev.value]));
-                        }
-                    }
-                });
-
-                servoLegFolder[servoId]['angle-graph'] = servoLegsFolder.addBinding(this.hexapod.body.members.legs.leg[i].legData.servos[j], 'angle',{
-                    readonly: true,
-                    view: 'graph',
-                    min: 0,
-                    max: 180,
                 });
 
                 servoLegFolder[servoId]['min'] = servoLegsFolder.addBinding(this.hexapod.body.members.legs.leg[i].legData.servos[j], 'min', {min: 0, max: 180, step: 1
@@ -171,6 +152,22 @@ export default class Panel extends Pane {
                             this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_MAX, 2, [servoId, ev.value]));
                         }
                     }
+                });
+
+                servoLegFolder[servoId]['angle'] = servoLegsFolder.addBinding(this.hexapod.body.members.legs.leg[i].legData.servos[j], 'angle', {min: 0, max: 180, step: 1
+                }).on('change', (ev) => {
+                    if (this.initDone && this.hexapod.body.members.legs.leg[i].legData.servos[j].status) {
+                        if (ev.last) {
+                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_ANGLE, 2, [servoId, ev.value]));
+                        }
+                    }
+                });
+
+                servoLegFolder[servoId]['angle-graph'] = servoLegsFolder.addBinding(this.hexapod.body.members.legs.leg[i].legData.servos[j], 'angle',{
+                    readonly: true,
+                    view: 'graph',
+                    min: 0,
+                    max: 180,
                 });
             }
         }

@@ -44,9 +44,7 @@ export default class Legs extends Object3D {
     addEnableServoCallbacks() {
         this.socket.addSpecificCallbackRead(ClusterName.SERVO, ClusterServoCommands.GET_STATE_PCA,(message:Message) => {
             if(message.params) {
-                this.legs.status = message.params[0] != 0;
-                /*this.sensors.proximity.left = parseInt(message.params[0], 16) + (parseInt(message.params[1], 16) << 8);
-                this.proximity.show(this.sensors.proximity.left, ProximitySide.left);*/
+                this.legs.status = message.getValueBool(0);
             }
         });
     }

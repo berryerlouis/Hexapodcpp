@@ -13,7 +13,6 @@ import Socket from "../../communication/socket.ts";
 import {ClusterName} from "../../communication/clusters/clusterType.ts";
 import {ClusterServoCommands} from "../../communication/clusters/clusterServo.ts";
 import Message from "../../communication/message.ts";
-import {Direction} from "../../communication/protocol.ts";
 
 interface BodyStruct {
     width: number;
@@ -54,7 +53,7 @@ export default class Body extends Object3D {
             if(message.params && message.params.length == 18) {
                 for (let i = 0; i < 6; i++) {
                     for (let j = 0; j < 3; j++) {
-                        this.members.legs.leg[i].legData.servos[j].angle = message.params[i * 3 + j];
+                        this.members.legs.leg[i].legData.servos[j].angle = message.getValueUint8(i * 3 + j);
                     }
                 }
             }

@@ -1,5 +1,4 @@
 import Message from "../../communication/message.ts";
-import {Direction} from "../../communication/protocol.ts";
 import {ClusterName} from "../../communication/clusters/clusterType.ts";
 import {ClusterBatteryCommands} from "../../communication/clusters/clusterBattery.ts";
 import Socket from "../../communication/socket.ts";
@@ -19,15 +18,15 @@ export default class Battery {
         this.socket = socket;
         this.interval = 0;
         socket.addSpecificCallbackRead(ClusterName.BATTERY, ClusterBatteryCommands.VOLTAGE, (message:Message) => {
-            this.batteryData.voltage = (message.params[0] + (message.params[1] << 8))/100;
+            this.batteryData.voltage = (message.getValueUint16(0))/100;
             document.getElementById('voltage')!.innerText = (this.batteryData.voltage).toFixed(2);
         });
         socket.addSpecificCallbackRead(ClusterName.BATTERY, ClusterBatteryCommands.CURRENT, (message:Message) => {
-            this.batteryData.current = (message.params[0] + (message.params[1] << 8))/1000;
+            this.batteryData.current = (message.getValueUint16(0))/1000;
             document.getElementById('current')!.innerText = (this.batteryData.current).toFixed(3);
         });
         socket.addSpecificCallbackRead(ClusterName.BATTERY, ClusterBatteryCommands.STATUS, (message:Message) => {
-            this.batteryData.status = message.params[0];
+            this.batteryData.status = message.getValueUint8(0);
         });
 
         this.socket.addCallbackStopped(()=> {

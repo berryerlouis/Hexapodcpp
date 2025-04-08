@@ -1,6 +1,5 @@
 import Ui from './ui.ts'
 import Socket from "./communication/socket.ts";
-import {Direction} from "./communication/protocol.ts";
 import {ClusterGeneralCommands} from "./communication/clusters/clusterGeneral.ts";
 import {ClusterName} from "./communication/clusters/clusterType.ts";
 import Message from "./communication/message.ts";
@@ -13,7 +12,7 @@ new Ui(socket);
 socket.addCallbackStarted(()=>{
     init();
     socket.addSpecificCallbackRead(ClusterName.GENERAL, ClusterGeneralCommands.VERSION, (message:Message) => {
-        document.getElementById('version')!.innerText = "V"+ message.params[0].toString() + "." + message.params[1].toString() ;
+        document.getElementById('version')!.innerText = "V"+ message.getValueUint8(0).toString() + "." + message.getValueUint8(1).toString();
     });
 });
 

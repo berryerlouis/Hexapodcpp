@@ -29,8 +29,12 @@ a:hover {
 
 #panel {
   position: absolute;
-  top: 100px;
-  right: 10px;
+  top: 5vh;
+  right: 0;
+}
+#panel>div {
+  max-height: 68vh;
+  overflow: auto;
 }
 
 body {
@@ -209,7 +213,7 @@ h1 {
   position: absolute;
 }
 
-.carousel {
+.cockpit {
   width: 900px;
   height: 15vh;
   border-radius: 50% 50% 0 0;
@@ -221,14 +225,103 @@ h1 {
   padding-right: 1em;
 }
 
-.carousel-items {
+.cockpit-direction {
+  position: absolute;
+  left: 50%;
+  bottom: 140px;
+  border-radius: 50%;
+  height: 110px;
+  width: 110px;
+  background-color: #192835;
+  border: 5px solid #4a6a8f;
+  transform: translate(-50%, 0%);
+}
+
+.cockpit-direction > div:hover {
+  background-color: #4a6a8f;
+  border: 5px solid #192835;
+}
+
+.cockpit-direction > div.select {
+  background-color: #4a6a8f;
+  border: 5px solid #192835;
+}
+
+.cockpit-direction > div {
+  position: absolute;
+  height: 25px;
+  width: 25px;
+  border: 3px solid #4a6a8f;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.cockpit-direction .up {
+    top: 20%;
+    left: 50%;
+}
+
+.cockpit-direction .down {
+  top: 80%;
+  left: 50%;
+}
+
+.cockpit-direction .left {
+  top: 50%;
+  left: 20%;
+}
+
+.cockpit-direction .right {
+  top: 50%;
+  left: 80%;
+}
+
+.cockpit-direction .stop {
+  border: 3px solid #8f4a4a;
+  top: 50%;
+  left: 50%;
+}
+
+.cockpit-direction > .stop:hover {
+  background-color: #8f4a4a;
+}
+
+.cockpit-direction > stop.select {
+  background-color: #8f4a4a;
+}
+
+.cockpit-enable {
+  position: absolute;
+  left: 0;
+  bottom: 100px;
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  background-color: #192835;
+  border: 5px solid #8f4a4a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.cockpit-enable.select {
+  background-color: #8f4a4a;
+  border: 5px solid #192835;
+}
+
+.cockpit-items {
   display: flex;
   justify-content: space-around;
   align-items: flex-start;
   transform: translateY(50%);
 }
 
-.carousel-item {
+.cockpit-item {
   width: 160px;
   height: 80px;
   background-color: #213547;
@@ -242,25 +335,25 @@ h1 {
   cursor: pointer;
 }
 
-.carousel-item.select {
+.cockpit-item.select {
   color: #213547;
   background-color: #4a6a8f;
 }
 
-.carousel-item:hover {
+.cockpit-item:hover {
   color: #213547;
   background-color: #4a6a8f;
 }
 
-.carousel-item .carousel-item-list {
+.cockpit-item .cockpit-item-list {
   display: none;
 }
 
-.carousel-item.select .carousel-item-list {
+.cockpit-item.select .cockpit-item-list {
   display: block;
 }
 
-.carousel-item-list {
+.cockpit-item-list {
   position: absolute;
   bottom: 10vh;
   padding: 0;
@@ -268,31 +361,31 @@ h1 {
   color: #4a6a8f;
 }
 
-.carousel-item:hover {
+.cockpit-item:hover {
   color: #213547;
   background-color: #4a6a8f;
 }
 
-.carousel-item:hover .carousel-item-content .carousel-item-content-value .carousel-item-content-value-title .carousel-item-content-value-content .progressbar {
+.cockpit-item:hover .cockpit-item-content .cockpit-item-content-value .cockpit-item-content-value-title .cockpit-item-content-value-content .progressbar {
   background-color: #213547;
 }
 
-.carousel-item-content {
+.cockpit-item-content {
   display: flex;
   gap: 0.5em;
   align-items: center;
   width: 80%;
 }
 
-.carousel-item.select .carousel-item-content {
+.cockpit-item.select .cockpit-item-content {
   width: 35%;
 }
 
-.carousel-item-content > * span{
+.cockpit-item-content > * span{
   padding-right: 2px;
 }
 
-.carousel-item .carousel-item-content i {
+.cockpit-item .cockpit-item-content i {
   font-size: x-large;
   width: 15%;
   border: 0 solid #4a6a8f;
@@ -300,53 +393,53 @@ h1 {
   padding-right: 10px;
 }
 
-.carousel-item:hover .carousel-item-content i {
+.cockpit-item:hover .cockpit-item-content i {
   border: 0 solid #213547;
   border-right-width: 1px;
 }
 
-.carousel-item.select .carousel-item-content i {
+.cockpit-item.select .cockpit-item-content i {
   border: 0 solid #213547;
 }
 
-.carousel-item.select .carousel-item-content i {
+.cockpit-item.select .cockpit-item-content i {
   font-size: xxx-large;
 }
 
-.carousel-item .carousel-item-content .carousel-item-content-value {
+.cockpit-item .cockpit-item-content .cockpit-item-content-value {
   font-size: small;
   display: flex ;
   flex-direction: column ;
   align-items: flex-start;
 }
 
-.carousel-item-content-value-title {
+.cockpit-item-content-value-title {
   display: flex ;
   align-items: center;
 }
 
-.carousel-item:nth-child(1) {
+.cockpit-item:nth-child(1) {
   transform: rotate(-12deg) translateY(-9px);
 }
 
-.carousel-item:nth-child(2) {
+.cockpit-item:nth-child(2) {
   transform: rotate(-4deg) translateY(-32px);
 }
 
-.carousel-item:nth-child(3) {
+.cockpit-item:nth-child(3) {
   transform: translateY(-38px);
 }
 
-.carousel-item:nth-child(4) {
+.cockpit-item:nth-child(4) {
   transform: rotate(4deg) translateY(-32px);
 }
 
-.carousel-item:nth-child(5) {
+.cockpit-item:nth-child(5) {
   transform: rotate(12deg) translateY(-9px);
 }
 
 
-.carousel-item-list-subitem-battery {
+.cockpit-item-list-subitem-battery {
     display: flex;
     flex-direction: column;
     justify-content: center;

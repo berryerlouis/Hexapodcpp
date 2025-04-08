@@ -22,6 +22,8 @@ namespace Component
 
             virtual uint64_t GetMaxTime(void) const override;
 
+            virtual void ResetTime(void) override;
+
         private:
             uint64_t mLastLoopTime;
             uint64_t mMinLoopTime;
