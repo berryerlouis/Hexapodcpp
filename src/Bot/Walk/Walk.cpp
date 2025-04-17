@@ -4,17 +4,17 @@ namespace Bot
 {
     namespace Walk
     {
-        Walk::Walk(Legs::Legs &legs)
-            : mLegs(legs)
-              , mStatus(PAUSE)
-              , mCounterStepPosition(0U)
-              , mMaxCounterStepPosition(0U)
-              , mWalkStepPosition{}
-              , mDelayStep(0U)
-              , mPreviousTime(0U)
-              , mStepFinished(false) {
+        Walk::Walk(Legs::Legs &legs) :
+            mLegs(legs)
+            , mStatus(PAUSE)
+            , mCounterStepPosition(0U)
+            , mMaxCounterStepPosition(0U)
+            , mWalkStepPosition{}
+            , mDelayStep(0U)
+            , mPreviousTime(0U)
+            , mStepFinished(false) {
             for (size_t legId = 0U; legId < NB_LEGS; legId++) {
-                for (size_t steps = 0U; steps < 10U; steps++) {
+                for (size_t steps = 0U; steps < 4U; steps++) {
                     this->mWalkStepPosition[legId].positions[steps].x = 0;
                     this->mWalkStepPosition[legId].positions[steps].y = 0;
                     this->mWalkStepPosition[legId].positions[steps].z = 0;
@@ -22,70 +22,64 @@ namespace Bot
                 }
             }
 
-            this->mWalkStepPosition[FRONT_LEFT].positions[0].x = -20;
-            this->mWalkStepPosition[FRONT_LEFT].positions[0].y = 0;
-            this->mWalkStepPosition[FRONT_LEFT].positions[0].z = 0;
-            this->mWalkStepPosition[FRONT_LEFT].delayStep = 1000;
-            this->mWalkStepPosition[FRONT_LEFT].positions[1].x = 20;
-            this->mWalkStepPosition[FRONT_LEFT].positions[1].y = 0;
-            this->mWalkStepPosition[FRONT_LEFT].positions[1].z = 0;
-            this->mWalkStepPosition[FRONT_LEFT].delayStep = 1000;
-            this->mWalkStepPosition[FRONT_LEFT].positions[2].x = 0;
-            this->mWalkStepPosition[FRONT_LEFT].positions[2].y = 0;
-            this->mWalkStepPosition[FRONT_LEFT].positions[2].z = 20;
-            this->mWalkStepPosition[FRONT_LEFT].delayStep = 1000;
+            for (size_t legId = 0U; legId < NB_LEGS; legId++) {
+                this->mWalkStepPosition[legId].positions[0U] = {0, -3, 0};
+                this->mWalkStepPosition[legId].delayStep = 1000U;
+                this->mWalkStepPosition[legId].positions[1U] = {0, 3, -1};
+                this->mWalkStepPosition[legId].delayStep = 1000U;
+                this->mWalkStepPosition[legId].positions[2U] = {0, 3, 0};
+                this->mWalkStepPosition[legId].delayStep = 1000U;
+            }
 
-            this->mMaxCounterStepPosition = 3U;
+            this->mMaxCounterStepPosition = 2U;
         }
 
         void Walk::UpdateStatus(const EWalkStatus status) {
             this->mStatus = status;
         }
 
-        void Walk::Update(const uint64_t currentTime, const Position3d &bodyIk) {
+        void Walk::Update(const uint64_t currentTime) {
             switch (this->mStatus) {
                 case PLAY:
-                    this->Play(currentTime, bodyIk);
+                    this->Play(currentTime);
                     break;
                 case PAUSE:
-                    this->Pause(currentTime, bodyIk);
+                    this->Pause(currentTime);
                     break;
                 case STOP:
-                    this->Stop(currentTime, bodyIk);
+                    this->Stop(currentTime);
                     break;
             }
         }
 
-        void Walk::Play(const uint64_t currentTime, const Position3d &bodyIk) {
-            //for (size_t legId = 0U; legId < NB_LEGS; legId++) {
-            size_t legId = 0U;
-            Leg::Leg leg = this->mLegs.GetLeg(legId);
-            Step &step = this->mWalkStepPosition[legId];
+        void Walk::Play(const uint64_t currentTime) {
+            for (size_t legId = 0U; legId < NB_LEGS; legId++) {
+                Leg::Leg leg = this->mLegs.GetLeg(legId);
+                Step &step = this->mWalkStepPosition[legId];
 
-            //time to do a step
-            if (currentTime > step.startTime + step.delayStep) {
-                step.startTime = currentTime;
-                leg.SetLegIk(step.positions[step.idxPosition],
-                             bodyIk, step.delayStep);
-                if (step.idxPosition < this->mMaxCounterStepPosition) {
-                    step.idxPosition++;
-                } else {
-                    step.idxPosition = 0U;
+                //time to do a step
+                if (currentTime > step.startTime + step.delayStep) {
+                    step.startTime = currentTime;
+                    uint8_t next = (step.idxPosition + 2U) % 3U;
+                    leg.SetLegIk(step.positions[legId % 2U ? step.idxPosition : next], step.delayStep);
+                    if (step.idxPosition < this->mMaxCounterStepPosition) {
+                        step.idxPosition++;
+                    } else {
+                        step.idxPosition = 0U;
+                    }
                 }
             }
-            //}
         }
 
-        void Walk::Pause(const uint64_t currentTime, const Position3d &bodyIk) {
+        void Walk::Pause(const uint64_t currentTime) {
             (void) currentTime;
-            (void) bodyIk;
         }
 
-        void Walk::Stop(const uint64_t currentTime, const Position3d &bodyIk) {
+        void Walk::Stop(const uint64_t currentTime) {
             (void) currentTime;
             for (size_t legId = 0U; legId < NB_LEGS; legId++) {
                 Leg::Leg leg = this->mLegs.GetLeg(legId);
-                leg.SetLegIk({.x = 0, .y = 0, .z = 0}, bodyIk, 1000U);
+                leg.SetLegIk({0, 0, 0}, 1000U);
             }
             this->mCounterStepPosition = 0U;
             this->UpdateStatus(PAUSE);

@@ -5,6 +5,8 @@ using namespace Builder;
 Builder::App robot;
 
 int main(void) {
+
+    setvbuf(stdout, NULL, _IONBF, 0);
     // hexapod initialization
     if (robot.Initialize() == Core::Status::CORE_OK) {
         while (true) {

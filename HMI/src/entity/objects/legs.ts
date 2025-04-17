@@ -34,9 +34,9 @@ export default class Legs extends Object3D {
         this.legs.leg.push(new Leg('FrontLeft',0, this.x + bodyHeight /2, this.y, -bodyWidth / 2 , true, this.socket));
         this.legs.leg.push(new Leg('MiddleLeft',1, this.x, this.y, -bodyWidthMiddle / 2 , true, this.socket));
         this.legs.leg.push(new Leg('BackLeft',2, this.x - bodyHeight /2, this.y, -bodyWidth / 2 , true, this.socket));
-        this.legs.leg.push(new Leg('FrontRight',3, this.x + bodyHeight /2, this.y, bodyWidth / 2 , false, this.socket));
+        this.legs.leg.push(new Leg('FrontRight',3, this.x - bodyHeight /2, this.y, bodyWidth / 2 , false, this.socket));
         this.legs.leg.push(new Leg('MiddleRight',4, this.x, this.y, bodyWidthMiddle / 2 , false, this.socket));
-        this.legs.leg.push(new Leg('BackRight',5, this.x - bodyHeight /2, this.y, bodyWidth / 2 , false, this.socket));
+        this.legs.leg.push(new Leg('BackRight',5, this.x + bodyHeight /2, this.y, bodyWidth / 2 , false, this.socket));
         for (let i = 0; i < 6; i++) {
             this.add(this.legs.leg[i]);
         }

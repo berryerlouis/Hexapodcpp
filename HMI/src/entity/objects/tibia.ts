@@ -28,6 +28,7 @@ export default class Tibia extends Object3D {
     }
 
     update() {
+        //this.tibiaBody.rotation.x = MathUtils.degToRad(-this.servo.getAngle() + 90);
         this.tibiaBody.rotation.x = MathUtils.degToRad(this.servo.getAngle() - 90);
     }
 

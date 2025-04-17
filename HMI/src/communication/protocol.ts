@@ -49,8 +49,7 @@ export default class Protocol {
                 }
             }
 
-
-            return new Message(cluster.name, command.name, size, params);
+            return new Message(cluster.name, command.name, params);
         } else {
             throw new DecodingError(`Should start and end with "<" and ">": ${data}`);
         }
@@ -66,7 +65,8 @@ export default class Protocol {
         }
         else
         {
-            messageToEncode += size.toString(16).padStart(2, '0').toUpperCase();
+            messageToEncode += "ZZ";
+            let messageSize: number = 0;
             if (params && params.length > 0) {
                 if(params.length == encoding?.length) {
                     for (let i = 0; i < params.length; i++) {
@@ -87,9 +87,10 @@ export default class Protocol {
                             encodedSize = 6;
                         else if(encode == 0xFFFFFFFF)
                             encodedSize = 8;
-
+                        messageSize += encodedSize / 2;
                         messageToEncode += params[i].toString(16).padStart(encodedSize, '0').toUpperCase();
                     }
+                    messageToEncode = messageToEncode.replace('ZZ',messageSize.toString(16).padStart(2, '0').toUpperCase());
                 } else {
                     throw new Error(`Encoding length ${encoding?.length} does not match params length ${params.length}`);
                 }

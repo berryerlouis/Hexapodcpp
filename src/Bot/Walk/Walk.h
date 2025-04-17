@@ -17,17 +17,17 @@ namespace Bot
 
             void UpdateStatus(const EWalkStatus status);
 
-            void Update(const uint64_t currentTime, const Position3d &bodyIk);
+            void Update(const uint64_t currentTime);
 
         private:
-            void Play(const uint64_t currentTime, const Position3d &bodyIk);
+            void Play(const uint64_t currentTime);
 
-            void Pause(const uint64_t currentTime, const Position3d &bodyIk);
+            void Pause(const uint64_t currentTime);
 
-            void Stop(const uint64_t currentTime, const Position3d &bodyIk);
+            void Stop(const uint64_t currentTime);
 
             struct Step {
-                Position3d positions[10U];
+                Position3d positions[4U];
                 uint16_t delayStep;
                 uint64_t startTime;
                 uint8_t idxPosition;

@@ -4,10 +4,11 @@ import {ClusterGeneralCommands} from "./communication/clusters/clusterGeneral.ts
 import {ClusterName} from "./communication/clusters/clusterType.ts";
 import Message from "./communication/message.ts";
 import {ClusterServoCommands} from "./communication/clusters/clusterServo.ts";
-
+import Cockpit from "./engine/cockpit.ts";
 
 const socket:Socket = new Socket();
 new Ui(socket);
+new Cockpit(socket);
 
 socket.addCallbackStarted(()=>{
     init();
@@ -20,10 +21,10 @@ function init() {
     socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_STATE_PCA));
 
     for (let i = 0; i < 18; i++) {
-        socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_ANGLE, 1, [i]));
-        socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_MIN, 1, [i]));
-        socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_MAX, 1, [i]));
-        socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_STATE, 1, [i]));
+        socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_ANGLE, [i]));
+        socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_MIN, [i]));
+        socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_MAX, [i]));
+        socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_STATE, [i]));
     }
     socket.write(new Message( ClusterName.GENERAL, ClusterGeneralCommands.VERSION));
 

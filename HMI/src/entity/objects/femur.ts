@@ -5,7 +5,7 @@ import Socket from "../../communication/socket.ts";
 
 export default class Femur extends Object3D {
     readonly width: number = 0.1;
-    readonly height: number = 1;
+    readonly height: number = 0.7;
     femurBody:Mesh;
     tibia:Tibia;
     servo:Servo;

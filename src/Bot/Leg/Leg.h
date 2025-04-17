@@ -39,12 +39,14 @@ namespace Bot
             };
 
 
-            Leg(ELeg legId, ServoInterface &coxa, ServoInterface &femur, ServoInterface &tibia);
+            Leg(const ELeg legId, ServoInterface &coxa, ServoInterface &femur, ServoInterface &tibia);
 
             ~Leg() = default;
 
 
-            Core::Status SetLegIk(const Position3d &position, const Position3d &bodyIk, const uint16_t travelTime);
+            Core::Status SetLegIk(const Position3d &position, const uint16_t travelTime);
+
+            Core::Status SetLegBodyIk(const Position3d &position, const Position3d &bodyIk, const uint16_t travelTime);
 
         public:
             float mBodyCenterOffsetX;

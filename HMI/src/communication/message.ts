@@ -21,11 +21,11 @@ export default class Message {
     timeout: number = 0;
     retry: number = 0;
 
-    constructor( clusterName: ClusterName, commandName: CommandName, size :number = 0, params: (number) [] = [], encode: (Encoding) [] = []){
+    constructor( clusterName: ClusterName, commandName: CommandName, params: (number) [] = [], encode: (Encoding) [] = []){
         this.direction = Direction.TX;
         this.cluster = getClusterByName(clusterName);
         this.command = getCommandByName(this.cluster, commandName);
-        this.size = size;
+        this.size = params.length ? params.length : 0;
         this.params = params;
         this.encode = encode;
         if(params && this.encode.length == 0) {

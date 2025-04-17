@@ -148,7 +148,7 @@ export default class Socket {
         });
     }
 
-    writeOnSocket(message: Message): Promise<boolean> {
+    private writeOnSocket(message: Message): Promise<boolean> {
         return new Promise((resolve, reject) => {
             if (this.socket.readyState === WebSocket.OPEN) {
                 if (message.raw) {

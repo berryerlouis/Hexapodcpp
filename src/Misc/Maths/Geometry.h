@@ -12,7 +12,8 @@ namespace Misc
             float y;
             float z;
 
-            bool operator==(const Position3d &other) const {
+            bool
+            operator==(const Position3d &other) const {
                 return (x == other.x && y == other.y && z == other.z);
             }
         };
@@ -22,7 +23,8 @@ namespace Misc
             float angleY;
             float angleZ;
 
-            bool operator==(const Rotation3d &other) const {
+            bool
+            operator==(const Rotation3d &other) const {
                 return (angleX == other.angleX && angleY == other.angleY && angleZ == other.angleZ);
             }
         };

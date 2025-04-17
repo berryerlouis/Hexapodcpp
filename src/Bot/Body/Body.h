@@ -41,9 +41,10 @@ namespace Bot
             SBodyIk mBodyIk;
             Legs::Legs &mLegs;
             Walk::Walk mWalk;
+            Position3d mPosition;
+            Rotation3d mRotation;
 
-            uint32_t SetBodyIk(const Position3d &position, const Rotation3d &rotation,
-                               const uint16_t travelTime);
+            void SetComputeIk(const Leg::Leg &leg, const Position3d &position, const Rotation3d &rotation);
         };
     }
 }

@@ -37,6 +37,7 @@ export default class Panel extends Pane {
         });
         this.buildPositionFolder(bodyFolder);
         this.buildRotationFolder(bodyFolder);
+        this.buildLegsFolder(bodyFolder);
 
         const controlFolder = mainFolder.addFolder({
             title: 'Control',
@@ -76,9 +77,9 @@ export default class Panel extends Pane {
         servosFolder.addBinding(this.hexapod.body.members.legs, 'status', {label:'enable'}).on('change', (ev) => {
             if (this.initDone) {
                 if (!ev.value) {
-                    this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_STATE_PCA, 1, [0]));
+                    this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_STATE_PCA, [0]));
                 } else {
-                    this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_STATE_PCA, 1, [1]));
+                    this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_STATE_PCA, [1]));
                 }
             }
         });
@@ -129,36 +130,36 @@ export default class Panel extends Pane {
                 servoLegFolder[servoId]['status'] = servoLegsFolder.addBinding(this.hexapod.body.members.legs.leg[i].legData.servos[j], 'status').on('change', (ev) => {
                     if (this.initDone) {
                         if (!ev.value) {
-                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_STATE, 2, [servoId, 0]));
+                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_STATE, [servoId, 0]));
                         } else {
-                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_STATE, 2, [servoId, 1]));
+                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_STATE, [servoId, 1]));
                         }
                     }
                 });
 
                 servoLegFolder[servoId]['min'] = servoLegsFolder.addBinding(this.hexapod.body.members.legs.leg[i].legData.servos[j], 'min', {min: 0, max: 180, step: 1
                 }).on('change', (ev) => {
-                    if (this.initDone) {
+                    if (this.initDone && ev.last) {
                         if (ev.last) {
-                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_MIN, 2, [servoId, ev.value]));
+                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_MIN, [servoId, ev.value]));
                         }
                     }
                 });
 
                 servoLegFolder[servoId]['max'] = servoLegsFolder.addBinding(this.hexapod.body.members.legs.leg[i].legData.servos[j], 'max', {min: 0, max: 180, step: 1
                 }).on('change', (ev) => {
-                    if (this.initDone) {
+                    if (this.initDone && ev.last) {
                         if (ev.last) {
-                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_MAX, 2, [servoId, ev.value]));
+                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_MAX, [servoId, ev.value]));
                         }
                     }
                 });
 
                 servoLegFolder[servoId]['angle'] = servoLegsFolder.addBinding(this.hexapod.body.members.legs.leg[i].legData.servos[j], 'angle', {min: 0, max: 180, step: 1
                 }).on('change', (ev) => {
-                    if (this.initDone && this.hexapod.body.members.legs.leg[i].legData.servos[j].status) {
+                    if (this.initDone && ev.last && this.hexapod.body.members.legs.leg[i].legData.servos[j].status) {
                         if (ev.last) {
-                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_ANGLE, 2, [servoId, ev.value]));
+                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_ANGLE, [servoId, ev.value]));
                         }
                     }
                 });
@@ -244,7 +245,7 @@ export default class Panel extends Pane {
             label: 'status',   // optional
         }).on('click', () => {
             if (this.initDone) {
-                this.socket.write(new Message( ClusterName.SOUND, ClusterSoundCommands.SOUND_STATUS, 1, [0]));
+                this.socket.write(new Message( ClusterName.SOUND, ClusterSoundCommands.SOUND_STATUS, [0]));
             }
         });
         usRight.addBinding(this.hexapod.head.sensors.sound, 'right', {readonly: true});
@@ -253,7 +254,7 @@ export default class Panel extends Pane {
             label: 'status',   // optional
         }).on('click', () => {
             if (this.initDone) {
-                this.socket.write(new Message( ClusterName.SOUND, ClusterSoundCommands.SOUND_STATUS, 1, [1]));
+                this.socket.write(new Message( ClusterName.SOUND, ClusterSoundCommands.SOUND_STATUS, [1]));
             }
         });
     }
@@ -263,9 +264,9 @@ export default class Panel extends Pane {
             title: 'Position',
             expanded: false,
         });
-        bodyPositionFolder.addBinding(this.hexapod.hexapodStruct.position, 'x', {min: -1, max: 1, step: 0.01});
-        bodyPositionFolder.addBinding(this.hexapod.hexapodStruct.position, 'y', {min: -1, max: 1, step: 0.01});
-        bodyPositionFolder.addBinding(this.hexapod.hexapodStruct.position, 'z', {min: -1, max: 1, step: 0.01});
+        bodyPositionFolder.addBinding(this.hexapod.hexapodStruct.position, 'x', {min: -30, max: 30, step: 1}).on('change',this.sendBodyPositionRotation.bind(this));
+        bodyPositionFolder.addBinding(this.hexapod.hexapodStruct.position, 'y', {min: -30, max: 30, step: 1}).on('change',this.sendBodyPositionRotation.bind(this));
+        bodyPositionFolder.addBinding(this.hexapod.hexapodStruct.position, 'z', {min: -30, max: 30, step: 1}).on('change',this.sendBodyPositionRotation.bind(this));
     }
 
     buildRotationFolder(folder: FolderApi) {
@@ -273,31 +274,111 @@ export default class Panel extends Pane {
             title: 'Rotation',
             expanded: false,
         });
-        bodyRotationFolder.addBinding(this.hexapod.hexapodStruct.rotation, 'x', {min: -Math.PI/4, max: Math.PI/4, step: 0.01}).on('change', (ev) => {
-            if (this.initDone) {
-                this.socket.write(new Message( ClusterName.BODY, ClusterBodyCommands.SET_BODY_X_Y_Z, 14,
-                    [
-                        Math.floor(ev.value * 10),
-                        this.hexapod.hexapodStruct.rotation.y,
-                        this.hexapod.hexapodStruct.rotation.z,
-                        this.hexapod.hexapodStruct.position.x,
-                        this.hexapod.hexapodStruct.position.y,
-                        this.hexapod.hexapodStruct.position.z,
-                        1000
-                    ],
-                    [
-                        0xFFFF,
-                        0xFFFF,
-                        0xFFFF,
-                        0xFFFF,
-                        0xFFFF,
-                        0xFFFF,
-                        0xFFFF,
-                    ]));
-            }
+        bodyRotationFolder.addBinding(this.hexapod.hexapodStruct.rotation, 'x', {min: -30, max: 30, step: 1}).on('change',this.sendBodyPositionRotation.bind(this));
+        bodyRotationFolder.addBinding(this.hexapod.hexapodStruct.rotation, 'y', {min: -30, max: 30, step: 1}).on('change',this.sendBodyPositionRotation.bind(this));
+        bodyRotationFolder.addBinding(this.hexapod.hexapodStruct.rotation, 'z', {min: -30, max: 30, step: 1}).on('change',this.sendBodyPositionRotation.bind(this));
+    }
+
+    buildLegsFolder(folder: FolderApi) {
+        const bodyLegsFolder = folder.addFolder({
+            title: 'Legs',
+            expanded: false,
         });
-        bodyRotationFolder.addBinding(this.hexapod.hexapodStruct.rotation, 'y', {min: -Math.PI/4, max: Math.PI/4, step: 0.01});
-        bodyRotationFolder.addBinding(this.hexapod.hexapodStruct.rotation, 'z', {min: -Math.PI/4, max: Math.PI/4, step: 0.01});
+
+        for (let i = 0; i < 6; i++) {
+            const bodyLegFolder = bodyLegsFolder.addFolder({
+                title: this.hexapod.body.members.legs.leg[i].legData.name,
+                expanded: false,
+            });
+
+            if(i == 0) {
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'x', {min: -30, max: 30, step: 1}).on('change',this.sendLeg0Position.bind(this));
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'y', {min: -30, max: 30, step: 1}).on('change',this.sendLeg0Position.bind(this));
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'z', {min: -30, max: 30, step: 1}).on('change',this.sendLeg0Position.bind(this));
+            } else if(i == 1) {
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'x', {min: -30, max: 30, step: 1}).on('change',this.sendLeg1Position.bind(this));
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'y', {min: -30, max: 30, step: 1}).on('change',this.sendLeg1Position.bind(this));
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'z', {min: -30, max: 30, step: 1}).on('change',this.sendLeg1Position.bind(this));
+            } else if(i == 2) {
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'x', {min: -30, max: 30, step: 1}).on('change',this.sendLeg2Position.bind(this));
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'y', {min: -30, max: 30, step: 1}).on('change',this.sendLeg2Position.bind(this));
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'z', {min: -30, max: 30, step: 1}).on('change',this.sendLeg2Position.bind(this));
+            } else if(i == 3) {
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'x', {min: -30, max: 30, step: 1}).on('change',this.sendLeg3Position.bind(this));
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'y', {min: -30, max: 30, step: 1}).on('change',this.sendLeg3Position.bind(this));
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'z', {min: -30, max: 30, step: 1}).on('change',this.sendLeg3Position.bind(this));
+            } else if(i == 4) {
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'x', {min: -30, max: 30, step: 1}).on('change',this.sendLeg4Position.bind(this));
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'y', {min: -30, max: 30, step: 1}).on('change',this.sendLeg4Position.bind(this));
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'z', {min: -30, max: 30, step: 1}).on('change',this.sendLeg4Position.bind(this));
+            } else if(i == 5) {
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'x', {min: -30, max: 30, step: 1}).on('change',this.sendLeg5Position.bind(this));
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'y', {min: -30, max: 30, step: 1}).on('change',this.sendLeg5Position.bind(this));
+                bodyLegFolder.addBinding(this.hexapod.body.members.legs.leg[i], 'z', {min: -30, max: 30, step: 1}).on('change',this.sendLeg5Position.bind(this));
+            }
+        }
+    }
+
+    sendBodyPositionRotation (ev:any) {
+        if (this.initDone && ev.last) {
+             this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_BODY_X_Y_Z,
+                 [
+                     ev.target.element.parentElement.parentElement.outerText.includes('Position') && ev.target.key == 'x' ? Math.floor(ev.value) : this.hexapod.hexapodStruct.position.x,
+                     ev.target.element.parentElement.parentElement.outerText.includes('Position') && ev.target.key == 'y' ? Math.floor(ev.value) : this.hexapod.hexapodStruct.position.y,
+                     ev.target.element.parentElement.parentElement.outerText.includes('Position') && ev.target.key == 'z' ? Math.floor(ev.value) : this.hexapod.hexapodStruct.position.z,
+                     ev.target.element.parentElement.parentElement.outerText.includes('Rotation') && ev.target.key == 'x' ? Math.floor(ev.value) : this.hexapod.hexapodStruct.rotation.x,
+                     ev.target.element.parentElement.parentElement.outerText.includes('Rotation') && ev.target.key == 'y' ? Math.floor(ev.value) : this.hexapod.hexapodStruct.rotation.y,
+                     ev.target.element.parentElement.parentElement.outerText.includes('Rotation') && ev.target.key == 'z' ? Math.floor(ev.value) : this.hexapod.hexapodStruct.rotation.z,
+                     1000
+                 ],
+                 [
+                     0xFFFF,
+                     0xFFFF,
+                     0xFFFF,
+                     0xFFFF,
+                     0xFFFF,
+                     0xFFFF,
+                     0xFFFF,
+                 ]));
+         }
+    }
+
+    sendLeg0Position (ev:any) {
+        this.sendLegPosition(ev, 0);
+    }
+    sendLeg1Position (ev:any) {
+        this.sendLegPosition(ev, 1);
+    }
+    sendLeg2Position (ev:any) {
+        this.sendLegPosition(ev, 2);
+    }
+    sendLeg3Position (ev:any) {
+        this.sendLegPosition(ev, 3);
+    }
+    sendLeg4Position (ev:any) {
+        this.sendLegPosition(ev, 4);
+    }
+    sendLeg5Position (ev:any) {
+        this.sendLegPosition(ev, 5);
+    }
+    sendLegPosition (ev:any, legIndex:number) {
+        if (this.initDone && ev.last) {
+            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_LEG_X_Y_Z,
+                [
+                    legIndex,
+                    ev.target.key == 'x' ? Math.floor(ev.value) : Math.floor(this.hexapod.body.members.legs.leg[legIndex].x),
+                    ev.target.key == 'y' ? Math.floor(ev.value) : Math.floor(this.hexapod.body.members.legs.leg[legIndex].y),
+                    ev.target.key == 'z' ? Math.floor(ev.value) : Math.floor(this.hexapod.body.members.legs.leg[legIndex].z),
+                    1000
+                ],
+                [
+                    0xFF,
+                    0xFFFF,
+                    0xFFFF,
+                    0xFFFF,
+                    0xFFFF,
+                ]));
+        }
     }
 
     buildBatteryFolder(folder: FolderApi) {
@@ -336,17 +417,17 @@ export default class Panel extends Pane {
         });
         calibFolder.addButton({ title: 'Start', label: 'acc'}).on('click', () => {
             if (this.initDone) {
-                this.socket.write(new Message( ClusterName.IMU, ClusterImuCommands.START_CALIB, 2, [1,1]));
+                this.socket.write(new Message( ClusterName.IMU, ClusterImuCommands.START_CALIB, [1,1]));
             }
         });
         calibFolder.addButton({ title: 'Start', label: 'gyro'}).on('click', () => {
             if (this.initDone) {
-                this.socket.write(new Message( ClusterName.IMU, ClusterImuCommands.START_CALIB, 2, [2,1]));
+                this.socket.write(new Message( ClusterName.IMU, ClusterImuCommands.START_CALIB, [2,1]));
             }
         });
         calibFolder.addButton({ title: 'Start', label: 'mag'}).on('click', () => {
             if (this.initDone) {
-                this.socket.write(new Message( ClusterName.IMU, ClusterImuCommands.START_CALIB, 2, [4,1]));
+                this.socket.write(new Message( ClusterName.IMU, ClusterImuCommands.START_CALIB, [4,1]));
             }
         });
 
