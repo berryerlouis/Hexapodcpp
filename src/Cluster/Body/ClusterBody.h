@@ -23,6 +23,14 @@ namespace Cluster
 
             static Core::Status BuildFrameUpdateWalkStatus(Frame &response);
 
+            static Core::Status BuildFrameUpdateDirection(Frame &response, const bool successDirection);
+
+            static Core::Status BuildFrameUpdateAmplitudeElevation(
+                    Frame &response, const bool successAmplitudeElevation);
+
+            static Core::Status BuildFrameUpdateDirectionAmplitudeElevation(
+                    Frame &response, const uint8_t amplitude, const uint8_t elevation, const uint16_t direction);
+
         private:
             BodyInterface &mBody;
         };

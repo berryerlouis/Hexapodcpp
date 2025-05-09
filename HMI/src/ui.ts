@@ -26,23 +26,24 @@ export default class Ui {
         this.socket = socket;
         this.hexapod = new Hexapod(socket);
         this.directionArrow = new DirectionArrow(socket);
-        this.panel = new Panel(document.getElementById('panel')!, this.hexapod, socket);
+        this.panel = new Panel(document.getElementById('panel')!, this.hexapod,this.directionArrow, this.socket);
 
         this.scene.add( this.world );
         this.scene.add( this.light );
         this.scene.add( this.hexapod );
+        this.scene.add( this.directionArrow );
         this.graphic.onUpdate(dt => {
-            this.control.update(dt);
-            this.world.update();
-            this.hexapod.update();
-            this.panel.update();
-            this.camera.update();
-            this.light.update(this.hexapod);
+            this.update(dt);
         });
     }
 
-    update() {
-
+    update(dt:number) {
+        this.control.update(dt);
+        this.world.update();
+        this.hexapod.update();
+        this.panel.update();
+        this.camera.update();
+        this.light.update(this.hexapod);
     }
 }
 

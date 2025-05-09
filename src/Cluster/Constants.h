@@ -41,10 +41,13 @@ namespace Cluster
     enum EBodyCommands {
         SET_BODY_POS_ROT = 0x00U,
         SET_LEG_POS_ROT,
-        SET_WALK_STATUS
+        SET_WALK_STATUS,
+        SET_DIRECTION,
+        SET_AMPLITUDE_ELEVATION,
+        GET_DIRECTION_AMPLITUDE_ELEVATION
     };
 
-    static constexpr uint8_t NB_COMMANDS_BODY = 3U;
+    static constexpr uint8_t NB_COMMANDS_BODY = 6U;
 
     enum EImuCommands {
         ALL,

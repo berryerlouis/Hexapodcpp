@@ -23,6 +23,16 @@ namespace Bot
 
             virtual void UpdateWalkStatus(const EWalkStatus status) = 0;
 
+            virtual bool SetDirection(const uint16_t directionAngle) = 0;
+
+            virtual bool SetAmplitudeElevation(const uint16_t amplitude, const uint16_t elevation) = 0;
+
+            virtual uint16_t GetDirection(void) const = 0;
+
+            virtual uint8_t GetAmplitude(void) const = 0;
+
+            virtual uint8_t GetElevation(void) const = 0;
+
             virtual uint32_t SetBodyPositionRotation(const Position3d &position,
                                                      const Rotation3d &rotation,
                                                      const uint16_t travelTime) = 0;

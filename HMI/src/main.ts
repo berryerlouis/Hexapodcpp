@@ -5,6 +5,7 @@ import {ClusterName} from "./communication/clusters/clusterType.ts";
 import Message from "./communication/message.ts";
 import {ClusterServoCommands} from "./communication/clusters/clusterServo.ts";
 import Cockpit from "./engine/cockpit.ts";
+import {ClusterBodyCommands} from "./communication/clusters/clusterBody.ts";
 
 const socket:Socket = new Socket();
 new Ui(socket);
@@ -18,6 +19,7 @@ socket.addCallbackStarted(()=>{
 });
 
 function init() {
+    socket.write(new Message( ClusterName.BODY, ClusterBodyCommands.GET_DIRECTION_AMPLITUDE_ELEVATION));
     socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_STATE_PCA));
 
     for (let i = 0; i < 18; i++) {

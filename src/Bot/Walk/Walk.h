@@ -8,6 +8,7 @@ namespace Bot
     namespace Walk
     {
         using namespace Misc::Maths;
+#define NB_STEPS    3U
 
         class Walk {
         public:
@@ -19,6 +20,16 @@ namespace Bot
 
             void Update(const uint64_t currentTime);
 
+            bool SetDirection(const uint16_t directionAngle);
+
+            bool SetAmplitudeElevation(const uint16_t amplitude, const uint16_t elevation);
+
+            uint16_t GetDirection(void) const;
+
+            uint8_t GetAmplitude(void) const;
+
+            uint8_t GetElevation(void) const;
+
         private:
             void Play(const uint64_t currentTime);
 
@@ -26,9 +37,14 @@ namespace Bot
 
             void Stop(const uint64_t currentTime);
 
+
             struct Step {
-                Position3d positions[4U];
-                uint16_t delayStep;
+                Position3d positions;
+                float delayStep;
+            };
+
+            struct Steps {
+                Step steps[NB_STEPS];
                 uint64_t startTime;
                 uint8_t idxPosition;
             };
@@ -37,10 +53,13 @@ namespace Bot
             EWalkStatus mStatus;
             uint8_t mCounterStepPosition;
             uint8_t mMaxCounterStepPosition;
-            Step mWalkStepPosition[NB_LEGS];
+            Steps mWalkStepPosition[NB_LEGS];
             uint16_t mDelayStep;
             uint64_t mPreviousTime;
             bool mStepFinished;
+            float mDirection;
+            float mAmplitude;
+            float mElevation;
         };
     }
 }

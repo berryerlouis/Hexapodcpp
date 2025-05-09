@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "bootstrap-icons": "^1.11.3",
+    "svelte-tweakpane-ui": "^1.5.6",
     "three": "^0.173.0",
     "tweakpane": "^4.0.5"
   }

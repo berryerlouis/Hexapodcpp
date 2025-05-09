@@ -92,7 +92,7 @@ namespace Bot
                                          -2 * this->mLegIk.iksw * FEMUR_LENGTH));
             this->mLegIk.tangle = acos(((this->mLegIk.iksw * this->mLegIk.iksw) - (TIBIA_LENGTH * TIBIA_LENGTH) - (
                                             FEMUR_LENGTH * FEMUR_LENGTH)) / (-2 * FEMUR_LENGTH * TIBIA_LENGTH));
-            this->mLegIk.tibiaIk = this->mLegIk.tangle * 180 / M_PI;
+            this->mLegIk.tibiaIk = 90 + (90 - this->mLegIk.tangle * 180 / M_PI);
             this->mLegIk.femurIk = 90 + (90 - (this->mLegIk.ika1 + this->mLegIk.ika2) * 180 / M_PI);
             this->mLegIk.coxaIk = 90 + atan2(this->mLegIk.newFootPos.y, this->mLegIk.newFootPos.x) * 180 / M_PI;
 
@@ -122,7 +122,7 @@ namespace Bot
                                          -2 * this->mLegIk.iksw * FEMUR_LENGTH));
             this->mLegIk.tangle = acos(((this->mLegIk.iksw * this->mLegIk.iksw) - (TIBIA_LENGTH * TIBIA_LENGTH) - (
                                             FEMUR_LENGTH * FEMUR_LENGTH)) / (-2 * FEMUR_LENGTH * TIBIA_LENGTH));
-            this->mLegIk.tibiaIk = this->mLegIk.tangle * 180 / M_PI;
+            this->mLegIk.tibiaIk = 90 + (90 - this->mLegIk.tangle * 180 / M_PI);
             this->mLegIk.femurIk = 90 + (90 - (this->mLegIk.ika1 + this->mLegIk.ika2) * 180 / M_PI);
             this->mLegIk.coxaIk = atan2(this->mLegIk.newFootPos.y, this->mLegIk.newFootPos.x) * 180 / M_PI;
 

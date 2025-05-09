@@ -26,6 +26,26 @@ namespace Bot
             this->mWalk.UpdateStatus(status);
         }
 
+        bool Body::SetDirection(const uint16_t directionAngle) {
+            return this->mWalk.SetDirection(directionAngle);
+        }
+
+        bool Body::SetAmplitudeElevation(const uint16_t amplitude, const uint16_t elevation) {
+            return this->mWalk.SetAmplitudeElevation(amplitude, elevation);
+        }
+
+        uint16_t Body::GetDirection(void) const {
+            return this->mWalk.GetDirection();
+        }
+
+        uint8_t Body::GetAmplitude(void) const {
+            return this->mWalk.GetAmplitude();
+        }
+
+        uint8_t Body::GetElevation(void) const {
+            return this->mWalk.GetElevation();
+        }
+
         uint32_t Body::SetBodyPositionRotation(const Position3d &position,
                                                const Rotation3d &rotation,
                                                const uint16_t travelTime) {

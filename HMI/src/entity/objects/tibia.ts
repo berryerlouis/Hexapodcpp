@@ -1,4 +1,10 @@
-import { ConeGeometry, MathUtils, Mesh, MeshPhongMaterial, Object3D} from 'three'
+import {
+    ConeGeometry,
+    MathUtils,
+    Mesh,
+    MeshPhongMaterial,
+    Object3D
+} from 'three'
 import Servo from "./servo.ts";
 import Socket from "../../communication/socket.ts";
 

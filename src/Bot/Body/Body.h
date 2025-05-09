@@ -37,6 +37,16 @@ namespace Bot
                                                     const Position3d &position,
                                                     const uint16_t travelTime) final override;
 
+            virtual bool SetDirection(const uint16_t directionAngle) final override;
+
+            virtual bool SetAmplitudeElevation(const uint16_t amplitude, const uint16_t elevation) final override;
+
+            virtual uint16_t GetDirection(void) const final override;
+
+            virtual uint8_t GetAmplitude(void) const final override;
+
+            virtual uint8_t GetElevation(void) const final override;
+
         private:
             SBodyIk mBodyIk;
             Legs::Legs &mLegs;

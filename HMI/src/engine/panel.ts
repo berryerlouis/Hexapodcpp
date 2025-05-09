@@ -9,15 +9,18 @@ import {ClusterServoCommands} from "../communication/clusters/clusterServo.ts";
 import {ClusterGeneralCommands} from "../communication/clusters/clusterGeneral.ts";
 import {ClusterImuCommands} from "../communication/clusters/clusterImu.ts";
 import {ClusterBodyCommands} from "../communication/clusters/clusterBody.ts";
+import DirectionArrow from "./directionArrow.ts";
 
 export default class Panel extends Pane {
     hexapod:Hexapod;
+    directionArrow:DirectionArrow;
     socket:Socket;
     initDone:boolean;
-    constructor(domElement:HTMLElement|undefined, hexapod:Hexapod, socket:Socket) {
+    constructor(domElement:HTMLElement|undefined, hexapod:Hexapod, directionArrow:DirectionArrow, socket:Socket) {
         super({container: domElement});
 
         this.hexapod = hexapod;
+        this.directionArrow = directionArrow;
         this.socket = socket;
         this.initDone = false;
 
@@ -37,6 +40,8 @@ export default class Panel extends Pane {
         });
         this.buildPositionFolder(bodyFolder);
         this.buildRotationFolder(bodyFolder);
+        this.buildDirectionFolder(bodyFolder);
+        this.buildAmplitudeElevationFolder(bodyFolder);
         this.buildLegsFolder(bodyFolder);
 
         const controlFolder = mainFolder.addFolder({
@@ -159,7 +164,7 @@ export default class Panel extends Pane {
                 }).on('change', (ev) => {
                     if (this.initDone && ev.last && this.hexapod.body.members.legs.leg[i].legData.servos[j].status) {
                         if (ev.last) {
-                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_ANGLE, [servoId, ev.value]));
+                            //this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_ANGLE, [servoId, ev.value]));
                         }
                     }
                 });
@@ -495,6 +500,52 @@ export default class Panel extends Pane {
         });
         magFolder.addBinding(this.hexapod.imu.imuData.mag, 'z',{
             readonly: true, view: 'graph', min: -180, max: 180,
+        });
+    }
+
+    buildDirectionFolder(folder: FolderApi) {
+
+        const bodyDirectionFolder = folder.addFolder({
+            title: 'Direction',
+            expanded: false,
+        });
+        bodyDirectionFolder.addBinding(this.hexapod.hexapodStruct, 'direction', {min: 0, max: 360, step: 1}).on('change',(ev)=> {
+            if (this.initDone && ev.last) {
+                this.directionArrow.setDirection(ev.value);
+                this.hexapod.setDirection(ev.value);
+                this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_DIRECTION,
+                    [ev.value],[0xFFFF]));
+            }
+        });
+    }
+
+    buildAmplitudeElevationFolder(folder: FolderApi) {
+
+        const bodyAmplitudeFolder = folder.addFolder({
+            title: 'Amplitude',
+            expanded: false,
+        });
+        bodyAmplitudeFolder.addBinding(this.hexapod.hexapodStruct, 'amplitude', {min: 0, max: 30, step: 1}).on('change',(ev)=> {
+            if (this.initDone && ev.last) {
+                this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_AMPLITUDE_ELEVATION,
+                    [
+                        ev.value,
+                        this.hexapod.hexapodStruct.elevation
+                    ]));
+            }
+        });
+        const bodyElevationFolder = folder.addFolder({
+            title: 'Elevation',
+            expanded: false,
+        });
+        bodyElevationFolder.addBinding(this.hexapod.hexapodStruct, 'elevation', {min: 0, max: 30, step: 1}).on('change',(ev)=> {
+            if (this.initDone && ev.last) {
+                this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_AMPLITUDE_ELEVATION,
+                    [
+                        this.hexapod.hexapodStruct.amplitude,
+                        ev.value,
+                    ]));
+            }
         });
     }
 }

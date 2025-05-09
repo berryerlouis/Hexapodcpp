@@ -8,7 +8,7 @@ namespace Service
     {
         ServiceProximity::ServiceProximity(SensorProximityMultipleInterface &proximity,
                                            Event::MessageInterface &messageListener) :
-            Service(PROXIMITY, 25U, messageListener)
+            Service(PROXIMITY, 100U, messageListener)
             , mProximity(proximity) {
         }
 

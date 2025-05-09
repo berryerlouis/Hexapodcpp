@@ -1,8 +1,10 @@
 import {
     BoxGeometry,
     BufferGeometry,
-    CylinderGeometry, DoubleSide,
-    Material, MathUtils,
+    CylinderGeometry,
+    DoubleSide,
+    Material,
+    MathUtils,
     Mesh,
     MeshLambertMaterial,
     Object3D,
@@ -34,11 +36,18 @@ export default class Body extends Object3D {
     x: number = 0;
     y: number = 0;
     z: number = 0;
+    enable:HTMLElement;
     socket:Socket;
     members: Legs;
+    intervalEnable: number = 0;
+    intervalDisable: number = 0;
+    intervalTime: number = 0;
     constructor(x: number, y: number, z: number, socket: Socket, intervalCommand:number) {
         super();
         this.interval = 0;
+        this.intervalEnable = intervalCommand;
+        this.intervalDisable = 1000;
+        this.intervalTime = this.intervalDisable;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -59,10 +68,26 @@ export default class Body extends Object3D {
             }
         });
 
+        this.enable = document.getElementById('enable')!;
+        this.enable.addEventListener('click',() => {
+            if(!this.enable.classList.contains('select')){
+                clearInterval(this.interval);
+                this.interval = setInterval(()=>{
+                    this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_ALL));
+                },this.intervalEnable);
+            } else {
+                clearInterval(this.interval);
+                this.interval = setInterval(()=>{
+                    this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_ALL));
+                },this.intervalDisable);
+            }
+        });
+
         this.socket.addCallbackStarted(()=>{
+            clearInterval(this.interval);
             this.interval = setInterval(()=>{
                 this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_ALL));
-            },intervalCommand);
+            },this.intervalTime);
         });
 
         this.socket.addCallbackStopped(()=> {
@@ -190,5 +215,9 @@ export default class Body extends Object3D {
 
     update() {
         this.members?.update();
+    }
+
+    setDirection(direction:number) {
+        this.members.setDirection(direction);
     }
 }

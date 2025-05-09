@@ -56,4 +56,10 @@ export default class Legs extends Object3D {
             this.legs.leg[i].update();
         }
     }
+
+    setDirection(direction:number) {
+        for (let i = 0; i < 6; i++) {
+            this.legs.leg[i].setDirection(direction);
+        }
+    }
 }

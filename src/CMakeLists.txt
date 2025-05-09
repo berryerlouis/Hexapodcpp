@@ -85,6 +85,7 @@ set(SRC_FILES_COMPONENT
         Component/Imu/Ahrs.cpp
         Component/Imu/Mpu9150.cpp
         Component/Led/Led.cpp
+        Component/LedPwm/LedPwm.cpp
         Component/Proximity/Laser/Vl53l0x.cpp
         Component/Proximity/SensorProximity.cpp
         Component/Proximity/Ultrasound/Srf05.cpp

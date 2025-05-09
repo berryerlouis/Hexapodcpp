@@ -28,6 +28,9 @@ namespace Component
             uint64_t mLastLoopTime;
             uint64_t mMinLoopTime;
             uint64_t mMaxLoopTime;
+            uint64_t mPrevTime;
+
+            void AdjustLoopTime(const uint64_t currentTime);
         };
     }
 }

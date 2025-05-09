@@ -7,7 +7,8 @@ namespace Component
         Software::Software() :
             mLastLoopTime(0UL),
             mMinLoopTime(0xFFFFFFFFUL),
-            mMaxLoopTime(0UL) {
+            mMaxLoopTime(0UL),
+            mPrevTime(0UL) {
         }
 
         Core::Status Software::Initialize(void) {
@@ -16,12 +17,6 @@ namespace Component
 
         void Software::Update(const uint64_t currentTime) {
             const uint64_t currentLoopTime = currentTime - this->mLastLoopTime;
-            if (this->mMaxLoopTime > 1UL) {
-                this->mMaxLoopTime--;
-            }
-            if (this->mMinLoopTime > 0UL) {
-                this->mMinLoopTime++;
-            }
 
             if (currentLoopTime < this->mMinLoopTime) {
                 this->mMinLoopTime = currentLoopTime;
@@ -29,6 +24,8 @@ namespace Component
                 this->mMaxLoopTime = currentLoopTime;
             }
             this->mLastLoopTime = currentTime;
+
+            this->AdjustLoopTime(currentTime);
         }
 
         uint64_t Software::GetMinTime(void) const {
@@ -47,6 +44,18 @@ namespace Component
         SoftwareInterface::Version Software::GetVersion(void) {
             constexpr Version version = {.major = 0U, .minor = 1U};
             return (version);
+        }
+
+        void Software::AdjustLoopTime(const uint64_t currentTime) {
+            if (currentTime > this->mPrevTime + 10UL) {
+                if (this->mMaxLoopTime > 1UL) {
+                    this->mMaxLoopTime--;
+                }
+                if (this->mMinLoopTime > 0UL) {
+                    this->mMinLoopTime++;
+                }
+                this->mPrevTime = currentTime;
+            }
         }
     }
 }

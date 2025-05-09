@@ -1,6 +1,5 @@
 #include "App.h"
 
-
 using namespace Driver::Gpio;
 
 Gpio ledStatus = Gpio({19}, OUT);
@@ -21,6 +20,8 @@ Gpio buttonPin = Gpio({4}, IN);
 
 namespace Builder
 {
+
+
     App::App(void) :
         mTick()
         , mUart()
@@ -38,6 +39,7 @@ namespace Builder
         , mLedMiddleLeft(ledMiddleLeft)
         , mLedRight(ledRight)
         , mLedMiddleRight(ledMiddleRight)
+        , mLedPwmStatus(mLedStatus)
         , mAds1115(mTwi)
         , mBattery(mAds1115)
         , mButton(mGpioButton, mTick)
@@ -112,28 +114,17 @@ namespace Builder
         if (success == Core::Status::CORE_OK) {
             success = this->mServices.Initialize();
         }
-        if (success != Core::Status::CORE_OK) {
+        if (success == Core::Status::CORE_OK) {
+            this->mLedPwmStatus.Initialize();
         }
         return (success);
     }
 
-    uint64_t lastTime = 0U;
-    constexpr uint8_t maxInterval = 6U;
-    uint8_t indexInterval = 0U;
-    uint64_t interval[maxInterval] = {200, 100, 200, 500, 50, 50};
-    float speedInterval = 1;
 
     void App::Update(void) {
         const uint64_t currentTime = mTick.GetMs();
         this->mServices.Update(currentTime);
-        if (currentTime > lastTime + (interval[indexInterval] * speedInterval)) {
-            lastTime = currentTime;
-            this->mLedStatus.Toggle();
-            indexInterval++;
-            if (indexInterval == maxInterval) {
-                indexInterval = 0U;
-            }
-        }
+        this->mLedPwmStatus.Update(currentTime);
         this->mTick.DelayUs(100U);
     }
 } // namespace Builder

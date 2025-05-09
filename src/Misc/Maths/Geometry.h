@@ -16,6 +16,70 @@ namespace Misc
             operator==(const Position3d &other) const {
                 return (x == other.x && y == other.y && z == other.z);
             }
+
+            Position3d
+            operator*=(const Position3d &value) {
+                x = x * value.x;
+                y = y * value.y;
+                z = z * value.z;
+                return *this;
+            }
+
+            Position3d
+            operator*(const float &value) {
+                x = x * value;
+                y = y * value;
+                z = z * value;
+                return *this;
+            }
+
+            Position3d
+            operator/=(const Position3d &value) {
+                x = x / value.x;
+                y = y / value.y;
+                z = z / value.z;
+                return *this;
+            }
+
+            Position3d
+            operator/(const float &value) {
+                x = x / value;
+                y = y / value;
+                z = z / value;
+                return *this;
+            }
+
+            Position3d
+            operator+=(const Position3d &value) {
+                x = x + value.x;
+                y = y + value.y;
+                z = z + value.z;
+                return *this;
+            }
+
+            Position3d
+            operator+(const float &value) {
+                x = x + value;
+                y = y + value;
+                z = z + value;
+                return *this;
+            }
+
+            Position3d
+            operator-=(const Position3d &value) {
+                x = x - value.x;
+                y = y - value.y;
+                z = z - value.z;
+                return *this;
+            }
+
+            Position3d
+            operator-(const float &value) {
+                x = x - value;
+                y = y - value;
+                z = z - value;
+                return *this;
+            }
         };
 
         struct Rotation3d {

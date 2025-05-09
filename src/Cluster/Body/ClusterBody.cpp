@@ -13,6 +13,11 @@ namespace Cluster
             this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_BODY_POS_ROT, .expectedSize = 14U});
             this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_LEG_POS_ROT, .expectedSize = 9U});
             this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_WALK_STATUS, .expectedSize = 1U});
+            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_DIRECTION, .expectedSize = 2U});
+            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_AMPLITUDE_ELEVATION,
+                                               .expectedSize = 2U});
+            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::GET_DIRECTION_AMPLITUDE_ELEVATION,
+                                               .expectedSize = 0U});
         }
 
 
@@ -71,7 +76,24 @@ namespace Cluster
                 const Bot::EWalkStatus status = static_cast<Bot::EWalkStatus>(request.Get1ByteParam(0U));
                 this->mBody.UpdateWalkStatus(status);
                 success = this->BuildFrameUpdateWalkStatus(response);
+            } else if (request.commandId == EBodyCommands::SET_DIRECTION) {
+                const uint16_t direction = static_cast<int16_t>(
+                    static_cast<uint16_t>(request.Get1ByteParam(1U)) |
+                    static_cast<uint16_t>(request.Get1ByteParam(0U)) << 8U);
+                const bool successDirection = this->mBody.SetDirection(direction);
+                success = this->BuildFrameUpdateDirection(response, successDirection);
+            } else if (request.commandId == EBodyCommands::SET_AMPLITUDE_ELEVATION) {
+                const uint16_t amplitude = request.Get1ByteParam(0U);
+                const uint16_t elevation = request.Get1ByteParam(1U);
+                const bool successAmplitudeElevation = this->mBody.SetAmplitudeElevation(amplitude, elevation);
+                success = this->BuildFrameUpdateAmplitudeElevation(response, successAmplitudeElevation);
+            } else if (request.commandId == EBodyCommands::GET_DIRECTION_AMPLITUDE_ELEVATION) {
+                const uint8_t amplitude = this->mBody.GetAmplitude();
+                const uint8_t elevation = this->mBody.GetElevation();
+                const uint16_t direction = this->mBody.GetDirection();
+                success = this->BuildFrameUpdateDirectionAmplitudeElevation(response, amplitude, elevation, direction);
             }
+
             return success;
         }
 
@@ -97,6 +119,40 @@ namespace Cluster
 
         Core::Status ClusterBody::BuildFrameUpdateWalkStatus(Frame &response) {
             return response.Build(EClusters::BODY, EBodyCommands::SET_WALK_STATUS);
+        }
+
+        Core::Status ClusterBody::BuildFrameUpdateDirection(Frame &response, const bool successDirection) {
+            const Core::Status success = response.Build(
+                    EClusters::BODY,
+                    EBodyCommands::SET_DIRECTION);
+            if (success == Core::Status::CORE_OK) {
+                response.Set1ByteParam(successDirection);
+            }
+            return (success);
+        }
+
+        Core::Status ClusterBody::BuildFrameUpdateAmplitudeElevation(Frame &response,
+                                                                     const bool successAmplitudeElevation) {
+            const Core::Status success = response.Build(
+                    EClusters::BODY,
+                    EBodyCommands::SET_AMPLITUDE_ELEVATION);
+            if (success == Core::Status::CORE_OK) {
+                response.Set1ByteParam(successAmplitudeElevation);
+            }
+            return (success);
+        }
+
+        Core::Status ClusterBody::BuildFrameUpdateDirectionAmplitudeElevation(
+                Frame &response, const uint8_t amplitude, const uint8_t elevation, const uint16_t direction) {
+            const Core::Status success = response.Build(
+                    EClusters::BODY,
+                    EBodyCommands::GET_DIRECTION_AMPLITUDE_ELEVATION);
+            if (success == Core::Status::CORE_OK) {
+                response.Set1ByteParam(amplitude * 10U);
+                response.Set1ByteParam(elevation * 10U);
+                response.Set2BytesParam(direction);
+            }
+            return (success);
         }
 
     };

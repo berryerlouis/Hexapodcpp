@@ -3,74 +3,85 @@ import Message from "../communication/message.ts";
 import {ClusterName} from "../communication/clusters/clusterType.ts";
 import {ClusterServoCommands} from "../communication/clusters/clusterServo.ts";
 import {ClusterBodyCommands} from "../communication/clusters/clusterBody.ts";
-import {lerp} from "../tool/lerp.ts";
+import {CircleGeometry, DoubleSide, MathUtils, Mesh, MeshBasicMaterial, Object3D} from "three";
 
-interface LegMovement {
-    x: number;
-    y: number;
-    z: number;
-}
-
-
-export default class DirectionArrow {
-
+export default class DirectionArrow extends Object3D {
     socket:Socket;
-    up:HTMLElement;
     right:HTMLElement;
+    forward:HTMLElement;
     left:HTMLElement;
-    down:HTMLElement;
+    backward:HTMLElement;
     stop:HTMLElement;
     enable:HTMLElement;
-    legArrayMvt: LegMovement[] = [];
-    legArrayMvtIndex: number = 0;
-    lerpTime: number = 0;
-    interval: number = 0;
+    circle:Mesh;
     constructor(socket:Socket) {
+        super();
         this.socket = socket;
-        this.up = document.getElementById('up')!;
+        this.forward = document.getElementById('forward')!;
         this.right = document.getElementById('right')!;
         this.left = document.getElementById('left')!;
-        this.down = document.getElementById('down')!;
+        this.backward = document.getElementById('backward')!;
         this.stop = document.getElementById('stop')!;
         this.enable = document.getElementById('enable')!;
 
-        this.up.addEventListener('click',() => {
-            this.up.classList.toggle('select');
+        this.initializeButtons();
+
+        const geometry = new CircleGeometry( 0.3, 32,-Math.PI/2-Math.PI/16/2,Math.PI/16 );
+        geometry.rotateX(Math.PI/2);
+        geometry.rotateY(Math.PI);
+        geometry.translate(0,1.11,-0.5);
+        const material = new MeshBasicMaterial( { color: 0x4a6a8f } );
+        material.side = DoubleSide;
+        this.circle = new Mesh( geometry, material );
+        //this.circle.visible = false;
+        this.add(this.circle);
+
+        this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_DIRECTION_AMPLITUDE_ELEVATION, (message:Message) => {
+            if(message.params && message.params.length == 4) {
+                this.setDirection(message.getValueUint16(2));
+            }
+        });
+
+    }
+
+    initializeButtons() {
+        this.forward.addEventListener('click',() => {
+            this.forward.classList.toggle('select');
             this.right.classList.remove('select');
             this.left.classList.remove('select');
-            this.down.classList.remove('select');
+            this.backward.classList.remove('select');
             this.stop.classList.remove('select');
             this.socket.write( new Message( ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS,[0]));
         });
         this.right.addEventListener('click',() => {
-            this.up.classList.remove('select');
+            this.forward.classList.remove('select');
             this.right.classList.toggle('select');
             this.left.classList.remove('select');
-            this.down.classList.remove('select');
+            this.backward.classList.remove('select');
             this.stop.classList.remove('select');
             this.socket.write( new Message( ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS,[0]));
         });
         this.left.addEventListener('click',() => {
-            this.up.classList.remove('select');
+            this.forward.classList.remove('select');
             this.right.classList.remove('select');
             this.left.classList.toggle('select');
-            this.down.classList.remove('select');
+            this.backward.classList.remove('select');
             this.stop.classList.remove('select');
             this.socket.write( new Message( ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS,[0]));
         });
-        this.down.addEventListener('click',() => {
-            this.up.classList.remove('select');
+        this.backward.addEventListener('click',() => {
+            this.forward.classList.remove('select');
             this.right.classList.remove('select');
             this.left.classList.remove('select');
-            this.down.classList.toggle('select');
+            this.backward.classList.toggle('select');
             this.stop.classList.remove('select');
             this.socket.write( new Message( ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS,[0]));
         });
         this.stop.addEventListener('click',() => {
-            this.up.classList.remove('select');
+            this.forward.classList.remove('select');
             this.right.classList.remove('select');
             this.left.classList.remove('select');
-            this.down.classList.remove('select');
+            this.backward.classList.remove('select');
             this.stop.classList.toggle('select');
             this.socket.write( new Message( ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS,[2]));
         });
@@ -82,84 +93,10 @@ export default class DirectionArrow {
                 this.disableServos();
             }
         });
-
-        this.legArrayMvtIndex = 0;
-        this.lerpTime = 0;
-        this.interval = 0;
-        this.legArrayMvt.push({x:0,y:-30,z:-10});
-        this.legArrayMvt.push({x:0,y:-30,z:0});
-        this.legArrayMvt.push({x:0,y:30,z:0});
-
-
-        this.socket.addCallbackStarted(()=> {
-            /*this.interval = setInterval( (this.legArrayMvtIndex+1) % this.legArrayMvt() => {
-                let next = .length;
-                let next1 = (this.legArrayMvtIndex+2) % this.legArrayMvt.length;
-                this.moveLeg(
-                    0,
-                    lerp(this.legArrayMvt[this.legArrayMvtIndex].x,this.legArrayMvt[next].x,this.lerpTime),
-                    lerp(this.legArrayMvt[this.legArrayMvtIndex].y,this.legArrayMvt[next].y,this.lerpTime),
-                    lerp(this.legArrayMvt[this.legArrayMvtIndex].z,this.legArrayMvt[next].z,this.lerpTime)
-                );
-                this.moveLeg(
-                    2,
-                    lerp(this.legArrayMvt[this.legArrayMvtIndex].x,this.legArrayMvt[next].x,this.lerpTime),
-                    lerp(this.legArrayMvt[this.legArrayMvtIndex].y,this.legArrayMvt[next].y,this.lerpTime),
-                    lerp(this.legArrayMvt[this.legArrayMvtIndex].z,this.legArrayMvt[next].z,this.lerpTime)
-                );
-                this.moveLeg(
-                    4,
-                    lerp(this.legArrayMvt[this.legArrayMvtIndex].x,this.legArrayMvt[next].x,this.lerpTime),
-                    lerp(this.legArrayMvt[this.legArrayMvtIndex].y,this.legArrayMvt[next].y,this.lerpTime),
-                    lerp(this.legArrayMvt[this.legArrayMvtIndex].z,this.legArrayMvt[next].z,this.lerpTime)
-                );
-                this.moveLeg(
-                    1,
-                    lerp(this.legArrayMvt[next].x,this.legArrayMvt[next1].x,this.lerpTime),
-                    lerp(this.legArrayMvt[next].y,this.legArrayMvt[next1].y,this.lerpTime),
-                    lerp(this.legArrayMvt[next].z,this.legArrayMvt[next1].z,this.lerpTime)
-                );
-                this.moveLeg(
-                    3,
-                    lerp(this.legArrayMvt[next].x,this.legArrayMvt[next1].x,this.lerpTime),
-                    lerp(this.legArrayMvt[next].y,this.legArrayMvt[next1].y,this.lerpTime),
-                    lerp(this.legArrayMvt[next].z,this.legArrayMvt[next1].z,this.lerpTime)
-                );
-                this.moveLeg(
-                    5,
-                    lerp(this.legArrayMvt[next].x,this.legArrayMvt[next1].x,this.lerpTime),
-                    lerp(this.legArrayMvt[next].y,this.legArrayMvt[next1].y,this.lerpTime),
-                    lerp(this.legArrayMvt[next].z,this.legArrayMvt[next1].z,this.lerpTime)
-                );
-                this.lerpTime += 0.1;
-                if(this.lerpTime >= 1) {
-                    this.lerpTime = 0;
-                    this.legArrayMvtIndex++;
-                }
-                if(this.legArrayMvtIndex == this.legArrayMvt.length) { this.legArrayMvtIndex = 0;}
-            },100);*/
-        });
-        this.socket.addCallbackStopped(()=> {
-            clearInterval(this.interval);
-        });
     }
 
-    moveLeg(indexLeg: number, x: number, y: number, z: number) {
-        this.socket.write( new Message( ClusterName.BODY, ClusterBodyCommands.SET_LEG_X_Y_Z,
-            [
-                indexLeg,
-                Math.floor(x),
-                Math.floor(y),
-                Math.floor(z),
-                100
-            ],
-            [
-                0xFF,
-                0xFFFF,
-                0xFFFF,
-                0xFFFF,
-                0xFFFF,
-            ]));
+    setDirection(direction: number) {
+        this.circle.rotation.y = (MathUtils.degToRad(direction));
     }
 
     enableServos() {
@@ -170,6 +107,7 @@ export default class DirectionArrow {
         this.enable.children[0].classList.remove('bi-toggle2-off');
         this.enable.children[0].classList.add('bi-toggle2-on');
         this.enable.children[0].classList.add('select');
+        this.circle.visible = true;
     }
     disableServos() {
         for (let i = 0; i < 18; i++) {
@@ -179,5 +117,6 @@ export default class DirectionArrow {
         this.enable.children[0].classList.remove('bi-toggle2-on');
         this.enable.children[0].classList.add('bi-toggle2-off');
         this.enable.children[0].classList.remove('select');
+        this.circle.visible = false;
     }
 }

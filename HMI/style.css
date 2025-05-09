@@ -278,23 +278,23 @@ h1 {
 }
 
 .cockpit-direction .up {
-    top: 20%;
+    top: 15%;
     left: 50%;
 }
 
 .cockpit-direction .down {
-  top: 80%;
+  top: 82%;
   left: 50%;
 }
 
 .cockpit-direction .left {
   top: 50%;
-  left: 20%;
+  left: 15%;
 }
 
 .cockpit-direction .right {
   top: 50%;
-  left: 80%;
+  left: 83%;
 }
 
 .cockpit-direction .stop {
