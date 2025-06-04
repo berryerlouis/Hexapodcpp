@@ -11,7 +11,7 @@ namespace Bot
     {
         using namespace Misc::Maths;
 
-        class BodyInterface : public Component::ComponentInterface<0u, nullptr_t> {
+        class BodyInterface : public Component::ComponentInterface<0U, nullptr_t> {
         public:
             BodyInterface() = default;
 
@@ -25,7 +25,9 @@ namespace Bot
 
             virtual bool SetDirection(const uint16_t directionAngle) = 0;
 
-            virtual bool SetAmplitudeElevation(const uint16_t amplitude, const uint16_t elevation) = 0;
+            virtual bool SetAmplitude(const uint8_t amplitude) = 0;
+
+            virtual bool SetElevation(const uint8_t elevation) = 0;
 
             virtual uint16_t GetDirection(void) const = 0;
 

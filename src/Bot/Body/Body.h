@@ -2,6 +2,7 @@
 
 #include "BodyInterface.h"
 #include "../Walk/Walk.h"
+#include "../../Driver/Tick/TickInterface.h"
 
 namespace Bot
 {
@@ -19,7 +20,7 @@ namespace Bot
                 Position3d bodyIk;
             };
 
-            Body(Legs::Legs &legs);
+            Body(Legs::Legs &legs, Driver::Tick::TickInterface &tick);
 
             ~Body() = default;
 
@@ -39,7 +40,9 @@ namespace Bot
 
             virtual bool SetDirection(const uint16_t directionAngle) final override;
 
-            virtual bool SetAmplitudeElevation(const uint16_t amplitude, const uint16_t elevation) final override;
+            virtual bool SetAmplitude(const uint8_t amplitude) final override;
+
+            virtual bool SetElevation(const uint8_t elevation) final override;
 
             virtual uint16_t GetDirection(void) const final override;
 

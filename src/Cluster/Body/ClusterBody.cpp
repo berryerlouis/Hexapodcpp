@@ -14,8 +14,11 @@ namespace Cluster
             this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_LEG_POS_ROT, .expectedSize = 9U});
             this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_WALK_STATUS, .expectedSize = 1U});
             this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_DIRECTION, .expectedSize = 2U});
-            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_AMPLITUDE_ELEVATION,
-                                               .expectedSize = 2U});
+            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::GET_DIRECTION, .expectedSize = 0U});
+            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_AMPLITUDE, .expectedSize = 1U});
+            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::GET_AMPLITUDE, .expectedSize = 0U});
+            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_ELEVATION, .expectedSize = 1U});
+            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::GET_ELEVATION, .expectedSize = 0U});
             this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::GET_DIRECTION_AMPLITUDE_ELEVATION,
                                                .expectedSize = 0U});
         }
@@ -80,13 +83,16 @@ namespace Cluster
                 const uint16_t direction = static_cast<int16_t>(
                     static_cast<uint16_t>(request.Get1ByteParam(1U)) |
                     static_cast<uint16_t>(request.Get1ByteParam(0U)) << 8U);
-                const bool successDirection = this->mBody.SetDirection(direction);
-                success = this->BuildFrameUpdateDirection(response, successDirection);
-            } else if (request.commandId == EBodyCommands::SET_AMPLITUDE_ELEVATION) {
-                const uint16_t amplitude = request.Get1ByteParam(0U);
-                const uint16_t elevation = request.Get1ByteParam(1U);
-                const bool successAmplitudeElevation = this->mBody.SetAmplitudeElevation(amplitude, elevation);
-                success = this->BuildFrameUpdateAmplitudeElevation(response, successAmplitudeElevation);
+                this->mBody.SetDirection(direction);
+                success = this->BuildFrameUpdateDirection(response, this->mBody.GetDirection());
+            } else if (request.commandId == EBodyCommands::SET_AMPLITUDE) {
+                const uint8_t amplitude = request.Get1ByteParam(0U);
+                this->mBody.SetAmplitude(amplitude);
+                success = this->BuildFrameUpdateAmplitude(response, this->mBody.GetAmplitude());
+            } else if (request.commandId == EBodyCommands::SET_ELEVATION) {
+                const uint8_t elevation = request.Get1ByteParam(0U);
+                this->mBody.SetElevation(elevation);
+                success = this->BuildFrameUpdateElevation(response, this->mBody.GetElevation());
             } else if (request.commandId == EBodyCommands::GET_DIRECTION_AMPLITUDE_ELEVATION) {
                 const uint8_t amplitude = this->mBody.GetAmplitude();
                 const uint8_t elevation = this->mBody.GetElevation();
@@ -121,23 +127,32 @@ namespace Cluster
             return response.Build(EClusters::BODY, EBodyCommands::SET_WALK_STATUS);
         }
 
-        Core::Status ClusterBody::BuildFrameUpdateDirection(Frame &response, const bool successDirection) {
+        Core::Status ClusterBody::BuildFrameUpdateDirection(Frame &response, const uint16_t direction) {
             const Core::Status success = response.Build(
                     EClusters::BODY,
-                    EBodyCommands::SET_DIRECTION);
+                    EBodyCommands::GET_DIRECTION);
             if (success == Core::Status::CORE_OK) {
-                response.Set1ByteParam(successDirection);
+                response.Set2BytesParam(direction);
             }
             return (success);
         }
 
-        Core::Status ClusterBody::BuildFrameUpdateAmplitudeElevation(Frame &response,
-                                                                     const bool successAmplitudeElevation) {
+        Core::Status ClusterBody::BuildFrameUpdateAmplitude(Frame &response, const uint8_t amplitude) {
             const Core::Status success = response.Build(
                     EClusters::BODY,
-                    EBodyCommands::SET_AMPLITUDE_ELEVATION);
+                    EBodyCommands::GET_AMPLITUDE);
             if (success == Core::Status::CORE_OK) {
-                response.Set1ByteParam(successAmplitudeElevation);
+                response.Set1ByteParam(amplitude);
+            }
+            return (success);
+        }
+
+        Core::Status ClusterBody::BuildFrameUpdateElevation(Frame &response, const uint8_t elevation) {
+            const Core::Status success = response.Build(
+                    EClusters::BODY,
+                    EBodyCommands::GET_ELEVATION);
+            if (success == Core::Status::CORE_OK) {
+                response.Set1ByteParam(elevation);
             }
             return (success);
         }

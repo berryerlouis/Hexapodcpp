@@ -43,11 +43,15 @@ namespace Cluster
         SET_LEG_POS_ROT,
         SET_WALK_STATUS,
         SET_DIRECTION,
-        SET_AMPLITUDE_ELEVATION,
+        GET_DIRECTION,
+        SET_AMPLITUDE,
+        GET_AMPLITUDE,
+        SET_ELEVATION,
+        GET_ELEVATION,
         GET_DIRECTION_AMPLITUDE_ELEVATION
     };
 
-    static constexpr uint8_t NB_COMMANDS_BODY = 6U;
+    static constexpr uint8_t NB_COMMANDS_BODY = 10U;
 
     enum EImuCommands {
         ALL,

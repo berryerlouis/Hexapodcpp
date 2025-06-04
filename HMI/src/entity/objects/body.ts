@@ -70,7 +70,7 @@ export default class Body extends Object3D {
 
         this.enable = document.getElementById('enable')!;
         this.enable.addEventListener('click',() => {
-            if(!this.enable.classList.contains('select')){
+            if(this.enable.classList.contains('select')){
                 clearInterval(this.interval);
                 this.interval = setInterval(()=>{
                     this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_ALL));

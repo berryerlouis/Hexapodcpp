@@ -2,6 +2,7 @@
 #include "../Constants.h"
 #include "../Legs/Legs.h"
 #include "../../Misc/Maths/Geometry.h"
+#include "../../Driver/Tick/TickInterface.h"
 
 namespace Bot
 {
@@ -12,7 +13,7 @@ namespace Bot
 
         class Walk {
         public:
-            Walk(Legs::Legs &legs);
+            Walk(Legs::Legs &legs, Driver::Tick::TickInterface &tick);
 
             ~Walk() = default;
 
@@ -22,7 +23,9 @@ namespace Bot
 
             bool SetDirection(const uint16_t directionAngle);
 
-            bool SetAmplitudeElevation(const uint16_t amplitude, const uint16_t elevation);
+            bool SetAmplitude(const uint8_t amplitude);
+
+            bool SetElevation(const uint8_t elevation);
 
             uint16_t GetDirection(void) const;
 
@@ -31,16 +34,10 @@ namespace Bot
             uint8_t GetElevation(void) const;
 
         private:
-            void Play(const uint64_t currentTime);
-
-            void Pause(const uint64_t currentTime);
-
-            void Stop(const uint64_t currentTime);
-
-
             struct Step {
                 Position3d positions;
                 float delayStep;
+                bool onGround;
             };
 
             struct Steps {
@@ -49,7 +46,34 @@ namespace Bot
                 uint8_t idxPosition;
             };
 
+            void Play(const uint64_t currentTime);
+
+            void Pause(const uint64_t currentTime);
+
+            void Stop(const uint64_t currentTime);
+
+            void UpdateDirection(const uint64_t currentTime);
+
+            void UpdateAmplitude(const uint64_t currentTime);
+
+            void UpdateElevation(const uint64_t currentTime);
+
+            Position3d ComputeNewLegPosition(const float deltaTime, const Steps &legSteps,
+                                             const uint8_t legId) const;
+
+            void NextStep(const uint64_t currentTime, Steps &legSteps) const;
+
+            void SetAmplitude(Position3d &position) const;
+
+            void SetElevation(Position3d &position) const;
+
+            static float GetDeltaTime(const float step, const uint64_t currentTime, const uint64_t startTime);
+
+            static Position3d Rotate(const float angle, const Position3d &position, const bool clockWize = true);
+
+
             Legs::Legs &mLegs;
+            Driver::Tick::TickInterface &mTick;
             EWalkStatus mStatus;
             uint8_t mCounterStepPosition;
             uint8_t mMaxCounterStepPosition;
@@ -57,9 +81,15 @@ namespace Bot
             uint16_t mDelayStep;
             uint64_t mPreviousTime;
             bool mStepFinished;
+            uint64_t mStartTimeDirection;
             float mDirection;
+            float mTargetDirection;
+            uint64_t mStartTimeAmplitude;
+            uint64_t mStartTimeElevation;
             float mAmplitude;
+            float mTargetAmplitude;
             float mElevation;
+            float mTargetElevation;
         };
     }
 }

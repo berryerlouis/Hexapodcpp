@@ -4,10 +4,10 @@ namespace Bot
 {
     namespace Body
     {
-        Body::Body(Legs::Legs &legs) :
+        Body::Body(Legs::Legs &legs, Driver::Tick::TickInterface &tick) :
             mBodyIk{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, {0.0, 0.0, 0.0}}
             , mLegs(legs)
-            , mWalk(mLegs)
+            , mWalk(mLegs, tick)
             , mPosition{0.0, 0.0, 0.0}
             , mRotation{0.0, 0.0, 0.0} {
         }
@@ -30,8 +30,12 @@ namespace Bot
             return this->mWalk.SetDirection(directionAngle);
         }
 
-        bool Body::SetAmplitudeElevation(const uint16_t amplitude, const uint16_t elevation) {
-            return this->mWalk.SetAmplitudeElevation(amplitude, elevation);
+        bool Body::SetAmplitude(const uint8_t amplitude) {
+            return this->mWalk.SetAmplitude(amplitude);
+        }
+
+        bool Body::SetElevation(const uint8_t elevation) {
+            return this->mWalk.SetElevation(elevation);
         }
 
         uint16_t Body::GetDirection(void) const {

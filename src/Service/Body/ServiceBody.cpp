@@ -5,7 +5,7 @@ namespace Service
     namespace Body
     {
         ServiceBody::ServiceBody(BodyInterface &body, Event::MessageInterface &messageListener) :
-            Service(BODY, 100U, messageListener)
+            Service(BODY, 50U, messageListener)
             , mBody(body) {
         }
 

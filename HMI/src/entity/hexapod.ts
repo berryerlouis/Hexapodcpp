@@ -9,6 +9,7 @@ import LoopTime from "./objects/loopTime.ts";
 import {ClusterName} from "../communication/clusters/clusterType.ts";
 import {ClusterBodyCommands} from "../communication/clusters/clusterBody.ts";
 import Message from "../communication/message.ts";
+import DirectionArrow from "../engine/directionArrow.ts";
 
 
 export interface HexapodStruct {
@@ -18,6 +19,8 @@ export interface HexapodStruct {
     position: { x: number, y: number, z: number };
     rotation: { x: number, y: number, z: number };
 }
+
+type CallbackMove = () => void;
 
 export default class Hexapod extends Object3D {
     hexapodStruct:HexapodStruct = {
@@ -35,29 +38,60 @@ export default class Hexapod extends Object3D {
     button:Button;
     imu: Imu;
     loopTime:LoopTime;
+    directionArrow:DirectionArrow;
+    listOfCallbackMove: CallbackMove[];
     constructor(socket:Socket) {
         super();
         this.interval = 0;
         this.socket = socket;
         this.button = new Button(this.socket);
         this.head = new Head(this.socket);
+        this.directionArrow = new DirectionArrow(this.socket);
         this.body = new Body(0,1,0, this.socket, 100);
         this.imu = new Imu(this.socket,5000);
         this.battery = new Battery(this.socket,10000);
         this.loopTime = new LoopTime(this.socket,10000);
+        this.listOfCallbackMove = [];
 
         this.body.rotation.y = Math.PI/2;
         this.add(this.body);
         this.add(this.head);
+        this.add(this.directionArrow);
 
 
         this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_DIRECTION_AMPLITUDE_ELEVATION, (message:Message) => {
             if(message.params && message.params.length == 4) {
-                this.hexapodStruct.direction = message.getValueUint16(2);
                 this.hexapodStruct.amplitude = message.getValueUint8(0);
                 this.hexapodStruct.elevation = message.getValueUint8(1);
+                this.hexapodStruct.direction = message.getValueUint16(2);
                 this.body.setDirection(this.hexapodStruct.direction);
             }
+        });
+        this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_DIRECTION, (message:Message) => {
+            if(message.params && message.params.length == 2) {
+                this.hexapodStruct.direction = message.getValueUint16(0);
+                this.body.setDirection(this.hexapodStruct.direction);
+            }
+        });
+        this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_AMPLITUDE, (message:Message) => {
+            if(message.params && message.params.length == 1) {
+                this.hexapodStruct.amplitude = message.getValueUint8(0);
+            }
+        });
+        this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_ELEVATION, (message:Message) => {
+            if(message.params && message.params.length == 1) {
+                this.hexapodStruct.elevation = message.getValueUint8(0);
+            }
+        });
+    }
+
+    addCallbackMove(callback: CallbackMove) {
+        this.listOfCallbackMove.push(callback);
+    }
+
+    notifyCallbackMove() {
+        this.listOfCallbackMove.forEach((cb) => {
+            cb();
         });
     }
 
@@ -74,5 +108,26 @@ export default class Hexapod extends Object3D {
 
     setDirection(direction:number) {
         this.body.setDirection(direction);
+        this.directionArrow.setDirection(direction);
+    }
+
+    MoveForward(number: number) {
+        this.translateZ(number);
+        this.notifyCallbackMove();
+    }
+
+    MoveBackward(number: number) {
+        this.translateZ(number);
+        this.notifyCallbackMove();
+    }
+
+    MoveLeft(number: number) {
+        this.rotateY(number);
+        this.notifyCallbackMove();
+    }
+
+    MoveRight(number: number) {
+        this.rotateY(number);
+        this.notifyCallbackMove();
     }
 }

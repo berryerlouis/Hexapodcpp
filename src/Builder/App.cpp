@@ -61,7 +61,7 @@ namespace Builder
         , mServos(mPca9685Left, mPca9685Right, mEnablePwm, mTick)
         , mSoftware()
         , mLegs(mServos)
-        , mBody(mLegs)
+        , mBody(mLegs, mTick)
         , mClusterGeneral(mSoftware)
         , mClusterBattery(mBattery)
         , mClusterButton(mButton)
