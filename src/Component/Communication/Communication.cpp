@@ -35,33 +35,25 @@ namespace Component
                 const Core::Status parsedStatus =
                         Protocol::Decode(const_cast<const char *>(this->mBufferRx), request);
                 if (parsedStatus == Core::Status::CORE_OK) {
-                    const uint8_t frameClusterID = request.clusterId;
+                    const uint8_t frameClusterID = request.GetClusterId();
                     if (frameClusterID < NB_CLUSTERS) {
                         const auto cluster = this->mClusters.GetCluster(static_cast<EClusters>(frameClusterID));
                         if (cluster != nullptr) {
                             if (cluster->Execute(request, response) != Core::Status::CORE_OK) {
-                                response.clusterId = frameClusterID;
-                                response.commandId = static_cast<uint8_t>(GENERIC);
-                                response.nbParams = 1U;
-                                response.params[0U] = Core::Status::CORE_ERROR_ARGUMENT;
+                                response.Build(frameClusterID, GENERIC);
+                                response.Set1ByteParam(Core::Status::CORE_ERROR_ARGUMENT);
                             }
                         } else {
-                            response.clusterId = frameClusterID;
-                            response.commandId = static_cast<uint8_t>(GENERIC);
-                            response.nbParams = 1U;
-                            response.params[0U] = Core::Status::CORE_ERROR_NULLPTR;
+                            response.Build(frameClusterID, GENERIC);
+                            response.Set1ByteParam(Core::Status::CORE_ERROR_NULLPTR);
                         }
                     } else {
-                        response.clusterId = 0xFFU;
-                        response.commandId = static_cast<uint8_t>(GENERIC);
-                        response.nbParams = 1U;
-                        response.params[0U] = Core::Status::CORE_ERROR_UNKNOWN_CLUSTER;
+                        response.Build(0xFFU, GENERIC);
+                        response.Set1ByteParam(Core::Status::CORE_ERROR_UNKNOWN_CLUSTER);
                     }
                 } else {
-                    response.clusterId = 0xFFU;
-                    response.commandId = static_cast<uint8_t>(GENERIC);
-                    response.nbParams = 1U;
-                    response.params[0U] = parsedStatus;
+                    response.Build(0xFFU, GENERIC);
+                    response.Set1ByteParam(parsedStatus);
                 }
                 this->SendMessage(response);
                 //this->mLedStatus.Off();

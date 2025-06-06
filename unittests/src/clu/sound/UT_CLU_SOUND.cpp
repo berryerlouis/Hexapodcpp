@@ -49,19 +49,19 @@ namespace Cluster
 
             success = mClusterSound.ExecuteFrame(request, response);
 
-            EXPECT_EQ(response.clusterId, SOUND);
-            EXPECT_EQ(response.commandId, GET_SOUND_STATUS);
-            EXPECT_EQ(response.nbParams, 9U);
-            EXPECT_EQ(response.params[0U], SOUND_LEFT);
-            EXPECT_EQ(response.params[1U], 0x56);
-            EXPECT_EQ(response.params[2U], 0x04);
-            EXPECT_EQ(response.params[3U], 0x00);
-            EXPECT_EQ(response.params[4U], 0x00);
-            EXPECT_EQ(response.params[5U], 0x00);
-            EXPECT_EQ(response.params[6U], 0x00);
-            EXPECT_EQ(response.params[7U], 0x00);
-            EXPECT_EQ(response.params[8U], 0x00);
-            EXPECT_EQ(response.params[9U], 0x00);
+            EXPECT_EQ(response.GetClusterId(), SOUND);
+            EXPECT_EQ(response.GetCommandId(), GET_SOUND_STATUS);
+            EXPECT_EQ(response.GetNbParams(), 9U);
+            EXPECT_EQ(response.Get1ByteParam(0U), SOUND_LEFT);
+            EXPECT_EQ(response.Get1ByteParam(1U), 0x56);
+            EXPECT_EQ(response.Get1ByteParam(2U), 0x04);
+            EXPECT_EQ(response.Get1ByteParam(3U), 0x00);
+            EXPECT_EQ(response.Get1ByteParam(4U), 0x00);
+            EXPECT_EQ(response.Get1ByteParam(5U), 0x00);
+            EXPECT_EQ(response.Get1ByteParam(6U), 0x00);
+            EXPECT_EQ(response.Get1ByteParam(7U), 0x00);
+            EXPECT_EQ(response.Get1ByteParam(8U), 0x00);
+            EXPECT_EQ(response.Get1ByteParam(9U), 0x00);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
@@ -75,19 +75,19 @@ namespace Cluster
 
             success = mClusterSound.ExecuteFrame(request, response);
 
-            EXPECT_EQ(response.clusterId, SOUND);
-            EXPECT_EQ(response.commandId, GET_SOUND_STATUS);
-            EXPECT_EQ(response.nbParams, 9U);
-            EXPECT_EQ(response.params[0U], SOUND_RIGHT);
-            EXPECT_EQ(response.params[1U], 0x56);
-            EXPECT_EQ(response.params[2U], 0x04);
-            EXPECT_EQ(response.params[3U], 0x00);
-            EXPECT_EQ(response.params[4U], 0x00);
-            EXPECT_EQ(response.params[5U], 0x00);
-            EXPECT_EQ(response.params[6U], 0x00);
-            EXPECT_EQ(response.params[7U], 0x00);
-            EXPECT_EQ(response.params[8U], 0x00);
-            EXPECT_EQ(response.params[9U], 0x00);
+            EXPECT_EQ(response.GetClusterId(), SOUND);
+            EXPECT_EQ(response.GetCommandId(), GET_SOUND_STATUS);
+            EXPECT_EQ(response.GetNbParams(), 9U);
+            EXPECT_EQ(response.Get1ByteParam(0U), SOUND_RIGHT);
+            EXPECT_EQ(response.Get1ByteParam(1U), 0x56);
+            EXPECT_EQ(response.Get1ByteParam(2U), 0x04);
+            EXPECT_EQ(response.Get1ByteParam(3U), 0x00);
+            EXPECT_EQ(response.Get1ByteParam(4U), 0x00);
+            EXPECT_EQ(response.Get1ByteParam(5U), 0x00);
+            EXPECT_EQ(response.Get1ByteParam(6U), 0x00);
+            EXPECT_EQ(response.Get1ByteParam(7U), 0x00);
+            EXPECT_EQ(response.Get1ByteParam(8U), 0x00);
+            EXPECT_EQ(response.Get1ByteParam(9U), 0x00);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
@@ -99,9 +99,9 @@ namespace Cluster
             request.Build(SOUND, 0x5FU);
             success = mClusterSound.ExecuteFrame(request, response);
 
-            EXPECT_EQ(response.clusterId, 0U);
-            EXPECT_EQ(response.commandId, 0U);
-            EXPECT_EQ(response.nbParams, 0U);
+            EXPECT_EQ(response.GetClusterId(), 0U);
+            EXPECT_EQ(response.GetCommandId(), 0U);
+            EXPECT_EQ(response.GetNbParams(), 0U);
             EXPECT_EQ(success, Core::Status::CORE_ERROR);
         }
     }

@@ -10,7 +10,7 @@ namespace Cluster
     Core::Status ClusterBase::Execute(Frame &request, Frame &response) {
         Core::Status success = Core::Status::CORE_ERROR;
         if (this->mClusterCommand != nullptr) {
-            if (request.clusterId != this->GetId()) {
+            if (request.GetClusterId() != this->GetClusterId()) {
                 return (success);
             }
             success = this->mClusterCommand->Execute(request, response);
@@ -18,21 +18,19 @@ namespace Cluster
         return (success);
     }
 
-    EClusters ClusterBase::GetId(void) {
+    EClusters ClusterBase::GetClusterId(void) {
         return (this->mClusterId);
     }
 
     Core::Status ClusterBase::BuildFrameNack(Frame &response) {
-        response.clusterId = this->mClusterId;
-        response.commandId = static_cast<uint8_t>(GENERIC);
+        const Core::Status success = response.Build(this->mClusterId, GENERIC);
         response.Set1ByteParam(false);
-        return (Core::Status::CORE_OK);
+        return (success);
     }
 
     Core::Status ClusterBase::BuildFrameNack(Frame &response, const Core::Status error) {
-        response.clusterId = this->mClusterId;
-        response.commandId = static_cast<uint8_t>(GENERIC);
+        const Core::Status success = response.Build(this->mClusterId, GENERIC);
         response.Set1ByteParam(error);
-        return (Core::Status::CORE_OK);
+        return (success);
     }
 }

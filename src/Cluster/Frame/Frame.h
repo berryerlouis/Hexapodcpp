@@ -9,7 +9,7 @@ namespace Cluster
 {
 #define FRAME_MAX_PARAMS    20U
 
-    struct Frame {
+    class Frame {
     public:
         Frame(void);
 
@@ -52,11 +52,16 @@ namespace Cluster
 
         uint64_t Get8BytesParam(const uint8_t index) const;
 
+        uint8_t GetCommandId(void) const;
+
+        uint8_t GetClusterId(void) const;
+
+        uint8_t GetNbParams(void) const;
+
+    private:
         uint8_t clusterId;
         uint8_t commandId;
         uint8_t nbParams;
         uint8_t params[FRAME_MAX_PARAMS];
-
-    private:
     };
 }

@@ -46,10 +46,10 @@ namespace Cluster
 
             success = mClusterButton.ExecuteFrame(request, response);
 
-            EXPECT_EQ(response.clusterId, BUTTON);
-            EXPECT_EQ(response.commandId, GET_BP_STATUS);
-            EXPECT_EQ(response.nbParams, 1U);
-            EXPECT_EQ(response.params[0U], RELEASE);
+            EXPECT_EQ(response.GetClusterId(), BUTTON);
+            EXPECT_EQ(response.GetCommandId(), GET_BP_STATUS);
+            EXPECT_EQ(response.GetNbParams(), 1U);
+            EXPECT_EQ(response.Get1ByteParam(0U), RELEASE);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
@@ -61,9 +61,9 @@ namespace Cluster
             request.Build(BUTTON, 0x5FU);
             success = mClusterButton.ExecuteFrame(request, response);
 
-            EXPECT_EQ(response.clusterId, 0U);
-            EXPECT_EQ(response.commandId, 0U);
-            EXPECT_EQ(response.nbParams, 0U);
+            EXPECT_EQ(response.GetClusterId(), 0U);
+            EXPECT_EQ(response.GetCommandId(), 0U);
+            EXPECT_EQ(response.GetNbParams(), 0U);
             EXPECT_EQ(success, Core::Status::CORE_ERROR);
         }
     }

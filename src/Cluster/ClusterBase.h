@@ -11,7 +11,7 @@ namespace Cluster
 
         virtual Core::Status Execute(Frame &request, Frame &response) final override;
 
-        virtual EClusters GetId(void);
+        virtual EClusters GetClusterId(void);
 
         virtual Core::Status BuildFrameNack(Frame &response);
 

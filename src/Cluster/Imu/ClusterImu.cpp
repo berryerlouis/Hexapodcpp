@@ -26,37 +26,37 @@ namespace Cluster
 
         Core::Status ClusterImu::ExecuteFrame(const Frame &request, Frame &response) {
             Core::Status success = Core::Status::CORE_ERROR;
-            if (request.commandId == EImuCommands::ALL) {
+            if (request.GetCommandId() == EImuCommands::ALL) {
                 const Vector3 acc = this->mImu.ReadAcc();
                 const Vector3 gyr = this->mImu.ReadGyr();
                 const Vector3 mag = this->mImu.ReadMag();
                 const uint16_t temp = this->mImu.ReadTemp();
                 success = this->BuildFrameAll(acc, gyr, mag, temp, response);
-            } else if (request.commandId == EImuCommands::ACC) {
+            } else if (request.GetCommandId() == EImuCommands::ACC) {
                 const Vector3 acc = this->mImu.ReadAcc();
                 success = this->BuildFrameAcc(acc, response);
-            } else if (request.commandId == EImuCommands::GYR) {
+            } else if (request.GetCommandId() == EImuCommands::GYR) {
                 const Vector3 gyr = this->mImu.ReadGyr();
                 success = this->BuildFrameGyr(gyr, response);
-            } else if (request.commandId == EImuCommands::MAG) {
+            } else if (request.GetCommandId() == EImuCommands::MAG) {
                 const Vector3 mag = this->mImu.ReadMag();
                 success = this->BuildFrameMag(mag, response);
-            } else if (request.commandId == EImuCommands::TMP) {
+            } else if (request.GetCommandId() == EImuCommands::TMP) {
                 const uint16_t temp = this->mImu.ReadTemp();
                 success = this->BuildFrameTmp(temp, response);
-            } else if (request.commandId == EImuCommands::YAW_PITCH_ROLL) {
+            } else if (request.GetCommandId() == EImuCommands::YAW_PITCH_ROLL) {
                 const Position3D ypr = this->mImu.ReadYawPitchRoll();
                 success = this->BuildFrameYawPitchRoll(ypr, response);
-            } else if (request.commandId == EImuCommands::PRESSURE) {
+            } else if (request.GetCommandId() == EImuCommands::PRESSURE) {
                 const int32_t pressure = this->mBarometer.GetPressure();
                 success = this->BuildFramePressure(pressure, response);
-            } else if (request.commandId == EImuCommands::ALTITUDE) {
+            } else if (request.GetCommandId() == EImuCommands::ALTITUDE) {
                 const uint16_t seaLevel = this->mBarometer.GetAltitude();
                 success = this->BuildFrameSeaLevel(seaLevel, response);
-            } else if (request.commandId == EImuCommands::TMP_BAR) {
+            } else if (request.GetCommandId() == EImuCommands::TMP_BAR) {
                 const int16_t temp = this->mBarometer.GetTemp();
                 success = this->BuildFrameTmpBar(temp, response);
-            } else if (request.commandId == EImuCommands::CALIB_SENSOR) {
+            } else if (request.GetCommandId() == EImuCommands::CALIB_SENSOR) {
                 const SensorsImu sensor = static_cast<SensorsImu>(request.Get1ByteParam(0U));
                 const bool enable = request.Get1ByteParam(1U);
                 if (enable == true) {

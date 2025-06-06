@@ -42,9 +42,9 @@ namespace Cluster
 			request.Build(GENERAL, 0x5FU);
 			success = mClusterGeneral.ExecuteFrame(request, response);
 
-			EXPECT_EQ(response.clusterId, 0U);
-			EXPECT_EQ(response.commandId, 0U);
-			EXPECT_EQ(response.nbParams, 0U);
+			EXPECT_EQ(response.GetClusterId(), 0U);
+			EXPECT_EQ(response.GetCommandId(), 0U);
+			EXPECT_EQ(response.GetNbParams(), 0U);
 			EXPECT_EQ(success, Core::Status::CORE_ERROR);
 		}
 
@@ -57,9 +57,9 @@ namespace Cluster
 			request.Build(GENERAL, EGeneralCommands::VERSION);
 			success = mClusterGeneral.ExecuteFrame(request, response);
 
-			EXPECT_EQ(response.clusterId, GENERAL);
-			EXPECT_EQ(response.commandId, EGeneralCommands::VERSION);
-			EXPECT_EQ(response.nbParams, 2U);
+			EXPECT_EQ(response.GetClusterId(), GENERAL);
+			EXPECT_EQ(response.GetCommandId(), EGeneralCommands::VERSION);
+			EXPECT_EQ(response.GetNbParams(), 2U);
 			EXPECT_EQ(success, Core::Status::CORE_OK);
 		}
 	}

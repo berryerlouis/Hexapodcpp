@@ -16,7 +16,7 @@ namespace Cluster
 
         Core::Status ClusterButton::ExecuteFrame(const Frame &request, Frame &response) {
             Core::Status success = Core::Status::CORE_ERROR;
-            if (request.commandId == EButtonCommands::GET_BP_STATUS) {
+            if (request.GetCommandId() == EButtonCommands::GET_BP_STATUS) {
                 const ButtonState state = this->mButton.Get();
                 success = BuildFrameGetButtonState(state, response);
             }

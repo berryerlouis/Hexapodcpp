@@ -17,9 +17,9 @@ namespace Cluster
 
         Core::Status ClusterSound::ExecuteFrame(const Frame &request, Frame &response) {
             Core::Status success = Core::Status::CORE_ERROR;
-            if (request.commandId == ESoundCommands::GET_SOUND_STATUS) {
+            if (request.GetCommandId() == ESoundCommands::GET_SOUND_STATUS) {
                 uint64_t sound;
-                const SoundId soundId = static_cast<SoundId>(request.params[0U]);
+                const SoundId soundId = static_cast<SoundId>(request.Get1ByteParam(0U));
                 if (soundId == SOUND_LEFT) {
                     sound = this->mSoundLeft.GetIntervalSoundHit();
                 } else {

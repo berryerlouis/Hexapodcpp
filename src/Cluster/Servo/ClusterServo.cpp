@@ -29,21 +29,21 @@ namespace Cluster
 
 
         Core::Status ClusterServo::ExecuteFrame(const Frame &request, Frame &response) {
-            if (request.commandId == EServoCommands::GET_ALL) {
+            if (request.GetCommandId() == EServoCommands::GET_ALL) {
                 uint8_t params[NB_SERVOS] = {0U};
                 for (size_t servoId = 0U; servoId < NB_SERVOS; servoId++) {
                     params[servoId] = this->mServosInterface.GetServo(servoId).GetAngle();
                 }
                 return BuildFrameAllAngle(params, response);
             }
-            if (request.commandId == EServoCommands::GET_ANGLE) {
-                const uint8_t servoId = request.params[0U];
+            if (request.GetCommandId() == EServoCommands::GET_ANGLE) {
+                const uint8_t servoId = request.Get1ByteParam(0U);
                 const uint8_t angle = this->mServosInterface.GetServo(servoId).GetAngle();
                 return this->BuildFrameGetAngle(servoId, angle, response);
             }
-            if (request.commandId == EServoCommands::SET_ANGLE) {
-                const uint8_t servoId = request.params[0U];
-                const uint8_t angle = request.params[1U];
+            if (request.GetCommandId() == EServoCommands::SET_ANGLE) {
+                const uint8_t servoId = request.Get1ByteParam(0U);
+                const uint8_t angle = request.Get1ByteParam(1U);
                 const Core::Status success = this->mServosInterface.GetServo(servoId).SetAngle(angle);
                 if (success == Core::Status::CORE_OK) {
                     const uint8_t angleServo = this->mServosInterface.GetServo(servoId).GetAngle();
@@ -52,14 +52,14 @@ namespace Cluster
                 const uint8_t angleServo = this->mServosInterface.GetServo(servoId).GetAngle();
                 return this->BuildFrameSetError(success, servoId, angleServo, response);
             }
-            if (request.commandId == EServoCommands::GET_MIN) {
-                const uint8_t servoId = request.params[0U];
+            if (request.GetCommandId() == EServoCommands::GET_MIN) {
+                const uint8_t servoId = request.Get1ByteParam(0U);
                 const uint8_t angle = this->mServosInterface.GetServo(servoId).GetMin();
                 return this->BuildFrameGetMinAngle(servoId, angle, response);
             }
-            if (request.commandId == EServoCommands::SET_MIN) {
-                const uint8_t servoId = request.params[0U];
-                const uint8_t angle = request.params[1U];
+            if (request.GetCommandId() == EServoCommands::SET_MIN) {
+                const uint8_t servoId = request.Get1ByteParam(0U);
+                const uint8_t angle = request.Get1ByteParam(1U);
                 const Core::Status success = this->mServosInterface.GetServo(servoId).SetMin(angle)
                                                  ? Core::CORE_OK
                                                  : Core::CORE_ERROR_MIN;
@@ -69,14 +69,14 @@ namespace Cluster
                 const uint8_t angleServo = this->mServosInterface.GetServo(servoId).GetAngle();
                 return this->BuildFrameSetError(success, servoId, angleServo, response);
             }
-            if (request.commandId == EServoCommands::GET_MAX) {
-                const uint8_t servoId = request.params[0U];
+            if (request.GetCommandId() == EServoCommands::GET_MAX) {
+                const uint8_t servoId = request.Get1ByteParam(0U);
                 const uint8_t angle = this->mServosInterface.GetServo(servoId).GetMax();
                 return this->BuildFrameGetMaxAngle(servoId, angle, response);
             }
-            if (request.commandId == EServoCommands::SET_MAX) {
-                const uint8_t servoId = request.params[0U];
-                const uint8_t angle = request.params[1U];
+            if (request.GetCommandId() == EServoCommands::SET_MAX) {
+                const uint8_t servoId = request.Get1ByteParam(0U);
+                const uint8_t angle = request.Get1ByteParam(1U);
                 const Core::Status success = this->mServosInterface.GetServo(servoId).SetMax(angle)
                                                  ? Core::CORE_OK
                                                  : Core::CORE_ERROR_MAX;
@@ -86,14 +86,14 @@ namespace Cluster
                 const uint8_t angleServo = this->mServosInterface.GetServo(servoId).GetAngle();
                 return this->BuildFrameSetError(success, servoId, angleServo, response);
             }
-            if (request.commandId == EServoCommands::GET_OFFSET) {
-                const uint8_t servoId = request.params[0U];
+            if (request.GetCommandId() == EServoCommands::GET_OFFSET) {
+                const uint8_t servoId = request.Get1ByteParam(0U);
                 const int8_t angle = this->mServosInterface.GetServo(servoId).GetOffset();
                 return this->BuildFrameGetOffset(servoId, angle, response);
             }
-            if (request.commandId == EServoCommands::SET_OFFSET) {
-                const uint8_t servoId = request.params[0U];
-                const int8_t angle = request.params[1U];
+            if (request.GetCommandId() == EServoCommands::SET_OFFSET) {
+                const uint8_t servoId = request.Get1ByteParam(0U);
+                const int8_t angle = request.Get1ByteParam(1U);
                 const Core::Status success = this->mServosInterface.GetServo(servoId).SetOffset(angle)
                                                  ? Core::CORE_OK
                                                  : Core::CORE_ERROR_MAX;
@@ -103,34 +103,34 @@ namespace Cluster
                 const uint8_t angleServo = this->mServosInterface.GetServo(servoId).GetAngle();
                 return this->BuildFrameSetError(success, servoId, angleServo, response);
             }
-            if (request.commandId == EServoCommands::GET_STATE) {
-                const uint8_t servoId = request.params[0U];
+            if (request.GetCommandId() == EServoCommands::GET_STATE) {
+                const uint8_t servoId = request.Get1ByteParam(0U);
                 const bool state = this->mServosInterface.GetServo(servoId).IsEnable();
                 return this->BuildFrameGetState(servoId, state, response);
             }
-            if (request.commandId == EServoCommands::SET_STATE) {
-                const uint8_t servoId = request.params[0U];
-                const bool state = request.params[1U];
+            if (request.GetCommandId() == EServoCommands::SET_STATE) {
+                const uint8_t servoId = request.Get1ByteParam(0U);
+                const bool state = request.Get1ByteParam(1U);
                 this->mServosInterface.GetServo(servoId).SetEnable(state);
                 return this->BuildFrameSetState(servoId, state, response);
             }
-            if (request.commandId == EServoCommands::GET_REVERSE) {
-                const uint8_t servoId = request.params[0U];
+            if (request.GetCommandId() == EServoCommands::GET_REVERSE) {
+                const uint8_t servoId = request.Get1ByteParam(0U);
                 const bool reversed = this->mServosInterface.GetServo(servoId).GetReverse();
                 return this->BuildFrameGetReverse(servoId, reversed, response);
             }
-            if (request.commandId == EServoCommands::SET_REVERSE) {
-                const uint8_t servoId = request.params[0U];
-                const bool reversed = request.params[1U];
+            if (request.GetCommandId() == EServoCommands::SET_REVERSE) {
+                const uint8_t servoId = request.Get1ByteParam(0U);
+                const bool reversed = request.Get1ByteParam(1U);
                 this->mServosInterface.GetServo(servoId).SetReverse(reversed);
                 return this->BuildFrameSetReverse(servoId, reversed, response);
             }
-            if (request.commandId == EServoCommands::GET_STATE_PCA) {
+            if (request.GetCommandId() == EServoCommands::GET_STATE_PCA) {
                 const bool state = this->mServosInterface.GetState();
                 return this->BuildFrameGetStatePca(state, response);
             }
-            if (request.commandId == EServoCommands::SET_STATE_PCA) {
-                const bool state = request.params[0U];
+            if (request.GetCommandId() == EServoCommands::SET_STATE_PCA) {
+                const bool state = request.Get1ByteParam(0U);
                 if (state == true) {
                     this->mServosInterface.Enable();
                 } else {

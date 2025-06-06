@@ -54,9 +54,9 @@ namespace Cluster
             request.Build(SERVO, 0x5FU);
             success = mClusterServo.ExecuteFrame(request, response);
 
-            EXPECT_EQ(response.clusterId, 0U);
-            EXPECT_EQ(response.commandId, 0U);
-            EXPECT_EQ(response.nbParams, 0U);
+            EXPECT_EQ(response.GetClusterId(), 0U);
+            EXPECT_EQ(response.GetCommandId(), 0U);
+            EXPECT_EQ(response.GetNbParams(), 0U);
             EXPECT_EQ(success, Core::Status::CORE_ERROR);
         }
 
@@ -71,9 +71,9 @@ namespace Cluster
             }
             success = mClusterServo.ExecuteFrame(request, response);
 
-            EXPECT_EQ(response.clusterId, SERVO);
-            EXPECT_EQ(response.commandId, EServoCommands::GET_ALL);
-            EXPECT_EQ(response.nbParams, 18U);
+            EXPECT_EQ(response.GetClusterId(), SERVO);
+            EXPECT_EQ(response.GetCommandId(), EServoCommands::GET_ALL);
+            EXPECT_EQ(response.GetNbParams(), 18U);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
@@ -89,11 +89,11 @@ namespace Cluster
 
             success = mClusterServo.ExecuteFrame(request, response);
 
-            EXPECT_EQ(response.clusterId, SERVO);
-            EXPECT_EQ(response.commandId, EServoCommands::GET_ANGLE);
-            EXPECT_EQ(response.nbParams, 2U);
-            EXPECT_EQ(response.params[0U], servoId);
-            EXPECT_EQ(response.params[1U], 11U);
+            EXPECT_EQ(response.GetClusterId(), SERVO);
+            EXPECT_EQ(response.GetCommandId(), EServoCommands::GET_ANGLE);
+            EXPECT_EQ(response.GetNbParams(), 2U);
+            EXPECT_EQ(response.Get1ByteParam(0U), servoId);
+            EXPECT_EQ(response.Get1ByteParam(1U), 11U);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
@@ -113,11 +113,11 @@ namespace Cluster
 
             success = mClusterServo.ExecuteFrame(request, response);
 
-            EXPECT_EQ(response.clusterId, SERVO);
-            EXPECT_EQ(response.commandId, EServoCommands::SET_ANGLE);
-            EXPECT_EQ(response.nbParams, 2U);
-            EXPECT_EQ(response.params[0U], servoId);
-            EXPECT_EQ(response.params[1U], 11U);
+            EXPECT_EQ(response.GetClusterId(), SERVO);
+            EXPECT_EQ(response.GetCommandId(), EServoCommands::SET_ANGLE);
+            EXPECT_EQ(response.GetNbParams(), 2U);
+            EXPECT_EQ(response.Get1ByteParam(0U), servoId);
+            EXPECT_EQ(response.Get1ByteParam(1U), 11U);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
@@ -135,11 +135,11 @@ namespace Cluster
 
             success = mClusterServo.ExecuteFrame(request, response);
 
-            EXPECT_EQ(response.clusterId, SERVO);
-            EXPECT_EQ(response.commandId, EServoCommands::GET_MIN);
-            EXPECT_EQ(response.nbParams, 2U);
-            EXPECT_EQ(response.params[0U], servoId);
-            EXPECT_EQ(response.params[1U], 11U);
+            EXPECT_EQ(response.GetClusterId(), SERVO);
+            EXPECT_EQ(response.GetCommandId(), EServoCommands::GET_MIN);
+            EXPECT_EQ(response.GetNbParams(), 2U);
+            EXPECT_EQ(response.Get1ByteParam(0U), servoId);
+            EXPECT_EQ(response.Get1ByteParam(1U), 11U);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
@@ -157,11 +157,11 @@ namespace Cluster
 
             success = mClusterServo.ExecuteFrame(request, response);
 
-            EXPECT_EQ(response.clusterId, SERVO);
-            EXPECT_EQ(response.commandId, EServoCommands::SET_MIN);
-            EXPECT_EQ(response.nbParams, 2U);
-            EXPECT_EQ(response.params[0U], servoId);
-            EXPECT_EQ(response.params[1U], 11U);
+            EXPECT_EQ(response.GetClusterId(), SERVO);
+            EXPECT_EQ(response.GetCommandId(), EServoCommands::SET_MIN);
+            EXPECT_EQ(response.GetNbParams(), 2U);
+            EXPECT_EQ(response.Get1ByteParam(0U), servoId);
+            EXPECT_EQ(response.Get1ByteParam(1U), 11U);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
@@ -177,11 +177,11 @@ namespace Cluster
 
             success = mClusterServo.ExecuteFrame(request, response);
 
-            EXPECT_EQ(response.clusterId, SERVO);
-            EXPECT_EQ(response.commandId, EServoCommands::GET_MAX);
-            EXPECT_EQ(response.nbParams, 2U);
-            EXPECT_EQ(response.params[0U], servoId);
-            EXPECT_EQ(response.params[1U], 120U);
+            EXPECT_EQ(response.GetClusterId(), SERVO);
+            EXPECT_EQ(response.GetCommandId(), EServoCommands::GET_MAX);
+            EXPECT_EQ(response.GetNbParams(), 2U);
+            EXPECT_EQ(response.Get1ByteParam(0U), servoId);
+            EXPECT_EQ(response.Get1ByteParam(1U), 120U);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
@@ -199,11 +199,11 @@ namespace Cluster
 
             success = mClusterServo.ExecuteFrame(request, response);
 
-            EXPECT_EQ(response.clusterId, SERVO);
-            EXPECT_EQ(response.commandId, EServoCommands::SET_MAX);
-            EXPECT_EQ(response.nbParams, 2U);
-            EXPECT_EQ(response.params[0U], servoId);
-            EXPECT_EQ(response.params[1U], 11U);
+            EXPECT_EQ(response.GetClusterId(), SERVO);
+            EXPECT_EQ(response.GetCommandId(), EServoCommands::SET_MAX);
+            EXPECT_EQ(response.GetNbParams(), 2U);
+            EXPECT_EQ(response.Get1ByteParam(0U), servoId);
+            EXPECT_EQ(response.Get1ByteParam(1U), 11U);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
@@ -219,11 +219,11 @@ namespace Cluster
 
             success = mClusterServo.ExecuteFrame(request, response);
 
-            EXPECT_EQ(response.clusterId, SERVO);
-            EXPECT_EQ(response.commandId, EServoCommands::GET_OFFSET);
-            EXPECT_EQ(response.nbParams, 2U);
-            EXPECT_EQ(response.params[0U], servoId);
-            EXPECT_EQ(response.params[1U], 11U);
+            EXPECT_EQ(response.GetClusterId(), SERVO);
+            EXPECT_EQ(response.GetCommandId(), EServoCommands::GET_OFFSET);
+            EXPECT_EQ(response.GetNbParams(), 2U);
+            EXPECT_EQ(response.Get1ByteParam(0U), servoId);
+            EXPECT_EQ(response.Get1ByteParam(1U), 11U);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
@@ -241,11 +241,11 @@ namespace Cluster
 
             success = mClusterServo.ExecuteFrame(request, response);
 
-            EXPECT_EQ(response.clusterId, SERVO);
-            EXPECT_EQ(response.commandId, EServoCommands::SET_OFFSET);
-            EXPECT_EQ(response.nbParams, 2U);
-            EXPECT_EQ(response.params[0U], servoId);
-            EXPECT_EQ(response.params[1U], offset);
+            EXPECT_EQ(response.GetClusterId(), SERVO);
+            EXPECT_EQ(response.GetCommandId(), EServoCommands::SET_OFFSET);
+            EXPECT_EQ(response.GetNbParams(), 2U);
+            EXPECT_EQ(response.Get1ByteParam(0U), servoId);
+            EXPECT_EQ(response.Get1ByteParam(1U), offset);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
@@ -262,11 +262,11 @@ namespace Cluster
 
             success = mClusterServo.ExecuteFrame(request, response);
 
-            EXPECT_EQ(response.clusterId, SERVO);
-            EXPECT_EQ(response.commandId, EServoCommands::SET_STATE);
-            EXPECT_EQ(response.nbParams, 2U);
-            EXPECT_EQ(response.params[0U], servoId);
-            EXPECT_EQ(response.params[1U], true);
+            EXPECT_EQ(response.GetClusterId(), SERVO);
+            EXPECT_EQ(response.GetCommandId(), EServoCommands::SET_STATE);
+            EXPECT_EQ(response.GetNbParams(), 2U);
+            EXPECT_EQ(response.Get1ByteParam(0U), servoId);
+            EXPECT_EQ(response.Get1ByteParam(1U), true);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
     }

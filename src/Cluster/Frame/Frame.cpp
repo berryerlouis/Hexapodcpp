@@ -48,7 +48,6 @@ namespace Cluster
         return (success);
     }
 
-
     void Frame::Reset(void) {
         this->clusterId = 0U;
         this->commandId = 0U;
@@ -107,5 +106,17 @@ namespace Cluster
 
     uint64_t Frame::Get8BytesParam(const uint8_t index) const {
         return PTR_TO_UINT64(&this->params[index]);
+    }
+
+    uint8_t Frame::GetCommandId(void) const {
+        return this->commandId;
+    }
+
+    uint8_t Frame::GetClusterId(void) const {
+        return this->clusterId;
+    }
+
+    uint8_t Frame::GetNbParams() const {
+        return this->nbParams;
     }
 }

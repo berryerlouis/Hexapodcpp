@@ -21,18 +21,18 @@ namespace Cluster
 
         Core::Status ClusterGeneral::ExecuteFrame(const Frame &request, Frame &response) {
             Core::Status success = Core::Status::CORE_ERROR;
-            if (request.commandId == EGeneralCommands::RESET) {
+            if (request.GetCommandId() == EGeneralCommands::RESET) {
                 success = this->BuildFrameReset(response, Core::Status::CORE_OK);
-            } else if (request.commandId == EGeneralCommands::VERSION) {
+            } else if (request.GetCommandId() == EGeneralCommands::VERSION) {
                 const SoftwareInterface::Version version = this->mSoftware.GetVersion();
                 success = this->BuildFrameGetVersion(version, response);
-            } else if (request.commandId == EGeneralCommands::MIN_EXECUTION_TIME) {
+            } else if (request.GetCommandId() == EGeneralCommands::MIN_EXECUTION_TIME) {
                 success = this->BuildFrameGetMinTime(Service::EServices::GENERAL, this->mSoftware.GetMinTime(),
                                                      response);
-            } else if (request.commandId == EGeneralCommands::MAX_EXECUTION_TIME) {
+            } else if (request.GetCommandId() == EGeneralCommands::MAX_EXECUTION_TIME) {
                 success = this->BuildFrameGetMaxTime(Service::EServices::GENERAL, this->mSoftware.GetMaxTime(),
                                                      response);
-            } else if (request.commandId == EGeneralCommands::RESET_EXECUTION_TIME) {
+            } else if (request.GetCommandId() == EGeneralCommands::RESET_EXECUTION_TIME) {
                 success = this->BuildFrameResetTime(Service::EServices::GENERAL, response);
             }
             return success;

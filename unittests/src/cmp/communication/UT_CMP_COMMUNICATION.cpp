@@ -73,7 +73,7 @@ namespace Component
             EXPECT_CALL(mMockSocket, DataAvailable()).WillOnce(Return(strlen(bufferRx)));
 
             ::testing::Sequence s;
-            for (size_t i = 0; i < strlen(bufferRx); i++) {
+            for (size_t i = 0U; i < strlen(bufferRx); i++) {
                 EXPECT_CALL(mMockSocket, Read()).InSequence(s).WillOnce(Return(bufferRx[i]));
             }
 
@@ -91,7 +91,7 @@ namespace Component
 
             EXPECT_CALL(mMockSocket, DataAvailable()).WillOnce(Return(strlen(bufferRx)));
             ::testing::Sequence s;
-            for (size_t i = 0; i < strlen(bufferRx); i++) {
+            for (size_t i = 0U; i < strlen(bufferRx); i++) {
                 EXPECT_CALL(mMockSocket, Read()).InSequence(s).WillOnce(Return(bufferRx[i]));
             }
             mCommunication.Update(0UL);
@@ -108,7 +108,7 @@ namespace Component
 
             EXPECT_CALL(mMockSocket, DataAvailable()).WillOnce(Return(strlen(bufferRx)));
             ::testing::Sequence s;
-            for (size_t i = 0; i < strlen(bufferRx); i++) {
+            for (size_t i = 0U; i < strlen(bufferRx); i++) {
                 EXPECT_CALL(mMockSocket, Read()).InSequence(s).WillOnce(Return(bufferRx[i]));
             }
             mCommunication.Update(0UL);
@@ -121,7 +121,7 @@ namespace Component
 
             EXPECT_CALL(mMockSocket, DataAvailable()).WillOnce(Return(strlen(bufferRx)));
             ::testing::Sequence s;
-            for (size_t i = 0; i < strlen(bufferRx); i++) {
+            for (size_t i = 0U; i < strlen(bufferRx); i++) {
                 EXPECT_CALL(mMockSocket, Read()).InSequence(s).WillOnce(Return(bufferRx[i]));
             }
             mCommunication.Update(0UL);

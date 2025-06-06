@@ -45,9 +45,9 @@ namespace Cluster
 			request.Build(IMU, 0x5FU);
 			success = mClusterImu.ExecuteFrame(request, response);
 
-			EXPECT_EQ(response.clusterId, 0U);
-			EXPECT_EQ(response.commandId, 0U);
-			EXPECT_EQ(response.nbParams, 0U);
+			EXPECT_EQ(response.GetClusterId(), 0U);
+			EXPECT_EQ(response.GetCommandId(), 0U);
+			EXPECT_EQ(response.GetNbParams(), 0U);
 			EXPECT_EQ(success, Core::Status::CORE_ERROR);
 		}
 
@@ -65,9 +65,9 @@ namespace Cluster
 
 			success = mClusterImu.ExecuteFrame(request, response);
 
-			EXPECT_EQ(response.clusterId, IMU);
-			EXPECT_EQ(response.commandId, EImuCommands::ALL);
-			EXPECT_EQ(response.nbParams, 20U);
+			EXPECT_EQ(response.GetClusterId(), IMU);
+			EXPECT_EQ(response.GetCommandId(), EImuCommands::ALL);
+			EXPECT_EQ(response.GetNbParams(), 20U);
 			EXPECT_EQ(success, Core::Status::CORE_OK);
 		}
 
@@ -81,9 +81,9 @@ namespace Cluster
 
 			success = mClusterImu.ExecuteFrame(request, response);
 
-			EXPECT_EQ(response.clusterId, IMU);
-			EXPECT_EQ(response.commandId, EImuCommands::ACC);
-			EXPECT_EQ(response.nbParams, 6U);
+			EXPECT_EQ(response.GetClusterId(), IMU);
+			EXPECT_EQ(response.GetCommandId(), EImuCommands::ACC);
+			EXPECT_EQ(response.GetNbParams(), 6U);
 			EXPECT_EQ(success, Core::Status::CORE_OK);
 		}
 
@@ -97,9 +97,9 @@ namespace Cluster
 
 			success = mClusterImu.ExecuteFrame(request, response);
 
-			EXPECT_EQ(response.clusterId, IMU);
-			EXPECT_EQ(response.commandId, EImuCommands::GYR);
-			EXPECT_EQ(response.nbParams, 6U);
+			EXPECT_EQ(response.GetClusterId(), IMU);
+			EXPECT_EQ(response.GetCommandId(), EImuCommands::GYR);
+			EXPECT_EQ(response.GetNbParams(), 6U);
 			EXPECT_EQ(success, Core::Status::CORE_OK);
 		}
 
@@ -113,9 +113,9 @@ namespace Cluster
 
 			success = mClusterImu.ExecuteFrame(request, response);
 
-			EXPECT_EQ(response.clusterId, IMU);
-			EXPECT_EQ(response.commandId, EImuCommands::MAG);
-			EXPECT_EQ(response.nbParams, 6U);
+			EXPECT_EQ(response.GetClusterId(), IMU);
+			EXPECT_EQ(response.GetCommandId(), EImuCommands::MAG);
+			EXPECT_EQ(response.GetNbParams(), 6U);
 			EXPECT_EQ(success, Core::Status::CORE_OK);
 		}
 
@@ -129,9 +129,9 @@ namespace Cluster
 
 			success = mClusterImu.ExecuteFrame(request, response);
 
-			EXPECT_EQ(response.clusterId, IMU);
-			EXPECT_EQ(response.commandId, EImuCommands::TMP);
-			EXPECT_EQ(response.nbParams, 2U);
+			EXPECT_EQ(response.GetClusterId(), IMU);
+			EXPECT_EQ(response.GetCommandId(), EImuCommands::TMP);
+			EXPECT_EQ(response.GetNbParams(), 2U);
 			EXPECT_EQ(success, Core::Status::CORE_OK);
 		}
 	}

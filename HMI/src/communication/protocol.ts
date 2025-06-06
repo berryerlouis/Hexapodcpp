@@ -66,31 +66,11 @@ export default class Protocol {
         else
         {
             messageToEncode += "ZZ";
-            let messageSize: number = 0;
             if (params && params.length > 0) {
                 if(params.length == encoding?.length) {
-                    for (let i = 0; i < params.length; i++) {
-                        let encode: Encoding = 0xFF;
-                        if(encoding) {
-                            encode = encoding[i];
-                        }
-                        if(params[i] < 0 ) {
-                            params[i] = (params[i] & encode);
-                        }
-
-                        let encodedSize = 0;
-                        if(encode == 0xFF)
-                            encodedSize = 2;
-                        else if(encode == 0xFFFF)
-                            encodedSize = 4;
-                        else if(encode == 0xFFFFFF)
-                            encodedSize = 6;
-                        else if(encode == 0xFFFFFFFF)
-                            encodedSize = 8;
-                        messageSize += encodedSize / 2;
-                        messageToEncode += params[i].toString(16).padStart(encodedSize, '0').toUpperCase();
-                    }
-                    messageToEncode = messageToEncode.replace('ZZ',messageSize.toString(16).padStart(2, '0').toUpperCase());
+                    let encoded = Protocol.getSizeofParam(params,encoding);
+                    messageToEncode += Protocol.toLittleEndian(params, encoded.encodedSize);
+                    messageToEncode = messageToEncode.replace('ZZ',(encoded.length).toString(16).padStart(2, '0').toUpperCase());
                 } else {
                     throw new Error(`Encoding length ${encoding?.length} does not match params length ${params.length}`);
                 }
@@ -98,5 +78,36 @@ export default class Protocol {
         }
         messageToEncode += '>';
         return messageToEncode;
+    }
+
+    private static getSizeofParam(params: number[], encoding?: Encoding[]): { encodedSize: number, length:number } {
+        let encodedSize: number = 0;
+        let length: number = 0;
+        for (let i: number = 0; i < params.length; i++) {
+            let encode: Encoding = 0xFF;
+            if (encoding) {
+                encode = encoding[i];
+            }
+            if (params[i] < 0) {
+                params[i] = (params[i] & encode);
+            }
+            if (encode == 0xFF)
+                encodedSize = 2;
+            else if (encode == 0xFFFF)
+                encodedSize = 4;
+            else if (encode == 0xFFFFFF)
+                encodedSize = 6;
+            else if (encode == 0xFFFFFFFF)
+                encodedSize = 8;
+            length += encodedSize/2;
+        }
+        return {encodedSize,length};
+    }
+
+    private static toLittleEndian(params: number[], encodedSize: number): string {
+        return params.map(num => {
+            const hex = num.toString(16).padStart(encodedSize, '0');
+            return hex.match(/../g)!.reverse().join('');
+        }).join('').toUpperCase();
     }
 }

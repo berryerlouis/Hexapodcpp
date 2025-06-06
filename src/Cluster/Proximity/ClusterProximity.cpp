@@ -18,19 +18,19 @@ namespace Cluster
 
         Core::Status ClusterProximity::ExecuteFrame(const Frame &request, Frame &response) {
             Core::Status success = Core::Status::CORE_ERROR;
-            if (request.commandId == EProximityCommands::LASER) {
-                const SensorsId sensorId = static_cast<SensorsId>(request.commandId);
+            if (request.GetCommandId() == EProximityCommands::LASER) {
+                const SensorsId sensorId = static_cast<SensorsId>(request.GetCommandId());
                 const uint16_t distance = this->mProximity.GetDistance(sensorId);
                 success = this->BuildFrameDistance(sensorId, distance, response);
-            } else if (request.commandId == EProximityCommands::US_LEFT) {
-                const SensorsId sensorId = static_cast<SensorsId>(request.commandId);
+            } else if (request.GetCommandId() == EProximityCommands::US_LEFT) {
+                const SensorsId sensorId = static_cast<SensorsId>(request.GetCommandId());
                 const uint16_t distance = this->mProximity.GetDistance(sensorId);
                 success = this->BuildFrameDistance(sensorId, distance, response);
-            } else if (request.commandId == EProximityCommands::US_RIGHT) {
-                const SensorsId sensorId = static_cast<SensorsId>(request.commandId);
+            } else if (request.GetCommandId() == EProximityCommands::US_RIGHT) {
+                const SensorsId sensorId = static_cast<SensorsId>(request.GetCommandId());
                 const uint16_t distance = this->mProximity.GetDistance(sensorId);
                 success = this->BuildFrameDistance(sensorId, distance, response);
-            } else if (request.commandId == EProximityCommands::SET_THRESHOLD) {
+            } else if (request.GetCommandId() == EProximityCommands::SET_THRESHOLD) {
                 const SensorsId sensorId = static_cast<SensorsId>(request.Get1ByteParam(0U));
                 const uint16_t threshold = request.Get2BytesParam(1U);
                 this->mProximity.SetThreshold(sensorId, threshold);

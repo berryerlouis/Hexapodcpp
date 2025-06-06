@@ -33,7 +33,7 @@ export default class Socket {
         this.listOfCallbackStarted = [];
         this.listOfCallbackStopped = [];
         this.messagesList = []
-        this.socket = new WebSocket('ws://192.168.1.170:8080');
+        this.socket = new WebSocket('ws://88.183.190.4:58080');
 
         this.socket.addEventListener('open', () => {
             console.log('Connected to the WebSocket server');

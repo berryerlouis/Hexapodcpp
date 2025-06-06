@@ -18,14 +18,14 @@ namespace Cluster
 
         Core::Status ClusterBattery::ExecuteFrame(const Frame &request, Frame &response) {
             Core::Status success = Core::Status::CORE_ERROR;
-            if (request.commandId == EBatteryCommands::GET_BAT_STATUS) {
+            if (request.GetCommandId() == EBatteryCommands::GET_BAT_STATUS) {
                 const uint16_t voltage = this->mBattery.GetVoltage();
                 const BatteryState state = this->mBattery.GetState();
                 success = BuildFrameState(state, voltage, response);
-            } else if (request.commandId == EBatteryCommands::GET_VOLTAGE) {
+            } else if (request.GetCommandId() == EBatteryCommands::GET_VOLTAGE) {
                 const uint16_t voltage = this->mBattery.GetVoltage();
                 success = BuildFrameVoltage(voltage, response);
-            } else if (request.commandId == EBatteryCommands::GET_CURRENT) {
+            } else if (request.GetCommandId() == EBatteryCommands::GET_CURRENT) {
                 const uint16_t current = this->mBattery.GetCurrent();
                 success = BuildFrameCurrent(current, response);
             }

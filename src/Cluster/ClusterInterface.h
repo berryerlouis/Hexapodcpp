@@ -13,7 +13,7 @@ namespace Cluster
 
         virtual Core::Status Execute(Frame &request, Frame &response) = 0;
 
-        virtual EClusters GetId(void) = 0;
+        virtual EClusters GetClusterId(void) = 0;
 
         virtual Core::Status BuildFrameNack(Frame &response) = 0;
 

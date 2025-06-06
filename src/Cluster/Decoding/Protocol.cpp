@@ -12,20 +12,29 @@ namespace Cluster
                 return (Core::Status::CORE_ERROR_NULLPTR);
             }
             const uint8_t frameLength = strlen(frameBuffer);
-
             if (frameLength >= 6U && frameLength % 2U == 0U) {
-                sscanf(frameBuffer, "%02x%02x%02x",
-                       (unsigned int *) &frame.clusterId,
-                       (unsigned int *) &frame.commandId,
-                       (unsigned int *) &frame.nbParams);
+                uint8_t commandId = 0U;
+                uint8_t clusterId = 0U;
+                uint8_t nbParams = 0U;
+                uint8_t params[FRAME_MAX_PARAMS] = {0U};
+                unsigned int tempClusterId = 0U;
+                unsigned int tempCommandId = 0U;
+                unsigned int tempNbParams = 0U;
+                unsigned int tempParam = 0U;
+                sscanf(frameBuffer, "%02x%02x%02x", &tempClusterId, &tempCommandId, &tempNbParams);
+                clusterId = static_cast<uint8_t>(tempClusterId);
+                commandId = static_cast<uint8_t>(tempCommandId);
+                nbParams = static_cast<uint8_t>(tempNbParams);
 
-                if (frame.nbParams == 0U && frameLength == 6U) {
-                    return (Core::Status::CORE_OK);
-                } else if ((frame.nbParams * 2U) + 6U == frameLength) {
-                    for (size_t i = 0U; i < frame.nbParams * 2U; i += 2U) {
-                        sscanf(&frameBuffer[6U + i], "%02x", (unsigned int *) &frame.params[i / 2U]);
+                if (nbParams == 0U && frameLength == 6U) {
+                    return (frame.Build(clusterId, commandId, params, nbParams));
+                }
+                if ((nbParams * 2U) + 6U == frameLength) {
+                    for (size_t i = 0U; i < nbParams * 2U; i += 2U) {
+                        sscanf(&frameBuffer[6U + i], "%02x", &tempParam);
+                        params[i / 2U] = static_cast<uint8_t>(tempParam);
                     }
-                    return (Core::Status::CORE_OK);
+                    return (frame.Build(clusterId, commandId, params, nbParams));
                 }
 
                 // wrong param size
@@ -39,15 +48,14 @@ namespace Cluster
             if (buffer == nullptr) {
                 return (0U);
             }
-            const uint8_t *params = response.params;
-            const uint8_t size = response.nbParams;
-            const uint8_t cluster = response.clusterId;
-            const uint8_t command = response.commandId;
+            const uint8_t size = response.GetNbParams();
+            const uint8_t cluster = response.GetClusterId();
+            const uint8_t command = response.GetCommandId();
 
-            uint8_t length = snprintf(const_cast<char *>(buffer), 8U, "<%02X%02X%02X", cluster, command, size);
+            uint8_t length = snprintf(buffer, 8U, "<%02X%02X%02X", cluster, command, size);
 
             for (size_t i = 0U; i < size; i++) {
-                length += snprintf(const_cast<char *>(&buffer[length]), 3U, "%02X", params[i]);
+                length += snprintf(&buffer[length], 3U, "%02X", response.Get1ByteParam(i));
             }
 
             buffer[length] = '>';
