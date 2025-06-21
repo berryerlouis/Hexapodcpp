@@ -22,32 +22,49 @@ namespace Bot
             this->mWalk.Update(currentTime);
         }
 
-        void Body::UpdateWalkStatus(const EWalkStatus status) {
+        void Body::UpdateWalkStatus(const EWalkStatus status, const uint16_t duration) {
+            this->SetDuration(duration);
             this->mWalk.UpdateStatus(status);
         }
 
-        bool Body::SetDirection(const uint16_t directionAngle) {
-            return this->mWalk.SetDirection(directionAngle);
+        bool Body::SetDirection(const float directionAngle) {
+            return this->mWalk.GetParams().SetDirection(directionAngle);
         }
 
-        bool Body::SetAmplitude(const uint8_t amplitude) {
-            return this->mWalk.SetAmplitude(amplitude);
+        bool Body::SetAmplitude(const float amplitude) {
+            return this->mWalk.GetParams().SetAmplitude(amplitude);
         }
 
-        bool Body::SetElevation(const uint8_t elevation) {
-            return this->mWalk.SetElevation(elevation);
+        bool Body::SetElevation(const float elevation) {
+            return this->mWalk.GetParams().SetElevation(elevation);
         }
 
-        uint16_t Body::GetDirection(void) const {
-            return this->mWalk.GetDirection();
+        bool Body::SetDuration(const uint16_t duration) {
+            return this->mWalk.SetCycleDuration(duration);
         }
 
-        uint8_t Body::GetAmplitude(void) const {
-            return this->mWalk.GetAmplitude();
+        bool Body::SetGait(const Gait::GaitType gait) {
+            return this->mWalk.SetGait(gait);
         }
 
-        uint8_t Body::GetElevation(void) const {
-            return this->mWalk.GetElevation();
+        float Body::GetDirection(void) {
+            return this->mWalk.GetParams().GetDirection();
+        }
+
+        float Body::GetAmplitude(void) {
+            return this->mWalk.GetParams().GetAmplitude();
+        }
+
+        float Body::GetElevation(void) {
+            return this->mWalk.GetParams().GetElevation();
+        }
+
+        uint16_t Body::GetDuration() {
+            return this->mWalk.GetParams().GetCycleDuration();
+        }
+
+        Gait::GaitType Body::GetGait() {
+            return this->mWalk.GetGait();
         }
 
         uint32_t Body::SetBodyPositionRotation(const Position3d &position,
@@ -57,9 +74,9 @@ namespace Bot
             this->mRotation = rotation;
             uint32_t success = 0U;
             for (size_t legId = 0U; legId < NB_LEGS; legId++) {
-                Leg::Leg leg = this->mLegs.GetLeg(legId);
-                this->SetComputeIk(leg, position, rotation);
-                const uint8_t successServos = leg.SetLegBodyIk(position, this->mBodyIk.bodyIk, travelTime);
+                Leg::Leg *leg = this->mLegs.GetLeg(legId);
+                this->SetComputeIk(*leg, position, rotation);
+                const uint8_t successServos = leg->SetLegBodyIk(position, this->mBodyIk.bodyIk, travelTime);
                 success |= successServos << (legId * 3U);
             }
             return success;
@@ -69,8 +86,8 @@ namespace Bot
                                               const Position3d &position,
                                               const uint16_t travelTime) {
             if (legId < NB_LEGS) {
-                Leg::Leg leg = this->mLegs.GetLeg(legId);
-                return leg.SetLegIk(position, travelTime);
+                Leg::Leg *leg = this->mLegs.GetLeg(legId);
+                return leg->SetLegIk(position, travelTime);
             }
             return 255;
         }

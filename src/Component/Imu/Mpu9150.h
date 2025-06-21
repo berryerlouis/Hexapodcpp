@@ -130,7 +130,7 @@ namespace Component
 
             virtual int16_t ReadTemp(void) const final override;
 
-            inline virtual Position3D
+            inline virtual Imu3d
             ReadYawPitchRoll(void) final override {
                 return (this->mYawPitchRoll);
             }
@@ -226,7 +226,7 @@ namespace Component
             uint8_t mTmp;
             uint64_t mLastLoopTime;
             Ahrs mAhrs;
-            Position3D mYawPitchRoll;
+            Imu3d mYawPitchRoll;
         };
     }
 }

@@ -64,7 +64,6 @@ namespace Cluster
             Core::Status success = Core::Status::CORE_ERROR;
             Frame response;
             const Frame request(SERVO, GET_ALL);
-            Component::Servo::MockServo mockServo;
             for (size_t servoId = 0U; servoId < NB_SERVOS; servoId++) {
                 Component::Servo::Servo servo(mMockPca9685, mMockTick, servoId, 11U);
                 EXPECT_CALL(mMockServos, GetServo( servoId )).WillOnce(ReturnRef(servo));
@@ -83,7 +82,6 @@ namespace Cluster
             constexpr uint8_t servoId = 1;
             Frame request(SERVO, GET_ANGLE);
             request.Set1ByteParam(servoId);
-            Component::Servo::MockServo mockServo;
             Component::Servo::Servo servo(mMockPca9685, mMockTick, servoId, 11U);
             EXPECT_CALL(mMockServos, GetServo( servoId )).WillOnce(ReturnRef(servo));
 
@@ -129,7 +127,6 @@ namespace Cluster
             constexpr uint8_t angle = 11;
             Frame request(SERVO, GET_MIN);
             request.Set1ByteParam(servoId);
-            Component::Servo::MockServo mockServo;
             Component::Servo::Servo servo(mMockPca9685, mMockTick, servoId, 90U, 0U, 11U, 120U, false);
             EXPECT_CALL(mMockServos, GetServo( servoId )).WillOnce(ReturnRef(servo));
 
@@ -151,7 +148,6 @@ namespace Cluster
             Frame request(SERVO, SET_MIN);
             request.Set1ByteParam(servoId);
             request.Set1ByteParam(angle);
-            Component::Servo::MockServo mockServo;
             Component::Servo::Servo servo(mMockPca9685, mMockTick, servoId, 11U);
             EXPECT_CALL(mMockServos, GetServo( servoId )).WillOnce(ReturnRef(servo));
 
@@ -171,7 +167,6 @@ namespace Cluster
             constexpr uint8_t servoId = 1;
             Frame request(SERVO, GET_MAX);
             request.Set1ByteParam(servoId);
-            Component::Servo::MockServo mockServo;
             Component::Servo::Servo servo(mMockPca9685, mMockTick, servoId, 90U, 0U, 11U, 120U, false);
             EXPECT_CALL(mMockServos, GetServo( servoId )).WillOnce(ReturnRef(servo));
 
@@ -193,7 +188,6 @@ namespace Cluster
             Frame request(SERVO, SET_MAX);
             request.Set1ByteParam(servoId);
             request.Set1ByteParam(angle);
-            Component::Servo::MockServo mockServo;
             Component::Servo::Servo servo(mMockPca9685, mMockTick, servoId, 90U);
             EXPECT_CALL(mMockServos, GetServo( servoId )).WillOnce(ReturnRef(servo));
 
@@ -213,7 +207,6 @@ namespace Cluster
             constexpr uint8_t servoId = 1;
             Frame request(SERVO, GET_OFFSET);
             request.Set1ByteParam(servoId);
-            Component::Servo::MockServo mockServo;
             Component::Servo::Servo servo(mMockPca9685, mMockTick, servoId, 90U, 11U);
             EXPECT_CALL(mMockServos, GetServo( servoId )).WillOnce(ReturnRef(servo));
 
@@ -235,7 +228,6 @@ namespace Cluster
             Frame request(SERVO, SET_OFFSET);
             request.Set1ByteParam(servoId);
             request.Set1ByteParam(offset);
-            Component::Servo::MockServo mockServo;
             Component::Servo::Servo servo(mMockPca9685, mMockTick, servoId, 90U, 11U);
             EXPECT_CALL(mMockServos, GetServo( servoId )).WillOnce(ReturnRef(servo));
 

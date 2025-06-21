@@ -16,6 +16,7 @@ namespace Cluster
             this->AddClusterItem({.commandId = EGeneralCommands::MIN_EXECUTION_TIME, .expectedSize = 0U});
             this->AddClusterItem({.commandId = EGeneralCommands::MAX_EXECUTION_TIME, .expectedSize = 0U});
             this->AddClusterItem({.commandId = EGeneralCommands::RESET_EXECUTION_TIME, .expectedSize = 0U});
+            LOG_CLUSTER_DEBUG("General", "(%d) Initialized.", GENERAL);
         }
 
 

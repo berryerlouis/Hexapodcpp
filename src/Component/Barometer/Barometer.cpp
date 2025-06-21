@@ -13,6 +13,7 @@ namespace Component
 #ifdef RPI
             this->mAddress = wiringPiI2CSetup(address);
 #endif
+            LOG_COMPONENT_DEBUG("Barometer", "address 0x%02X Initialized.", this->mAddress);
         }
 
         Core::Status Barometer::Initialize(void) {

@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include "../../Core/Status.h"
+#include "../DriverInterface.h"
 
 namespace Driver
 {

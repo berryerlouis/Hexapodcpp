@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Constants.h"
+#include "../Gait/Constants.h"
 #include "../Legs/Legs.h"
 #include "../../Component/ComponentInterface.h"
 #include "../../Misc/Maths/Geometry.h"
@@ -21,19 +22,27 @@ namespace Bot
 
             virtual void Update(const uint64_t currentTime) = 0;
 
-            virtual void UpdateWalkStatus(const EWalkStatus status) = 0;
+            virtual void UpdateWalkStatus(const EWalkStatus status, const uint16_t duration) = 0;
 
-            virtual bool SetDirection(const uint16_t directionAngle) = 0;
+            virtual bool SetDirection(const float directionAngle) = 0;
 
-            virtual bool SetAmplitude(const uint8_t amplitude) = 0;
+            virtual bool SetAmplitude(const float amplitude) = 0;
 
-            virtual bool SetElevation(const uint8_t elevation) = 0;
+            virtual bool SetElevation(const float elevation) = 0;
 
-            virtual uint16_t GetDirection(void) const = 0;
+            virtual bool SetDuration(const uint16_t duration) = 0;
 
-            virtual uint8_t GetAmplitude(void) const = 0;
+            virtual bool SetGait(const Gait::GaitType gait) = 0;
 
-            virtual uint8_t GetElevation(void) const = 0;
+            virtual float GetDirection(void) = 0;
+
+            virtual float GetAmplitude(void) = 0;
+
+            virtual float GetElevation(void) = 0;
+
+            virtual uint16_t GetDuration(void) = 0;
+
+            virtual Gait::GaitType GetGait(void) = 0;
 
             virtual uint32_t SetBodyPositionRotation(const Position3d &position,
                                                      const Rotation3d &rotation,

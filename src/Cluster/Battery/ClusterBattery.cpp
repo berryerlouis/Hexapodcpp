@@ -14,6 +14,8 @@ namespace Cluster
             this->AddClusterItem({.commandId = EBatteryCommands::GET_BAT_STATUS, .expectedSize = 0U});
             this->AddClusterItem({.commandId = EBatteryCommands::GET_VOLTAGE, .expectedSize = 0U});
             this->AddClusterItem({.commandId = EBatteryCommands::GET_CURRENT, .expectedSize = 0U});
+
+            LOG_CLUSTER_DEBUG("Battery", "(%d) Initialized.", BATTERY);
         }
 
         Core::Status ClusterBattery::ExecuteFrame(const Frame &request, Frame &response) {

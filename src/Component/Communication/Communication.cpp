@@ -15,6 +15,7 @@ namespace Component
             mBufferTx{0U},
             mIndexBufferRx(0U),
             mBeginIncomingFrame(false) {
+            LOG_COMPONENT_DEBUG("Communication", "Initialized.");
         }
 
         Core::Status Communication::Initialize(void) {
@@ -42,18 +43,23 @@ namespace Component
                             if (cluster->Execute(request, response) != Core::Status::CORE_OK) {
                                 response.Build(frameClusterID, GENERIC);
                                 response.Set1ByteParam(Core::Status::CORE_ERROR_ARGUMENT);
+                                LOG_COMPONENT_ERROR("Communication", "RX => CORE_ERROR_ARGUMENT");
                             }
                         } else {
                             response.Build(frameClusterID, GENERIC);
                             response.Set1ByteParam(Core::Status::CORE_ERROR_NULLPTR);
+                            LOG_COMPONENT_ERROR("Communication", "RX => CORE_ERROR_NULLPTR");
                         }
                     } else {
                         response.Build(0xFFU, GENERIC);
                         response.Set1ByteParam(Core::Status::CORE_ERROR_UNKNOWN_CLUSTER);
+                        LOG_COMPONENT_ERROR("Communication", "RX => CORE_ERROR_UNKNOWN_CLUSTER");
                     }
                 } else {
                     response.Build(0xFFU, GENERIC);
                     response.Set1ByteParam(parsedStatus);
+                    LOG_COMPONENT_ERROR("Communication", "RX => Parsing error %s",
+                                        Core::StatusToString(parsedStatus).c_str());
                 }
                 this->SendMessage(response);
                 //this->mLedStatus.Off();

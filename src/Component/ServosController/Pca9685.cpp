@@ -19,6 +19,7 @@ namespace Component
 
         Core::Status Pca9685::Initialize(void) {
             this->Reset();
+            LOG_COMPONENT_DEBUG("ServosController", "address 0x%02X Initialized.", this->mAddress);
             return (Core::Status::CORE_OK);
         }
 
@@ -89,6 +90,10 @@ namespace Component
             } else {
                 this->mPwm[num].off = EConstant::LED_OFF;
             }
+        }
+
+        uint8_t Pca9685::GetAddress() {
+            return this->mAddress;
         }
     } // namespace ServosController
 } // namespace Component

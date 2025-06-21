@@ -45,6 +45,9 @@ namespace Component
                     break;
                 }
             }
+            if (success == NB_SERVOS) {
+                LOG_COMPONENT_DEBUG("Servos", "Initialized.");
+            }
             return ((success == NB_SERVOS) ? Core::Status::CORE_OK : Core::Status::CORE_ERROR);
         }
 

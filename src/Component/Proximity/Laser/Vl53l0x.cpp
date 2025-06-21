@@ -80,6 +80,7 @@ namespace Component
                         }
                     }
                 }
+                LOG_COMPONENT_DEBUG("Laser", "address 0x%02X Initialized.", this->mAddress);
                 return (success);
             }
 

@@ -48,10 +48,14 @@ namespace Cluster
         GET_AMPLITUDE,
         SET_ELEVATION,
         GET_ELEVATION,
-        GET_DIRECTION_AMPLITUDE_ELEVATION
+        GET_DIRECTION_AMPLITUDE_ELEVATION_DURATION,
+        GET_DURATION,
+        SET_DURATION,
+        GET_GAIT,
+        SET_GAIT
     };
 
-    static constexpr uint8_t NB_COMMANDS_BODY = 10U;
+    static constexpr uint8_t NB_COMMANDS_BODY = 14U;
 
     enum EImuCommands {
         ALL,

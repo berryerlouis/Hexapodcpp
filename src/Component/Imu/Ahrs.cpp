@@ -11,7 +11,7 @@ namespace Component
             , mBeta(sqrt(3.0F / 4.0F) * mGyroMeasError) {
         }
 
-        void Ahrs::GetRollPitchYaw(Position3D &ypr) const {
+        void Ahrs::GetRollPitchYaw(Imu3d &ypr) const {
             ypr.yaw = atan2(
                     2.0F * (this->mQuaternion[1] * this->mQuaternion[2] + this->mQuaternion[0] * this->mQuaternion[3]),
                     this->mQuaternion[0] * this->mQuaternion[0] + this->mQuaternion[1] * this->mQuaternion[1] - this->

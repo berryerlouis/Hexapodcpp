@@ -14,237 +14,70 @@ namespace Bot
         Walk::Walk(Legs::Legs &legs, Driver::Tick::TickInterface &tick) :
             mLegs(legs)
             , mTick(tick)
-            , mStatus(PAUSE)
-            , mCounterStepPosition(0U)
-            , mMaxCounterStepPosition(0U)
-            , mWalkStepPosition{}
-            , mDelayStep(0U)
-            , mPreviousTime(0U)
-            , mStepFinished(false)
-            , mStartTimeDirection(0U)
-            , mDirection(0.0F)
-            , mTargetDirection(0.0F)
-            , mStartTimeAmplitude(0U)
-            , mStartTimeElevation(0U)
-            , mAmplitude(AMPLITUDE_MAX)
-            , mTargetAmplitude(AMPLITUDE_MAX)
-            , mElevation(ELEVATION_MAX)
-            , mTargetElevation(ELEVATION_MAX) {
-            for (size_t legId = 0U; legId < NB_LEGS; legId++) {
-                for (size_t steps = 0U; steps < NB_STEPS; steps++) {
-                    this->mWalkStepPosition[legId].steps[steps].positions.x = 0.0F;
-                    this->mWalkStepPosition[legId].steps[steps].positions.y = 0.0F;
-                    this->mWalkStepPosition[legId].steps[steps].positions.z = 0.0F;
-                    this->mWalkStepPosition[legId].idxPosition = 0U;
-                }
-            }
-
-            for (size_t legId = 0U; legId < NB_LEGS; legId++) {
-                if (legId % 2U == 0U) {
-                    this->mWalkStepPosition[legId].steps[0U].positions = {0.0F, -1.0F, 0.0F};
-                    this->mWalkStepPosition[legId].steps[0U].delayStep = 1000U;
-                    this->mWalkStepPosition[legId].steps[0U].onGround = true;
-                    this->mWalkStepPosition[legId].steps[1U].positions = {0.0F, 0.0F, -1.0F};
-                    this->mWalkStepPosition[legId].steps[1U].delayStep = 1000U;
-                    this->mWalkStepPosition[legId].steps[0U].onGround = false;
-                    this->mWalkStepPosition[legId].steps[2U].positions = {0.0F, 1.0F, 0.0F};
-                    this->mWalkStepPosition[legId].steps[2U].delayStep = 1000U;
-                    this->mWalkStepPosition[legId].steps[0U].onGround = false;
-                } else {
-                    this->mWalkStepPosition[legId].steps[1U].positions = {0.0F, 1.0F, 0.0F};
-                    this->mWalkStepPosition[legId].steps[1U].delayStep = 1000U;
-                    this->mWalkStepPosition[legId].steps[0U].onGround = false;
-                    this->mWalkStepPosition[legId].steps[2U].positions = {0.0F, -1.0F, 0.0F};
-                    this->mWalkStepPosition[legId].steps[2U].delayStep = 1000U;
-                    this->mWalkStepPosition[legId].steps[0U].onGround = true;
-                    this->mWalkStepPosition[legId].steps[0U].positions = {0.0F, 0.0F, -1.0F};
-                    this->mWalkStepPosition[legId].steps[0U].delayStep = 1000U;
-                    this->mWalkStepPosition[legId].steps[0U].onGround = false;
-                }
-            }
-            this->mMaxCounterStepPosition = 3U;
+            , mStatus(PLAY)
+            , mPreviousStatus(STOP)
+            , mParams(tick, 0.0F, AMPLITUDE_MAX, ELEVATION_MAX)
+            , mGaitCycle(legs, mParams, Gait::TRIPOD, tick) {
+            LOG_BOT_DEBUG("Walk", "Initialized.");
         }
 
         void Walk::UpdateStatus(const EWalkStatus status) {
             this->mStatus = status;
+            LOG_BOT_INFO("Walk", "Update Status: %s.", WalkStatusToString(this->mStatus).c_str());
         }
 
         void Walk::Update(const uint64_t currentTime) {
-            switch (this->mStatus) {
-                case PLAY:
-                    this->Play(currentTime);
-                    break;
-                case PAUSE:
-                    this->Pause(currentTime);
-                    break;
-                case STOP:
-                    this->Stop(currentTime);
-                    break;
+            if (this->mPreviousStatus != this->mStatus) {
+                switch (this->mStatus) {
+                    case PLAY:
+                        this->Play(currentTime);
+                        break;
+                    case PAUSE:
+                        this->Pause(currentTime);
+                        break;
+                    case STOP:
+                        this->Stop(currentTime);
+                        break;
+                }
+                this->mPreviousStatus = this->mStatus;
             }
-        }
-
-        bool Walk::SetDirection(const uint16_t directionAngle) {
-            if (directionAngle <= 360U) {
-                this->mTargetDirection = directionAngle * M_PI / 180U;
-                this->mStartTimeDirection = this->mTick.GetMs();
-                return true;
-            }
-            return false;
-        }
-
-        bool Walk::SetAmplitude(const uint8_t amplitude) {
-            if (amplitude <= AMPLITUDE_MAX * 10.0F) {
-                this->mTargetAmplitude = amplitude / 10.0F;
-                this->mStartTimeAmplitude = this->mTick.GetMs();
-                return true;
-            }
-            return false;
-        }
-
-        bool Walk::SetElevation(const uint8_t elevation) {
-            if (elevation <= ELEVATION_MAX * 10.0F) {
-                this->mTargetElevation = elevation / 10.0F;
-                this->mStartTimeElevation = this->mTick.GetMs();
-                return true;
-            }
-            return false;
-        }
-
-        uint16_t Walk::GetDirection(void) const {
-            return this->mTargetDirection * 180.0F / M_PI;
-        }
-
-        uint8_t Walk::GetAmplitude(void) const {
-            return this->mTargetAmplitude * 10.0F;
-        }
-
-        uint8_t Walk::GetElevation(void) const {
-            return this->mTargetElevation * 10.0F;
-        }
-
-        void Walk::SetAmplitude(Position3d &position) const {
-            position.x *= this->mAmplitude;
-            position.y *= this->mAmplitude;
-        }
-
-        void Walk::SetElevation(Position3d &position) const {
-            position.z *= this->mElevation;
+            this->mGaitCycle.Update(currentTime);
         }
 
         void Walk::Play(const uint64_t currentTime) {
-            for (size_t legId = 0U; legId < NB_LEGS; legId++) {
-                Leg::Leg leg = this->mLegs.GetLeg(legId);
-                Steps &legSteps = this->mWalkStepPosition[legId];
-
-                //time to do a step
-                if (currentTime >= legSteps.startTime + legSteps.steps[legSteps.idxPosition].delayStep) {
-                    this->NextStep(currentTime, legSteps);
-                } else {
-                    const float deltaTime = GetDeltaTime(legSteps.steps[legSteps.idxPosition].delayStep,
-                                                         currentTime,
-                                                         legSteps.startTime);
-                    Position3d newPosition = this->ComputeNewLegPosition(deltaTime, legSteps, legId);
-                    leg.SetLegIk(newPosition);
-                }
-            }
-            this->UpdateDirection(currentTime);
-            this->UpdateAmplitude(currentTime);
-            this->UpdateElevation(currentTime);
+            (void) currentTime;
+            this->mGaitCycle.Start();
         }
 
         void Walk::Pause(const uint64_t currentTime) {
             (void) currentTime;
-            this->UpdateDirection(currentTime);
-            this->UpdateAmplitude(currentTime);
-            this->UpdateElevation(currentTime);
+            this->mGaitCycle.Pause();
         }
 
         void Walk::Stop(const uint64_t currentTime) {
             (void) currentTime;
-            for (size_t legId = 0U; legId < NB_LEGS; legId++) {
-                Leg::Leg leg = this->mLegs.GetLeg(legId);
-                leg.SetLegIk({0, 0, 0}, 1000U);
-            }
-            this->mCounterStepPosition = 0U;
-            this->UpdateStatus(PAUSE);
+            this->mGaitCycle.Stop();
         }
 
-        void Walk::UpdateDirection(const uint64_t currentTime) {
-            (void) currentTime;
-            /*if (currentTime <= this->mStartTimeDirection + 1000U) {
-                const float deltaTime = GetDeltaTime(1000U,
-                                                     currentTime,
-                                                     this->mStartTimeDirection);
-                this->mDirection = Misc::Utils::LerpF(this->mDirection, this->mTargetDirection, deltaTime);
-            } else*/ {
-                this->mDirection = this->mTargetDirection;
-            }
+        Gait::GaitParams &Walk::GetParams() {
+            return this->mParams;
         }
 
-        void Walk::UpdateAmplitude(const uint64_t currentTime) {
-            if (currentTime <= this->mStartTimeAmplitude + 1000U) {
-                const float deltaTime = GetDeltaTime(1000U, currentTime, this->mStartTimeAmplitude);
-                this->mAmplitude = Misc::Utils::LerpF(this->mAmplitude, this->mTargetAmplitude, deltaTime);
-            } else {
-                this->mAmplitude = this->mTargetAmplitude;
-            }
+        bool Walk::SetGait(const Gait::GaitType gait) {
+            this->mGaitCycle.SetGaitType(gait);
+            return this->GetGait();
         }
 
-        void Walk::UpdateElevation(const uint64_t currentTime) {
-            if (currentTime <= this->mStartTimeElevation + 1000U) {
-                const float deltaTime = GetDeltaTime(1000U, currentTime, this->mStartTimeElevation);
-                this->mElevation = Misc::Utils::LerpF(this->mElevation, this->mTargetElevation, deltaTime);
-            } else {
-                this->mElevation = this->mTargetElevation;
-            }
+        Gait::GaitType Walk::GetGait(void) const {
+            return this->mGaitCycle.GetGaitType();
         }
 
-        Position3d Walk::ComputeNewLegPosition(const float deltaTime, const Steps &legSteps,
-                                               const uint8_t legId) const {
-            // get next position index to compute lerp
-            const uint8_t next = (legSteps.idxPosition + 1U) % NB_STEPS;
-
-            // apply rotation
-            Position3d posCurrent = Rotate(this->mDirection, legSteps.steps[legSteps.idxPosition].positions,
-                                           (legId < NB_LEGS / 2U));
-            Position3d posNext = Rotate(this->mDirection, legSteps.steps[next].positions,
-                                        (legId < NB_LEGS / 2U));
-
-            // apply step amplitude
-            SetAmplitude(posCurrent);
-            SetAmplitude(posNext);
-            // apply step elevation
-            SetElevation(posCurrent);
-            SetElevation(posNext);
-
-            return {
-                    Misc::Utils::LerpF(posCurrent.x, posNext.x, deltaTime),
-                    Misc::Utils::LerpF(posCurrent.y, posNext.y, deltaTime),
-                    Misc::Utils::LerpF(posCurrent.z, posNext.z, deltaTime),
-            };
+        bool Walk::SetCycleDuration(const uint16_t duration) {
+            return this->mParams.SetCycleDuration(duration);
         }
 
-        void Walk::NextStep(const uint64_t currentTime, Steps &legSteps) const {
-            legSteps.startTime = currentTime;
-            if (legSteps.idxPosition < this->mMaxCounterStepPosition) {
-                // Move to next position
-                legSteps.idxPosition++;
-            } else {
-                legSteps.idxPosition = 0U;
-            }
-        }
-
-        float Walk::GetDeltaTime(const float step, const uint64_t currentTime, const uint64_t startTime) {
-            return (step - (step - (currentTime - startTime))) / step;
-        }
-
-        Position3d Walk::Rotate(const float angle, const Position3d &position, const bool clockWize) {
-            Position3d rotatePosition = position;
-            const float clockwize = clockWize ? 1.0F : -1.0F;
-            const float newAngle = clockWize ? angle : -angle - M_PI;
-            rotatePosition.x = (position.x * cos(newAngle)) + (clockwize * position.y * sin(newAngle));
-            rotatePosition.y = (position.y * cos(newAngle)) - (clockwize * position.x * sin(newAngle));
-            return rotatePosition;
+        uint16_t Walk::GetCycleDuration(void) const {
+            return this->mParams.GetCycleDuration();
         }
     }
 

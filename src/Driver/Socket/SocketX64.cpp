@@ -1,5 +1,6 @@
 #include "Socket.h"
 #include "tiny_websockets/server.hpp"
+
 namespace Driver
 {
     namespace Socket
@@ -27,6 +28,7 @@ namespace Driver
         }
 
         Socket::Socket(void) {
+            LOG_DRIVER_DEBUG("Socket", "Initialized.");
         }
 
         Core::Status Socket::Initialize(void) {
@@ -48,8 +50,8 @@ namespace Driver
                         this->Notify(NO_CLIENT);
                         once = true;
                     }
-                    client.poll();
                 }
+                client.poll();
             }
         }
 

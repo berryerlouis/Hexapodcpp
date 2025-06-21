@@ -28,6 +28,7 @@ namespace Driver
         }
 
         Socket::Socket(void) {
+            LOG_DRIVER_DEBUG("Socket", "Initialized.");
         }
 
         Core::Status Socket::Initialize(void) {

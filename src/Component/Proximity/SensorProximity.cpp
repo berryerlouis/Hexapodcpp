@@ -1,11 +1,15 @@
 #include "SensorProximity.h"
 
-namespace Component {
-    namespace Proximity {
+namespace Component
+{
+    namespace Proximity
+    {
         SensorProximity::SensorProximity(SensorProximityInterface &srf05Left, SensorProximityInterface &srf05Right,
-                                         SensorProximityInterface &Vl53l0x) : mSensors{
-            &srf05Left, &srf05Right, &Vl53l0x
-        } {
+                                         SensorProximityInterface &Vl53l0x) :
+            mSensors{
+                    &srf05Left, &srf05Right, &Vl53l0x
+            } {
+            LOG_COMPONENT_DEBUG("SensorProximity", "Initialized.");
         }
 
         Core::Status SensorProximity::Initialize(void) {

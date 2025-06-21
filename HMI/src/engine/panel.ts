@@ -37,7 +37,9 @@ export default class Panel extends Pane {
         });
         this.buildPositionFolder(bodyFolder);
         this.buildRotationFolder(bodyFolder);
+        this.buildDurationFolder(bodyFolder);
         this.buildDirectionFolder(bodyFolder);
+        this.buildGaitFolder(bodyFolder);
         this.buildAmplitudeElevationFolder(bodyFolder);
         this.buildLegsFolder(bodyFolder);
 
@@ -499,7 +501,43 @@ export default class Panel extends Pane {
             readonly: true, view: 'graph', min: -180, max: 180,
         });
     }
+    buildDurationFolder(folder: FolderApi) {
 
+        const bodyDurationFolder = folder.addFolder({
+            title: 'Duration',
+            expanded: false,
+        });
+        bodyDurationFolder.addBinding(this.hexapod.hexapodStruct, 'duration', {min: 1000, max: 10000, step: 10}).on('change',(ev)=> {
+            if (this.initDone && ev.last) {
+                this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_DURATION,
+                    [ev.value],[0xFFFF]));
+            }
+        });
+    }
+
+    buildGaitFolder(folder: FolderApi) {
+
+        const bodyGaitFolder = folder.addFolder({
+            title: 'Gait',
+            expanded: false,
+        });
+        bodyGaitFolder.addBlade({
+            view: 'list',
+            label: 'gait',
+            options: [
+                {text: 'TRIPOD', value: 'TRIPOD'},
+                {text: 'WAVE', value: 'WAVE'},
+                {text: 'DOUBLE_WAVE', value: 'DOUBLE_WAVE'},
+            ],
+            value: 'TRIPOD',
+        });
+        bodyGaitFolder.on('change',(ev)=> {
+            if (this.initDone && ev.last) {
+                this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_GAIT,
+                    [ev.value=='TRIPOD'?0:ev.value=='WAVE'?1:2],[0xFF]));
+            }
+        });
+    }
     buildDirectionFolder(folder: FolderApi) {
 
         const bodyDirectionFolder = folder.addFolder({

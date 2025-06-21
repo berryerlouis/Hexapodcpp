@@ -13,6 +13,7 @@ namespace Cluster
             , mSoundLeft(soundLeft)
             , mSoundRight(soundRight) {
             this->AddClusterItem({.commandId = ESoundCommands::GET_SOUND_STATUS, .expectedSize = 1U});
+            LOG_CLUSTER_DEBUG("Sound", "(%d) Initialized.", SOUND);
         }
 
         Core::Status ClusterSound::ExecuteFrame(const Frame &request, Frame &response) {

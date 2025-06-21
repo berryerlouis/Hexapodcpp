@@ -29,6 +29,8 @@ namespace Component
             SetUp() {
                 Core::Status success = Core::Status::CORE_ERROR;
 
+                EXPECT_CALL(mMockPca9685_0, GetAddress( )).WillRepeatedly(Return(0U));
+                EXPECT_CALL(mMockPca9685_1, GetAddress( )).WillRepeatedly(Return(1U));
                 EXPECT_CALL(mMockPca9685_0, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockPca9685_1, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockGpio, Set()).Times(1U);

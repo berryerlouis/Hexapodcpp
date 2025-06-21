@@ -24,6 +24,7 @@ namespace Component
 
             virtual void
             SetUp() {
+                EXPECT_CALL(mMockPca9685, GetAddress( )).WillOnce(Return(0U));
                 const Core::Status success = mServo.Initialize();
                 EXPECT_CALL(mMockTick, GetMs()).Times(1U);
                 mServo.SetEnable(true);

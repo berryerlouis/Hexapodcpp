@@ -55,7 +55,7 @@ namespace Component
             mMag.z = mMagRaw.z * 10.0F * 1229.0F / 4096.0F + 270.0F;
 
             constexpr float deltaTime = 0.01;
-            Position3D mYawPitchRoll;
+            Imu3d mYawPitchRoll;
 
             mAhrs.Update(mAcc, mGyr, mMag, deltaTime);
             mAhrs.GetRollPitchYaw(mYawPitchRoll);

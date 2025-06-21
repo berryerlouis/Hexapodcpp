@@ -31,7 +31,7 @@ namespace Cluster
 
             static Core::Status BuildFrameTmp(const uint16_t temp, Frame &response);
 
-            static Core::Status BuildFrameYawPitchRoll(const Position3D ypr, Frame &response);
+            static Core::Status BuildFrameYawPitchRoll(const Imu3d ypr, Frame &response);
 
             static Core::Status BuildFramePressure(const int32_t pressure, Frame &response);
 

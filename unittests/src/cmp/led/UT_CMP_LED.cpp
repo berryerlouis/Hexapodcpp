@@ -7,6 +7,7 @@
 
 using ::testing::_;
 using ::testing::Return;
+using ::testing::ReturnRef;
 using ::testing::StrictMock;
 
 namespace Component
@@ -23,7 +24,9 @@ namespace Component
             virtual void
             SetUp() {
                 EXPECT_CALL(mMockGpio, Reset()).WillOnce(Return(Core::Status::CORE_OK));
-                Core::Status success = mLed.Initialize();
+                Driver::Gpio::SGpio gpio;
+                EXPECT_CALL(mMockGpio, GetPin()).WillOnce(ReturnRef(gpio));
+                const Core::Status success = mLed.Initialize();
                 EXPECT_EQ(success, Core::Status::CORE_OK);
             }
 
@@ -48,7 +51,7 @@ namespace Component
 
             success = mLed.On();
 
-            Led::LedState status = mLed.Get();
+            const Led::LedState status = mLed.Get();
 
             EXPECT_EQ(success, Core::Status::CORE_OK);
             EXPECT_EQ(status, Led::LedState::ON);
@@ -61,7 +64,7 @@ namespace Component
 
             success = mLed.Off();
 
-            Led::LedState status = mLed.Get();
+            const Led::LedState status = mLed.Get();
 
             EXPECT_EQ(success, Core::Status::CORE_OK);
             EXPECT_EQ(status, Led::LedState::OFF);
@@ -74,7 +77,7 @@ namespace Component
 
             success = mLed.Toggle();
 
-            Led::LedState status = mLed.Get();
+            const Led::LedState status = mLed.Get();
 
             EXPECT_EQ(success, Core::Status::CORE_OK);
             EXPECT_EQ(status, Led::LedState::ON);
@@ -82,7 +85,7 @@ namespace Component
 
         TEST_F(UT_CMP_LED, Get) {
 
-            Led::LedState status = mLed.Get();
+            const Led::LedState status = mLed.Get();
 
             EXPECT_EQ(status, Led::LedState::OFF);
         }

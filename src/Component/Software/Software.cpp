@@ -1,4 +1,5 @@
 #include "Software.h"
+#include "../../Core/Version.h"
 
 namespace Component
 {
@@ -9,6 +10,7 @@ namespace Component
             mMinLoopTime(0xFFFFFFFFUL),
             mMaxLoopTime(0UL),
             mPrevTime(0UL) {
+            LOG_COMPONENT_DEBUG("Software", "Initialized.");
         }
 
         Core::Status Software::Initialize(void) {
@@ -42,7 +44,7 @@ namespace Component
         }
 
         SoftwareInterface::Version Software::GetVersion(void) {
-            constexpr Version version = {.major = 0U, .minor = 1U};
+            constexpr Version version = {.major = VERSION_MAJOR, .minor = VERSION_MINOR};
             return (version);
         }
 

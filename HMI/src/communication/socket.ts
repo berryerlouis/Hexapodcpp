@@ -26,14 +26,14 @@ export default class Socket {
     private socket: WebSocket;
     private messagesList: Message[];
 
-    constructor() {
+    constructor(url: string | URL) {
         this.listOfCallbackRead = [];
         this.listOfCallbackWrite = [];
         this.listOfSpecificCallbackRead = [];
         this.listOfCallbackStarted = [];
         this.listOfCallbackStopped = [];
         this.messagesList = []
-        this.socket = new WebSocket('ws://88.183.190.4:58080');
+        this.socket = new WebSocket(url);
 
         this.socket.addEventListener('open', () => {
             console.log('Connected to the WebSocket server');

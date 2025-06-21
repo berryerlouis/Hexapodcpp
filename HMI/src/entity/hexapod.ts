@@ -11,11 +11,13 @@ import {ClusterBodyCommands} from "../communication/clusters/clusterBody.ts";
 import Message from "../communication/message.ts";
 import DirectionArrow from "../engine/directionArrow.ts";
 
-
+type Gait = 'TRIPOD' | 'WAVE' | 'DOUBLE_WAVE';
 export interface HexapodStruct {
     amplitude: number;
     elevation: number;
     direction: number;
+    duration: number;
+    gait: Gait;
     position: { x: number, y: number, z: number };
     rotation: { x: number, y: number, z: number };
 }
@@ -27,6 +29,8 @@ export default class Hexapod extends Object3D {
         amplitude: 30,
         elevation: 10,
         direction: 0,
+        duration: 1000,
+        gait: 'TRIPOD',
         position: {x:0,y:0,z:0},
         rotation: {x:0,y:0,z:0}
     };
@@ -46,7 +50,7 @@ export default class Hexapod extends Object3D {
         this.socket = socket;
         this.button = new Button(this.socket);
         this.head = new Head(this.socket);
-        this.directionArrow = new DirectionArrow(this.socket);
+        this.directionArrow = new DirectionArrow(this.socket, this.hexapodStruct);
         this.body = new Body(0,1,0, this.socket, 100);
         this.imu = new Imu(this.socket,5000);
         this.battery = new Battery(this.socket,10000);
@@ -59,11 +63,12 @@ export default class Hexapod extends Object3D {
         this.add(this.directionArrow);
 
 
-        this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_DIRECTION_AMPLITUDE_ELEVATION, (message:Message) => {
-            if(message.params && message.params.length == 4) {
+        this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_DIRECTION_AMPLITUDE_ELEVATION_DURATION, (message:Message) => {
+            if(message.params && message.params.length == 6) {
                 this.hexapodStruct.amplitude = message.getValueUint8(0);
                 this.hexapodStruct.elevation = message.getValueUint8(1);
                 this.hexapodStruct.direction = message.getValueUint16(2);
+                this.hexapodStruct.duration = message.getValueUint16(4);
                 this.body.setDirection(this.hexapodStruct.direction);
             }
         });

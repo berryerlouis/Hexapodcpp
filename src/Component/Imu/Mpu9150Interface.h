@@ -34,7 +34,7 @@ namespace Component
 
             virtual int16_t ReadTemp(void) const = 0;
 
-            virtual Position3D ReadYawPitchRoll(void) = 0;
+            virtual Imu3d ReadYawPitchRoll(void) = 0;
 
             virtual void StartCalibration(const SensorsImu sensor) = 0;
 

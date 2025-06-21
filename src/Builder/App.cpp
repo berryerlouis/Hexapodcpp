@@ -106,20 +106,23 @@ namespace Builder
                 mMessageListener) {
     }
 
+#define LOG_RESULT_INIT(name) if(success != Core::Status::CORE_OK) \
+    LOG_ERROR("Initialization %s failed.",name);
+#define INIT(name, code)  \
+    success = code; \
+    LOG_RESULT_INIT(name);
+
     Core::Status App::Initialize(void) {
-        Core::Status success = this->mSocket.Initialize();
-        if (success == Core::Status::CORE_OK) {
-            success = this->mTwi.Initialize();
-        }
-        if (success == Core::Status::CORE_OK) {
-            success = this->mServices.Initialize();
-        }
-        if (success == Core::Status::CORE_OK) {
-            this->mLedPwmStatus.Initialize();
-        }
+        Core::Status success = Core::CORE_OK;
+        INIT("Socket", this->mSocket.Initialize());
+        if (success == Core::CORE_OK)
+        INIT("Twi", this->mTwi.Initialize());
+        if (success == Core::CORE_OK)
+        INIT("Services", this->mServices.Initialize());
+        if (success == Core::CORE_OK)
+        INIT("Led", this->mLedPwmStatus.Initialize());
         return (success);
     }
-
 
     void App::Update(void) {
         const uint64_t currentTime = mTick.GetMs();
@@ -127,4 +130,5 @@ namespace Builder
         this->mLedPwmStatus.Update(currentTime);
         this->mTick.DelayUs(100U);
     }
+
 } // namespace Builder

@@ -115,5 +115,6 @@ namespace Builder
         Service::Display::ServiceDisplay mServiceDisplay;
         Service::General::ServiceGeneral mServiceGeneral;
         Service::Services::Services mServices;
+
     };
 }

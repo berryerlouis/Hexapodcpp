@@ -12,6 +12,7 @@ namespace Cluster
             , ClusterCommand(NB_COMMANDS_BUTTON)
             , mButton(button) {
             this->AddClusterItem({.commandId = EButtonCommands::GET_BP_STATUS, .expectedSize = 0U});
+            LOG_CLUSTER_DEBUG("Button", "(%d) Initialized.", BUTTON);
         }
 
         Core::Status ClusterButton::ExecuteFrame(const Frame &request, Frame &response) {

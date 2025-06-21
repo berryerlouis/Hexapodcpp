@@ -22,6 +22,7 @@ namespace Cluster
             this->AddClusterItem((ClusterItem){.commandId = EImuCommands::ALTITUDE, .expectedSize = 0U});
             this->AddClusterItem((ClusterItem){.commandId = EImuCommands::TMP_BAR, .expectedSize = 0U});
             this->AddClusterItem((ClusterItem){.commandId = EImuCommands::CALIB_SENSOR, .expectedSize = 2U});
+            LOG_CLUSTER_DEBUG("Imu", "(%d) Initialized.", IMU);
         }
 
         Core::Status ClusterImu::ExecuteFrame(const Frame &request, Frame &response) {
@@ -45,7 +46,7 @@ namespace Cluster
                 const uint16_t temp = this->mImu.ReadTemp();
                 success = this->BuildFrameTmp(temp, response);
             } else if (request.GetCommandId() == EImuCommands::YAW_PITCH_ROLL) {
-                const Position3D ypr = this->mImu.ReadYawPitchRoll();
+                const Imu3d ypr = this->mImu.ReadYawPitchRoll();
                 success = this->BuildFrameYawPitchRoll(ypr, response);
             } else if (request.GetCommandId() == EImuCommands::PRESSURE) {
                 const int32_t pressure = this->mBarometer.GetPressure();
@@ -123,7 +124,7 @@ namespace Cluster
             return (success);
         }
 
-        Core::Status ClusterImu::BuildFrameYawPitchRoll(const Position3D ypr, Frame &response) {
+        Core::Status ClusterImu::BuildFrameYawPitchRoll(const Imu3d ypr, Frame &response) {
             Vector3 cmp;
             cmp.x = static_cast<int16_t>(ypr.roll * 100U);
             cmp.y = static_cast<int16_t>(ypr.pitch * 100U);

@@ -3,6 +3,8 @@
 #include "../ClusterBase.h"
 #include "../../Bot/Body/BodyInterface.h"
 
+#include "../../Bot/Gait/Constants.h"
+
 namespace Cluster
 {
     namespace Body
@@ -29,8 +31,13 @@ namespace Cluster
 
             static Core::Status BuildFrameUpdateElevation(Frame &response, const uint8_t successElevation);
 
-            static Core::Status BuildFrameUpdateDirectionAmplitudeElevation(
-                    Frame &response, const uint8_t amplitude, const uint8_t elevation, const uint16_t direction);
+            static Core::Status BuildFrameUpdateDirectionAmplitudeElevationDuration(
+                    Frame &response, const uint8_t amplitude, const uint8_t elevation, const uint16_t direction,
+                    const uint16_t duration);
+
+            static Core::Status BuildFrameUpdateDuration(Frame &response, const uint16_t duration);
+
+            Core::Status BuildFrameUpdateGait(Frame &response, Bot::Gait::GaitType gait);
 
         private:
             BodyInterface &mBody;

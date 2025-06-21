@@ -19,6 +19,8 @@ namespace Service
             , mMinDeltaTime(10000UL)
             , mMaxDeltaTime(0UL)
             , mMessageListener(messageListener) {
+            LOG_SERVICE_DEBUG("%s(%d) each %dms.",
+                              EServicesStruct::ServiceIdToString(serviceId).c_str(), serviceId, updateTime);
         }
 
         ~Service() = default;

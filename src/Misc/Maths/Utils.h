@@ -3,16 +3,18 @@
 #include <stdint.h>
 #include <math.h>
 
+#include "Geometry.h"
+
 namespace Misc
 {
     namespace Utils
     {
-        static inline float toDeg(const float a) {
+        static inline float ToDeg(const float a) {
             return a * 180.0F / M_PI;
         }
 
-        static inline float toRad(const float a) {
-            return a / M_PI * 180.0F;
+        static inline float ToRad(const float a) {
+            return a / 180.0F * M_PI;
         }
 
         static inline uint8_t Lerp(const uint8_t a, const uint8_t b, const float t) {
@@ -21,6 +23,14 @@ namespace Misc
 
         static inline float LerpF(const float a, const float b, const float t) {
             return a * (1.0 - t) + (b * t);
+        }
+
+        static inline Maths::Position3d LerpF3d(const Maths::Position3d a, const Maths::Position3d b, const float t) {
+            return {
+                    LerpF(a.x, b.x, t),
+                    LerpF(a.y, b.y, t),
+                    LerpF(a.z, b.z, t)
+            };
         }
 
         static inline long Map(const long x, const long in_min, const long in_max, const long out_min,

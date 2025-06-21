@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <iostream>
 
+#include "../../Misc/Maths/Utils.h"
+
 namespace Bot
 {
     namespace Leg
@@ -12,6 +14,8 @@ namespace Bot
             , mBodyCenterOffsetY{0}
             , mFootPosition{0, 0, 0}
             , mLegIk{{0, 0, 0}, 0, 0, 0, 0, 0, 0, 0, 0}
+            , mCurrentPos{0, 0, 0}
+            , mTargetPos{0, 0, 0}
             , mLegId(legId)
             , mCoxa(coxa)
             , mFemur(femur)
@@ -71,8 +75,42 @@ namespace Bot
                     this->mFootPosition.z = TIBIA_LENGTH;
                     break;
             }
+            LOG_BOT_DEBUG("Leg", "Leg %s(%d) Initialized",
+                          ElegToString(this->mLegId).c_str(),
+                          this->mLegId);
         }
 
+        ELeg Leg::GetId(void) const {
+            return this->mLegId;
+        }
+
+        void Leg::ComputeDirection(Position3d &position, const float angle, const bool clockWize) {
+            Position3d rotatePosition = position;
+            const float clockwize = clockWize ? 1.0F : -1.0F;
+            const float newAngle = clockWize ? angle : -angle - M_PI;
+            rotatePosition.x = (position.x * cos(newAngle)) + (position.y * clockwize * sin(newAngle));
+            rotatePosition.y = (position.y * cos(newAngle)) - (position.x * clockwize * sin(newAngle));
+            position = rotatePosition;
+        }
+
+        void Leg::ComputeAmplitude(Position3d &position, const uint8_t amplitude) {
+            position.x *= amplitude;
+            position.y *= amplitude;
+        }
+
+        void Leg::ComputeElevation(Position3d &position, const uint8_t elevation) {
+            position.z *= elevation * -1.0F;
+        }
+
+        Core::Status Leg::SetTarget(const Position3d &target) {
+            this->mTargetPos = target;
+            return Core::CORE_OK;
+        }
+
+        Core::Status Leg::UpdatePosition(const float deltaTime) {
+            this->mCurrentPos = Misc::Utils::LerpF3d(this->mCurrentPos, this->mTargetPos, deltaTime);
+            return this->SetLegIk(this->mCurrentPos);
+        }
 
         Core::Status Leg::SetLegIk(const Position3d &position, const uint16_t travelTime) {
             this->mLegIk.newFootPos.x = position.x + (COXA_LENGTH + FEMUR_LENGTH);
@@ -102,6 +140,13 @@ namespace Bot
             success |= this->mFemur.SetAngle(static_cast<uint8_t>(this->mLegIk.femurIk), travelTime) << 3U;
             success |= this->mTibia.SetAngle(static_cast<uint8_t>(this->mLegIk.tibiaIk), travelTime) << 6U;
 
+            if (success != 0U)
+                LOG_BOT_ERROR("Gaits", "leg %s(%d) Set IK error (coxaIk:%d, femurIk:%d, tibiaIk:%d)",
+                          ElegToString(this->mLegId).c_str(),
+                          this->mLegId,
+                          static_cast<uint8_t>(this->mLegIk.coxaIk),
+                          static_cast<uint8_t>(this->mLegIk.femurIk),
+                          static_cast<uint8_t>(this->mLegIk.tibiaIk));
             return success == 0U ? Core::Status::CORE_OK : Core::Status::CORE_ERROR;
         }
 
@@ -158,6 +203,8 @@ namespace Bot
             success |= this->mFemur.SetAngle(static_cast<uint8_t>(this->mLegIk.femurIk), travelTime) << 3U;
             success |= this->mTibia.SetAngle(static_cast<uint8_t>(this->mLegIk.tibiaIk), travelTime) << 6U;
 
+            if (success != 0U)
+                LOG_BOT_ERROR("Gaits", "leg Id:%d Set Body IK error", this->mLegId);
             return success == 0U ? Core::Status::CORE_OK : Core::Status::CORE_ERROR;
         }
     }

@@ -7,6 +7,7 @@ namespace Driver
         Gpio::Gpio(const SGpio &gpio, const EPortDirection &portDirection) :
             mGpio(gpio) {
             (void) portDirection;
+            LOG_DRIVER_DEBUG("Gpio", "pin %d Initialized.", this->mGpio.pin);
         }
 
         SGpio &Gpio::GetPin(void) {

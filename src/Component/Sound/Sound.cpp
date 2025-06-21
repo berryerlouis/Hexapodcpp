@@ -26,6 +26,7 @@ namespace Component
             const Core::Status success = this->mLed.Initialize();
             this->mLed.Off();
             this->mGpioSound.SetInterruptPin(&this->InterruptGpioSoundHit);
+            LOG_COMPONENT_DEBUG("Sound", "pin %d Initialized.", this->mGpioSound.GetPin().pin);
             return (success);
         }
 

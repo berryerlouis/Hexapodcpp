@@ -14,6 +14,7 @@ namespace Cluster
             this->AddClusterItem((ClusterItem){.commandId = EProximityCommands::US_RIGHT, .expectedSize = 0U});
             this->AddClusterItem((ClusterItem){.commandId = EProximityCommands::LASER, .expectedSize = 0U});
             this->AddClusterItem((ClusterItem){.commandId = EProximityCommands::SET_THRESHOLD, .expectedSize = 3U});
+            LOG_CLUSTER_DEBUG("Proximity", "(%d) Initialized.", PROXIMITY);
         }
 
         Core::Status ClusterProximity::ExecuteFrame(const Frame &request, Frame &response) {

@@ -1,12 +1,23 @@
 #include "Builder/App.h"
+#include "Core/Logger.h"
+#include "Core/Version.h"
 
-using namespace Builder;
 
-Builder::App robot;
+int main(const int argc, char **argv) {
 
-int main(void) {
+    setvbuf(stdout, NULL, _IONBF, 0U);
 
-    setvbuf(stdout, NULL, _IONBF, 0);
+    LOG_INFO("Hexapod started.");
+    LOG_INFO("Hexapod version: %d.%d", VERSION_MAJOR, VERSION_MINOR);
+    Core::Logger::SetLogLevel(Core::LogLevel::DEBUG);
+    if (argc > 1) {
+        const Core::LogLevel level = Core::Logger::StringToLevel(argv[1U]);
+        if (level != Core::LogLevel::UNKNOWN) {
+            Core::Logger::SetLogLevel(level);
+        }
+    }
+
+    Builder::App robot;
     // hexapod initialization
     if (robot.Initialize() == Core::Status::CORE_OK) {
         while (true) {

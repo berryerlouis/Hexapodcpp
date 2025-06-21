@@ -21,6 +21,7 @@ namespace Component
             Core::Status Srf05::Initialize(void) {
                 this->mGpioEcho.Initialize();
                 this->mLed.Initialize();
+                LOG_COMPONENT_DEBUG("Ultrasound", "pin trigger %d Initialized.", this->mGpioTrigger.GetPin().pin);
                 return (Core::Status::CORE_OK);
             }
 

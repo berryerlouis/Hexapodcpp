@@ -4,6 +4,7 @@ import {ClusterName} from "../communication/clusters/clusterType.ts";
 import {ClusterServoCommands} from "../communication/clusters/clusterServo.ts";
 import {ClusterBodyCommands} from "../communication/clusters/clusterBody.ts";
 import {CircleGeometry, DoubleSide, MathUtils, Mesh, MeshBasicMaterial, Object3D} from "three";
+import {HexapodStruct} from "../entity/hexapod.ts";
 
 export default class DirectionArrow extends Object3D {
     socket:Socket;
@@ -14,9 +15,11 @@ export default class DirectionArrow extends Object3D {
     stop:HTMLElement;
     enable:HTMLElement;
     circle:Mesh;
-    constructor(socket:Socket) {
+    hexapodStruct:HexapodStruct;
+    constructor(socket:Socket,hexapodStruct:HexapodStruct) {
         super();
         this.socket = socket;
+        this.hexapodStruct = hexapodStruct;
         this.forward = document.getElementById('forward')!;
         this.right = document.getElementById('right')!;
         this.left = document.getElementById('left')!;
@@ -36,8 +39,8 @@ export default class DirectionArrow extends Object3D {
         //this.circle.visible = false;
         this.add(this.circle);
 
-        this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_DIRECTION_AMPLITUDE_ELEVATION, (message:Message) => {
-            if(message.params && message.params.length == 4) {
+        this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_DIRECTION_AMPLITUDE_ELEVATION_DURATION, (message:Message) => {
+            if(message.params && message.params.length == 6) {
                 this.setDirection(message.getValueUint16(2));
             }
         });
@@ -51,7 +54,7 @@ export default class DirectionArrow extends Object3D {
             this.left.classList.remove('select');
             this.backward.classList.remove('select');
             this.stop.classList.remove('select');
-            this.socket.write( new Message( ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS,[0]));
+            this.socket.write( new Message( ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS,[0,this.hexapodStruct.duration],[0xFF,0xFFFF]));
         });
         this.right.addEventListener('click',() => {
             this.forward.classList.remove('select');
@@ -59,7 +62,7 @@ export default class DirectionArrow extends Object3D {
             this.left.classList.remove('select');
             this.backward.classList.remove('select');
             this.stop.classList.remove('select');
-            this.socket.write( new Message( ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS,[0]));
+            this.socket.write( new Message( ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS,[0,this.hexapodStruct.duration],[0xFF,0xFFFF]));
         });
         this.left.addEventListener('click',() => {
             this.forward.classList.remove('select');
@@ -67,7 +70,7 @@ export default class DirectionArrow extends Object3D {
             this.left.classList.toggle('select');
             this.backward.classList.remove('select');
             this.stop.classList.remove('select');
-            this.socket.write( new Message( ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS,[0]));
+            this.socket.write( new Message( ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS,[0,this.hexapodStruct.duration],[0xFF,0xFFFF]));
         });
         this.backward.addEventListener('click',() => {
             this.forward.classList.remove('select');
@@ -75,7 +78,7 @@ export default class DirectionArrow extends Object3D {
             this.left.classList.remove('select');
             this.backward.classList.toggle('select');
             this.stop.classList.remove('select');
-            this.socket.write( new Message( ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS,[0]));
+            this.socket.write( new Message( ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS,[0,this.hexapodStruct.duration],[0xFF,0xFFFF]));
         });
         this.stop.addEventListener('click',() => {
             this.forward.classList.remove('select');
@@ -83,7 +86,7 @@ export default class DirectionArrow extends Object3D {
             this.left.classList.remove('select');
             this.backward.classList.remove('select');
             this.stop.classList.toggle('select');
-            this.socket.write( new Message( ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS,[2]));
+            this.socket.write( new Message( ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS,[2,this.hexapodStruct.duration],[0xFF,0xFFFF]));
         });
         this.enable.addEventListener('click',() => {
             this.enable.classList.toggle('select');

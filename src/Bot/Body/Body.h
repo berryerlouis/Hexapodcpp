@@ -28,7 +28,7 @@ namespace Bot
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void UpdateWalkStatus(const EWalkStatus status) final override;
+            virtual void UpdateWalkStatus(const EWalkStatus status, const uint16_t duration) final override;
 
             virtual uint32_t SetBodyPositionRotation(const Position3d &position,
                                                      const Rotation3d &rotation,
@@ -38,17 +38,25 @@ namespace Bot
                                                     const Position3d &position,
                                                     const uint16_t travelTime) final override;
 
-            virtual bool SetDirection(const uint16_t directionAngle) final override;
+            virtual bool SetDirection(const float directionAngle) final override;
 
-            virtual bool SetAmplitude(const uint8_t amplitude) final override;
+            virtual bool SetAmplitude(const float amplitude) final override;
 
-            virtual bool SetElevation(const uint8_t elevation) final override;
+            virtual bool SetElevation(const float elevation) final override;
 
-            virtual uint16_t GetDirection(void) const final override;
+            virtual bool SetDuration(const uint16_t duration) final override;
 
-            virtual uint8_t GetAmplitude(void) const final override;
+            virtual bool SetGait(const Gait::GaitType gait) final override;
 
-            virtual uint8_t GetElevation(void) const final override;
+            virtual float GetDirection(void) final override;
+
+            virtual float GetAmplitude(void) final override;
+
+            virtual float GetElevation(void) final override;
+
+            virtual uint16_t GetDuration(void) final override;
+
+            virtual Gait::GaitType GetGait(void) final override;
 
         private:
             SBodyIk mBodyIk;

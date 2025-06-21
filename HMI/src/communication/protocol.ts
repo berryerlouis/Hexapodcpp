@@ -80,8 +80,9 @@ export default class Protocol {
         return messageToEncode;
     }
 
-    private static getSizeofParam(params: number[], encoding?: Encoding[]): { encodedSize: number, length:number } {
-        let encodedSize: number = 0;
+    private static getSizeofParam(params: number[], encoding?: Encoding[]): { encodedSize: number[], length:number } {
+        let encoded: number = 0;
+        let encodedSize: number[] = [];
         let length: number = 0;
         for (let i: number = 0; i < params.length; i++) {
             let encode: Encoding = 0xFF;
@@ -92,21 +93,22 @@ export default class Protocol {
                 params[i] = (params[i] & encode);
             }
             if (encode == 0xFF)
-                encodedSize = 2;
+                encoded = 2;
             else if (encode == 0xFFFF)
-                encodedSize = 4;
+                encoded = 4;
             else if (encode == 0xFFFFFF)
-                encodedSize = 6;
+                encoded = 6;
             else if (encode == 0xFFFFFFFF)
-                encodedSize = 8;
-            length += encodedSize/2;
+                encoded = 8;
+            encodedSize.push(encoded);
+            length += encoded/2;
         }
         return {encodedSize,length};
     }
 
-    private static toLittleEndian(params: number[], encodedSize: number): string {
-        return params.map(num => {
-            const hex = num.toString(16).padStart(encodedSize, '0');
+    private static toLittleEndian(params: number[], encodedSize: number[]): string {
+        return params.map((num, index) => {
+            const hex = num.toString(16).padStart(encodedSize[index], '0');
             return hex.match(/../g)!.reverse().join('');
         }).join('').toUpperCase();
     }

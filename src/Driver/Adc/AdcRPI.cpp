@@ -6,6 +6,7 @@ namespace Driver
     {
         Adc::Adc(Gpio::GpioInterface &gpio) {
             (void) gpio;
+            LOG_DRIVER_DEBUG("Adc", "Initialized.");
         }
 
         Core::Status Adc::Initialize(void) {

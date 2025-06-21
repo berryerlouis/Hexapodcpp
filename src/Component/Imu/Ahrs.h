@@ -18,7 +18,7 @@ namespace Component
                         Vector3F mag,
                         const float deltaTime);
 
-            void GetRollPitchYaw(Position3D &ypr) const;
+            void GetRollPitchYaw(Imu3d &ypr) const;
 
         private:
             float mQuaternion[4U];

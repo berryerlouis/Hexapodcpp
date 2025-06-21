@@ -82,6 +82,8 @@ namespace Component
 
             virtual void SetPwm(const uint8_t num, const uint16_t off) final override;
 
+            virtual uint8_t GetAddress(void) final override;
+
             Core::Status Initialize(void);
 
             void Update(const uint64_t currentTime);

@@ -61,7 +61,7 @@ export default class Ui {
     initCom() {
 
         this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_STATE, [0,1]));
-        this.socket.write(new Message( ClusterName.BODY, ClusterBodyCommands.GET_DIRECTION_AMPLITUDE_ELEVATION));
+        this.socket.write(new Message( ClusterName.BODY, ClusterBodyCommands.GET_DIRECTION_AMPLITUDE_ELEVATION_DURATION));
         this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_STATE_PCA));
 
         for (let i = 0; i < 18; i++) {

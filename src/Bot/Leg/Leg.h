@@ -41,18 +41,31 @@ namespace Bot
 
             Leg(const ELeg legId, ServoInterface &coxa, ServoInterface &femur, ServoInterface &tibia);
 
+            Core::Status SetTarget(const Position3d &target);
+
+            Core::Status UpdatePosition(const float deltaTime);
+
             ~Leg() = default;
 
+            ELeg GetId(void) const;
 
             Core::Status SetLegIk(const Position3d &position, const uint16_t travelTime = 0U);
 
             Core::Status SetLegBodyIk(const Position3d &position, const Position3d &bodyIk, const uint16_t travelTime);
+
+            void ComputeDirection(Position3d &position, float angle, bool clockWize);
+
+            void ComputeAmplitude(Position3d &position, uint8_t amplitude);
+
+            void ComputeElevation(Position3d &position, uint8_t elevation);
 
         public:
             float mBodyCenterOffsetX;
             float mBodyCenterOffsetY;
             Position3d mFootPosition;
             SLegIk mLegIk;
+            Position3d mCurrentPos;
+            Position3d mTargetPos;
 
         private:
             ELeg mLegId;

@@ -25,6 +25,7 @@ namespace Cluster
             this->AddClusterItem((ClusterItem){.commandId = EServoCommands::SET_REVERSE, .expectedSize = 2U});
             this->AddClusterItem((ClusterItem){.commandId = EServoCommands::GET_STATE_PCA, .expectedSize = 0U});
             this->AddClusterItem((ClusterItem){.commandId = EServoCommands::GET_STATE_PCA, .expectedSize = 1U});
+            LOG_CLUSTER_DEBUG("Servo", "(%d) Initialized.", SERVO);
         }
 
 

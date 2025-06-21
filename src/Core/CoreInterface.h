@@ -4,6 +4,7 @@
 #include <stddef.h>
 
 #include "Status.h"
+#include "Logger.h"
 
 namespace Core
 {

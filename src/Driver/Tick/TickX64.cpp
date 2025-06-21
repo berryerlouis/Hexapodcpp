@@ -10,6 +10,7 @@ namespace Driver
         Tick::Tick(void) {
             now = std::chrono::system_clock::now();
             start = GetMs();
+            LOG_DRIVER_DEBUG("Tick", "Initialized.");
         }
 
         uint64_t Tick::GetUs(void) {
@@ -19,7 +20,7 @@ namespace Driver
         }
 
         uint64_t Tick::GetMs(void) {
-            auto duration = now.time_since_epoch();
+            const auto duration = now.time_since_epoch();
             now = std::chrono::system_clock::now();
             return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() - start;
         }

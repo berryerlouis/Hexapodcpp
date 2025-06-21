@@ -27,6 +27,8 @@ namespace Component
             virtual void SetFrequency(const uint32_t frequency) = 0;
 
             virtual void SetPwm(const uint8_t num, const uint16_t off) = 0;
+
+            virtual uint8_t GetAddress(void) = 0;
         };
     }
 }

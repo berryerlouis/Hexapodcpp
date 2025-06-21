@@ -15,6 +15,7 @@ namespace Component
             , mRunning(false)
             , mFadeDuration(0)
             , mFadeStep(0) {
+            LOG_COMPONENT_DEBUG("Led PWM", "Initialized.");
         }
 
         LedPwm::~LedPwm() {

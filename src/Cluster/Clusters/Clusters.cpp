@@ -14,6 +14,7 @@ namespace Cluster
                 ClusterProximity &proximity,
                 ClusterServo &servo) :
             mClusters{&general, &battery, &body, &imu, &proximity, &servo, &button, &sound} {
+            LOG_CLUSTER_DEBUG("Clusters", " Initialized.");
         }
 
         ClusterInterface *Clusters::GetCluster(const EClusters clusterId) const {

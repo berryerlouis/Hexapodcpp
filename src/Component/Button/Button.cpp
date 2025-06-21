@@ -20,6 +20,7 @@ namespace Component
             , mState(RELEASE) {
             button[buttonIndex] = this;
             buttonIndex++;
+            LOG_COMPONENT_DEBUG("Button", "Initialized.");
         }
 
         Core::Status Button::Initialize(void) {

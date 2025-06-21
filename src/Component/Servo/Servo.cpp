@@ -7,7 +7,6 @@ namespace Component
     {
 #define REVERSE_ANGLE( angle )    ( ( ( angle - 90 ) * -1 ) + 90 )
 
-
         Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId) :
             mPca9685(pca9685)
             , mTick(tick)
@@ -98,6 +97,8 @@ namespace Component
                 this->mMax = REVERSE_ANGLE(this->mMin);
                 this->mMin = REVERSE_ANGLE(this->mMax);
             }
+            LOG_COMPONENT_DEBUG("Servo", "id %d on controller address 0x%02X Initialized.", this->mServoId,
+                                this->mPca9685.GetAddress());
             return (Core::Status::CORE_OK);
         }
 

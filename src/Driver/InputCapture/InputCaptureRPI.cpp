@@ -19,6 +19,7 @@ namespace Driver
             inputCapture[inputCaptureIndex] = this;
             inputCaptureIndex++;
             wiringPiISR(this->mGpio.GetPin().pin, INT_EDGE_BOTH, &InterruptInputCapture);
+            LOG_DRIVER_DEBUG("InputCapture", "pin %d Initialized.", this->mGpio.GetPin().pin);
         }
 
         Core::Status InputCapture::Initialize(void) {

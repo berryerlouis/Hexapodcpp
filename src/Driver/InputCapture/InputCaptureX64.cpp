@@ -6,6 +6,7 @@ namespace Driver
     {
         InputCapture::InputCapture(Gpio::GpioInterface &gpio, Tick::TickInterface &tick) :
             mGpio(gpio), mTick(tick), mState(false), mStartTime(0UL), mDelay(0UL) {
+            LOG_DRIVER_DEBUG("InputCapture", "pin %d Initialized.", this->mGpio.GetPin().pin);
         }
 
         Core::Status InputCapture::Initialize(void) {

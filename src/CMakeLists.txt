@@ -44,6 +44,10 @@ endif ()
 # Concatenate all src files
 set(SRC_FILES_MAIN Hexapodcpp.cpp)
 
+set(SRC_FILES_CORE
+        Core/Logger.cpp
+)
+
 set(SRC_FILES_SERVICES
         Service/Battery/ServiceBattery.cpp
         Service/Button/ServiceButton.cpp
@@ -118,11 +122,19 @@ set(SRC_FILES_BUILDER
 set(SRC_FILES_BOT
         Bot/Body/Body.cpp
         Bot/Leg/Leg.cpp
+        Bot/Gait/GaitCycle.cpp
+        Bot/Gait/Gaits.cpp
+        Bot/Gait/GaitBase.cpp
+        Bot/Gait/GaitParams.cpp
+        Bot/Gait/GaitTripod.cpp
+        Bot/Gait/GaitWave.cpp
+        Bot/Gait/GaitDoubleWave.cpp
         Bot/Legs/Legs.cpp
         Bot/Walk/Walk.cpp
 )
 
 set(SRC_FILES
+        ${SRC_FILES_CORE}
         ${SRC_FILES_BUILDER}
         ${SRC_FILES_BOT}
         ${SRC_FILES_CLUSTER}
@@ -134,7 +146,7 @@ set(SRC_FILES
 )
 
 #include_directories(/opt/poky/5.1/sysroots/arm1176jzfshf-vfp-poky-linux-gnueabi/usr/include/c++/14.2.0)
-add_compile_options(-Wall -Wextra -Werror -Wno-cast-align -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O -g)
+add_compile_options(-Wall -Wextra -Werror -Wno-cast-align -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O0 -g)
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 if (${TARGET} STREQUAL "RPI")
     target_link_libraries(${PROJECT_NAME} wiringPi tiny_websockets_lib)

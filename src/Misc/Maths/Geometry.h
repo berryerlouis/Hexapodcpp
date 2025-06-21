@@ -106,7 +106,7 @@ namespace Misc
             float z;
         };
 
-        struct Position3D {
+        struct Imu3d {
             float yaw;
             float pitch;
             float roll;

@@ -8,6 +8,7 @@
 
 using ::testing::_;
 using ::testing::Return;
+using ::testing::ReturnRef;
 using ::testing::StrictMock;
 
 namespace Component
@@ -31,11 +32,14 @@ namespace Component
 
             virtual void
             SetUp() {
+                Driver::Gpio::SGpio gpio;
+                EXPECT_CALL(mMockGpio, GetPin()).WillOnce(ReturnRef(gpio));
                 EXPECT_CALL(mMockLed, Initialize()).Times(1U);
                 EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockGpio, SetInterruptPin(_)).Times(1U);
                 EXPECT_EQ(mSoundLeft.Initialize(), Core::Status::CORE_OK);
 
+                EXPECT_CALL(mMockGpio, GetPin()).WillOnce(ReturnRef(gpio));
                 EXPECT_CALL(mMockLed, Initialize()).Times(1U);
                 EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockGpio, SetInterruptPin(_)).Times(1U);

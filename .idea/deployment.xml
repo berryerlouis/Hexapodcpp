@@ -31,9 +31,7 @@
             <excludedPath local="true" path="$PROJECT_DIR$/node" />
             <excludedPath local="true" path="$PROJECT_DIR$/HMI" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-gcc-cross-compile-win-debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/avr-release" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/hexapodTest" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/avr-debug" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-gcc-cross-compile-debug" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/avr-debug" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-gcc-cross-compile-win-debug" />
