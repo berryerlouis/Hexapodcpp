@@ -59,6 +59,8 @@ namespace Bot
 
         class GaitBase {
         public:
+            GaitBase(GaitType type, const Groups &groups, GaitParams &params);
+
             ~GaitBase() = default;
 
             void Update(uint64_t currentTime, uint8_t groupId) const;
@@ -67,17 +69,15 @@ namespace Bot
 
             Misc::Maths::Position3d &GetPosition(uint8_t posId);
 
-            GaitBase(GaitType type, const Groups &groups, const GaitParams &params);
-
-            Groups &GetGroups();
+            Groups &GetGroups(void);
 
             Group &GetGroupId(uint8_t groupId) const;
 
             std::vector<ELeg> &GetGroupLeg(uint8_t groupId) const;
 
-            uint8_t GetNbGroups() const;
+            uint8_t GetNbGroups(void) const;
 
-            Steps &GetSteps();
+            Steps &GetSteps(void);
 
             uint8_t &GetCurrentIndex(uint8_t groupId) const;
 
@@ -89,9 +89,9 @@ namespace Bot
 
             uint16_t GetCurrentOffsetDuration(uint8_t groupId) const;
 
-            uint8_t GetNbSteps() const;
+            uint8_t GetNbSteps(void) const;
 
-            GaitType GetType() const;
+            GaitType GetType(void) const;
 
             uint16_t GetCycleDuration() const;
 
@@ -101,13 +101,15 @@ namespace Bot
 
             void SetStartTime(uint8_t groupId, uint64_t startTime) const;
 
+            void ResetCycleStep(uint8_t groupId, uint64_t startTime) const;
+
             bool CanUpdate(uint64_t currentTime, uint8_t groupId) const;
 
         private:
             GaitType mType;
             Steps mSteps;
             Groups mGroups;
-            GaitParams mParams;
+            GaitParams &mParams;
         };
     }
 }

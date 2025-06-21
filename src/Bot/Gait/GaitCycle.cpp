@@ -33,11 +33,7 @@ namespace Bot
         bool GaitCycle::Start(void) {
             if (this->mIsRunning == false) {
                 this->mIsRunning = true;
-                const uint64_t startTime = this->mTick.GetMs();
-                for (uint8_t groupId = 0U; groupId < this->GetSelectedGait().GetGroups().size(); ++groupId) {
-                    this->GetSelectedGait().ResetIndex(groupId);
-                    this->GetSelectedGait().SetInitialStartTime(groupId, startTime);
-                }
+                this->ResetCycleStep();
                 return true;
             }
             return false;
@@ -68,6 +64,13 @@ namespace Bot
                 this->UpdateCycle(currentTime);
             }
             this->mParams.Update(currentTime);
+        }
+
+        void GaitCycle::ResetCycleStep(void) const {
+            const uint64_t startTime = this->mTick.GetMs();
+            for (uint8_t groupId = 0U; groupId < this->GetSelectedGait().GetGroups().size(); ++groupId) {
+                this->GetSelectedGait().ResetCycleStep(groupId, startTime);
+            }
         }
 
         void GaitCycle::UpdateCycle(const uint64_t currentTime) const {

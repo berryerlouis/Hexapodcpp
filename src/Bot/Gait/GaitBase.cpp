@@ -5,7 +5,7 @@ namespace Bot
     namespace Gait
     {
 
-        GaitBase::GaitBase(const GaitType type, const Groups &groups, const GaitParams &params) :
+        GaitBase::GaitBase(const GaitType type, const Groups &groups, GaitParams &params) :
             mType(type)
             , mSteps()
             , mGroups{groups}
@@ -84,6 +84,11 @@ namespace Bot
             const uint16_t stepDuration = this->GetCurrentStepDuration(groupId);
             this->GetGroupId(groupId).startTime = startTime;
             this->GetGroupId(groupId).endTime = this->GetGroupId(groupId).startTime + stepDuration;
+        }
+
+        void GaitBase::ResetCycleStep(const uint8_t groupId, const uint64_t startTime) const {
+            this->ResetIndex(groupId);
+            this->SetInitialStartTime(groupId, startTime);
         }
 
         bool GaitBase::CanUpdate(const uint64_t currentTime, const uint8_t groupId) const {

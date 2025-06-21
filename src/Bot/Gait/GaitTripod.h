@@ -8,7 +8,7 @@ namespace Bot
     {
         class GaitTripod : public GaitBase {
         public:
-            GaitTripod(const GaitParams &params);
+            GaitTripod(GaitParams &params);
 
             ~GaitTripod() = default;
 

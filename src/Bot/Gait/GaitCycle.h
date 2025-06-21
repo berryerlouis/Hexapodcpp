@@ -27,6 +27,8 @@ namespace Bot
 
             void Update(const uint64_t currentTime) const;
 
+            void ResetCycleStep() const;
+
             bool Start(void);
 
             bool Pause(void);

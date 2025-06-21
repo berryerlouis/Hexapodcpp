@@ -4,7 +4,7 @@ namespace Bot
 {
     namespace Gait
     {
-        GaitTripod::GaitTripod(const GaitParams &params) :
+        GaitTripod::GaitTripod(GaitParams &params) :
             GaitBase(TRIPOD, {&mGroupA, &mGroupB}, params)
             , mGroupA{{FRONT_LEFT, MIDDLE_RIGHT, REAR_LEFT}, 0.0F / 2.0F}
             , mGroupB{{FRONT_RIGHT, MIDDLE_LEFT, REAR_RIGHT}, 1.0F / 2.0F} {

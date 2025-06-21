@@ -5,7 +5,7 @@ namespace Bot
     namespace Gait
     {
 
-        GaitWave::GaitWave(const GaitParams &params) :
+        GaitWave::GaitWave(GaitParams &params) :
             GaitBase(WAVE, {&mGroupA, &mGroupB, &mGroupC, &mGroupD, &mGroupE, &mGroupE, &mGroupF}, params),
             mGroupA{{FRONT_LEFT}, 0.0F / 6.0F},
             mGroupB{{MIDDLE_LEFT}, 1.0F / 6.0F},

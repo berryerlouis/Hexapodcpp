@@ -73,7 +73,9 @@ namespace Bot
         }
 
         bool Walk::SetCycleDuration(const uint16_t duration) {
-            return this->mParams.SetCycleDuration(duration);
+            const bool success = this->mParams.SetCycleDuration(duration);
+            this->mGaitCycle.ResetCycleStep();
+            return success;
         }
 
         uint16_t Walk::GetCycleDuration(void) const {

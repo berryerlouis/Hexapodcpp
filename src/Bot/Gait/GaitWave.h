@@ -8,7 +8,7 @@ namespace Bot
     {
         class GaitWave : public GaitBase {
         public:
-            GaitWave(const GaitParams &params);
+            GaitWave(GaitParams &params);
 
             ~GaitWave() = default;
 
