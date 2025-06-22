@@ -5,6 +5,7 @@
 #include "GaitWave.h"
 #include "Constants.h"
 #include "GaitDoubleWave.h"
+#include "GaitRipple.h"
 
 namespace Bot
 {
@@ -26,7 +27,8 @@ namespace Bot
         private:
             GaitParams &mParams;
             GaitTripod mTripod;
-            GaitWave mWave;;
+            GaitWave mWave;
+            GaitRipple mRipple;
             GaitDoubleWave mDoubleWave;
             GaitBase *mGaitTypes[NB_GAIT_TYPES];
             GaitType mGaitTypeSelected;

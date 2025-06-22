@@ -11,7 +11,7 @@ import {ClusterBodyCommands} from "../communication/clusters/clusterBody.ts";
 import Message from "../communication/message.ts";
 import DirectionArrow from "../engine/directionArrow.ts";
 
-type Gait = 'TRIPOD' | 'WAVE' | 'DOUBLE_WAVE';
+type Gait = 'TRIPOD' | 'WAVE' | 'RIPPLE' | 'DOUBLE_WAVE';
 export interface HexapodStruct {
     amplitude: number;
     elevation: number;

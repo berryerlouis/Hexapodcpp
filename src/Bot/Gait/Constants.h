@@ -10,10 +10,11 @@ namespace Bot
         enum GaitType : uint8_t {
             TRIPOD = 0x00U,
             WAVE,
+            RIPPLE,
             DOUBLE_WAVE
         };
 
-        static constexpr uint8_t NB_GAIT_TYPES = 3U;
+        static constexpr uint8_t NB_GAIT_TYPES = 4U;
 
         static inline std::string GaitTypeToString(const GaitType gait) {
             switch (gait) {
@@ -21,6 +22,8 @@ namespace Bot
                     return "TRIPOD";
                 case WAVE:
                     return "WAVE";
+                case RIPPLE:
+                    return "RIPPLE";
                 case DOUBLE_WAVE:
                     return "DOUBLE_WAVE";
                 default:

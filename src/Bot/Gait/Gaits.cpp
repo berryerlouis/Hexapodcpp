@@ -9,8 +9,9 @@ namespace Bot
             mParams(params)
             , mTripod(GaitTripod(params))
             , mWave(GaitWave(params))
+            , mRipple(GaitRipple(params))
             , mDoubleWave(GaitDoubleWave(params))
-            , mGaitTypes{&mTripod, &mWave, &mDoubleWave}
+            , mGaitTypes{&mTripod, &mWave, &mRipple, &mDoubleWave}
             , mGaitTypeSelected(gait) {
             this->SetGaitType(gait);
         }

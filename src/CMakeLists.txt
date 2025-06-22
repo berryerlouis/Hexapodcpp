@@ -128,6 +128,7 @@ set(SRC_FILES_BOT
         Bot/Gait/GaitParams.cpp
         Bot/Gait/GaitTripod.cpp
         Bot/Gait/GaitWave.cpp
+        Bot/Gait/GaitRipple.cpp
         Bot/Gait/GaitDoubleWave.cpp
         Bot/Legs/Legs.cpp
         Bot/Walk/Walk.cpp

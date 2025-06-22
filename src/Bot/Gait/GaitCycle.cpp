@@ -21,8 +21,10 @@ namespace Bot
 
         bool GaitCycle::SetGaitType(const GaitType gaitType) {
             this->mGaits.SetGaitType(gaitType);
-            this->Pause();
-            this->Start();
+            if (this->mIsRunning == true) {
+                this->Pause();
+                this->Start();
+            }
             return true;
         }
 

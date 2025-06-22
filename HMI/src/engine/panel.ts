@@ -527,6 +527,7 @@ export default class Panel extends Pane {
             options: [
                 {text: 'TRIPOD', value: 'TRIPOD'},
                 {text: 'WAVE', value: 'WAVE'},
+                {text: 'RIPPLE', value: 'RIPPLE'},
                 {text: 'DOUBLE_WAVE', value: 'DOUBLE_WAVE'},
             ],
             value: 'TRIPOD',
@@ -534,7 +535,7 @@ export default class Panel extends Pane {
         bodyGaitFolder.on('change',(ev)=> {
             if (this.initDone && ev.last) {
                 this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_GAIT,
-                    [ev.value=='TRIPOD'?0:ev.value=='WAVE'?1:2],[0xFF]));
+                    [ev.value=='TRIPOD'?0:ev.value=='WAVE'?1:ev.value=='RIPPLE'?2:3],[0xFF]));
             }
         });
     }

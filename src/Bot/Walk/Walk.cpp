@@ -14,7 +14,7 @@ namespace Bot
         Walk::Walk(Legs::Legs &legs, Driver::Tick::TickInterface &tick) :
             mLegs(legs)
             , mTick(tick)
-            , mStatus(PLAY)
+            , mStatus(STOP)
             , mPreviousStatus(STOP)
             , mParams(tick, 0.0F, AMPLITUDE_MAX, ELEVATION_MAX)
             , mGaitCycle(legs, mParams, Gait::TRIPOD, tick) {
