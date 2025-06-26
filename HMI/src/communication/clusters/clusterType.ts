@@ -8,27 +8,38 @@ import {ClusterProximityCommands} from "./clusterProximity.ts";
 import {ClusterSoundCommands} from "./clusterSound.ts";
 
 export enum ClusterName {
-     GENERAL = 'GENERAL',
-     IMU = 'IMU',
-     PROXIMITY = 'PROXIMITY',
-     SERVO = 'SERVO',
-     BATTERY = 'BATTERY',
-     BODY = 'BODY',
-     BUTTON = 'BUTTON',
-     SOUND = 'SOUND',
-     GENERIC = 'GENERIC'
+    GENERAL = 'GENERAL',
+    IMU = 'IMU',
+    PROXIMITY = 'PROXIMITY',
+    SERVO = 'SERVO',
+    BATTERY = 'BATTERY',
+    BODY = 'BODY',
+    BUTTON = 'BUTTON',
+    SOUND = 'SOUND',
+    GENERIC = 'GENERIC'
 }
 
 export enum ClusterGenericCommands {
     GENERIC = 'GENERIC'
 }
 
-export type CommandName = ClusterGenericCommands|ClusterBatteryCommands|ClusterBodyCommands|ClusterButtonCommands|ClusterImuCommands|ClusterGeneralCommands|ClusterServoCommands|ClusterProximityCommands|ClusterSoundCommands;
-export interface Command  {
+export type CommandName =
+    ClusterGenericCommands
+    | ClusterBatteryCommands
+    | ClusterBodyCommands
+    | ClusterButtonCommands
+    | ClusterImuCommands
+    | ClusterGeneralCommands
+    | ClusterServoCommands
+    | ClusterProximityCommands
+    | ClusterSoundCommands;
+
+export interface Command {
     code: string;
     name: CommandName;
 }
-export class Cluster  {
+
+export class Cluster {
     name: ClusterName;
     code: string;
     commands: Command[];

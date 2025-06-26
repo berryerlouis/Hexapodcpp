@@ -9,13 +9,15 @@ namespace Bot
         class GaitParams {
         public:
             GaitParams(Driver::Tick::TickInterface &tick, const float directionAngle, const float amplitude,
-                       const float elevation);
+                       const float elevation, const float rotation);
 
             ~GaitParams() = default;
 
             void Update(const uint64_t currentTime);
 
             bool SetDirection(const float directionAngle);
+
+            bool SetRotation(const float rotationAngle, const bool clockWize);
 
             bool SetAmplitude(const float amplitude);
 
@@ -25,20 +27,30 @@ namespace Bot
 
             float GetDirection(void) const;
 
+            float GetRotation() const;
+
+            bool IsRotated() const;
+
             float GetAmplitude(void) const;
 
             float GetElevation(void) const;
 
             uint16_t GetCycleDuration(void) const;
 
-            float GetCurrentDirection() const;
+            float GetCurrentDirection(void) const;
 
-            float GetCurrentAmplitude() const;
+            float GetCurrentRotation() const;
 
-            float GetCurrentElevation() const;
+            bool GetCurrentRotationClockWize() const;
+
+            float GetCurrentAmplitude(void) const;
+
+            float GetCurrentElevation(void) const;
 
         private:
             void UpdateDirection(uint64_t currentTime);
+
+            void UpdateRotation(uint64_t currentTime);
 
             void UpdateAmplitude(uint64_t currentTime);
 
@@ -58,6 +70,9 @@ namespace Bot
             LerpPath mLerpDirection;
             LerpPath mLerpAmplitude;
             LerpPath mLerpElevation;
+            LerpPath mLerpRotation;
+            bool mIsRotated;
+            bool mIsRotatedClockWize;
             uint16_t mStepDuration;
         };
     }

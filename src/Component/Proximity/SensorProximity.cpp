@@ -9,7 +9,6 @@ namespace Component
             mSensors{
                     &srf05Left, &srf05Right, &Vl53l0x
             } {
-            LOG_COMPONENT_DEBUG("SensorProximity", "Initialized.");
         }
 
         Core::Status SensorProximity::Initialize(void) {
@@ -22,6 +21,7 @@ namespace Component
                 }
             }
 
+            LOG_COMPONENT_DEBUG("SensorProximity", "Initialized.");
             return ((success >= NB_SENSORS - 1U) ? Core::Status::CORE_OK : Core::Status::CORE_ERROR);
         }
 

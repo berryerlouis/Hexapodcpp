@@ -16,7 +16,7 @@ namespace Bot
             , mTick(tick)
             , mStatus(STOP)
             , mPreviousStatus(STOP)
-            , mParams(tick, 0.0F, AMPLITUDE_MAX, ELEVATION_MAX)
+            , mParams(tick, 0.0F, AMPLITUDE_MAX, ELEVATION_MAX, 0.0F)
             , mGaitCycle(legs, mParams, Gait::TRIPOD, tick) {
             LOG_BOT_DEBUG("Walk", "Initialized.");
         }
@@ -24,6 +24,10 @@ namespace Bot
         void Walk::UpdateStatus(const EWalkStatus status) {
             this->mStatus = status;
             LOG_BOT_INFO("Walk", "Update Status: %s.", WalkStatusToString(this->mStatus).c_str());
+        }
+
+        EWalkStatus Walk::GetStatus(void) const {
+            return this->mStatus;
         }
 
         void Walk::Update(const uint64_t currentTime) {

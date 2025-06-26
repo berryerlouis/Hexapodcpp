@@ -19,7 +19,6 @@ namespace Component
             this->mAddress = wiringPiI2CSetup(address);
 #endif
             this->ClearBuffer();
-            LOG_COMPONENT_DEBUG("Display", "address 0x%02X Initialized.", this->mAddress);
         }
 
         Core::Status Ssd1306::Initialize(void) {
@@ -50,6 +49,7 @@ namespace Component
             };
             this->mTwi.WriteRegisters(this->mAddress, SSD1306_SEND_COMMAND, init5, sizeof(init5));
 
+            LOG_COMPONENT_DEBUG("Display", "address 0x%02X Initialized.", this->mAddress);
             return (Core::Status::CORE_OK);
         }
 

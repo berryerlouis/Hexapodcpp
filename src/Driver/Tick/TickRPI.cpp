@@ -12,7 +12,6 @@ namespace Driver
         Tick::Tick(void) {
             start_time = std::chrono::steady_clock::now();
             start = GetMs();
-            LOG_DRIVER_DEBUG("Tick", "Initialized.");
         }
 
         uint64_t Tick::GetUs(void) {

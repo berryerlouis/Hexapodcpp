@@ -17,7 +17,6 @@ namespace Driver
             if (portDirection == EPortDirection::IN) {
                 pullUpDnControl(this->mGpio.pin, PUD_DOWN);
             }
-            LOG_DRIVER_DEBUG("Gpio", "pin %d Initialized.", this->mGpio.pin);
         }
 
         SGpio &Gpio::GetPin(void) {

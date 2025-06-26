@@ -80,6 +80,10 @@ namespace Cluster
     }
 
     void Frame::SetxBytesParam(const size_t size, const uint8_t *value) {
+        if (this->nbParams + size > FRAME_MAX_PARAMS) {
+            LOG_ERROR("Frame", "Cannot set %zu bytes, max params is %d.", size, FRAME_MAX_PARAMS);
+            return;
+        }
         memcpy(&this->params[this->nbParams], value, size);
         this->nbParams += size;
     }

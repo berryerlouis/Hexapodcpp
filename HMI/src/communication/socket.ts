@@ -47,12 +47,12 @@ export default class Socket {
             frame.setDate();
             this.notifyRead(frame);
 
-            if(this.messagesList.length > 0) {
-                if ( frame.command?.name == ClusterGenericCommands.GENERIC ||
-                     frame.cluster?.name == ClusterName.GENERIC ||
-                     frame.cluster?.code == this.messagesList[0].cluster?.code)  {
+            if (this.messagesList.length > 0) {
+                if (frame.command?.name == ClusterGenericCommands.GENERIC ||
+                    frame.cluster?.name == ClusterName.GENERIC ||
+                    frame.cluster?.code == this.messagesList[0].cluster?.code) {
 
-                    if(frame.command?.name == ClusterGenericCommands.GENERIC ||
+                    if (frame.command?.name == ClusterGenericCommands.GENERIC ||
                         frame.cluster?.name == ClusterName.GENERIC) {
                         openPopupWarning(getErrorName(frame.params[0]) + ': ' + this.messagesList[0].raw);
                     }
@@ -94,6 +94,7 @@ export default class Socket {
             speCb();
         });
     }
+
     addCallbackStopped(cb: CallbackStarted) {
         this.listOfCallbackStopped.push(cb);
     }
@@ -104,11 +105,11 @@ export default class Socket {
         });
     }
 
-    addSpecificCallbackRead(cluster:ClusterName, command:CommandName , cb: Callback, params?: number[]) {
-        if(params == null) {
-            this.listOfSpecificCallbackRead.push({callback:cb, cluster:cluster, command:command});
+    addSpecificCallbackRead(cluster: ClusterName, command: CommandName, cb: Callback, params?: number[]) {
+        if (params == null) {
+            this.listOfSpecificCallbackRead.push({callback: cb, cluster: cluster, command: command});
         } else {
-            this.listOfSpecificCallbackRead.push({callback:cb, cluster:cluster, command:command, params:params});
+            this.listOfSpecificCallbackRead.push({callback: cb, cluster: cluster, command: command, params: params});
         }
     }
 
@@ -123,11 +124,11 @@ export default class Socket {
         });
 
         this.listOfSpecificCallbackRead.forEach((speCb) => {
-            if(message.cluster?.name == speCb.cluster) {
+            if (message.cluster?.name == speCb.cluster) {
                 if (message.command?.name == speCb.command) {
                     if (message.params && speCb.params) {
                         for (let i = 0; i < speCb.params.length; i++) {
-                            if(message.params[i] != speCb.params[i]) {
+                            if (message.params[i] != speCb.params[i]) {
                                 return;
                             }
                         }
@@ -166,11 +167,11 @@ export default class Socket {
         });
     }
 
-    write(message: Message)  {
+    write(message: Message) {
         this.messagesList.push(message);
-        let pb:HTMLElement = document.getElementById('progress-message-queue')!;
-        if(pb) {
-            pb.setAttribute('style', 'width: ' + (this.messagesList.length>100?100:this.messagesList.length) + '%');
+        let pb: HTMLElement = document.getElementById('progress-message-queue')!;
+        if (pb) {
+            pb.setAttribute('style', 'width: ' + (this.messagesList.length > 100 ? 100 : this.messagesList.length) + '%');
         }
         if (this.messagesList.length >= 100) {
             openPopupWarning('WebSocket Messages list full!');

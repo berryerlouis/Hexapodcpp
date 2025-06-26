@@ -13,10 +13,10 @@ namespace Component
             , mIntensity(0U)
             , mState(BatteryState::UNKNOWN)
             , mAdc(adc) {
-            LOG_COMPONENT_DEBUG("Battery", "Initialized.");
         }
 
         Core::Status Battery::Initialize(void) {
+            LOG_COMPONENT_DEBUG("Battery", "Initialized.");
             return (this->mAdc.Initialize());
         }
 

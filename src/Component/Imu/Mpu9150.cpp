@@ -44,7 +44,6 @@ namespace Component
             this->mAddress = wiringPiI2CSetup(address);
             this->mAddressMag = wiringPiI2CSetup(AK8963_I2C_ADDRESS);
 #endif
-            LOG_COMPONENT_DEBUG("Imu", "address 0x%02X Initialized.", this->mAddress);
         }
 
         Core::Status Mpu9150::Initialize(void) {
@@ -101,9 +100,11 @@ namespace Component
                     this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x0F);
                     this->AdjustingMag();
                     this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x01);
+                    LOG_COMPONENT_DEBUG("Imu", "address 0x%02X Initialized.", this->mAddress);
                     success = Core::Status::CORE_OK;
                 }
             }
+            LOG_COMPONENT_WARNING("Imu", "address 0x%02X Initialized.", this->mAddress);
             return (success);
         }
 

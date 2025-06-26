@@ -39,7 +39,8 @@ namespace Cluster
     static constexpr uint8_t NB_COMMANDS_BATTERY = 3U;
 
     enum EBodyCommands {
-        SET_BODY_POS_ROT = 0x00U,
+        GET_ALL_PARAMS = 0x00U,
+        SET_BODY_POS_ROT,
         SET_LEG_POS_ROT,
         SET_WALK_STATUS,
         SET_DIRECTION,
@@ -48,14 +49,15 @@ namespace Cluster
         GET_AMPLITUDE,
         SET_ELEVATION,
         GET_ELEVATION,
-        GET_DIRECTION_AMPLITUDE_ELEVATION_DURATION,
         GET_DURATION,
         SET_DURATION,
         GET_GAIT,
-        SET_GAIT
+        SET_GAIT,
+        SET_ROTATION,
+        GET_ROTATION,
     };
 
-    static constexpr uint8_t NB_COMMANDS_BODY = 14U;
+    static constexpr uint8_t NB_COMMANDS_BODY = 16U;
 
     enum EImuCommands {
         ALL,
@@ -73,7 +75,7 @@ namespace Cluster
     static constexpr uint8_t NB_COMMANDS_IMU = 11U;
 
     enum EServoCommands {
-        GET_ALL = 0,
+        GET_ALL = 0x00U,
         GET_ANGLE,
         SET_ANGLE,
         GET_MIN,

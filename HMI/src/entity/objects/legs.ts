@@ -6,15 +6,16 @@ import Message from "../../communication/message.ts";
 import {ClusterServoCommands} from "../../communication/clusters/clusterServo.ts";
 
 interface LegsStruct {
-    status:boolean;
+    status: boolean;
     leg: Leg[];
 }
+
 export default class Legs extends Object3D {
     legs: LegsStruct = {
         status: false,
         leg: []
     }
-    socket:Socket;
+    socket: Socket;
     x: number = 0;
     y: number = 0;
     z: number = 0;
@@ -31,23 +32,25 @@ export default class Legs extends Object3D {
     }
 
     createLegs(bodyWidth: number, bodyWidthMiddle: number, bodyHeight: number) {
-        this.legs.leg.push(new Leg('FrontLeft',0, this.x + bodyHeight /2, this.y, -bodyWidth / 2 , true, this.socket));
-        this.legs.leg.push(new Leg('MiddleLeft',1, this.x, this.y, -bodyWidthMiddle / 2 , true, this.socket));
-        this.legs.leg.push(new Leg('BackLeft',2, this.x - bodyHeight /2, this.y, -bodyWidth / 2 , true, this.socket));
-        this.legs.leg.push(new Leg('FrontRight',3, this.x - bodyHeight /2, this.y, bodyWidth / 2 , false, this.socket));
-        this.legs.leg.push(new Leg('MiddleRight',4, this.x, this.y, bodyWidthMiddle / 2 , false, this.socket));
-        this.legs.leg.push(new Leg('BackRight',5, this.x + bodyHeight /2, this.y, bodyWidth / 2 , false, this.socket));
+        this.legs.leg.push(new Leg('FrontLeft', 0, this.x + bodyHeight / 2, this.y, -bodyWidth / 2, true, this.socket));
+        this.legs.leg.push(new Leg('MiddleLeft', 1, this.x, this.y, -bodyWidthMiddle / 2, true, this.socket));
+        this.legs.leg.push(new Leg('BackLeft', 2, this.x - bodyHeight / 2, this.y, -bodyWidth / 2, true, this.socket));
+        this.legs.leg.push(new Leg('FrontRight', 3, this.x - bodyHeight / 2, this.y, bodyWidth / 2, false, this.socket));
+        this.legs.leg.push(new Leg('MiddleRight', 4, this.x, this.y, bodyWidthMiddle / 2, false, this.socket));
+        this.legs.leg.push(new Leg('BackRight', 5, this.x + bodyHeight / 2, this.y, bodyWidth / 2, false, this.socket));
         for (let i = 0; i < 6; i++) {
             this.add(this.legs.leg[i]);
         }
     }
+
     addEnableServoCallbacks() {
-        this.socket.addSpecificCallbackRead(ClusterName.SERVO, ClusterServoCommands.GET_STATE_PCA,(message:Message) => {
-            if(message.params) {
+        this.socket.addSpecificCallbackRead(ClusterName.SERVO, ClusterServoCommands.GET_STATE_PCA, (message: Message) => {
+            if (message.params) {
                 this.legs.status = message.getValueBool(0);
             }
         });
     }
+
     update() {
         for (let i = 0; i < 6; i++) {
             this.legs.leg[i].setCoxysAngle(this.legs.leg[i].coxys.servo.getAngle());
@@ -57,7 +60,7 @@ export default class Legs extends Object3D {
         }
     }
 
-    setDirection(direction:number) {
+    setDirection(direction: number) {
         for (let i = 0; i < 6; i++) {
             this.legs.leg[i].setDirection(direction);
         }

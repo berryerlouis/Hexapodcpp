@@ -76,11 +76,12 @@ namespace Component
                                                      RANGE_SEQUENCE_STEP_DSS +
                                                      RANGE_SEQUENCE_STEP_PRE_RANGE +
                                                      RANGE_SEQUENCE_STEP_FINAL_RANGE);
+                            LOG_COMPONENT_DEBUG("Laser", "address 0x%02X Initialized.", this->mAddress);
                             success = Core::Status::CORE_OK;
                         }
                     }
                 }
-                LOG_COMPONENT_DEBUG("Laser", "address 0x%02X Initialized.", this->mAddress);
+                LOG_COMPONENT_WARNING("Laser", "address 0x%02X Initialized.", this->mAddress);
                 return (success);
             }
 

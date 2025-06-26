@@ -1,28 +1,30 @@
-
 class PopUpContent {
-    content:HTMLElement|undefined = undefined;
-    timeout:number|undefined = undefined;
+    content: HTMLElement | undefined = undefined;
+    timeout: number | undefined = undefined;
 }
-let contents:PopUpContent[] = [];
 
-export function openPopupInfo(message:string) {
-    let id:string = Math.floor(Math.random() * 100000000).toString();
+let contents: PopUpContent[] = [];
+
+export function openPopupInfo(message: string) {
+    let id: string = Math.floor(Math.random() * 100000000).toString();
     openPopup(message, id);
     document.getElementById(id)!.style.backgroundColor = '#68b33c';
 }
 
-export function openPopupWarning(message:string) {
-    let id:string = Math.floor(Math.random() * 100000000).toString();
+export function openPopupWarning(message: string) {
+    let id: string = Math.floor(Math.random() * 100000000).toString();
     openPopup(message, id);
     document.getElementById(id)!.style.backgroundColor = '#b3993c';
 }
-export function openPopupError(message:string) {
-    let id:string = Math.floor(Math.random() * 100000000).toString();
+
+export function openPopupError(message: string) {
+    let id: string = Math.floor(Math.random() * 100000000).toString();
     openPopup(message, id);
     document.getElementById(id)!.style.backgroundColor = '#b33c40';
 }
-function openPopup(message:string, id:string) {
-    const popMessage= document.createElement("span");
+
+function openPopup(message: string, id: string) {
+    const popMessage = document.createElement("span");
     popMessage.classList.add("popup-message");
     popMessage.innerText = message;
 
@@ -32,9 +34,9 @@ function openPopup(message:string, id:string) {
     close.addEventListener('click', () => {
         content.style.display = 'none';
         let popMessage = document.getElementById(id);
-        if(popMessage) {
+        if (popMessage) {
             document.getElementById('popup')?.removeChild(popMessage);
-            if(document.getElementById('popup')?.children.length == 0) {
+            if (document.getElementById('popup')?.children.length == 0) {
                 document.getElementById('popup')!.style.display = 'none';
             }
         }
@@ -45,13 +47,16 @@ function openPopup(message:string, id:string) {
     content.id = id;
     content.append(popMessage);
     content.append(close);
-    contents.push({content, timeout: setTimeout(() => {
-        if(document.getElementById('popup')!.hasChildNodes()) {
-            document.getElementById('popup')!.removeChild(content);
-            document.getElementById('popup')!.style.display = 'none';
-            close.removeEventListener('click', () => {});
+    contents.push({
+        content, timeout: setTimeout(() => {
+            if (document.getElementById('popup')!.hasChildNodes()) {
+                document.getElementById('popup')!.removeChild(content);
+                document.getElementById('popup')!.style.display = 'none';
+                close.removeEventListener('click', () => {
+                });
             }
-        }, 5000)});
+        }, 5000)
+    });
 
     document.getElementById('popup')!.style.display = 'block';
     document.getElementById('popup')!.appendChild(content);

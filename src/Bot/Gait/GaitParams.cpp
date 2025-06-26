@@ -11,16 +11,20 @@ namespace Bot
 #define DURATION_MIN       300U
 
         GaitParams::GaitParams(Driver::Tick::TickInterface &tick, const float directionAngle,
-                               const float amplitude, const float elevation):
+                               const float amplitude, const float elevation, const float rotation):
             mTick(tick)
             , mLerpDirection{directionAngle, directionAngle, 0UL}
             , mLerpAmplitude{amplitude, amplitude, 0UL}
             , mLerpElevation{elevation, elevation, 0UL}
+            , mLerpRotation{rotation, rotation, 0UL}
+            , mIsRotated(false)
+            , mIsRotatedClockWize(false)
             , mStepDuration(INITIAL_DURATION) {
         }
 
         void GaitParams::Update(const uint64_t currentTime) {
             this->UpdateDirection(currentTime);
+            this->UpdateRotation(currentTime);
             this->UpdateAmplitude(currentTime);
             this->UpdateElevation(currentTime);
         }
@@ -31,6 +35,18 @@ namespace Bot
                 this->mLerpDirection.startTime = this->mTick.GetMs();
                 return true;
             }
+            return false;
+        }
+
+        bool GaitParams::SetRotation(const float rotationAngle, const bool clockWize) {
+            if (rotationAngle != 0 && rotationAngle <= 2U * M_PI) {
+                this->mLerpRotation.target = rotationAngle;
+                this->mLerpRotation.startTime = this->mTick.GetMs();
+                this->mIsRotated = true;
+                this->mIsRotatedClockWize = clockWize;
+                return true;
+            }
+            this->mIsRotated = false;
             return false;
         }
 
@@ -64,6 +80,14 @@ namespace Bot
             return this->mLerpDirection.target;
         }
 
+        float GaitParams::GetRotation(void) const {
+            return this->mLerpRotation.target;
+        }
+
+        bool GaitParams::IsRotated(void) const {
+            return this->mIsRotated;
+        }
+
         float GaitParams::GetAmplitude(void) const {
             return this->mLerpAmplitude.target;
         }
@@ -78,6 +102,14 @@ namespace Bot
 
         float GaitParams::GetCurrentDirection(void) const {
             return this->mLerpDirection.current;
+        }
+
+        float GaitParams::GetCurrentRotation(void) const {
+            return this->mLerpRotation.current;
+        }
+
+        bool GaitParams::GetCurrentRotationClockWize() const {
+            return this->mIsRotatedClockWize;
         }
 
         float GaitParams::GetCurrentAmplitude(void) const {
@@ -95,6 +127,16 @@ namespace Bot
                                                                   this->mLerpDirection.target, deltaTime);
             } else {
                 this->mLerpDirection.current = this->mLerpDirection.target;
+            }
+        }
+
+        void GaitParams::UpdateRotation(const uint64_t currentTime) {
+            if (currentTime <= this->mLerpRotation.startTime + 1000U) {
+                const float deltaTime = GetDeltaTime(1000U, currentTime, this->mLerpRotation.startTime);
+                this->mLerpRotation.current = Misc::Utils::LerpF(this->mLerpRotation.current,
+                                                                 this->mLerpRotation.target, deltaTime);
+            } else {
+                this->mLerpRotation.current = this->mLerpRotation.target;
             }
         }
 
@@ -121,6 +163,5 @@ namespace Bot
         float GaitParams::GetDeltaTime(const float step, const uint64_t currentTime, const uint64_t startTime) {
             return (step - (step - (currentTime - startTime))) / step;
         }
-
     } // namespace GaitParams
 }

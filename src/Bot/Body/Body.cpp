@@ -27,8 +27,16 @@ namespace Bot
             this->mWalk.UpdateStatus(status);
         }
 
+        EWalkStatus Body::GetWalkStatus() {
+            return this->mWalk.GetStatus();
+        }
+
         bool Body::SetDirection(const float directionAngle) {
             return this->mWalk.GetParams().SetDirection(directionAngle);
+        }
+
+        bool Body::SetRotation(const float rotationAngle, const bool clockWize) {
+            return this->mWalk.GetParams().SetRotation(rotationAngle, clockWize);
         }
 
         bool Body::SetAmplitude(const float amplitude) {
@@ -49,6 +57,14 @@ namespace Bot
 
         float Body::GetDirection(void) {
             return this->mWalk.GetParams().GetDirection();
+        }
+
+        float Body::GetRotation() {
+            return this->mWalk.GetParams().GetRotation();
+        }
+
+        bool Body::GetRotationClockWize() {
+            return this->mWalk.GetParams().GetCurrentRotationClockWize();
         }
 
         float Body::GetAmplitude(void) {

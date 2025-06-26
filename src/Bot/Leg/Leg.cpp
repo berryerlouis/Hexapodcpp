@@ -84,13 +84,28 @@ namespace Bot
             return this->mLegId;
         }
 
-        void Leg::ComputeDirection(Position3d &position, const float angle, const bool clockWize) {
+        void Leg::ComputeDirection(Position3d &position, const float angleDirection) const {
             Position3d rotatePosition = position;
-            const float clockwize = clockWize ? 1.0F : -1.0F;
-            const float newAngle = clockWize ? angle : -angle - M_PI;
+            const float clockwize = (this->GetId() < NB_LEGS / 2U) ? 1.0F : -1.0F;
+            const float newAngle = (this->GetId() < NB_LEGS / 2U) ? angleDirection : -angleDirection - M_PI;
+
             rotatePosition.x = (position.x * cos(newAngle)) + (position.y * clockwize * sin(newAngle));
             rotatePosition.y = (position.y * cos(newAngle)) - (position.x * clockwize * sin(newAngle));
             position = rotatePosition;
+        }
+
+        void Leg::ComputeRotation(Position3d &position, const float angleRotation, const bool clockwize) const {
+            (void) angleRotation;
+            if (clockwize == false) {
+                if (this->GetId() <= ELeg::REAR_LEFT) {
+                    position.y *= -1.0F;
+                }
+            } else {
+                if (this->GetId() > ELeg::REAR_LEFT) {
+                    position.y *= -1.0F;
+                }
+            }
+            this->ComputeDirection(position, 0U);
         }
 
         void Leg::ComputeAmplitude(Position3d &position, const uint8_t amplitude) {

@@ -4,12 +4,12 @@ namespace Driver
 {
     namespace Adc
     {
-        Adc::Adc(Gpio::GpioInterface &gpio) {
+        Adc::Adc(const Gpio::GpioInterface &gpio) {
             (void) gpio;
-            LOG_DRIVER_DEBUG("Adc", "Initialized.");
         }
 
         Core::Status Adc::Initialize(void) {
+            LOG_DRIVER_DEBUG("Adc", "Initialized.");
             return (Core::Status::CORE_OK);
         }
 

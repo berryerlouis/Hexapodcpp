@@ -1,4 +1,4 @@
-import { AmbientLight, PointLight, Object3D, Vector2 } from 'three'
+import {AmbientLight, PointLight, Object3D, Vector2} from 'three'
 import Hexapod from "../entity/hexapod.ts";
 
 export default class Light extends Object3D {
@@ -15,7 +15,7 @@ export default class Light extends Object3D {
         this.add(point)
     }
 
-    update(hexapod:Hexapod) {
+    update(hexapod: Hexapod) {
         this.position.copy(hexapod.position);
     }
 }

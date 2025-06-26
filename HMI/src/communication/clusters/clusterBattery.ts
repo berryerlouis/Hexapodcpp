@@ -14,10 +14,10 @@ export default class ClusterBattery extends Cluster {
             ClusterName.BATTERY,
             CommandBatteryId,
             [
-                { code: '00', name: ClusterBatteryCommands.STATUS },
-                { code: '01', name: ClusterBatteryCommands.VOLTAGE},
-                { code: '02', name: ClusterBatteryCommands.CURRENT},
-                { code: 'FF', name: ClusterGenericCommands.GENERIC }
+                {code: '00', name: ClusterBatteryCommands.STATUS},
+                {code: '01', name: ClusterBatteryCommands.VOLTAGE},
+                {code: '02', name: ClusterBatteryCommands.CURRENT},
+                {code: 'FF', name: ClusterGenericCommands.GENERIC}
             ]
         );
     }

@@ -9,7 +9,7 @@ namespace Driver
     {
         class Adc : public AdcInterface {
         public:
-            Adc(Gpio::GpioInterface &gpio);
+            Adc(const Gpio::GpioInterface &gpio);
 
             ~Adc() {
             };

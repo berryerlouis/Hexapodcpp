@@ -30,6 +30,8 @@ namespace Bot
 
             virtual void UpdateWalkStatus(const EWalkStatus status, const uint16_t duration) final override;
 
+            virtual EWalkStatus GetWalkStatus(void) final override;
+
             virtual uint32_t SetBodyPositionRotation(const Position3d &position,
                                                      const Rotation3d &rotation,
                                                      const uint16_t travelTime) final override;
@@ -40,6 +42,8 @@ namespace Bot
 
             virtual bool SetDirection(const float directionAngle) final override;
 
+            virtual bool SetRotation(const float rotationAngle, const bool clockWize) final override;
+
             virtual bool SetAmplitude(const float amplitude) final override;
 
             virtual bool SetElevation(const float elevation) final override;
@@ -49,6 +53,10 @@ namespace Bot
             virtual bool SetGait(const Gait::GaitType gait) final override;
 
             virtual float GetDirection(void) final override;
+
+            virtual float GetRotation(void) final override;
+
+            virtual bool GetRotationClockWize(void) final override;
 
             virtual float GetAmplitude(void) final override;
 

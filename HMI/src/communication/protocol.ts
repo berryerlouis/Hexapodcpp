@@ -36,11 +36,11 @@ export default class Protocol {
             const size = parseInt(data.substring(0, 2), 16);
             data = data.substring(2);
 
-            let params: number[] =[];
+            let params: number[] = [];
             if (size > 0) {
                 params = [];
                 for (let index = 0; index < size; index++) {
-                    params.push(parseInt(data.substring(0, 2),16));
+                    params.push(parseInt(data.substring(0, 2), 16));
                     data = data.substring(2);
                 }
 
@@ -60,17 +60,15 @@ export default class Protocol {
         let messageToEncode = '<';
         messageToEncode += parseInt(cluster.code, 16).toString(16).padStart(2, '0').toUpperCase();
         messageToEncode += parseInt(command.code, 16).toString(16).padStart(2, '0').toUpperCase();
-        if(size == 0) {
+        if (size == 0) {
             messageToEncode += '00';
-        }
-        else
-        {
+        } else {
             messageToEncode += "ZZ";
             if (params && params.length > 0) {
-                if(params.length == encoding?.length) {
-                    let encoded = Protocol.getSizeofParam(params,encoding);
+                if (params.length == encoding?.length) {
+                    let encoded = Protocol.getSizeofParam(params, encoding);
                     messageToEncode += Protocol.toLittleEndian(params, encoded.encodedSize);
-                    messageToEncode = messageToEncode.replace('ZZ',(encoded.length).toString(16).padStart(2, '0').toUpperCase());
+                    messageToEncode = messageToEncode.replace('ZZ', (encoded.length).toString(16).padStart(2, '0').toUpperCase());
                 } else {
                     throw new Error(`Encoding length ${encoding?.length} does not match params length ${params.length}`);
                 }
@@ -80,7 +78,7 @@ export default class Protocol {
         return messageToEncode;
     }
 
-    private static getSizeofParam(params: number[], encoding?: Encoding[]): { encodedSize: number[], length:number } {
+    private static getSizeofParam(params: number[], encoding?: Encoding[]): { encodedSize: number[], length: number } {
         let encoded: number = 0;
         let encodedSize: number[] = [];
         let length: number = 0;
@@ -101,9 +99,9 @@ export default class Protocol {
             else if (encode == 0xFFFFFFFF)
                 encoded = 8;
             encodedSize.push(encoded);
-            length += encoded/2;
+            length += encoded / 2;
         }
-        return {encodedSize,length};
+        return {encodedSize, length};
     }
 
     private static toLittleEndian(params: number[], encodedSize: number[]): string {

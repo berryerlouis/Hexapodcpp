@@ -28,11 +28,11 @@ namespace Driver
         }
 
         Socket::Socket(void) {
-            LOG_DRIVER_DEBUG("Socket", "Initialized.");
         }
 
         Core::Status Socket::Initialize(void) {
             server.listen(8080);
+            LOG_DRIVER_DEBUG("Socket", "Initialized.");
             return (Core::Status::CORE_OK);
         }
 

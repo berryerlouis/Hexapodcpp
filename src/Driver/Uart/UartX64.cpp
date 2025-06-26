@@ -6,10 +6,10 @@ namespace Driver
     {
         Uart::Uart(const EBaudRate &baud) {
             (void) baud;
-            LOG_DRIVER_DEBUG("Uart", "Initialized.");
         }
 
         Core::Status Uart::Initialize(void) {
+            LOG_DRIVER_DEBUG("Uart", "Initialized.");
             return (Core::Status::CORE_OK);
         }
 

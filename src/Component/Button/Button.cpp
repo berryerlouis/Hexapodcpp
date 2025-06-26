@@ -20,11 +20,11 @@ namespace Component
             , mState(RELEASE) {
             button[buttonIndex] = this;
             buttonIndex++;
-            LOG_COMPONENT_DEBUG("Button", "Initialized.");
         }
 
         Core::Status Button::Initialize(void) {
             this->mGpioButton.SetInterruptPin(&InterruptGpioBp);
+            LOG_COMPONENT_DEBUG("Button", "Initialized.");
             return (Core::Status::CORE_OK);
         }
 

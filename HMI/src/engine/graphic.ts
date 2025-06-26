@@ -1,5 +1,5 @@
 import {WebGLRenderer, Clock, Scene} from 'three'
-import { getCanvas } from '../tool/function.ts'
+import {getCanvas} from '../tool/function.ts'
 import Camera from "./camera.ts";
 
 export default class Graphic extends WebGLRenderer {
@@ -10,16 +10,16 @@ export default class Graphic extends WebGLRenderer {
     cbUpdate: FrameRequestCallback | undefined;
     cbLoop: FrameRequestCallback;
 
-    constructor(scene: Scene, camera : Camera) {
+    constructor(scene: Scene, camera: Camera) {
         const canvas = getCanvas();
-        super({ canvas, antialias: true });
+        super({canvas, antialias: true});
         this.canvas = canvas;
         this.scene = scene
         this.camera = camera
         this.cbLoop = this.loop.bind(this)
         this.shadowMap.enabled = true;
 
-        window.addEventListener( 'resize', this.onWindowResize.bind(this));
+        window.addEventListener('resize', this.onWindowResize.bind(this));
         this.loop()
     }
 
@@ -34,8 +34,8 @@ export default class Graphic extends WebGLRenderer {
         this.cbUpdate = callback
     }
 
-    onWindowResize()  {
+    onWindowResize() {
         this.camera.resize(window.innerWidth / window.innerHeight)
-        this.setSize( window.innerWidth , window.innerHeight);
+        this.setSize(window.innerWidth, window.innerHeight);
     };
 }

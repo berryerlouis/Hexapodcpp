@@ -12,16 +12,19 @@ interface Proximity {
     front: number;
     right: number;
 }
+
 interface Sound {
     left: number;
     right: number;
 }
+
 interface Sensors {
     proximity: Proximity;
     sound: Sound;
 }
+
 export default class Head extends Object3D {
-    sensors:Sensors = {
+    sensors: Sensors = {
         proximity: {
             left: 0,
             right: 0,
@@ -32,9 +35,9 @@ export default class Head extends Object3D {
             right: 0
         }
     }
-    socket:Socket;
-    sound:SoundObject;
-    proximity:ProximityObject;
+    socket: Socket;
+    sound: SoundObject;
+    proximity: ProximityObject;
 
     constructor(socket: Socket) {
         super();
@@ -50,28 +53,29 @@ export default class Head extends Object3D {
     }
 
     addProximityCallbacks() {
-        this.socket.addSpecificCallbackRead(ClusterName.PROXIMITY, ClusterProximityCommands.US_LEFT ,(message:Message) => {
-            if(message.params) {
+        this.socket.addSpecificCallbackRead(ClusterName.PROXIMITY, ClusterProximityCommands.US_LEFT, (message: Message) => {
+            if (message.params) {
                 this.sensors.proximity.left = message.getValueUint16(0);
                 this.proximity.show(this.sensors.proximity.left, ProximitySide.left);
             }
         });
-        this.socket.addSpecificCallbackRead(ClusterName.PROXIMITY, ClusterProximityCommands.US_RIGHT ,(message:Message) => {
-            if(message.params) {
+        this.socket.addSpecificCallbackRead(ClusterName.PROXIMITY, ClusterProximityCommands.US_RIGHT, (message: Message) => {
+            if (message.params) {
                 this.sensors.proximity.right = message.getValueUint16(0);
                 this.proximity.show(this.sensors.proximity.right, ProximitySide.right);
             }
         });
-        this.socket.addSpecificCallbackRead(ClusterName.PROXIMITY, ClusterProximityCommands.LASER ,(message:Message) => {
-            if(message.params) {
+        this.socket.addSpecificCallbackRead(ClusterName.PROXIMITY, ClusterProximityCommands.LASER, (message: Message) => {
+            if (message.params) {
                 this.sensors.proximity.front = message.getValueUint16(0) / 10;
                 this.proximity.show(this.sensors.proximity.front, ProximitySide.center);
             }
         });
     }
+
     addSoundCallbacks() {
-        this.socket.addSpecificCallbackRead(ClusterName.SOUND, ClusterSoundCommands.SOUND_STATUS ,(message:Message) => {
-            if(message.params) {
+        this.socket.addSpecificCallbackRead(ClusterName.SOUND, ClusterSoundCommands.SOUND_STATUS, (message: Message) => {
+            if (message.params) {
                 if (message.getValueUint8(0) == 0) {
                     this.sensors.sound.left = message.getValueUint24(1);
                     let val = Math.min(Math.max(Math.ceil(this.sensors.sound.right / 2000), 1), 3);

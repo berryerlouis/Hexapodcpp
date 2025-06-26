@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Arguments:
-# 1: target (AVR, X64, RPI)
+# 1: target (X64, RPI)
 # 2: source or test
 # 3: DEBUG, RELEASE, or CLEAN
 # Check if no arguments are provided

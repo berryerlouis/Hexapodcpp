@@ -95,15 +95,22 @@ namespace Bot
             Misc::Maths::Position3d nextPosition = this->GetSelectedGait().GetPosition(
                     (posId + 1U) % this->GetSelectedGait().GetNbSteps());
 
-            leg->ComputeDirection(position, this->mParams.GetCurrentDirection(),
-                                  (legId < NB_LEGS / 2U));
-            leg->ComputeAmplitude(position, this->mParams.GetCurrentAmplitude());
-            leg->ComputeElevation(position, this->mParams.GetCurrentElevation());
+            if (false == this->mParams.IsRotated()) {
+                leg->ComputeDirection(position, this->mParams.GetCurrentDirection());
+                leg->ComputeDirection(nextPosition, this->mParams.GetCurrentDirection());
+            } else {
+                leg->ComputeRotation(position, this->mParams.GetCurrentRotation(),
+                                     this->mParams.GetCurrentRotationClockWize());
+                leg->ComputeRotation(nextPosition, this->mParams.GetCurrentRotation(),
+                                     this->mParams.GetCurrentRotationClockWize());
+            }
 
-            leg->ComputeDirection(nextPosition, this->mParams.GetCurrentDirection(),
-                                  (legId < NB_LEGS / 2U));
+            leg->ComputeAmplitude(position, this->mParams.GetCurrentAmplitude());
             leg->ComputeAmplitude(nextPosition, this->mParams.GetCurrentAmplitude());
+
+            leg->ComputeElevation(position, this->mParams.GetCurrentElevation());
             leg->ComputeElevation(nextPosition, this->mParams.GetCurrentElevation());
+
             position = Misc::Utils::LerpF3d(position, nextPosition, deltaTime / 1.5F);
 
             leg->SetTarget(position);

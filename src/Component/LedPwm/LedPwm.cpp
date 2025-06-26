@@ -9,13 +9,12 @@ namespace Component
             , mDutyCycle(50U)
             , mLastTime(0U)
             , mIndexInterval(0U)
-            , mInterval{100, 100, 200, 500}
+            , mInterval{200, 100, 100, 500}
             , mSpeedInterval(2U)
             , mToggleFade(false)
             , mRunning(false)
             , mFadeDuration(0)
             , mFadeStep(0) {
-            LOG_COMPONENT_DEBUG("Led PWM", "Initialized.");
         }
 
         LedPwm::~LedPwm() {
@@ -25,6 +24,7 @@ namespace Component
         Core::Status LedPwm::Initialize(void) {
             this->mRunning = true;
             this->mPwmThread = std::thread(&LedPwm::PwmControl, this);
+            LOG_COMPONENT_DEBUG("Led PWM", "Initialized.");
             return Core::CORE_OK;
         }
 

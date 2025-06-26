@@ -9,10 +9,10 @@ namespace Driver
     {
         Twi::Twi(const EI2cFreq &freq) {
             (void) freq;
-            LOG_DRIVER_DEBUG("Twi", "Initialized.");
         }
 
         Core::Status Twi::Initialize(void) {
+            LOG_DRIVER_DEBUG("Twi", "Initialized.");
             return (Core::Status::CORE_OK);
         }
 

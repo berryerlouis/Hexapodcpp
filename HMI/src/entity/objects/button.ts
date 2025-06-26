@@ -8,12 +8,13 @@ interface ButtonStruct {
 }
 
 export default class Button {
-    socket:Socket;
+    socket: Socket;
     buttonData: ButtonStruct = {pushed: false};
+
     constructor(socket: Socket) {
         this.socket = socket;
 
-        socket.addSpecificCallbackRead(ClusterName.BUTTON, ClusterButtonCommands.BP_STATUS, (message:Message) => {
+        socket.addSpecificCallbackRead(ClusterName.BUTTON, ClusterButtonCommands.BP_STATUS, (message: Message) => {
             this.buttonData.pushed = message.getValueBool(0);
             document.getElementById('button')!.innerText = this.buttonData.pushed ? 'Pushed' : 'Released';
         });

@@ -1,6 +1,6 @@
-import Graphic  from './engine/graphic.ts'
-import Camera  from './engine/camera.ts'
-import Light  from './engine/light.ts'
+import Graphic from './engine/graphic.ts'
+import Camera from './engine/camera.ts'
+import Light from './engine/light.ts'
 import Control from "./engine/control.ts";
 import Hexapod from "./entity/hexapod.ts";
 import World from "./entity/world.ts";
@@ -22,12 +22,13 @@ export default class Ui {
     camera: Camera;
     graphic: Graphic;
     control: Control;
-    socket:Socket;
-    hexapod:Hexapod;
-    panel:Panel;
+    socket: Socket;
+    hexapod: Hexapod;
+    panel: Panel;
     keyboard: Keyboard;
     version: HTMLElement;
-    constructor(socket:Socket) {
+
+    constructor(socket: Socket) {
         this.socket = socket;
         this.scene = new Display();
         this.light = new Light()
@@ -36,43 +37,44 @@ export default class Ui {
         this.graphic = new Graphic(this.scene, this.camera);
         this.control = new Control(this.camera, this.graphic);
         this.panel = new Panel(document.getElementById('panel')!, this.hexapod, this.socket);
-        this.world = new World(10,10, this.hexapod);
+        this.world = new World(10, 10, this.hexapod);
         this.version = document.getElementById('version')!;
 
 
         this.keyboard = new Keyboard(this.hexapod);
-        this.scene.add( this.world );
-        this.scene.add( this.light );
-        this.scene.add( this.hexapod );
+        this.scene.add(this.world);
+        this.scene.add(this.light);
+        this.scene.add(this.hexapod);
         this.graphic.onUpdate(dt => {
             this.update(dt);
         });
-        this.socket.addCallbackStarted(()=>{
+        this.socket.addCallbackStarted(() => {
             this.initCom();
         });
 
 
-        this.socket.addSpecificCallbackRead(ClusterName.GENERAL, ClusterGeneralCommands.VERSION, (message:Message) => {
-            this.version.innerText = "V"+ message.getValueUint8(0).toString() + "." + message.getValueUint8(1).toString();
+        this.socket.addSpecificCallbackRead(ClusterName.GENERAL, ClusterGeneralCommands.VERSION, (message: Message) => {
+            this.version.innerText = "V" + message.getValueUint8(0).toString() + "." + message.getValueUint8(1).toString();
         });
     }
 
 
     initCom() {
 
-        this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_STATE, [0,1]));
-        this.socket.write(new Message( ClusterName.BODY, ClusterBodyCommands.GET_DIRECTION_AMPLITUDE_ELEVATION_DURATION));
-        this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_STATE_PCA));
+        this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.SET_STATE, [0, 1]));
+        this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS));
+        this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.GET_STATE_PCA));
 
         for (let i = 0; i < 18; i++) {
-            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_ANGLE, [i]));
-            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_MIN, [i]));
-            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_MAX, [i]));
-            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.GET_STATE, [i]));
+            this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.GET_ANGLE, [i]));
+            this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.GET_MIN, [i]));
+            this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.GET_MAX, [i]));
+            this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.GET_STATE, [i]));
         }
-        this.socket.write(new Message( ClusterName.GENERAL, ClusterGeneralCommands.VERSION));
+        this.socket.write(new Message(ClusterName.GENERAL, ClusterGeneralCommands.VERSION));
     }
-    update(dt:number) {
+
+    update(dt: number) {
         this.control.update(dt);
         this.world.update();
         this.hexapod.update();

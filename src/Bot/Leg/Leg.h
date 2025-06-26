@@ -53,7 +53,9 @@ namespace Bot
 
             Core::Status SetLegBodyIk(const Position3d &position, const Position3d &bodyIk, const uint16_t travelTime);
 
-            void ComputeDirection(Position3d &position, float angle, bool clockWize);
+            void ComputeDirection(Position3d &position, float angleDirection) const;
+
+            void ComputeRotation(Position3d &position, float angleRotation, bool clockwize) const;
 
             void ComputeAmplitude(Position3d &position, uint8_t amplitude);
 

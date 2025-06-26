@@ -10,10 +10,10 @@ namespace Component
             mMinLoopTime(0xFFFFFFFFUL),
             mMaxLoopTime(0UL),
             mPrevTime(0UL) {
-            LOG_COMPONENT_DEBUG("Software", "Initialized.");
         }
 
         Core::Status Software::Initialize(void) {
+            LOG_COMPONENT_DEBUG("Software", "Initialized.");
             return (Core::Status::CORE_OK);
         }
 

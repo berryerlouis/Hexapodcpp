@@ -18,6 +18,8 @@ namespace Bot
 
             void UpdateStatus(const EWalkStatus status);
 
+            EWalkStatus GetStatus(void) const;
+
             void Update(const uint64_t currentTime);
 
             Gait::GaitParams &GetParams(void);

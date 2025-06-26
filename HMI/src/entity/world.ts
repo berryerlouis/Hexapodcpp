@@ -9,28 +9,29 @@ export default class World extends Object3D {
     height: number;
     meshes: Mesh[] = [];
     gridHelper;
+
     constructor(width: number, height: number, hexapod: Hexapod) {
         super()
         this.hexapod = hexapod;
         this.width = width;
         this.height = height;
         this.worldPlane = new Group();
-        this.gridHelper = new GridHelper( width, height );
+        this.gridHelper = new GridHelper(width, height);
         this.initVisual(this.worldPlane);
         this.initGrid(this.gridHelper);
     }
 
-    initVisual(worldPlane:Group) {
+    initVisual(worldPlane: Group) {
         this.meshes = [];
         for (let i = 0; i < this.width; i++) {
             for (let j = 0; j < this.height; j++) {
-                const geometry = new BoxGeometry( 1, 1, 0.1, 10, 10, 1 );
-                const material = new MeshLambertMaterial( { color: "#07bc13" } );
+                const geometry = new BoxGeometry(1, 1, 0.1, 10, 10, 1);
+                const material = new MeshLambertMaterial({color: "#07bc13"});
                 const mesh = new Mesh(geometry, material);
-                geometry.translate(0,0,-.051);
-                mesh.rotation.x = -Math.PI/2;
-                mesh.position.x = -(this.width/2) + 1/2 + j;
-                mesh.position.z = (this.height/2) - 1/2 - i;
+                geometry.translate(0, 0, -.051);
+                mesh.rotation.x = -Math.PI / 2;
+                mesh.position.x = -(this.width / 2) + 1 / 2 + j;
+                mesh.position.z = (this.height / 2) - 1 / 2 - i;
                 mesh.castShadow = true
                 mesh.receiveShadow = true;
                 this.meshes.push(mesh);
@@ -44,12 +45,12 @@ export default class World extends Object3D {
         this.add(worldPlane);
     }
 
-    initGrid(grid:GridHelper) {
+    initGrid(grid: GridHelper) {
         this.add(grid)
     }
 
     moveWorld(x: number, z: number) {
-        if(Math.abs(this.worldPlane.position.z - (this.height/2) - (z - (this.height/2))) > 1 ) {
+        if (Math.abs(this.worldPlane.position.z - (this.height / 2) - (z - (this.height / 2))) > 1) {
             if (this.worldPlane.position.z - (this.height / 2) - (z - (this.height / 2)) > 1) {
                 this.worldPlane.position.z -= 1;
                 this.gridHelper.position.z -= 1;
@@ -58,7 +59,7 @@ export default class World extends Object3D {
                 this.gridHelper.position.z += 1;
             }
         }
-        if(Math.abs(this.worldPlane.position.x - (this.width / 2) - (x - (this.width / 2))) > 1 ) {
+        if (Math.abs(this.worldPlane.position.x - (this.width / 2) - (x - (this.width / 2))) > 1) {
             if (this.worldPlane.position.x - (this.width / 2) - (x - (this.width / 2)) > 1) {
                 this.worldPlane.position.x -= 1;
                 this.gridHelper.position.x -= 1;

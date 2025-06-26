@@ -21,10 +21,10 @@ namespace Component
             this->mAddress = wiringPiI2CSetup(address);
 #endif
 #endif
-            LOG_COMPONENT_DEBUG("Ads1115", "address 0x%02X Initialized.", this->mAddress);
         }
 
         Core::Status Ads1115::Initialize(void) {
+            LOG_COMPONENT_DEBUG("Ads1115", "address 0x%02X Initialized.", this->mAddress);
             return (Core::Status::CORE_OK);
         }
 

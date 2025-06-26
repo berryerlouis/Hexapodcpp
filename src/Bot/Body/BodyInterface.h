@@ -24,7 +24,11 @@ namespace Bot
 
             virtual void UpdateWalkStatus(const EWalkStatus status, const uint16_t duration) = 0;
 
+            virtual EWalkStatus GetWalkStatus(void) = 0;
+
             virtual bool SetDirection(const float directionAngle) = 0;
+
+            virtual bool SetRotation(const float rotationAngle, const bool clockWize) = 0;
 
             virtual bool SetAmplitude(const float amplitude) = 0;
 
@@ -35,6 +39,10 @@ namespace Bot
             virtual bool SetGait(const Gait::GaitType gait) = 0;
 
             virtual float GetDirection(void) = 0;
+
+            virtual float GetRotation(void) = 0;
+
+            virtual bool GetRotationClockWize(void) = 0;
 
             virtual float GetAmplitude(void) = 0;
 

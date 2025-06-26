@@ -38,7 +38,7 @@ namespace Bot
 
             Steps() {
                 this->steps.push_back({0.0F, -1.0F, 0.0F, 1 / 3.0F});
-                this->steps.push_back({0.0F, 0.0F, 1.0F, 1 / 3.0F});
+                this->steps.push_back({0.0F, 0.75F, 1.0F, 1 / 3.0F});
                 this->steps.push_back({0.0F, 1.0F, 0.0F, 1 / 3.0F});
             }
 
@@ -51,7 +51,8 @@ namespace Bot
             void
             SetCycleDuration(const uint16_t duration) const {
                 for (Step step: this->steps) {
-                    step.duration = ((float) duration / (float) this->steps.size() / (float) duration);
+                    step.duration = (static_cast<float>(duration) / static_cast<float>(this->steps.size()) / static_cast
+                                     <float>(duration));
                     LOG_BOT_DEBUG("Gaits", "cycle duration: %f", step.duration);
                 }
             }

@@ -21,19 +21,19 @@ export default class Message {
     timeout: number = 0;
     retry: number = 0;
 
-    constructor( clusterName: ClusterName, commandName: CommandName, params: (number) [] = [], encode: (Encoding) [] = []){
+    constructor(clusterName: ClusterName, commandName: CommandName, params: (number) [] = [], encode: (Encoding) [] = []) {
         this.direction = Direction.TX;
         this.cluster = getClusterByName(clusterName);
         this.command = getCommandByName(this.cluster, commandName);
         this.size = params.length ? params.length : 0;
         this.params = params;
         this.encode = encode;
-        if(params && this.encode.length == 0) {
+        if (params && this.encode.length == 0) {
             for (let i = 0; i < params.length; i++) {
                 this.encode[i] = 0xFF;
             }
         }
-        this.raw = Protocol.encode(this.cluster, this.command, this.size, this.params, this.encode );
+        this.raw = Protocol.encode(this.cluster, this.command, this.size, this.params, this.encode);
         this.timeout = 0;
         this.retry = 0;
 
@@ -54,20 +54,21 @@ export default class Message {
         return ret;
     }
 
-    getValueBool(index:number){
+    getValueBool(index: number) {
         if (!this.params) {
             throw new MessageSizeError(`No value at index ${index} in params`);
         }
         return this.params[index] == 1;
     }
 
-    getValueUint8(index:number){
+    getValueUint8(index: number) {
         if (!this.params) {
             throw new MessageSizeError(`No value at index ${index} in params`);
         }
         return this.params[index] & 0xFF;
     }
-    getValueInt8(index:number){
+
+    getValueInt8(index: number) {
         let num = this.getValueUint8(index);
         if (num & 0x80) {
             num = -(0x100 - num);
@@ -75,13 +76,14 @@ export default class Message {
         return num;
     }
 
-    getValueUint16(index:number){
+    getValueUint16(index: number) {
         if (!this.params) {
             throw new MessageSizeError(`No value at index ${index} in params`);
         }
         return (this.params[index + 1] << 8) + this.params[index];
     }
-    getValueInt16(index:number){
+
+    getValueInt16(index: number) {
         let num = this.getValueUint16(index);
         if (num & 0x8000) {
             num = -(0x10000 - num);
@@ -89,13 +91,14 @@ export default class Message {
         return num;
     }
 
-    getValueUint24(index:number){
+    getValueUint24(index: number) {
         if (!this.params) {
             throw new MessageSizeError(`No value at index ${index} in params`);
         }
         return (this.params[index + 2] << 16) + (this.params[index + 1] << 8) + this.params[index];
     }
-    getValueInt24(index:number){
+
+    getValueInt24(index: number) {
         let num = this.getValueUint24(index);
         if (num & 0x800000) {
             num = -(0x1000000 - num);
@@ -103,13 +106,14 @@ export default class Message {
         return num;
     }
 
-    getValueUint32(index:number){
+    getValueUint32(index: number) {
         if (!this.params) {
             throw new MessageSizeError(`No value at index ${index} in params`);
         }
         return (this.params[index + 3] << 24) + (this.params[index + 2] << 16) + (this.params[index + 1] << 8) + this.params[index];
     }
-    getValueInt32(index:number){
+
+    getValueInt32(index: number) {
         let num = this.getValueUint32(index);
         if (num & 0x80000000) {
             num = -(0x100000000 - num);

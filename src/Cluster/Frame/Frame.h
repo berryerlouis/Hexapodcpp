@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "../../Core/Logger.h"
 #include "../../Core/Status.h"
 #include "../../Misc/Maths/Utils.h"
 

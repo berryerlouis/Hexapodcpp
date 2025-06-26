@@ -12,6 +12,7 @@
       <file path="$PROJECT_DIR$/HMI" />
       <file path="$PROJECT_DIR$/HMI-copy" />
       <file path="$PROJECT_DIR$/bin" />
+      <file path="$PROJECT_DIR$/build" />
       <file path="$PROJECT_DIR$/images" />
       <file path="$PROJECT_DIR$/node" />
     </excludeRoots>

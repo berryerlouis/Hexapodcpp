@@ -13,11 +13,11 @@ namespace Component
 #ifdef RPI
             this->mAddress = wiringPiI2CSetup(address);
 #endif
-            LOG_COMPONENT_DEBUG("Barometer", "address 0x%02X Initialized.", this->mAddress);
         }
 
         Core::Status Barometer::Initialize(void) {
             this->ReadProm();
+            LOG_COMPONENT_DEBUG("Barometer", "address 0x%02X Initialized.", this->mAddress);
             return Core::CORE_OK;
         }
 
@@ -68,7 +68,7 @@ namespace Component
         }
 
         void Barometer::ReadProm(void) {
-            for (size_t offset = 0; offset < 6; offset++) {
+            for (size_t offset = 0U; offset < 6U; offset++) {
                 uint8_t data[2U] = {0U};
                 this->mI2c.ReadRegisters(this->mAddress, MS5611_CMD_READ_PROM + (offset * 2U), data, 2U);
                 this->mProm[offset] = ((data[0U] << 8U) | data[1U]);

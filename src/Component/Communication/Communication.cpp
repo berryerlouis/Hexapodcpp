@@ -15,11 +15,11 @@ namespace Component
             mBufferTx{0U},
             mIndexBufferRx(0U),
             mBeginIncomingFrame(false) {
-            LOG_COMPONENT_DEBUG("Communication", "Initialized.");
         }
 
         Core::Status Communication::Initialize(void) {
             this->mSocket.Attach(this);
+            LOG_COMPONENT_DEBUG("Communication", "Initialized.");
             return (this->mLedStatus.Initialize());
         }
 
