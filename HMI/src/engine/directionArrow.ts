@@ -55,7 +55,10 @@ export default class DirectionArrow extends Object3D {
             this.left.classList.remove('select');
             this.backward.classList.remove('select');
             this.stop.classList.remove('select');
+            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_DIRECTION, [0], [0xFFFF]));
+            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_ROTATION, [0, 0], [0xFFFF, 0xFF]));
             this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS, [0, this.hexapodStruct.duration], [0xFF, 0xFFFF]));
+            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS));
         });
         this.right.addEventListener('click', () => {
             this.forward.classList.remove('select');
@@ -63,7 +66,9 @@ export default class DirectionArrow extends Object3D {
             this.left.classList.remove('select');
             this.backward.classList.remove('select');
             this.stop.classList.remove('select');
+            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_ROTATION, [1, 1], [0xFFFF, 0xFF]));
             this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS, [0, this.hexapodStruct.duration], [0xFF, 0xFFFF]));
+            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS));
         });
         this.left.addEventListener('click', () => {
             this.forward.classList.remove('select');
@@ -71,7 +76,9 @@ export default class DirectionArrow extends Object3D {
             this.left.classList.toggle('select');
             this.backward.classList.remove('select');
             this.stop.classList.remove('select');
+            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_ROTATION, [1, 0], [0xFFFF, 0xFF]));
             this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS, [0, this.hexapodStruct.duration], [0xFF, 0xFFFF]));
+            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS));
         });
         this.backward.addEventListener('click', () => {
             this.forward.classList.remove('select');
@@ -79,7 +86,10 @@ export default class DirectionArrow extends Object3D {
             this.left.classList.remove('select');
             this.backward.classList.toggle('select');
             this.stop.classList.remove('select');
+            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_DIRECTION, [180], [0xFFFF]));
+            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_ROTATION, [0, 0], [0xFFFF, 0xFF]));
             this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS, [0, this.hexapodStruct.duration], [0xFF, 0xFFFF]));
+            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS));
         });
         this.stop.addEventListener('click', () => {
             this.forward.classList.remove('select');
@@ -87,7 +97,10 @@ export default class DirectionArrow extends Object3D {
             this.left.classList.remove('select');
             this.backward.classList.remove('select');
             this.stop.classList.toggle('select');
+            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_DIRECTION, [0], [0xFFFF]));
+            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_ROTATION, [0, 0], [0xFFFF, 0xFF]));
             this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS, [2, this.hexapodStruct.duration], [0xFF, 0xFFFF]));
+            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS));
         });
         this.enable.addEventListener('click', () => {
             this.enable.classList.toggle('select');

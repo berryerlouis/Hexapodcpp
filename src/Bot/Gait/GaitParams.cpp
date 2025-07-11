@@ -46,6 +46,7 @@ namespace Bot
                 this->mIsRotatedClockWize = clockWize;
                 return true;
             }
+            this->mLerpRotation.target = 0.0F;
             this->mIsRotated = false;
             return false;
         }

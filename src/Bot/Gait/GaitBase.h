@@ -34,18 +34,20 @@ namespace Bot
         using Groups = std::vector<Group *>;
 
         struct Steps {
-            std::vector<Step> steps;
+            std::vector<Step> initialSteps = {{0.0F, -1.0F, 0.0F, 1 / 3.0F},
+                                              {0.0F, 0.75F, 1.0F, 1 / 3.0F},
+                                              {0.0F, 1.0F, 0.0F, 1 / 3.0F}};
+            std::vector<Step> steps = {{0.0F, -1.0F, 0.0F, 1 / 3.0F},
+                                       {0.0F, 0.75F, 1.0F, 1 / 3.0F},
+                                       {0.0F, 1.0F, 0.0F, 1 / 3.0F}};
 
-            Steps() {
-                this->steps.push_back({0.0F, -1.0F, 0.0F, 1 / 3.0F});
-                this->steps.push_back({0.0F, 0.75F, 1.0F, 1 / 3.0F});
-                this->steps.push_back({0.0F, 1.0F, 0.0F, 1 / 3.0F});
-            }
+            Steps() = default;
+
+            ~Steps() = default;
 
             void
-            SetStepDuration(const uint8_t stepIndex, const uint16_t duration) {
+            SetStepDuration(const uint8_t stepIndex, const float duration) {
                 this->steps[stepIndex].duration = duration;
-                LOG_BOT_DEBUG("Gaits", "step duration: %f", duration);
             }
 
             void
@@ -64,7 +66,7 @@ namespace Bot
 
             ~GaitBase() = default;
 
-            void Update(uint64_t currentTime, uint8_t groupId) const;
+            void Update(uint64_t currentTime, uint8_t groupId);
 
             float GetDeltaTime(uint64_t currentTime, uint8_t groupId) const;
 
@@ -88,6 +90,8 @@ namespace Bot
 
             uint16_t GetCurrentStepDuration(uint8_t groupId) const;
 
+            uint16_t GetPreviousStepDuration(uint8_t groupId) const;
+
             uint16_t GetCurrentOffsetDuration(uint8_t groupId) const;
 
             uint8_t GetNbSteps(void) const;
@@ -96,13 +100,15 @@ namespace Bot
 
             uint16_t GetCycleDuration() const;
 
-            void NextStep(uint8_t groupId) const;
+            void NextStep(uint8_t groupId);
 
-            void SetInitialStartTime(uint8_t groupId, uint64_t startTime) const;
+            void PreviousStep(uint8_t groupId) const;
+
+            void SetInitialStartTime(uint8_t groupId, uint64_t startTime);
 
             void SetStartTime(uint8_t groupId, uint64_t startTime) const;
 
-            void ResetCycleStep(uint8_t groupId, uint64_t startTime) const;
+            void ResetCycleStep(uint8_t groupId, uint64_t startTime);
 
             bool CanUpdate(uint64_t currentTime, uint8_t groupId) const;
 

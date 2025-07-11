@@ -125,12 +125,22 @@ export default class Hexapod extends Object3D {
 
         if (this.isMoving) {
             if (this.hexapodStruct.rotation == 0) {
-                let angle = this.hexapodStruct.direction / 180 * Math.PI;
+                //let angle = this.hexapodStruct.direction / 180 * Math.PI;
+                let angle = (this.hexapodStruct.clockwise ? -1 : 1) * this.rotation.y / Math.PI * 180;
                 this.position.z -= Math.cos(angle) * this.hexapodStruct.duration / 1000000;
                 this.position.x -= Math.sin(angle) * this.hexapodStruct.duration / 1000000;
             } else {
                 this.rotation.y += (this.hexapodStruct.clockwise ? -1 : 1) * this.hexapodStruct.duration / 1000000;
             }
+            /*if (this.rotation.y == 0) {
+                let angle = this.rotation.y / Math.PI * 180;
+                this.position.z -= (this.hexapodStruct.direction >= 180 ? -1 : 1) * (Math.cos(angle) + 90 / 180 * Math.PI) * this.hexapodStruct.duration / 1000000;
+                this.position.x -= (this.hexapodStruct.direction >= 180 ? -1 : 1) * (Math.sin(angle) + 90 / 180 * Math.PI) * this.hexapodStruct.duration / 1000000;
+            } else {
+
+            }*/
+            /*this.rotation.y += (this.hexapodStruct.clockwise ? -1 : 1) * this.hexapodStruct.duration / 1000000;
+            console.log(((this.rotation.y) / Math.PI * 180) - 90);*/
         }
     }
 

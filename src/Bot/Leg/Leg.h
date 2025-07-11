@@ -41,7 +41,9 @@ namespace Bot
 
             Leg(const ELeg legId, ServoInterface &coxa, ServoInterface &femur, ServoInterface &tibia);
 
-            Core::Status SetTarget(const Position3d &target);
+            void SetTarget(const Position3d &target);
+
+            void ResetTarget(void);
 
             Core::Status UpdatePosition(const float deltaTime);
 

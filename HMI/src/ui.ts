@@ -37,7 +37,7 @@ export default class Ui {
         this.graphic = new Graphic(this.scene, this.camera);
         this.control = new Control(this.camera, this.graphic);
         this.panel = new Panel(document.getElementById('panel')!, this.hexapod, this.socket);
-        this.world = new World(10, 10, this.hexapod);
+        this.world = new World(20, 20, this.hexapod);
         this.version = document.getElementById('version')!;
 
 
@@ -57,7 +57,6 @@ export default class Ui {
             this.version.innerText = "V" + message.getValueUint8(0).toString() + "." + message.getValueUint8(1).toString();
         });
     }
-
 
     initCom() {
 

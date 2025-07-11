@@ -9,6 +9,8 @@ export default class World extends Object3D {
     height: number;
     meshes: Mesh[] = [];
     gridHelper;
+    geometry = new BoxGeometry(1, 1, 0.1, 10, 10, 1);
+    material = new MeshLambertMaterial({color: "#07bc13"});
 
     constructor(width: number, height: number, hexapod: Hexapod) {
         super()
@@ -17,6 +19,7 @@ export default class World extends Object3D {
         this.height = height;
         this.worldPlane = new Group();
         this.gridHelper = new GridHelper(width, height);
+        this.geometry.translate(0, 0, -.051);
         this.initVisual(this.worldPlane);
         this.initGrid(this.gridHelper);
     }
@@ -25,10 +28,7 @@ export default class World extends Object3D {
         this.meshes = [];
         for (let i = 0; i < this.width; i++) {
             for (let j = 0; j < this.height; j++) {
-                const geometry = new BoxGeometry(1, 1, 0.1, 10, 10, 1);
-                const material = new MeshLambertMaterial({color: "#07bc13"});
-                const mesh = new Mesh(geometry, material);
-                geometry.translate(0, 0, -.051);
+                const mesh = new Mesh(this.geometry, this.material);
                 mesh.rotation.x = -Math.PI / 2;
                 mesh.position.x = -(this.width / 2) + 1 / 2 + j;
                 mesh.position.z = (this.height / 2) - 1 / 2 - i;

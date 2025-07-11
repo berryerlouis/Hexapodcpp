@@ -14,9 +14,9 @@ namespace Bot
             mGroupE{{MIDDLE_RIGHT}, 4.0F / 6.0F},
             mGroupF{{FRONT_RIGHT}, 5.0F / 6.0F} {
 
-            this->GetSteps().steps[0U].duration = 1.0F / 12.0F;
-            this->GetSteps().steps[1U].duration = 1.0F / 12.0F;
-            this->GetSteps().steps[2U].duration = 10.0F / 12.0F;
+            this->GetSteps().SetStepDuration(0U, 1.0F / 12.0F);
+            this->GetSteps().SetStepDuration(1U, 1.0F / 12.0F);
+            this->GetSteps().SetStepDuration(2U, 10.0F / 12.0F);
         }
     }
 }

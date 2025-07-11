@@ -17,7 +17,7 @@ namespace Bot
             , mStatus(STOP)
             , mPreviousStatus(STOP)
             , mParams(tick, 0.0F, AMPLITUDE_MAX, ELEVATION_MAX, 0.0F)
-            , mGaitCycle(legs, mParams, Gait::TRIPOD, tick) {
+            , mGaitCycle(legs, mParams, Gait::RIPPLE, tick) {
             LOG_BOT_DEBUG("Walk", "Initialized.");
         }
 

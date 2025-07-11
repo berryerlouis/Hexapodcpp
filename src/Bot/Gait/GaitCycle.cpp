@@ -54,7 +54,8 @@ namespace Bot
                 this->mIsRunning = false;
                 for (size_t legId = 0U; legId < NB_LEGS; legId++) {
                     Leg::Leg *leg = this->mLegs.GetLeg(legId);
-                    leg->SetLegIk({0, 0, 0}, this->mParams.GetCycleDuration());
+                    leg->ResetTarget();
+                    leg->SetLegIk({0.0F, 0.0F, 0.0F}, this->mParams.GetCycleDuration());
                 }
                 return true;
             }

@@ -49,6 +49,12 @@ namespace Bot
             return cycleDuration * this->mSteps.steps[this->GetCurrentIndex(groupId)].duration;
         }
 
+        uint16_t GaitBase::GetPreviousStepDuration(const uint8_t groupId) const {
+            const float cycleDuration = this->GetCycleDuration();
+            this->PreviousStep(groupId);
+            return cycleDuration * this->mSteps.steps[this->GetCurrentIndex(groupId)].duration;
+        }
+
         uint16_t GaitBase::GetCurrentOffsetDuration(const uint8_t groupId) const {
             const float cycleDuration = this->GetCycleDuration();
             return cycleDuration * this->GetGroupId(groupId).offsetTime;
@@ -66,18 +72,33 @@ namespace Bot
             return this->mParams.GetCycleDuration();
         }
 
-        void GaitBase::NextStep(const uint8_t groupId) const {
+        void GaitBase::NextStep(const uint8_t groupId) {
             this->GetCurrentIndex(groupId)++;
             if (this->GetCurrentIndex(groupId) == this->GetNbSteps()) {
                 this->GetCurrentIndex(groupId) = 0U;
             }
+            this->GetCurrentStep(groupId).position = this->mSteps.initialSteps[this->GetCurrentIndex(groupId)].position;
         }
 
-        void GaitBase::SetInitialStartTime(const uint8_t groupId, const uint64_t startTime) const {
-            const uint16_t stepDuration = this->GetCurrentStepDuration(groupId);
+        void GaitBase::PreviousStep(const uint8_t groupId) const {
+            this->GetCurrentIndex(groupId)--;
+            if (static_cast<int8_t>(this->GetCurrentIndex(groupId)) < 0) {
+                this->GetCurrentIndex(groupId) = this->GetNbSteps() - 1U;
+            }
+        }
+
+        void GaitBase::SetInitialStartTime(const uint8_t groupId, const uint64_t startTime) {
             const uint16_t offsetTime = this->GetCurrentOffsetDuration(groupId);
-            this->GetGroupId(groupId).startTime = startTime + offsetTime;
-            this->GetGroupId(groupId).endTime = this->GetGroupId(groupId).startTime + stepDuration;
+            if (offsetTime == 0U) {
+                const uint16_t stepDuration = this->GetCurrentStepDuration(groupId);
+                this->GetGroupId(groupId).startTime = startTime + offsetTime;
+                this->GetGroupId(groupId).endTime = this->GetGroupId(groupId).startTime + stepDuration;
+            } else {
+                const uint16_t stepDuration = this->GetPreviousStepDuration(groupId);
+                this->GetGroupId(groupId).endTime = startTime + offsetTime;
+                this->GetGroupId(groupId).startTime = this->GetGroupId(groupId).endTime - stepDuration;
+                this->GetCurrentStep(groupId).position.z = 0.5;
+            }
         }
 
         void GaitBase::SetStartTime(const uint8_t groupId, const uint64_t startTime) const {
@@ -86,7 +107,7 @@ namespace Bot
             this->GetGroupId(groupId).endTime = this->GetGroupId(groupId).startTime + stepDuration;
         }
 
-        void GaitBase::ResetCycleStep(const uint8_t groupId, const uint64_t startTime) const {
+        void GaitBase::ResetCycleStep(const uint8_t groupId, const uint64_t startTime) {
             this->ResetIndex(groupId);
             this->SetInitialStartTime(groupId, startTime);
         }
@@ -95,7 +116,7 @@ namespace Bot
             return (currentTime >= this->GetGroupId(groupId).startTime);
         }
 
-        void GaitBase::Update(const uint64_t currentTime, const uint8_t groupId) const {
+        void GaitBase::Update(const uint64_t currentTime, const uint8_t groupId) {
             if (currentTime >= this->GetGroupId(groupId).endTime) {
                 this->NextStep(groupId);
                 this->SetStartTime(groupId, currentTime);
