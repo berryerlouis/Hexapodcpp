@@ -1,7 +1,7 @@
 #include "GaitParams.h"
 
 
-namespace Bot
+namespace Move
 {
     namespace Gait
     {

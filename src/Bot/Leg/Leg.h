@@ -38,7 +38,7 @@ namespace Bot
             };
 
 
-            Leg(const ELeg legId, ServoInterface &coxa, ServoInterface &femur, ServoInterface &tibia);
+            Leg(const Legs::ELeg legId, ServoInterface &coxa, ServoInterface &femur, ServoInterface &tibia);
 
             ~Leg() = default;
 
@@ -48,7 +48,7 @@ namespace Bot
 
             Core::Status UpdatePosition(const float deltaTime) final override;
 
-            ELeg GetId(void) const final override;
+            Legs::ELeg GetId(void) const final override;
 
             Core::Status SetLegIk(const Position3d &position, const uint16_t travelTime = 0U) final override;
 
@@ -78,7 +78,7 @@ namespace Bot
             Position3d mTargetPos;
 
         private:
-            ELeg mLegId;
+            Legs::ELeg mLegId;
             ServoInterface &mCoxa;
             ServoInterface &mFemur;
             ServoInterface &mTibia;

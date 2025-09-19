@@ -1,11 +1,11 @@
-#include "Builder/App.h"
+#include "App/App.h"
 #include "Core/Logger.h"
 #include "Core/Version.h"
 
 
 int main(const int argc, char **argv) {
 
-    setvbuf(stdout, NULL, _IONBF, 0U);
+    setvbuf(stdout, nullptr, _IONBF, 0U);
 
     LOG_INFO("Hexapod started.");
     LOG_INFO("Hexapod version: %d.%d", VERSION_MAJOR, VERSION_MINOR);
@@ -17,7 +17,7 @@ int main(const int argc, char **argv) {
         }
     }
 
-    Builder::App robot;
+    App::App robot;
     // hexapod initialization
     if (robot.Initialize() == Core::Status::CORE_OK) {
         while (true) {

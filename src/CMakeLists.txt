@@ -41,101 +41,21 @@ elseif (${TARGET} STREQUAL "RPI")
 
 endif ()
 
-# Concatenate all src files
+# All source files
 set(SRC_FILES_MAIN Hexapodcpp.cpp)
-
-set(SRC_FILES_CORE
-        Core/Logger.cpp
-)
-
-set(SRC_FILES_SERVICES
-        Service/Battery/ServiceBattery.cpp
-        Service/Button/ServiceButton.cpp
-        Service/Communication/ServiceCommunication.cpp
-        Service/Control/ServiceControl.cpp
-        Service/Display/ServiceDisplay.cpp
-        Service/General/ServiceGeneral.cpp
-        Service/Orientation/ServiceOrientation.cpp
-        Service/Proximity/ServiceProximity.cpp
-        Service/Sound/ServiceSound.cpp
-        Service/Services/Services.cpp
-        Service/Event/EventListener.cpp
-        Service/Body/ServiceBody.cpp
-)
-
-set(SRC_FILES_MISC
-        Misc/Bitmap/Bitmaps.cpp
-        Misc/Buffer/Buffer.cpp
-)
-
-set(SRC_FILES_DRIVER
-        Driver/Adc/Adc${TARGET}.cpp
-        Driver/Gpio/Gpio${TARGET}.cpp
-        Driver/InputCapture/InputCapture${TARGET}.cpp
-        Driver/Socket/Socket${TARGET}.cpp
-        Driver/Tick/Tick${TARGET}.cpp
-        Driver/Twi/Twi${TARGET}.cpp
-        Driver/Uart/Uart${TARGET}.cpp
-)
-
-set(SRC_FILES_COMPONENT
-        Component/Barometer/Barometer.cpp
-        Component/Battery/Battery.cpp
-        Component/Sound/Sound.cpp
-        Component/Adc/Ads1115.cpp
-        Component/Button/Button.cpp
-        Component/Communication/Communication.cpp
-        Component/Display/Ssd1306.cpp
-        Component/Imu/Ahrs.cpp
-        Component/Imu/Mpu9150.cpp
-        Component/Led/Led.cpp
-        Component/LedPwm/LedPwm.cpp
-        Component/Proximity/Laser/Vl53l0x.cpp
-        Component/Proximity/SensorProximity.cpp
-        Component/Proximity/Ultrasound/Srf05.cpp
-        Component/Servo/Servo.cpp
-        Component/Servos/Servos.cpp
-        Component/ServosController/Pca9685.cpp
-        Component/Software/Software.cpp
-)
-
-set(SRC_FILES_CLUSTER
-        Cluster/Battery/ClusterBattery.cpp
-        Cluster/Button/ClusterButton.cpp
-        Cluster/Body/ClusterBody.cpp
-        Cluster/General/ClusterGeneral.cpp
-        Cluster/Imu/ClusterImu.cpp
-        Cluster/Proximity/ClusterProximity.cpp
-        Cluster/Servo/ClusterServo.cpp
-        Cluster/ClusterBase.cpp
-        Cluster/ClusterCommand.cpp
-        Cluster/Sound/ClusterSound.cpp
-        Cluster/Clusters/Clusters.cpp
-        Cluster/Decoding/Protocol.cpp
-        Cluster/Frame/Frame.cpp
-)
-
-set(SRC_FILES_BUILDER
-        Builder/App.cpp
-)
-
-set(SRC_FILES_BOT
-        Bot/Body/Body.cpp
-        Bot/Leg/Leg.cpp
-        Bot/Gait/GaitCycle.cpp
-        Bot/Gait/Gaits.cpp
-        Bot/Gait/GaitBase.cpp
-        Bot/Gait/GaitParams.cpp
-        Bot/Gait/GaitTripod.cpp
-        Bot/Gait/GaitWave.cpp
-        Bot/Gait/GaitRipple.cpp
-        Bot/Gait/GaitDoubleWave.cpp
-        Bot/Legs/Legs.cpp
-        Bot/Walk/Walk.cpp
-)
+add_subdirectory(App)
+add_subdirectory(Bot)
+add_subdirectory(Core)
+add_subdirectory(Cluster)
+add_subdirectory(Component)
+add_subdirectory(Driver)
+add_subdirectory(Misc)
+add_subdirectory(Service)
+add_subdirectory(Move)
 
 set(SRC_FILES
         ${SRC_FILES_CORE}
+        ${SRC_FILES_MOVE}
         ${SRC_FILES_BUILDER}
         ${SRC_FILES_BOT}
         ${SRC_FILES_CLUSTER}

@@ -3,15 +3,15 @@ set(
         ../src/Bot/Leg/Leg.cpp
         ../src/Bot/Legs/Legs.cpp
         ../src/Bot/Body/Body.cpp
-        ../src/Bot/Walk/Walk.cpp
-        ../src/Bot/Gait/GaitBase.cpp
-        ../src/Bot/Gait/Gaits.cpp
-        ../src/Bot/Gait/GaitParams.cpp
-        ../src/Bot/Gait/GaitCycle.cpp
-        ../src/Bot/Gait/GaitRipple.cpp
-        ../src/Bot/Gait/GaitTripod.cpp
-        ../src/Bot/Gait/GaitWave.cpp
-        ../src/Bot/Gait/GaitDoubleWave.cpp
+        ../src/Move/Walk/Walk.cpp
+        ../src/Move/Gait/GaitBase.cpp
+        ../src/Move/Gait/Gaits.cpp
+        ../src/Move/Gait/GaitParams.cpp
+        ../src/Move/Gait/GaitCycle.cpp
+        ../src/Move/Gait/GaitRipple.cpp
+        ../src/Move/Gait/GaitTripod.cpp
+        ../src/Move/Gait/GaitWave.cpp
+        ../src/Move/Gait/GaitDoubleWave.cpp
 )
 set(
         TEST_FILE

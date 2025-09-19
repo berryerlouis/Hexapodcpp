@@ -7,7 +7,7 @@
 #include "GaitDoubleWave.h"
 #include "GaitRipple.h"
 
-namespace Bot
+namespace Move
 {
     namespace Gait
     {

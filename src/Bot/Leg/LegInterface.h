@@ -20,7 +20,7 @@ namespace Bot
 
             virtual Core::Status UpdatePosition(const float deltaTime) = 0;
 
-            virtual ELeg GetId(void) const = 0;
+            virtual Legs::ELeg GetId(void) const = 0;
 
             virtual Core::Status SetLegIk(const Position3d &position, const uint16_t travelTime = 0U) = 0;
 

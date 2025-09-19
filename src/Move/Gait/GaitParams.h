@@ -2,7 +2,7 @@
 #include "../../Misc/Maths/Utils.h"
 #include "../../Driver/Tick/TickInterface.h"
 
-namespace Bot
+namespace Move
 {
     namespace Gait
     {

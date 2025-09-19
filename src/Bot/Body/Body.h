@@ -1,7 +1,7 @@
 #pragma once
 
 #include "BodyInterface.h"
-#include "../Walk/Walk.h"
+#include "../../Move/Walk/Walk.h"
 #include "../../Driver/Tick/TickInterface.h"
 
 namespace Bot
@@ -28,9 +28,9 @@ namespace Bot
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void UpdateWalkStatus(const EWalkStatus status, const uint16_t duration) final override;
+            virtual void UpdateWalkStatus(const Move::Walk::EWalkStatus status, const uint16_t duration) final override;
 
-            virtual EWalkStatus GetWalkStatus(void) final override;
+            virtual Move::Walk::EWalkStatus GetWalkStatus(void) final override;
 
             virtual uint32_t SetBodyPositionRotation(const Position3d &position,
                                                      const Rotation3d &rotation,
@@ -50,7 +50,7 @@ namespace Bot
 
             virtual bool SetDuration(const uint16_t duration) final override;
 
-            virtual bool SetGait(const Gait::GaitType gait) final override;
+            virtual bool SetGait(const Move::Gait::GaitType gait) final override;
 
             virtual float GetDirection(void) final override;
 
@@ -64,12 +64,12 @@ namespace Bot
 
             virtual uint16_t GetDuration(void) final override;
 
-            virtual Gait::GaitType GetGait(void) final override;
+            virtual Move::Gait::GaitType GetGait(void) final override;
 
         private:
             SBodyIk mBodyIk;
             Legs::LegsInterface &mLegs;
-            Walk::Walk mWalk;
+            Move::Walk::Walk mWalk;
             Position3d mPosition;
             Rotation3d mRotation;
 

@@ -6,26 +6,26 @@
 
 // https://github.com/JakobLeander/hexapod/blob/main/hexapod/
 
-namespace Bot
+namespace Move
 {
     namespace Walk
     {
 #define AMPLITUDE_MAX   3.0F
 #define ELEVATION_MAX   3.0F
 
-        Walk::Walk(Legs::LegsInterface &legs, Driver::Tick::TickInterface &tick) :
+        Walk::Walk(Bot::Legs::LegsInterface &legs, Driver::Tick::TickInterface &tick) :
             mLegs(legs)
             , mTick(tick)
             , mStatus(STOP)
             , mPreviousStatus(STOP)
             , mParams(tick, 0.0F, AMPLITUDE_MAX, ELEVATION_MAX, 0.0F)
             , mGaitCycle(legs, mParams, Gait::RIPPLE, tick) {
-            LOG_BOT_DEBUG("Walk", "Initialized.");
+            LOG_MOVE_DEBUG("Walk", "Initialized.");
         }
 
         void Walk::UpdateStatus(const EWalkStatus status) {
             this->mStatus = status;
-            LOG_BOT_INFO("Walk", "Update Status: %s.", WalkStatusToString(this->mStatus).c_str());
+            LOG_MOVE_DEBUG("Walk", "Update Status: %s.", WalkStatusToString(this->mStatus).c_str());
         }
 
         EWalkStatus Walk::GetStatus(void) const {

@@ -3,7 +3,7 @@
 #include "../ClusterBase.h"
 #include "../../Bot/Body/BodyInterface.h"
 
-#include "../../Bot/Gait/Constants.h"
+#include "../../Move/Gait/Constants.h"
 
 namespace Cluster
 {
@@ -43,7 +43,7 @@ namespace Cluster
 
             static Core::Status BuildFrameUpdateDuration(Frame &response, const uint16_t duration);
 
-            Core::Status BuildFrameUpdateGait(Frame &response, Bot::Gait::GaitType gait);
+            Core::Status BuildFrameUpdateGait(Frame &response, Move::Gait::GaitType gait);
 
         private:
             BodyInterface &mBody;

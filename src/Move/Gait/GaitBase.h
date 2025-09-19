@@ -6,7 +6,7 @@
 #include "../../Bot/Constants.h"
 #include "../../Misc/Maths/Geometry.h"
 
-namespace Bot
+namespace Move
 {
     namespace Gait
     {
@@ -16,13 +16,13 @@ namespace Bot
         };
 
         struct Group {
-            std::vector<ELeg> legs;
+            std::vector<Bot::Legs::ELeg> legs;
             uint8_t indexStep;
             uint64_t startTime;
             uint64_t endTime;
             float offsetTime;
 
-            Group(const std::vector<ELeg> &legs, const float offsetTime):
+            Group(const std::vector<Bot::Legs::ELeg> &legs, const float offsetTime):
                 legs(legs)
                 , indexStep(0)
                 , startTime(offsetTime)
@@ -76,7 +76,7 @@ namespace Bot
 
             Group &GetGroupId(uint8_t groupId) const;
 
-            std::vector<ELeg> &GetGroupLeg(uint8_t groupId) const;
+            std::vector<Bot::Legs::ELeg> &GetGroupLeg(uint8_t groupId) const;
 
             uint8_t GetNbGroups(void) const;
 

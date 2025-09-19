@@ -1,7 +1,6 @@
 #include "Gaits.h"
-#include "../Constants.h"
 
-namespace Bot
+namespace Move
 {
     namespace Gait
     {
@@ -17,7 +16,7 @@ namespace Bot
         }
 
         bool Gaits::SetGaitType(const GaitType gaitType) {
-            LOG_BOT_DEBUG("Gaits", "SetGaitType: %s", GaitTypeToString(gaitType).c_str());
+            LOG_MOVE_DEBUG("Gaits", "SetGaitType: %s", GaitTypeToString(gaitType).c_str());
             this->mGaitTypeSelected = gaitType;
             return true;
         }

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Constants.h"
-#include "../Gait/Constants.h"
+#include "../../Move/Gait/Constants.h"
+#include "../../Move/Walk/Constants.h"
 #include "../Legs/Legs.h"
 #include "../../Component/ComponentInterface.h"
 #include "../../Misc/Maths/Geometry.h"
@@ -22,9 +22,9 @@ namespace Bot
 
             virtual void Update(const uint64_t currentTime) = 0;
 
-            virtual void UpdateWalkStatus(const EWalkStatus status, const uint16_t duration) = 0;
+            virtual void UpdateWalkStatus(const Move::Walk::EWalkStatus status, const uint16_t duration) = 0;
 
-            virtual EWalkStatus GetWalkStatus(void) = 0;
+            virtual Move::Walk::EWalkStatus GetWalkStatus(void) = 0;
 
             virtual bool SetDirection(const float directionAngle) = 0;
 
@@ -36,7 +36,7 @@ namespace Bot
 
             virtual bool SetDuration(const uint16_t duration) = 0;
 
-            virtual bool SetGait(const Gait::GaitType gait) = 0;
+            virtual bool SetGait(const Move::Gait::GaitType gait) = 0;
 
             virtual float GetDirection(void) = 0;
 
@@ -50,7 +50,7 @@ namespace Bot
 
             virtual uint16_t GetDuration(void) = 0;
 
-            virtual Gait::GaitType GetGait(void) = 0;
+            virtual Move::Gait::GaitType GetGait(void) = 0;
 
             virtual uint32_t SetBodyPositionRotation(const Position3d &position,
                                                      const Rotation3d &rotation,

@@ -1,6 +1,6 @@
 #include "GaitBase.h"
 
-namespace Bot
+namespace Move
 {
     namespace Gait
     {
@@ -20,7 +20,7 @@ namespace Bot
             return *this->mGroups[groupId];
         }
 
-        std::vector<ELeg> &GaitBase::GetGroupLeg(const uint8_t groupId) const {
+        std::vector<Bot::Legs::ELeg> &GaitBase::GetGroupLeg(const uint8_t groupId) const {
             return this->mGroups[groupId]->legs;
         }
 

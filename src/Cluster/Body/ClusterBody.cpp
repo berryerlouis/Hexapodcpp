@@ -1,6 +1,6 @@
 #include "ClusterBody.h"
 
-#include "../../Bot/Gait/Constants.h"
+#include "../../Move/Gait/Constants.h"
 
 namespace Cluster
 {
@@ -70,7 +70,7 @@ namespace Cluster
                 const uint32_t successMove = this->mBody.SetLegPositionRotation(legId, position, travelTime);
                 success = this->BuildFrameSetLegPosition(response, successMove);
             } else if (request.GetCommandId() == EBodyCommands::SET_WALK_STATUS) {
-                const Bot::EWalkStatus status = static_cast<Bot::EWalkStatus>(request.Get1ByteParam(0U));
+                const Move::Walk::EWalkStatus status = static_cast<Move::Walk::EWalkStatus>(request.Get1ByteParam(0U));
                 const uint16_t travelTime = request.Get2BytesParam(1U);
                 this->mBody.UpdateWalkStatus(status, travelTime);
                 success = this->BuildFrameUpdateWalkStatus(response, this->mBody.GetWalkStatus());
@@ -112,7 +112,7 @@ namespace Cluster
             } else if (request.GetCommandId() == EBodyCommands::GET_GAIT) {
                 success = this->BuildFrameUpdateGait(response, this->mBody.GetGait());
             } else if (request.GetCommandId() == EBodyCommands::SET_GAIT) {
-                const Bot::Gait::GaitType gait = static_cast<Bot::Gait::GaitType>(request.Get1ByteParam(0U));
+                const Move::Gait::GaitType gait = static_cast<Move::Gait::GaitType>(request.Get1ByteParam(0U));
                 this->mBody.SetGait(gait);
                 success = this->BuildFrameUpdateGait(response, this->mBody.GetGait());
             }
@@ -217,7 +217,7 @@ namespace Cluster
             return (success);
         }
 
-        Core::Status ClusterBody::BuildFrameUpdateGait(Frame &response, const Bot::Gait::GaitType gait) {
+        Core::Status ClusterBody::BuildFrameUpdateGait(Frame &response, const Move::Gait::GaitType gait) {
             const Core::Status success = response.Build(
                     EClusters::BODY,
                     EBodyCommands::GET_GAIT);

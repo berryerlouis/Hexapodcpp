@@ -1,18 +1,17 @@
 #pragma once
-#include "../Constants.h"
-#include "../Legs/LegsInterface.h"
+#include "Constants.h"
+#include "../../Bot/Legs/LegsInterface.h"
 #include "../Gait/GaitParams.h"
-#include "../../Misc/Maths/Geometry.h"
 #include "../../Driver/Tick/TickInterface.h"
 #include "../Gait/GaitCycle.h"
 
-namespace Bot
+namespace Move
 {
     namespace Walk
     {
         class Walk {
         public:
-            Walk(Legs::LegsInterface &legs, Driver::Tick::TickInterface &tick);
+            Walk(Bot::Legs::LegsInterface &legs, Driver::Tick::TickInterface &tick);
 
             ~Walk() = default;
 
@@ -39,7 +38,7 @@ namespace Bot
 
             void Stop(const uint64_t currentTime);
 
-            Legs::LegsInterface &mLegs;
+            Bot::Legs::LegsInterface &mLegs;
             Driver::Tick::TickInterface &mTick;
             EWalkStatus mStatus;
             EWalkStatus mPreviousStatus;

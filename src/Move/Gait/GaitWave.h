@@ -2,21 +2,24 @@
 
 #include "GaitBase.h"
 
-namespace Bot
+namespace Move
 {
     namespace Gait
     {
-        class GaitRipple : public GaitBase {
+        class GaitWave : public GaitBase {
         public:
-            GaitRipple(GaitParams &params);
+            GaitWave(GaitParams &params);
 
-            ~GaitRipple() = default;
+            ~GaitWave() = default;
 
         private:
             Group mGroupA;
             Group mGroupB;
             Group mGroupC;
             Group mGroupD;
+            Group mGroupE;
+            Group mGroupF;
+            Groups mGroups;
         };
     }
 }

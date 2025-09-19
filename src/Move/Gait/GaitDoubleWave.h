@@ -2,7 +2,7 @@
 
 #include "GaitBase.h"
 
-namespace Bot
+namespace Move
 {
     namespace Gait
     {

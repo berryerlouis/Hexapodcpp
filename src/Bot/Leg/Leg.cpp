@@ -9,7 +9,7 @@ namespace Bot
 {
     namespace Leg
     {
-        Leg::Leg(const ELeg legId, ServoInterface &coxa, ServoInterface &femur, ServoInterface &tibia) :
+        Leg::Leg(const Legs::ELeg legId, ServoInterface &coxa, ServoInterface &femur, ServoInterface &tibia) :
             mBodyCenterOffsetX{0.0F}
             , mBodyCenterOffsetY{0.0F}
             , mFootPosition{0.0F, 0.0F, 0.0F}
@@ -21,7 +21,7 @@ namespace Bot
             , mFemur(femur)
             , mTibia(tibia) {
             switch (mLegId) {
-                case ELeg::FRONT_LEFT:
+                case Legs::ELeg::FRONT_LEFT:
                     this->mBodyCenterOffsetX = -BODY_LEG_FRONT_REAR_FROM_CENTER_X_LENGTH;
                     this->mBodyCenterOffsetY = BODY_LEG_FRONT_REAR_FROM_CENTER_Y_LENGTH;
 
@@ -30,7 +30,7 @@ namespace Bot
                     this->mFootPosition.z = TIBIA_LENGTH;
                     break;
 
-                case ELeg::MIDDLE_LEFT:
+                case Legs::ELeg::MIDDLE_LEFT:
                     this->mBodyCenterOffsetX = -BODY_LEG_MIDDLE_FROM_CENTER_X_LENGTH;
                     this->mBodyCenterOffsetY = BODY_LEG_MIDDLE_FROM_CENTER_Y_LENGTH;
 
@@ -39,7 +39,7 @@ namespace Bot
                     this->mFootPosition.z = TIBIA_LENGTH;
                     break;
 
-                case ELeg::REAR_LEFT:
+                case Legs::ELeg::REAR_LEFT:
                     this->mBodyCenterOffsetX = -BODY_LEG_FRONT_REAR_FROM_CENTER_X_LENGTH;
                     this->mBodyCenterOffsetY = -BODY_LEG_FRONT_REAR_FROM_CENTER_Y_LENGTH;
 
@@ -48,7 +48,7 @@ namespace Bot
                     this->mFootPosition.z = TIBIA_LENGTH;
                     break;
 
-                case ELeg::FRONT_RIGHT:
+                case Legs::ELeg::FRONT_RIGHT:
                     this->mBodyCenterOffsetX = BODY_LEG_FRONT_REAR_FROM_CENTER_X_LENGTH;
                     this->mBodyCenterOffsetY = BODY_LEG_FRONT_REAR_FROM_CENTER_Y_LENGTH;
 
@@ -57,7 +57,7 @@ namespace Bot
                     this->mFootPosition.z = TIBIA_LENGTH;
                     break;
 
-                case ELeg::MIDDLE_RIGHT:
+                case Legs::ELeg::MIDDLE_RIGHT:
                     this->mBodyCenterOffsetX = BODY_LEG_MIDDLE_FROM_CENTER_X_LENGTH;
                     this->mBodyCenterOffsetY = BODY_LEG_MIDDLE_FROM_CENTER_Y_LENGTH;
 
@@ -66,7 +66,7 @@ namespace Bot
                     this->mFootPosition.z = TIBIA_LENGTH;
                     break;
 
-                case ELeg::REAR_RIGHT:
+                case Legs::ELeg::REAR_RIGHT:
                     this->mBodyCenterOffsetX = BODY_LEG_FRONT_REAR_FROM_CENTER_X_LENGTH;
                     this->mBodyCenterOffsetY = -BODY_LEG_FRONT_REAR_FROM_CENTER_Y_LENGTH;
 
@@ -80,14 +80,14 @@ namespace Bot
                           this->mLegId);
         }
 
-        ELeg Leg::GetId(void) const {
+        Legs::ELeg Leg::GetId(void) const {
             return this->mLegId;
         }
 
         void Leg::ComputeDirection(Position3d &position, const float angleDirection) const {
             Position3d rotatePosition = position;
-            const float clockwize = (this->GetId() < NB_LEGS / 2U) ? 1.0F : -1.0F;
-            const float newAngle = (this->GetId() < NB_LEGS / 2U) ? angleDirection : -angleDirection - M_PI;
+            const float clockwize = (this->GetId() < Legs::NB_LEGS / 2U) ? 1.0F : -1.0F;
+            const float newAngle = (this->GetId() < Legs::NB_LEGS / 2U) ? angleDirection : -angleDirection - M_PI;
 
             rotatePosition.x = (position.x * cos(newAngle)) + (position.y * clockwize * sin(newAngle));
             rotatePosition.y = (position.y * cos(newAngle)) - (position.x * clockwize * sin(newAngle));
@@ -97,11 +97,11 @@ namespace Bot
         void Leg::ComputeRotation(Position3d &position, const float angleRotation, const bool clockwize) const {
             (void) angleRotation;
             if (clockwize == false) {
-                if (this->GetId() <= ELeg::REAR_LEFT) {
+                if (this->GetId() <= Legs::ELeg::REAR_LEFT) {
                     position.y *= -1.0F;
                 }
             } else {
-                if (this->GetId() > ELeg::REAR_LEFT) {
+                if (this->GetId() > Legs::ELeg::REAR_LEFT) {
                     position.y *= -1.0F;
                 }
             }
@@ -203,28 +203,28 @@ namespace Bot
             this->mLegIk.coxaIk = atan2(this->mLegIk.newFootPos.y, this->mLegIk.newFootPos.x) * 180.0F / M_PI;
 
             switch (this->mLegId) {
-                case ELeg::FRONT_LEFT:
+                case Legs::ELeg::FRONT_LEFT:
                     this->mLegIk.coxaIk -= 30.0F;
                     break;
 
-                case ELeg::MIDDLE_LEFT:
+                case Legs::ELeg::MIDDLE_LEFT:
                     this->mLegIk.coxaIk += 90.0F;
                     this->mLegIk.coxaIk = (((this->mLegIk.coxaIk) * -1.0F) + 180.0F);
                     break;
 
-                case ELeg::REAR_LEFT:
+                case Legs::ELeg::REAR_LEFT:
                     this->mLegIk.coxaIk += 210.0F;
                     break;
 
-                case ELeg::FRONT_RIGHT:
+                case Legs::ELeg::FRONT_RIGHT:
                     this->mLegIk.coxaIk += 30.0F;
                     break;
 
-                case ELeg::MIDDLE_RIGHT:
+                case Legs::ELeg::MIDDLE_RIGHT:
                     this->mLegIk.coxaIk += 90.0F;
                     break;
 
-                case ELeg::REAR_RIGHT:
+                case Legs::ELeg::REAR_RIGHT:
                     this->mLegIk.coxaIk += 150.0F;
                     break;
             }

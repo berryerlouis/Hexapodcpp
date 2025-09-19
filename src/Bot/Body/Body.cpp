@@ -22,12 +22,12 @@ namespace Bot
             this->mWalk.Update(currentTime);
         }
 
-        void Body::UpdateWalkStatus(const EWalkStatus status, const uint16_t duration) {
+        void Body::UpdateWalkStatus(const Move::Walk::EWalkStatus status, const uint16_t duration) {
             this->SetDuration(duration);
             this->mWalk.UpdateStatus(status);
         }
 
-        EWalkStatus Body::GetWalkStatus() {
+        Move::Walk::EWalkStatus Body::GetWalkStatus() {
             return this->mWalk.GetStatus();
         }
 
@@ -51,7 +51,7 @@ namespace Bot
             return this->mWalk.SetCycleDuration(duration);
         }
 
-        bool Body::SetGait(const Gait::GaitType gait) {
+        bool Body::SetGait(const Move::Gait::GaitType gait) {
             return this->mWalk.SetGait(gait);
         }
 
@@ -79,7 +79,7 @@ namespace Bot
             return this->mWalk.GetParams().GetCycleDuration();
         }
 
-        Gait::GaitType Body::GetGait() {
+        Move::Gait::GaitType Body::GetGait() {
             return this->mWalk.GetGait();
         }
 
@@ -89,8 +89,8 @@ namespace Bot
             this->mPosition = position;
             this->mRotation = rotation;
             uint32_t success = 0U;
-            for (size_t legId = 0U; legId < NB_LEGS; legId++) {
-                Leg::LegInterface *leg = this->mLegs.GetLeg(static_cast<ELeg>(legId));
+            for (size_t legId = 0U; legId < Legs::NB_LEGS; legId++) {
+                Leg::LegInterface *leg = this->mLegs.GetLeg(static_cast<Legs::ELeg>(legId));
                 this->SetComputeIk(*leg, position, rotation);
                 const uint8_t successServos = leg->SetLegBodyIk(position, this->mBodyIk.bodyIk, travelTime);
                 success |= successServos << (legId * 3U);
@@ -101,8 +101,8 @@ namespace Bot
         uint32_t Body::SetLegPositionRotation(const uint8_t &legId,
                                               const Position3d &position,
                                               const uint16_t travelTime) {
-            if (legId < NB_LEGS) {
-                Leg::LegInterface *leg = this->mLegs.GetLeg(static_cast<ELeg>(legId));
+            if (legId < Legs::NB_LEGS) {
+                Leg::LegInterface *leg = this->mLegs.GetLeg(static_cast<Legs::ELeg>(legId));
                 return leg->SetLegIk(position, travelTime);
             }
             return 255UL;

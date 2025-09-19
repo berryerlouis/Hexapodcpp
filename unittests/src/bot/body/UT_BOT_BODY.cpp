@@ -48,37 +48,37 @@ namespace Bot
             EXPECT_CALL(leg0, GetBodyCenterOffsetX()).WillOnce(Return(0.0F));
             EXPECT_CALL(leg0, GetBodyCenterOffsetY()).WillOnce(Return(0.0F));
             EXPECT_CALL(leg0, SetLegBodyIk(pos,_,_)).WillOnce(Return(Core::Status::CORE_OK));
-            EXPECT_CALL(mMockLegs, GetLeg(FRONT_LEFT)).WillRepeatedly(Return(&leg0));
+            EXPECT_CALL(mMockLegs, GetLeg(Legs::FRONT_LEFT)).WillRepeatedly(Return(&leg0));
 
             EXPECT_CALL(leg1, GetFootPosition()).Times(2U).WillRepeatedly(Return(pos));
             EXPECT_CALL(leg1, GetBodyCenterOffsetX()).WillOnce(Return(0.0F));
             EXPECT_CALL(leg1, GetBodyCenterOffsetY()).WillOnce(Return(0.0F));
             EXPECT_CALL(leg1, SetLegBodyIk(pos,_,_)).WillOnce(Return(Core::Status::CORE_OK));
-            EXPECT_CALL(mMockLegs, GetLeg(MIDDLE_LEFT)).WillRepeatedly(Return(&leg1));
+            EXPECT_CALL(mMockLegs, GetLeg(Legs::MIDDLE_LEFT)).WillRepeatedly(Return(&leg1));
 
             EXPECT_CALL(leg2, GetFootPosition()).Times(2U).WillRepeatedly(Return(pos));
             EXPECT_CALL(leg2, GetBodyCenterOffsetX()).WillOnce(Return(0.0F));
             EXPECT_CALL(leg2, GetBodyCenterOffsetY()).WillOnce(Return(0.0F));
             EXPECT_CALL(leg2, SetLegBodyIk(pos,_,_)).WillOnce(Return(Core::Status::CORE_OK));
-            EXPECT_CALL(mMockLegs, GetLeg(REAR_LEFT)).WillRepeatedly(Return(&leg2));
+            EXPECT_CALL(mMockLegs, GetLeg(Legs::REAR_LEFT)).WillRepeatedly(Return(&leg2));
 
             EXPECT_CALL(leg3, GetFootPosition()).Times(2U).WillRepeatedly(Return(pos));
             EXPECT_CALL(leg3, GetBodyCenterOffsetX()).WillOnce(Return(0.0F));
             EXPECT_CALL(leg3, GetBodyCenterOffsetY()).WillOnce(Return(0.0F));
             EXPECT_CALL(leg3, SetLegBodyIk(pos,_,_)).WillOnce(Return(Core::Status::CORE_OK));
-            EXPECT_CALL(mMockLegs, GetLeg(FRONT_RIGHT)).WillRepeatedly(Return(&leg3));
+            EXPECT_CALL(mMockLegs, GetLeg(Legs::FRONT_RIGHT)).WillRepeatedly(Return(&leg3));
 
             EXPECT_CALL(leg4, GetFootPosition()).Times(2U).WillRepeatedly(Return(pos));
             EXPECT_CALL(leg4, GetBodyCenterOffsetX()).WillOnce(Return(0.0F));
             EXPECT_CALL(leg4, GetBodyCenterOffsetY()).WillOnce(Return(0.0F));
             EXPECT_CALL(leg4, SetLegBodyIk(pos,_,_)).WillOnce(Return(Core::Status::CORE_OK));
-            EXPECT_CALL(mMockLegs, GetLeg(MIDDLE_RIGHT)).WillRepeatedly(Return(&leg4));
+            EXPECT_CALL(mMockLegs, GetLeg(Legs::MIDDLE_RIGHT)).WillRepeatedly(Return(&leg4));
 
             EXPECT_CALL(leg5, GetFootPosition()).Times(2U).WillRepeatedly(Return(pos));
             EXPECT_CALL(leg5, GetBodyCenterOffsetX()).WillOnce(Return(0.0F));
             EXPECT_CALL(leg5, GetBodyCenterOffsetY()).WillOnce(Return(0.0F));
             EXPECT_CALL(leg5, SetLegBodyIk(pos,_,_)).WillOnce(Return(Core::Status::CORE_OK));
-            EXPECT_CALL(mMockLegs, GetLeg(REAR_RIGHT)).WillRepeatedly(Return(&leg5));
+            EXPECT_CALL(mMockLegs, GetLeg(Legs::REAR_RIGHT)).WillRepeatedly(Return(&leg5));
 
             const Core::Status success = mBody.Initialize();
 

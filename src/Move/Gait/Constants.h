@@ -2,8 +2,9 @@
 
 #include <stdint.h>
 #include <string>
+#include "../Constants.h"
 
-namespace Bot
+namespace Move
 {
     namespace Gait
     {

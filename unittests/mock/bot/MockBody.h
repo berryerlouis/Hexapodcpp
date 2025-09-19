@@ -10,8 +10,8 @@ namespace Bot
         public:
             MOCK_METHOD0(Initialize, Core::Status( void ));
             MOCK_METHOD1(Update, void( const uint64_t ));
-            MOCK_METHOD2(UpdateWalkStatus, void( const EWalkStatus, const uint16_t ));
-            MOCK_METHOD0(GetWalkStatus, EWalkStatus( void ));
+            MOCK_METHOD2(UpdateWalkStatus, void( const Move::Walk::EWalkStatus, const uint16_t ));
+            MOCK_METHOD0(GetWalkStatus, Move::Walk::EWalkStatus( void ));
             MOCK_METHOD3(SetBodyPositionRotation,
                          uint32_t (const Misc::Maths::Position3d &, const Misc::Maths::Rotation3d &, const uint16_t ));
             MOCK_METHOD3(SetLegPositionRotation,
@@ -27,8 +27,8 @@ namespace Bot
             MOCK_METHOD0(GetAmplitude, float( void));
             MOCK_METHOD0(GetElevation, float( void));
             MOCK_METHOD0(GetDuration, uint16_t( void ));
-            MOCK_METHOD1(SetGait, bool( const Gait::GaitType));
-            MOCK_METHOD0(GetGait, Gait::GaitType( void ));
+            MOCK_METHOD1(SetGait, bool( const Move::Gait::GaitType));
+            MOCK_METHOD0(GetGait, Move::Gait::GaitType( void ));
         };
     }
 }
