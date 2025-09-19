@@ -4,13 +4,16 @@ namespace Move
 {
     namespace Gait
     {
-        GaitCycle::GaitCycle(Bot::Legs::LegsInterface &legs, GaitParams &params, const GaitType gait,
+#define AMPLITUDE_MAX   3.0F
+#define ELEVATION_MAX   3.0F
+
+        GaitCycle::GaitCycle(Bot::Legs::LegsInterface &legs, const GaitType gait,
                              Driver::Tick::TickInterface &tick) :
             mLegs(legs)
-            , mParams(params)
+            , mParams(tick, 0.0F, AMPLITUDE_MAX, ELEVATION_MAX, 0.0F)
             , mTick(tick)
             , mIsRunning(false)
-            , mGaits(params, gait) {
+            , mGaits(mParams, gait) {
         }
 
         GaitBase &GaitCycle::GetSelectedGait(void) const {
@@ -28,6 +31,10 @@ namespace Move
 
         GaitType GaitCycle::GetGaitType(void) const {
             return this->mGaits.GetGaitType();
+        }
+
+        GaitParams &GaitCycle::GetGaitParams() {
+            return this->mParams;
         }
 
         bool GaitCycle::Start(void) {
@@ -61,7 +68,7 @@ namespace Move
             return false;
         }
 
-        void GaitCycle::Update(const uint64_t currentTime) const {
+        void GaitCycle::Update(const uint64_t currentTime) {
             if (this->mIsRunning == true) {
                 this->UpdateCycle(currentTime);
             }

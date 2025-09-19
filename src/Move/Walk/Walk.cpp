@@ -10,16 +10,13 @@ namespace Move
 {
     namespace Walk
     {
-#define AMPLITUDE_MAX   3.0F
-#define ELEVATION_MAX   3.0F
 
         Walk::Walk(Bot::Legs::LegsInterface &legs, Driver::Tick::TickInterface &tick) :
             mLegs(legs)
             , mTick(tick)
             , mStatus(STOP)
             , mPreviousStatus(STOP)
-            , mParams(tick, 0.0F, AMPLITUDE_MAX, ELEVATION_MAX, 0.0F)
-            , mGaitCycle(legs, mParams, Gait::RIPPLE, tick) {
+            , mGaitCycle(mLegs, Gait::RIPPLE, mTick) {
             LOG_MOVE_DEBUG("Walk", "Initialized.");
         }
 
@@ -36,13 +33,13 @@ namespace Move
             if (this->mPreviousStatus != this->mStatus) {
                 switch (this->mStatus) {
                     case PLAY:
-                        this->Play(currentTime);
+                        this->mGaitCycle.Start();
                         break;
                     case PAUSE:
-                        this->Pause(currentTime);
+                        this->mGaitCycle.Pause();
                         break;
                     case STOP:
-                        this->Stop(currentTime);
+                        this->mGaitCycle.Stop();
                         break;
                 }
                 this->mPreviousStatus = this->mStatus;
@@ -50,23 +47,8 @@ namespace Move
             this->mGaitCycle.Update(currentTime);
         }
 
-        void Walk::Play(const uint64_t currentTime) {
-            (void) currentTime;
-            this->mGaitCycle.Start();
-        }
-
-        void Walk::Pause(const uint64_t currentTime) {
-            (void) currentTime;
-            this->mGaitCycle.Pause();
-        }
-
-        void Walk::Stop(const uint64_t currentTime) {
-            (void) currentTime;
-            this->mGaitCycle.Stop();
-        }
-
         Gait::GaitParams &Walk::GetParams() {
-            return this->mParams;
+            return this->mGaitCycle.GetGaitParams();
         }
 
         bool Walk::SetGait(const Gait::GaitType gait) {
@@ -79,13 +61,13 @@ namespace Move
         }
 
         bool Walk::SetCycleDuration(const uint16_t duration) {
-            const bool success = this->mParams.SetCycleDuration(duration);
+            const bool success = this->mGaitCycle.GetGaitParams().SetCycleDuration(duration);
             this->mGaitCycle.ResetCycleStep();
             return success;
         }
 
-        uint16_t Walk::GetCycleDuration(void) const {
-            return this->mParams.GetCycleDuration();
+        uint16_t Walk::GetCycleDuration(void) {
+            return this->mGaitCycle.GetGaitParams().GetCycleDuration();
         }
     }
 

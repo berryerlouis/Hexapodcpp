@@ -29,20 +29,13 @@ namespace Move
 
             bool SetCycleDuration(const uint16_t duration);
 
-            uint16_t GetCycleDuration(void) const;
+            uint16_t GetCycleDuration(void);
 
         private:
-            void Play(const uint64_t currentTime);
-
-            void Pause(const uint64_t currentTime);
-
-            void Stop(const uint64_t currentTime);
-
             Bot::Legs::LegsInterface &mLegs;
             Driver::Tick::TickInterface &mTick;
             EWalkStatus mStatus;
             EWalkStatus mPreviousStatus;
-            Gait::GaitParams mParams;
             Gait::GaitCycle mGaitCycle;
         };
     }

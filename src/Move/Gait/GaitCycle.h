@@ -12,7 +12,7 @@ namespace Move
     {
         class GaitCycle {
         public:
-            GaitCycle(Bot::Legs::LegsInterface &legs, GaitParams &params, const GaitType gait,
+            GaitCycle(Bot::Legs::LegsInterface &legs, const GaitType gait,
                       Driver::Tick::TickInterface &tick);
 
             GaitBase &GetSelectedGait() const;
@@ -21,9 +21,11 @@ namespace Move
 
             GaitType GetGaitType() const;
 
+            GaitParams &GetGaitParams();
+
             ~GaitCycle() = default;
 
-            void Update(const uint64_t currentTime) const;
+            void Update(const uint64_t currentTime);
 
             void ResetCycleStep() const;
 
@@ -39,7 +41,7 @@ namespace Move
             void UpdateCycle(const uint64_t currentTime) const;
 
             Bot::Legs::LegsInterface &mLegs;
-            GaitParams &mParams;
+            GaitParams mParams;
             Driver::Tick::TickInterface &mTick;
             bool mIsRunning;
             Gaits mGaits;
