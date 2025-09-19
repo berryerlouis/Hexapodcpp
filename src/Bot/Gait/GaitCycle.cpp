@@ -6,7 +6,7 @@ namespace Bot
 {
     namespace Gait
     {
-        GaitCycle::GaitCycle(Legs::Legs &legs, GaitParams &params, const GaitType gait,
+        GaitCycle::GaitCycle(Legs::LegsInterface &legs, GaitParams &params, const GaitType gait,
                              Driver::Tick::TickInterface &tick) :
             mLegs(legs)
             , mParams(params)
@@ -49,11 +49,12 @@ namespace Bot
             return false;
         }
 
+
         bool GaitCycle::Stop(void) {
             if (this->mIsRunning == true) {
                 this->mIsRunning = false;
-                for (size_t legId = 0U; legId < NB_LEGS; legId++) {
-                    Leg::Leg *leg = this->mLegs.GetLeg(legId);
+                for (uint8_t legId = 0U; legId < 6U; legId++) {
+                    Leg::LegInterface *leg = this->mLegs.GetLeg(static_cast<ELeg>(legId));
                     leg->ResetTarget();
                     leg->SetLegIk({0.0F, 0.0F, 0.0F}, this->mParams.GetCycleDuration());
                 }
@@ -90,8 +91,8 @@ namespace Bot
             }
         }
 
-        void GaitCycle::SetLegTarget(const uint8_t legId, const uint8_t posId, const float deltaTime) const {
-            Leg::Leg *leg = this->mLegs.GetLeg(legId);
+        void GaitCycle::SetLegTarget(const ELeg legId, const uint8_t posId, const float deltaTime) const {
+            Leg::LegInterface *leg = this->mLegs.GetLeg(legId);
             Misc::Maths::Position3d position = this->GetSelectedGait().GetPosition(posId);
             Misc::Maths::Position3d nextPosition = this->GetSelectedGait().GetPosition(
                     (posId + 1U) % this->GetSelectedGait().GetNbSteps());

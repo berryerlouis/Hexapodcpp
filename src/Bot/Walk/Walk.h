@@ -1,6 +1,6 @@
 #pragma once
 #include "../Constants.h"
-#include "../Legs/Legs.h"
+#include "../Legs/LegsInterface.h"
 #include "../Gait/GaitParams.h"
 #include "../../Misc/Maths/Geometry.h"
 #include "../../Driver/Tick/TickInterface.h"
@@ -12,7 +12,7 @@ namespace Bot
     {
         class Walk {
         public:
-            Walk(Legs::Legs &legs, Driver::Tick::TickInterface &tick);
+            Walk(Legs::LegsInterface &legs, Driver::Tick::TickInterface &tick);
 
             ~Walk() = default;
 
@@ -39,7 +39,7 @@ namespace Bot
 
             void Stop(const uint64_t currentTime);
 
-            Legs::Legs &mLegs;
+            Legs::LegsInterface &mLegs;
             Driver::Tick::TickInterface &mTick;
             EWalkStatus mStatus;
             EWalkStatus mPreviousStatus;

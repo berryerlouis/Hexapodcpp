@@ -1,8 +1,7 @@
 #pragma once
 
-#include "../../Component/Servo/ServoInterface.h"
-#include "../Constants.h"
-#include "../../Misc/Maths/Geometry.h"
+//#include "../../Component/Servo/ServoInterface.h"
+#include "LegInterface.h"
 
 namespace Bot
 {
@@ -11,7 +10,7 @@ namespace Bot
         using namespace Component::Servo;
         using namespace Misc::Maths;
 
-        class Leg {
+        class Leg : public LegInterface {
         public:
             static constexpr float BODY_SIDE_X_LENGTH = 80.0;
             static constexpr float BODY_SIDE_X_MIDDLE_LENGTH = 130.0;
@@ -22,8 +21,8 @@ namespace Bot
             static constexpr float BODY_LEG_FRONT_REAR_FROM_CENTER_X_LENGTH = BODY_SIDE_X_LENGTH / 2.0;
             static constexpr float BODY_LEG_FRONT_REAR_FROM_CENTER_Y_LENGTH = BODY_SIDE_Y_LENGTH / 2.0;
 
-            static constexpr float COXA_LENGTH = 2.54;
-            static constexpr float FEMUR_LENGTH = 8.50;
+            static constexpr float COXA_LENGTH = 2.8;
+            static constexpr float FEMUR_LENGTH = 8.40;
             static constexpr float TIBIA_LENGTH = 12.70;
 
             struct SLegIk {
@@ -41,27 +40,34 @@ namespace Bot
 
             Leg(const ELeg legId, ServoInterface &coxa, ServoInterface &femur, ServoInterface &tibia);
 
-            void SetTarget(const Position3d &target);
-
-            void ResetTarget(void);
-
-            Core::Status UpdatePosition(const float deltaTime);
-
             ~Leg() = default;
 
-            ELeg GetId(void) const;
+            void SetTarget(const Position3d &target) final override;
 
-            Core::Status SetLegIk(const Position3d &position, const uint16_t travelTime = 0U);
+            void ResetTarget(void) final override;
 
-            Core::Status SetLegBodyIk(const Position3d &position, const Position3d &bodyIk, const uint16_t travelTime);
+            Core::Status UpdatePosition(const float deltaTime) final override;
 
-            void ComputeDirection(Position3d &position, float angleDirection) const;
+            ELeg GetId(void) const final override;
 
-            void ComputeRotation(Position3d &position, float angleRotation, bool clockwize) const;
+            Core::Status SetLegIk(const Position3d &position, const uint16_t travelTime = 0U) final override;
 
-            void ComputeAmplitude(Position3d &position, uint8_t amplitude);
+            Core::Status SetLegBodyIk(const Position3d &position, const Position3d &bodyIk,
+                                      const uint16_t travelTime) final override;
 
-            void ComputeElevation(Position3d &position, uint8_t elevation);
+            void ComputeDirection(Position3d &position, float angleDirection) const final override;
+
+            void ComputeRotation(Position3d &position, float angleRotation, bool clockwize) const final override;
+
+            void ComputeAmplitude(Position3d &position, uint8_t amplitude) final override;
+
+            void ComputeElevation(Position3d &position, uint8_t elevation) final override;
+
+            Position3d GetFootPosition(void) const final override;
+
+            float GetBodyCenterOffsetX(void) const final override;
+
+            float GetBodyCenterOffsetY(void) const final override;
 
         public:
             float mBodyCenterOffsetX;

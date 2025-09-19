@@ -117,6 +117,18 @@ namespace Bot
             position.z *= elevation * -1.0F;
         }
 
+        Position3d Leg::GetFootPosition() const {
+            return this->mFootPosition;
+        }
+
+        float Leg::GetBodyCenterOffsetX(void) const {
+            return this->mBodyCenterOffsetX;
+        }
+
+        float Leg::GetBodyCenterOffsetY(void) const {
+            return this->mBodyCenterOffsetY;
+        }
+
         void Leg::SetTarget(const Position3d &target) {
             this->mTargetPos = target;
         }

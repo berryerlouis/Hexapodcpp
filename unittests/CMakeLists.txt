@@ -60,6 +60,9 @@ add_subdirectory(src/srv/orientation)
 add_subdirectory(src/srv/proximity)
 add_subdirectory(src/srv/sound)
 
+add_subdirectory(src/bot/)
+add_subdirectory(src/bot/body)
+
 add_executable(
         HexapodcppTest
         ${EXECUTABLES_SRC}

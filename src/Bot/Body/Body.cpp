@@ -4,7 +4,7 @@ namespace Bot
 {
     namespace Body
     {
-        Body::Body(Legs::Legs &legs, Driver::Tick::TickInterface &tick) :
+        Body::Body(Legs::LegsInterface &legs, Driver::Tick::TickInterface &tick) :
             mBodyIk{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, {0.0, 0.0, 0.0}}
             , mLegs(legs)
             , mWalk(mLegs, tick)
@@ -90,7 +90,7 @@ namespace Bot
             this->mRotation = rotation;
             uint32_t success = 0U;
             for (size_t legId = 0U; legId < NB_LEGS; legId++) {
-                Leg::Leg *leg = this->mLegs.GetLeg(legId);
+                Leg::LegInterface *leg = this->mLegs.GetLeg(static_cast<ELeg>(legId));
                 this->SetComputeIk(*leg, position, rotation);
                 const uint8_t successServos = leg->SetLegBodyIk(position, this->mBodyIk.bodyIk, travelTime);
                 success |= successServos << (legId * 3U);
@@ -102,15 +102,15 @@ namespace Bot
                                               const Position3d &position,
                                               const uint16_t travelTime) {
             if (legId < NB_LEGS) {
-                Leg::Leg *leg = this->mLegs.GetLeg(legId);
+                Leg::LegInterface *leg = this->mLegs.GetLeg(static_cast<ELeg>(legId));
                 return leg->SetLegIk(position, travelTime);
             }
-            return 255;
+            return 255UL;
         }
 
-        void Body::SetComputeIk(const Leg::Leg &leg, const Position3d &position, const Rotation3d &rotation) {
-            this->mBodyIk.totalX = leg.mFootPosition.x + leg.mBodyCenterOffsetX + position.x;
-            this->mBodyIk.totalY = leg.mFootPosition.y + leg.mBodyCenterOffsetY + position.y;
+        void Body::SetComputeIk(const Leg::LegInterface &leg, const Position3d &position, const Rotation3d &rotation) {
+            this->mBodyIk.totalX = leg.GetFootPosition().x + leg.GetBodyCenterOffsetX() + position.x;
+            this->mBodyIk.totalY = leg.GetFootPosition().y + leg.GetBodyCenterOffsetY() + position.y;
             this->mBodyIk.distBodyCenterFeet = sqrt(
                     this->mBodyIk.totalX * this->mBodyIk.totalX +
                     this->mBodyIk.totalY * this->mBodyIk.totalY);

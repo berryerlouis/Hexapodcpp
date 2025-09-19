@@ -20,7 +20,7 @@ namespace Bot
                 Position3d bodyIk;
             };
 
-            Body(Legs::Legs &legs, Driver::Tick::TickInterface &tick);
+            Body(Legs::LegsInterface &legs, Driver::Tick::TickInterface &tick);
 
             ~Body() = default;
 
@@ -68,12 +68,12 @@ namespace Bot
 
         private:
             SBodyIk mBodyIk;
-            Legs::Legs &mLegs;
+            Legs::LegsInterface &mLegs;
             Walk::Walk mWalk;
             Position3d mPosition;
             Rotation3d mRotation;
 
-            void SetComputeIk(const Leg::Leg &leg, const Position3d &position, const Rotation3d &rotation);
+            void SetComputeIk(const Leg::LegInterface &leg, const Position3d &position, const Rotation3d &rotation);
         };
     }
 }

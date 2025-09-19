@@ -16,5 +16,4 @@ namespace Bot
             this->GetSteps().SetStepDuration(2U, 6.0F / 8.0F);
         }
     }
-
 }

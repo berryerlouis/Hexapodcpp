@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../Component/Servos/ServosInterface.h"
+#include "LegsInterface.h"
 #include "../Leg/Leg.h"
-#include "../Gait/GaitParams.h"
+#include "../../Component/Servos/ServosInterface.h"
 #include "../Constants.h"
 
 namespace Bot
@@ -11,15 +11,13 @@ namespace Bot
     {
         using namespace Component::Servos;
 
-        class Legs {
+        class Legs : public LegsInterface {
         public:
             Legs(ServosInterface &servos);
 
             ~Legs() = default;
 
-            Leg::Leg *GetLeg(const uint8_t legId) const;
-
-            const Leg::Leg *GetLegs(void) const;
+            Leg::LegInterface *GetLeg(const ELeg legId) const final override;
 
         private:
             Leg::Leg mLegFL;

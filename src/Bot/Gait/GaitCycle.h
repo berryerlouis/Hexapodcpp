@@ -2,7 +2,7 @@
 #include <vector>
 
 #include "../Constants.h"
-#include "../Legs/Legs.h"
+#include "../Legs/LegsInterface.h"
 #include "GaitParams.h"
 #include "GaitTripod.h"
 #include "Gaits.h"
@@ -15,7 +15,8 @@ namespace Bot
     {
         class GaitCycle {
         public:
-            GaitCycle(Legs::Legs &legs, GaitParams &params, const GaitType gait, Driver::Tick::TickInterface &tick);
+            GaitCycle(Legs::LegsInterface &legs, GaitParams &params, const GaitType gait,
+                      Driver::Tick::TickInterface &tick);
 
             GaitBase &GetSelectedGait() const;
 
@@ -36,11 +37,11 @@ namespace Bot
             bool Stop(void);
 
         private:
-            void SetLegTarget(const uint8_t legId, const uint8_t posId, const float deltaTime) const;
+            void SetLegTarget(const ELeg legId, const uint8_t posId, const float deltaTime) const;
 
             void UpdateCycle(const uint64_t currentTime) const;
 
-            Legs::Legs &mLegs;
+            Legs::LegsInterface &mLegs;
             GaitParams &mParams;
             Driver::Tick::TickInterface &mTick;
             bool mIsRunning;

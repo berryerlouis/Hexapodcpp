@@ -4,6 +4,8 @@
 
 #include "../../Misc/Maths/Utils.h"
 
+// https://github.com/JakobLeander/hexapod/blob/main/hexapod/
+
 namespace Bot
 {
     namespace Walk
@@ -11,7 +13,7 @@ namespace Bot
 #define AMPLITUDE_MAX   3.0F
 #define ELEVATION_MAX   3.0F
 
-        Walk::Walk(Legs::Legs &legs, Driver::Tick::TickInterface &tick) :
+        Walk::Walk(Legs::LegsInterface &legs, Driver::Tick::TickInterface &tick) :
             mLegs(legs)
             , mTick(tick)
             , mStatus(STOP)

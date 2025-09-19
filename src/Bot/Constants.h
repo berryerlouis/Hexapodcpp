@@ -20,6 +20,8 @@ namespace Bot
         REAR_RIGHT
     };
 
+    ELeg operator++(ELeg leg, int);
+
     static inline std::string ElegToString(const ELeg leg) {
         switch (leg) {
             case FRONT_LEFT:

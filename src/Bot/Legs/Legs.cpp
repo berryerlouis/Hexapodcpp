@@ -34,17 +34,13 @@ namespace Bot
         }
 
 
-        Leg::Leg *Legs::GetLeg(const uint8_t legId) const {
-            for (Leg::Leg *leg: mLegs) {
+        Leg::LegInterface *Legs::GetLeg(const ELeg legId) const {
+            for (Leg::LegInterface *leg: this->mLegs) {
                 if (leg != nullptr && leg->GetId() == legId) {
                     return (leg);
                 }
             }
             return (nullptr);
-        }
-
-        const Leg::Leg *Legs::GetLegs(void) const {
-            return *this->mLegs;
         }
     }
 }
