@@ -7,9 +7,8 @@ namespace Component
     {
 #define REVERSE_ANGLE( angle )    ( ( ( angle - 90 ) * -1 ) + 90 )
 
-        Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId) :
+        Servo::Servo(ServosController::Pca9685Interface &pca9685, const uint8_t servoId) :
             mPca9685(pca9685)
-            , mTick(tick)
             , mServoId(servoId)
             , mAngle(90U)
             , mTargetAngle(0U)
@@ -23,10 +22,9 @@ namespace Component
             , mIsMoving(false) {
         }
 
-        Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
+        Servo::Servo(ServosController::Pca9685Interface &pca9685, const uint8_t servoId,
                      const uint8_t angle) :
             mPca9685(pca9685)
-            , mTick(tick)
             , mServoId(servoId)
             , mAngle(angle)
             , mTargetAngle(0U)
@@ -40,10 +38,9 @@ namespace Component
             , mIsMoving(false) {
         }
 
-        Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
+        Servo::Servo(ServosController::Pca9685Interface &pca9685, const uint8_t servoId,
                      const uint8_t angle, const int8_t offset) :
             mPca9685(pca9685)
-            , mTick(tick)
             , mServoId(servoId)
             , mAngle(angle)
             , mTargetAngle(0U)
@@ -57,10 +54,9 @@ namespace Component
             , mIsMoving(false) {
         }
 
-        Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
+        Servo::Servo(ServosController::Pca9685Interface &pca9685, const uint8_t servoId,
                      const uint8_t angle, const int8_t offset, const uint8_t min, const uint8_t max) :
             mPca9685(pca9685)
-            , mTick(tick)
             , mServoId(servoId)
             , mAngle(angle)
             , mTargetAngle(0U)
@@ -74,11 +70,10 @@ namespace Component
             , mIsMoving(false) {
         }
 
-        Servo::Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
+        Servo::Servo(ServosController::Pca9685Interface &pca9685, const uint8_t servoId,
                      const uint8_t angle, const int8_t offset, const uint8_t min, const uint8_t max,
                      const bool reverse) :
             mPca9685(pca9685)
-            , mTick(tick)
             , mServoId(servoId)
             , mAngle(angle)
             , mTargetAngle(0U)
@@ -152,7 +147,7 @@ namespace Component
                     this->mAngle = this->mTargetAngle;
                 }
                 this->mSpeed = travelTime;
-                this->mStartTime = this->mTick.GetMs();
+                this->mStartTime = Tick::Tick::GetInstance().GetMs();
                 this->mIsMoving = true;
                 return (Core::Status::CORE_OK);
             }

@@ -22,7 +22,16 @@ namespace Driver
 
             virtual void DelayUs(uint64_t delayUs) final override;
 
-            std::chrono::time_point<std::chrono::system_clock> now;
+            static std::chrono::time_point<std::chrono::system_clock> now;
+
+            static Tick &GetInstance();
+
+        private:
+            Tick();
+
+            Tick(const Tick &) = delete;
+
+            Tick &operator=(const Tick &) = delete;
         };
     } // namespace Tick
 } // namespace Driver

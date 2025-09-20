@@ -14,7 +14,7 @@ namespace Component
 
         class Sound : public SoundInterface {
         public:
-            Sound(const SoundId &soundId, Gpio::GpioInterface &gpio, Led::LedInterface &led, Tick::TickInterface &tick);
+            Sound(const SoundId &soundId, Gpio::GpioInterface &gpio, Led::LedInterface &led);
 
             ~Sound() = default;
 
@@ -31,6 +31,8 @@ namespace Component
             static uint8_t soundIndex;
             static SoundId soundNotificationOff;
             static bool soundNotificationDone;
+            uint64_t startSoundTime;
+            uint64_t stopSoundTime;
 
         private:
             static void InterruptGpioSoundHit(void);
@@ -39,9 +41,6 @@ namespace Component
             SoundId mSoundId;
             Gpio::GpioInterface &mGpioSound;
             Led::LedInterface &mLed;
-            Tick::TickInterface &mTick;
-            uint64_t mStartSoundTime;
-            uint64_t mStopSoundTime;
             uint64_t mIntervalSoundTimeArray[NB_MAX_INTERVAL_SOUND_TIME];
             uint8_t mIntervalSoundTimeArrayIndex;
             uint64_t mAverageIntervalSoundTime;

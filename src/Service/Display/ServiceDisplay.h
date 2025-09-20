@@ -40,8 +40,7 @@ namespace Service
                            , SoundInterface &soundInterfaceLeft
                            , SoundInterface &soundInterfaceRight
                            , SensorProximityMultipleInterface &sensors
-                           , Event::MessageInterface &messageListener
-                           , Tick::TickInterface &tick);
+                           , Event::MessageInterface &messageListener);
 
             ~ServiceDisplay() = default;
 
@@ -79,7 +78,6 @@ namespace Service
             SoundInterface &mSoundLeft;
             SoundInterface &mSoundRight;
             SensorProximityMultipleInterface &mSensors;
-            Tick::TickInterface &mTick;
             Bitmaps::SBitmap mBmpBatteryLevel;
             Bitmaps::SBitmap mBmpCommunication;
             Bitmaps::SBitmap mBmpProximity;

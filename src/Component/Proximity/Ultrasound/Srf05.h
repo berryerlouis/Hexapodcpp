@@ -3,7 +3,6 @@
 #include "../../../Cluster/Constants.h"
 #include "../../../Driver/InputCapture/InputCaptureInterface.h"
 #include "../../../Driver/Gpio/GpioInterface.h"
-#include "../../../Driver/Tick/TickInterface.h"
 #include "../../Led/LedInterface.h"
 #include "../SensorProximityInterface.h"
 
@@ -19,8 +18,7 @@ namespace Component
                 static constexpr uint16_t DISTANCE_THRESHOLD = 30U;
 
                 Srf05(const Cluster::EProximityCommands side, Driver::Gpio::GpioInterface &gpioTrigger,
-                      Driver::InputCapture::InputCaptureInterface &gpioEcho, Led::LedInterface &led,
-                      Driver::Tick::TickInterface &tick);
+                      Driver::InputCapture::InputCaptureInterface &gpioEcho, Led::LedInterface &led);
 
                 ~Srf05() = default;
 
@@ -40,7 +38,6 @@ namespace Component
                 Cluster::EProximityCommands mSide;
                 Driver::Gpio::GpioInterface &mGpioTrigger;
                 Driver::InputCapture::InputCaptureInterface &mGpioEcho;
-                Driver::Tick::TickInterface &mTick;
                 Led::LedInterface &mLed;
                 uint16_t mThreshold;
             };

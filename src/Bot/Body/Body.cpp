@@ -4,10 +4,10 @@ namespace Bot
 {
     namespace Body
     {
-        Body::Body(Legs::LegsInterface &legs, Driver::Tick::TickInterface &tick) :
+        Body::Body(Legs::LegsInterface &legs) :
             mBodyIk{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, {0.0, 0.0, 0.0}}
             , mLegs(legs)
-            , mWalk(mLegs, tick)
+            , mWalk(mLegs)
             , mPosition{0.0, 0.0, 0.0}
             , mRotation{0.0, 0.0, 0.0} {
         }

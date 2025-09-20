@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../Gpio/GpioInterface.h"
-#include "../Tick/TickInterface.h"
 #include "InputCaptureInterface.h"
 
 namespace Driver
@@ -10,7 +9,7 @@ namespace Driver
     {
         class InputCapture : public InputCaptureInterface {
         public:
-            InputCapture(Gpio::GpioInterface &gpio, Tick::TickInterface &tick);
+            InputCapture(Gpio::GpioInterface &gpio);
 
             ~InputCapture() = default;
 
@@ -26,7 +25,6 @@ namespace Driver
 
         private:
             Gpio::GpioInterface &mGpio;
-            Tick::TickInterface &mTick;
             bool mState;
             uint64_t mStartTime;
             uint64_t mDelay;

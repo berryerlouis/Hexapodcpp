@@ -12,8 +12,7 @@ namespace Service
                                        , SoundInterface &soundInterfaceLeft
                                        , SoundInterface &soundInterfaceRight
                                        , SensorProximityMultipleInterface &sensors
-                                       , Event::MessageInterface &messageListener
-                                       , Tick::TickInterface &tick) :
+                                       , Event::MessageInterface &messageListener) :
             Service(DISPLAY, 10U, messageListener)
             , mSsd1306(ssd1306)
             , mCommunication(communication)
@@ -22,7 +21,6 @@ namespace Service
             , mSoundLeft(soundInterfaceLeft)
             , mSoundRight(soundInterfaceRight)
             , mSensors(sensors)
-            , mTick(tick)
             , mBmpBatteryLevel{.bmp = const_cast<uint8_t *>(Bitmaps::Battery0), .width = 16U, .height = 7U}
             , mBmpCommunication{.bmp = const_cast<uint8_t *>(Bitmaps::Communication), .width = 16U, .height = 8U}
             , mBmpProximity{.bmp = const_cast<uint8_t *>(Bitmaps::ArrowCenter), .width = 16U, .height = 6U}
@@ -164,7 +162,7 @@ namespace Service
                     this->mSsd1306.EraseArea(0U,
                                              SCREEN_HEIGHT - 10U, this->mBmpProximity.width, 8U);
                 } else {
-                    this->mNotifiedTimeProximityUsLeft = this->mTick.GetMs();
+                    this->mNotifiedTimeProximityUsLeft = Tick::Tick::GetInstance().GetMs();
                     this->mBmpProximity.bmp = const_cast<uint8_t *>(Bitmaps::ArrowLeft);
                     this->mSsd1306.DrawBitmap(&this->mBmpProximity,
                                               0U,
@@ -177,7 +175,7 @@ namespace Service
                                              SCREEN_HEIGHT - 10U,
                                              this->mBmpProximity.width, 8U);
                 } else {
-                    this->mNotifiedTimeProximityLaser = this->mTick.GetMs();
+                    this->mNotifiedTimeProximityLaser = Tick::Tick::GetInstance().GetMs();
                     this->mBmpProximity.bmp = const_cast<uint8_t *>(Bitmaps::ArrowUp);
                     this->mSsd1306.DrawBitmap(&this->mBmpProximity,
                                               (SCREEN_WIDTH / 2U) - (this->mBmpProximity.width / 2U),
@@ -191,7 +189,7 @@ namespace Service
                                              SCREEN_HEIGHT - 10U,
                                              this->mBmpProximity.width, 8U);
                 } else {
-                    this->mNotifiedTimeProximityUsRight = this->mTick.GetMs();
+                    this->mNotifiedTimeProximityUsRight = Tick::Tick::GetInstance().GetMs();
                     this->mBmpProximity.bmp = const_cast<uint8_t *>(Bitmaps::ArrowRight);
                     this->mSsd1306.DrawBitmap(&this->mBmpProximity,
                                               (SCREEN_WIDTH - this->mBmpProximity.width),
@@ -204,7 +202,7 @@ namespace Service
         void ServiceDisplay::DisplaySound(const SoundStruct &soundStruct) {
             if (soundStruct.id == SOUND_RIGHT) {
                 if (soundStruct.delay > 0U) {
-                    this->mNotifiedTimeSoundRight = this->mTick.GetMs();
+                    this->mNotifiedTimeSoundRight = Tick::Tick::GetInstance().GetMs();
                     this->mBmpSound.bmp = const_cast<uint8_t *>(Bitmaps::SoundRight);
                     this->mSsd1306.DrawBitmap(&this->mBmpSound, (SCREEN_WIDTH) - (this->mBmpSound.width),
                                               12U, Bitmaps::Color::COLOR_WHITE);
@@ -215,7 +213,7 @@ namespace Service
                 }
             } else if (soundStruct.id == SOUND_LEFT) {
                 if (soundStruct.delay > 0U) {
-                    this->mNotifiedTimeSoundLeft = this->mTick.GetMs();
+                    this->mNotifiedTimeSoundLeft = Tick::Tick::GetInstance().GetMs();
                     this->mBmpSound.bmp = const_cast<uint8_t *>(Bitmaps::SoundLeft);
                     this->mSsd1306.DrawBitmap(&this->mBmpSound, 0U, 12U,
                                               Bitmaps::Color::COLOR_WHITE);

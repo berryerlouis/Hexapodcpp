@@ -1,7 +1,6 @@
 #pragma once
 #include "ServoInterface.h"
 #include "../ServosController/Pca9685Interface.h"
-#include "../../Driver/Tick/TickInterface.h"
 
 namespace Component
 {
@@ -17,18 +16,18 @@ namespace Component
             static constexpr uint16_t SERVO_ANGLE_RANGE = 180U;
 
         public:
-            Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId);
+            Servo(ServosController::Pca9685Interface &pca9685, const uint8_t servoId);
 
-            Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
+            Servo(ServosController::Pca9685Interface &pca9685, const uint8_t servoId,
                   const uint8_t angle);
 
-            Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
+            Servo(ServosController::Pca9685Interface &pca9685, const uint8_t servoId,
                   const uint8_t angle, const int8_t offset);
 
-            Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
+            Servo(ServosController::Pca9685Interface &pca9685, const uint8_t servoId,
                   const uint8_t angle, const int8_t offset, const uint8_t min, const uint8_t max);
 
-            Servo(ServosController::Pca9685Interface &pca9685, Tick::TickInterface &tick, const uint8_t servoId,
+            Servo(ServosController::Pca9685Interface &pca9685, const uint8_t servoId,
                   const uint8_t angle, const int8_t offset, const uint8_t min, const uint8_t max, const bool reverse);
 
             ~Servo() = default;
@@ -67,7 +66,6 @@ namespace Component
             uint8_t GetAngleFromDeltaTime(const uint64_t currentTime);
 
             ServosController::Pca9685Interface &mPca9685;
-            Tick::TickInterface &mTick;
             uint8_t mServoId;
             uint8_t mAngle;
             uint8_t mTargetAngle;

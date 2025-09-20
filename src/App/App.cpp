@@ -1,4 +1,5 @@
 #include "App.h"
+#include "../Driver/Tick/Tick.h"
 
 using namespace Driver::Gpio;
 
@@ -21,8 +22,7 @@ Gpio buttonPin = Gpio({4}, IN);
 namespace App
 {
     App::App(void) :
-        mTick()
-        , mUart()
+        mUart()
         , mSocket()
         , mTwi(Driver::Twi::EI2cFreq::FREQ_400_KHZ)
         , mEnablePwm(enablePwm)
@@ -40,26 +40,25 @@ namespace App
         , mLedPwmStatus(mLedStatus)
         , mAds1115(mTwi)
         , mBattery(mAds1115)
-        , mButton(mGpioButton, mTick)
-        , mSoundLeft(Component::Sound::SoundId::SOUND_LEFT, mGpioSoundLeft, mLedMiddleLeft, mTick)
-        , mSoundRight(Component::Sound::SoundId::SOUND_RIGHT, mGpioSoundRight, mLedMiddleRight, mTick)
-        , mInputCaptureLeft(echoLeftPin, mTick)
-        , mInputCaptureRight(echoRightPin, mTick)
-        , mMpu9150(mTwi, mTick)
+        , mButton(mGpioButton)
+        , mSoundLeft(Component::Sound::SoundId::SOUND_LEFT, mGpioSoundLeft, mLedMiddleLeft)
+        , mSoundRight(Component::Sound::SoundId::SOUND_RIGHT, mGpioSoundRight, mLedMiddleRight)
+        , mInputCaptureLeft(echoLeftPin)
+        , mInputCaptureRight(echoRightPin)
+        , mMpu9150(mTwi)
         , mBarometer(mTwi)
-        , mSrf05Left(Cluster::EProximityCommands::US_LEFT, mGpioTriggerUsLeft, mInputCaptureLeft, mLedLeft,
-                     mTick)
+        , mSrf05Left(Cluster::EProximityCommands::US_LEFT, mGpioTriggerUsLeft, mInputCaptureLeft, mLedLeft)
         , mSrf05Right(Cluster::EProximityCommands::US_RIGHT, mGpioTriggerUsRight, mInputCaptureRight,
-                      mLedRight, mTick)
-        , mVl53l0x(mTwi, mLedCenter, mTick)
+                      mLedRight)
+        , mVl53l0x(mTwi, mLedCenter)
         , mSensorProximity(mSrf05Left, mSrf05Right, mVl53l0x)
         , mSsd1306(mTwi)
         , mPca9685Left(mTwi, 0x41U)
         , mPca9685Right(mTwi, 0x40U)
-        , mServos(mPca9685Left, mPca9685Right, mEnablePwm, mTick)
+        , mServos(mPca9685Left, mPca9685Right, mEnablePwm)
         , mSoftware()
         , mLegs(mServos)
-        , mBody(mLegs, mTick)
+        , mBody(mLegs)
         , mClusterGeneral(mSoftware)
         , mClusterBattery(mBattery)
         , mClusterButton(mButton)
@@ -87,10 +86,9 @@ namespace App
         , mServiceBattery(mBattery, mMessageListener)
         , mServiceBody(mBody, mMessageListener)
         , mServiceDisplay(mSsd1306, mCommunication, mBattery, mButton, mSoundLeft, mSoundRight, mSensorProximity,
-                          mMessageListener, mTick)
+                          mMessageListener)
         , mServiceGeneral(mSoftware, mMessageListener)
         , mServices(
-                mTick,
                 mServiceGeneral,
                 mServiceControl,
                 mServiceCommunication,
@@ -111,6 +109,7 @@ namespace App
     LOG_RESULT_INIT(name);
 
     Core::Status App::Initialize(void) {
+        Driver::Tick::Tick::GetInstance();
         Core::Status success = Core::CORE_OK;
         INIT("Socket", this->mSocket.Initialize());
         if (success == Core::CORE_OK)
@@ -123,10 +122,10 @@ namespace App
     }
 
     void App::Update(void) {
-        const uint64_t currentTime = mTick.GetMs();
+        const uint64_t currentTime = Driver::Tick::Tick::GetInstance().GetMs();
         this->mServices.Update(currentTime);
         this->mLedPwmStatus.Update(currentTime);
-        this->mTick.DelayUs(100U);
+        Driver::Tick::Tick::GetInstance().DelayUs(100U);
     }
 
 } // namespace Builder

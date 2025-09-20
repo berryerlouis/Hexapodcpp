@@ -4,6 +4,7 @@
 #include <stddef.h>
 
 #include "Status.h"
+#include "../Driver/Tick/Tick.h"
 #include "Logger.h"
 
 namespace Core
@@ -14,7 +15,7 @@ namespace Core
 
         ~CoreInterface() = default;
 
-        virtual Core::Status Initialize(void) = 0;
+        virtual Status Initialize(void) = 0;
 
         virtual void Update(const uint64_t currentTime) = 0;
     };

@@ -2,7 +2,6 @@
 #include "Constants.h"
 #include "../../Bot/Legs/LegsInterface.h"
 #include "../Gait/GaitParams.h"
-#include "../../Driver/Tick/TickInterface.h"
 #include "../Gait/GaitCycle.h"
 
 namespace Move
@@ -11,7 +10,7 @@ namespace Move
     {
         class Walk {
         public:
-            Walk(Bot::Legs::LegsInterface &legs, Driver::Tick::TickInterface &tick);
+            Walk(Bot::Legs::LegsInterface &legs);
 
             ~Walk() = default;
 
@@ -33,7 +32,6 @@ namespace Move
 
         private:
             Bot::Legs::LegsInterface &mLegs;
-            Driver::Tick::TickInterface &mTick;
             EWalkStatus mStatus;
             EWalkStatus mPreviousStatus;
             Gait::GaitCycle mGaitCycle;

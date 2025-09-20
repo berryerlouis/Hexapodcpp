@@ -5,7 +5,6 @@
 #include "../../../mock/drv/MockGpio.h"
 #include "../../../mock/cmp/MockLed.h"
 #include "../../../mock/drv/MockInputCapture.h"
-#include "../../../mock/drv/MockTick.h"
 
 #include "../../../../src/Component/Proximity/Ultrasound/Srf05.h"
 
@@ -24,12 +23,10 @@ namespace Component
             class UT_CMP_SRF05 : public ::testing::Test {
             protected:
                 UT_CMP_SRF05() :
-                    mMockTick(),
                     mMockGpio(),
                     mMockInputCapture(),
                     mMockLed(),
-                    mSrf05(Cluster::EProximityCommands::US_LEFT, mMockGpio, mMockInputCapture, mMockLed,
-                           mMockTick) {
+                    mSrf05(Cluster::EProximityCommands::US_LEFT, mMockGpio, mMockInputCapture, mMockLed) {
                 }
 
                 virtual void
@@ -52,7 +49,6 @@ namespace Component
                 virtual ~UT_CMP_SRF05() = default;
 
                 /* Mocks */
-                StrictMock<Driver::Tick::MockTick> mMockTick;
                 StrictMock<Driver::Gpio::MockGpio> mMockGpio;
                 StrictMock<Driver::InputCapture::MockInputCapture> mMockInputCapture;
                 StrictMock<Component::Led::MockLed> mMockLed;
@@ -69,7 +65,6 @@ namespace Component
                 //mSrf05.Detect();
                 EXPECT_CALL(mMockInputCapture, GetInputCaptureTime()).Times(1U).WillOnce(Return(58U));
                 EXPECT_CALL(mMockGpio, Set()).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockTick, DelayUs( _ )).Times(1U);
                 EXPECT_CALL(mMockGpio, Reset()).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockLed, On()).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
 
@@ -80,7 +75,6 @@ namespace Component
                 //mSrf05.Detect();
                 EXPECT_CALL(mMockInputCapture, GetInputCaptureTime()).Times(1U).WillOnce(Return(58U * 31U));
                 EXPECT_CALL(mMockGpio, Set()).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockTick, DelayUs( _ )).Times(1U);
                 EXPECT_CALL(mMockGpio, Reset()).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockLed, Off()).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
 

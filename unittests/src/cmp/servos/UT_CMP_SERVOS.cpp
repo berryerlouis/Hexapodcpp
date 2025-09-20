@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 
 #include "../../../mock/cmp/MockPca9685.h"
-#include "../../../mock/drv/MockTick.h"
 #include "../../../mock/drv/MockGpio.h"
 
 #include "../../../../src/Component/Servos/Servos.h"
@@ -18,11 +17,10 @@ namespace Component
         class UT_CMP_SERVOS : public ::testing::Test {
         protected:
             UT_CMP_SERVOS() :
-                mMockTick(),
                 mMockGpio(),
                 mMockPca9685_0(),
                 mMockPca9685_1(),
-                mServos(mMockPca9685_0, mMockPca9685_1, mMockGpio, mMockTick) {
+                mServos(mMockPca9685_0, mMockPca9685_1, mMockGpio) {
             }
 
             virtual void
@@ -45,7 +43,6 @@ namespace Component
             virtual ~UT_CMP_SERVOS() = default;
 
             /* Mocks */
-            StrictMock<Driver::Tick::MockTick> mMockTick;
             StrictMock<Driver::Gpio::MockGpio> mMockGpio;
             StrictMock<Component::ServosController::MockPca9685> mMockPca9685_0;
             StrictMock<Component::ServosController::MockPca9685> mMockPca9685_1;
@@ -56,7 +53,6 @@ namespace Component
 
         TEST_F(UT_CMP_SERVOS, Update_Ok) {
             for (size_t i = 0; i < NB_SERVOS; i++) {
-                EXPECT_CALL(mMockTick, GetMs()).Times(1U).WillRepeatedly(Return(0U));
                 mServos.GetServo(i).SetEnable(true);
             }
 

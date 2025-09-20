@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../../Driver/Twi/TwiInterface.h"
-#include "../../Driver/Tick/TickInterface.h"
 #include "Mpu9150Interface.h"
 #include "Ahrs.h"
 
@@ -113,7 +112,7 @@ namespace Component
             };
 
 
-            Mpu9150(Twi::TwiInterface &i2c, Tick::TickInterface &tick, const uint8_t address = MPU9150_I2C_ADDRESS);
+            Mpu9150(Twi::TwiInterface &i2c, const uint8_t address = MPU9150_I2C_ADDRESS);
 
             ~Mpu9150() = default;
 
@@ -208,7 +207,6 @@ namespace Component
             };
 
             Twi::TwiInterface &mI2c;
-            Tick::TickInterface &mTick;
             uint8_t mAddress;
             uint8_t mAddressMag;
             Vector3F mAccOffset;

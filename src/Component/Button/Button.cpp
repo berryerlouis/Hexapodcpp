@@ -13,9 +13,8 @@ namespace Component
             }
         }
 
-        Button::Button(Gpio::GpioInterface &gpio, Tick::TickInterface &tick) :
+        Button::Button(Gpio::GpioInterface &gpio) :
             mGpioButton(gpio)
-            , mTick(tick)
             , mPushTime(0U)
             , mState(RELEASE) {
             button[buttonIndex] = this;
@@ -31,12 +30,12 @@ namespace Component
         void Button::Hit(void) {
             if (this->mGpioButton.Get() == true) {
                 this->mState = PUSH;
-                this->mPushTime = this->mTick.GetUs();
+                this->mPushTime = Tick::Tick::GetInstance().GetUs();
                 this->Notify({this->mState, 0U});
             } else {
                 if (this->mState == PUSH) {
                     this->mState = RELEASE;
-                    const uint64_t delayMs = this->mTick.GetUs() - this->mPushTime;
+                    const uint64_t delayMs = Tick::Tick::GetInstance().GetUs() - this->mPushTime;
                     this->Notify({this->mState, delayMs});
                 }
             }

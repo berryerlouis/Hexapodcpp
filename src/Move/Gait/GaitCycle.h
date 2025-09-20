@@ -4,7 +4,6 @@
 #include "../../Bot/Legs/LegsInterface.h"
 #include "GaitParams.h"
 #include "Gaits.h"
-#include "../../Driver/Tick/TickInterface.h"
 
 namespace Move
 {
@@ -12,8 +11,7 @@ namespace Move
     {
         class GaitCycle {
         public:
-            GaitCycle(Bot::Legs::LegsInterface &legs, const GaitType gait,
-                      Driver::Tick::TickInterface &tick);
+            GaitCycle(Bot::Legs::LegsInterface &legs, const GaitType gait);
 
             GaitBase &GetSelectedGait() const;
 
@@ -42,7 +40,6 @@ namespace Move
 
             Bot::Legs::LegsInterface &mLegs;
             GaitParams mParams;
-            Driver::Tick::TickInterface &mTick;
             bool mIsRunning;
             Gaits mGaits;
         };

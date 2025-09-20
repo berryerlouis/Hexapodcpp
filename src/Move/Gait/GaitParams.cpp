@@ -10,10 +10,9 @@ namespace Move
 #define INITIAL_DURATION   3000U
 #define DURATION_MIN       300U
 
-        GaitParams::GaitParams(Driver::Tick::TickInterface &tick, const float directionAngle,
+        GaitParams::GaitParams(const float directionAngle,
                                const float amplitude, const float elevation, const float rotation):
-            mTick(tick)
-            , mLerpDirection{directionAngle, directionAngle, 0UL}
+            mLerpDirection{directionAngle, directionAngle, 0UL}
             , mLerpAmplitude{amplitude, amplitude, 0UL}
             , mLerpElevation{elevation, elevation, 0UL}
             , mLerpRotation{rotation, rotation, 0UL}
@@ -32,7 +31,7 @@ namespace Move
         bool GaitParams::SetDirection(const float directionAngle) {
             if (directionAngle <= 2U * M_PI) {
                 this->mLerpDirection.target = directionAngle;
-                this->mLerpDirection.startTime = this->mTick.GetMs();
+                this->mLerpDirection.startTime = Driver::Tick::Tick::GetInstance().GetMs();
                 return true;
             }
             return false;
@@ -41,7 +40,7 @@ namespace Move
         bool GaitParams::SetRotation(const float rotationAngle, const bool clockWize) {
             if (rotationAngle != 0 && rotationAngle <= 2U * M_PI) {
                 this->mLerpRotation.target = rotationAngle;
-                this->mLerpRotation.startTime = this->mTick.GetMs();
+                this->mLerpRotation.startTime = Driver::Tick::Tick::GetInstance().GetMs();
                 this->mIsRotated = true;
                 this->mIsRotatedClockWize = clockWize;
                 return true;
@@ -54,7 +53,7 @@ namespace Move
         bool GaitParams::SetAmplitude(const float amplitude) {
             if (amplitude <= AMPLITUDE_MAX) {
                 this->mLerpAmplitude.target = amplitude;
-                this->mLerpAmplitude.startTime = this->mTick.GetMs();
+                this->mLerpAmplitude.startTime = Driver::Tick::Tick::GetInstance().GetMs();
                 return true;
             }
             return false;
@@ -63,7 +62,7 @@ namespace Move
         bool GaitParams::SetElevation(const float elevation) {
             if (elevation <= ELEVATION_MAX) {
                 this->mLerpElevation.target = elevation;
-                this->mLerpElevation.startTime = this->mTick.GetMs();
+                this->mLerpElevation.startTime = Driver::Tick::Tick::GetInstance().GetMs();
                 return true;
             }
             return false;

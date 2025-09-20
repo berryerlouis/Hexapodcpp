@@ -9,6 +9,11 @@ namespace Driver
         uint64_t start;
         std::chrono::time_point<std::chrono::steady_clock> start_time;
 
+        Tick &Tick::GetInstance() {
+            static Tick instance;
+            return instance;
+        }
+
         Tick::Tick(void) {
             start_time = std::chrono::steady_clock::now();
             start = GetMs();

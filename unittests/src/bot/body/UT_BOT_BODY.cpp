@@ -1,7 +1,6 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "../../../mock/drv/MockTick.h"
 #include "../../../mock/bot/MockLeg.h"
 #include "../../../mock/bot/MockLegs.h"
 #include "../../../../src/Bot/Body/Body.h"
@@ -18,9 +17,8 @@ namespace Bot
         class UT_BOT_BODY : public ::testing::Test {
         protected:
             UT_BOT_BODY() :
-                mMockTick(),
                 mMockLegs(),
-                mBody(mMockLegs, mMockTick) {
+                mBody(mMockLegs) {
             }
 
             virtual void
@@ -34,7 +32,6 @@ namespace Bot
             virtual ~UT_BOT_BODY() = default;
 
             /* Mocks */
-            StrictMock<Driver::Tick::MockTick> mMockTick;
             StrictMock<Legs::MockLegs> mMockLegs;
             /* Test class */
             Body mBody;

@@ -11,12 +11,11 @@ namespace Move
     namespace Walk
     {
 
-        Walk::Walk(Bot::Legs::LegsInterface &legs, Driver::Tick::TickInterface &tick) :
+        Walk::Walk(Bot::Legs::LegsInterface &legs) :
             mLegs(legs)
-            , mTick(tick)
             , mStatus(STOP)
             , mPreviousStatus(STOP)
-            , mGaitCycle(mLegs, Gait::RIPPLE, mTick) {
+            , mGaitCycle(mLegs, Gait::RIPPLE) {
             LOG_MOVE_DEBUG("Walk", "Initialized.");
         }
 

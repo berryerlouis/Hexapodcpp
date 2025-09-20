@@ -1,6 +1,6 @@
 #pragma once
 #include "../../Misc/Maths/Utils.h"
-#include "../../Driver/Tick/TickInterface.h"
+#include "../../Driver/Tick/Tick.h"
 
 namespace Move
 {
@@ -8,7 +8,7 @@ namespace Move
     {
         class GaitParams {
         public:
-            GaitParams(Driver::Tick::TickInterface &tick, const float directionAngle, const float amplitude,
+            GaitParams(const float directionAngle, const float amplitude,
                        const float elevation, const float rotation);
 
             ~GaitParams() = default;
@@ -66,7 +66,6 @@ namespace Move
             };
 
         private:
-            Driver::Tick::TickInterface &mTick;
             LerpPath mLerpDirection;
             LerpPath mLerpAmplitude;
             LerpPath mLerpElevation;

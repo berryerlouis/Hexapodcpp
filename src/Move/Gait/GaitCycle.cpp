@@ -7,11 +7,9 @@ namespace Move
 #define AMPLITUDE_MAX   3.0F
 #define ELEVATION_MAX   3.0F
 
-        GaitCycle::GaitCycle(Bot::Legs::LegsInterface &legs, const GaitType gait,
-                             Driver::Tick::TickInterface &tick) :
+        GaitCycle::GaitCycle(Bot::Legs::LegsInterface &legs, const GaitType gait) :
             mLegs(legs)
-            , mParams(tick, 0.0F, AMPLITUDE_MAX, ELEVATION_MAX, 0.0F)
-            , mTick(tick)
+            , mParams(0.0F, AMPLITUDE_MAX, ELEVATION_MAX, 0.0F)
             , mIsRunning(false)
             , mGaits(mParams, gait) {
         }
@@ -76,7 +74,7 @@ namespace Move
         }
 
         void GaitCycle::ResetCycleStep(void) const {
-            const uint64_t startTime = this->mTick.GetMs();
+            const uint64_t startTime = Driver::Tick::Tick::GetInstance().GetMs();
             for (uint8_t groupId = 0U; groupId < this->GetSelectedGait().GetGroups().size(); ++groupId) {
                 this->GetSelectedGait().ResetCycleStep(groupId, startTime);
             }

@@ -11,7 +11,6 @@
 #include "../../../../src/Service/Display/ServiceDisplay.h"
 #include "../../../mock/cmp/MockBattery.h"
 #include "../../../mock/cmp/MockCommunication.h"
-#include "../../../mock/drv/MockTick.h"
 
 using ::testing::_;
 using ::testing::Return;
@@ -32,10 +31,9 @@ namespace Service
                 mMockSoundRight(),
                 mMockSensorProximity(),
                 mMockEventListener(),
-                mMockTick(),
                 mServiceDisplay(mMockSsd1306, mMockCommunication, mMockBattery, mMockButton, mMockSoundLeft,
                                 mMockSoundRight,
-                                mMockSensorProximity, mMockEventListener, mMockTick) {
+                                mMockSensorProximity, mMockEventListener) {
             }
 
             virtual void
@@ -75,7 +73,6 @@ namespace Service
             StrictMock<Component::Sound::MockSound> mMockSoundLeft;
             StrictMock<Component::Sound::MockSound> mMockSoundRight;
             StrictMock<Component::Proximity::MockSensorProximity> mMockSensorProximity;
-            StrictMock<Driver::Tick::MockTick> mMockTick;
             StrictMock<Event::MockEventListener> mMockEventListener;
 
             /* Test class */

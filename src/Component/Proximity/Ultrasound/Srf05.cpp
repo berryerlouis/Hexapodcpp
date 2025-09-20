@@ -8,12 +8,10 @@ namespace Component
         {
 
             Srf05::Srf05(const Cluster::EProximityCommands side, Driver::Gpio::GpioInterface &gpioTrigger,
-                         Driver::InputCapture::InputCaptureInterface &gpioEcho, Led::LedInterface &led,
-                         Driver::Tick::TickInterface &tick) :
+                         Driver::InputCapture::InputCaptureInterface &gpioEcho, Led::LedInterface &led) :
                 mSide(side)
                 , mGpioTrigger(gpioTrigger)
                 , mGpioEcho(gpioEcho)
-                , mTick(tick)
                 , mLed(led)
                 , mThreshold(DISTANCE_THRESHOLD) {
             }
@@ -49,7 +47,7 @@ namespace Component
 
             void Srf05::SendPulse(void) const {
                 this->mGpioTrigger.Set();
-                this->mTick.DelayUs(10U);
+                Driver::Tick::Tick::GetInstance().DelayUs(10U);
                 this->mGpioTrigger.Reset();
             }
 

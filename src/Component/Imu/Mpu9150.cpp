@@ -19,9 +19,8 @@ namespace Component
         Vector3 gyrSign = {1, -1, -1};
         Vector3 magSign = {-1, -1, 1};
 
-        Mpu9150::Mpu9150(Twi::TwiInterface &i2c, Tick::TickInterface &tick, const uint8_t address) :
+        Mpu9150::Mpu9150(Twi::TwiInterface &i2c, const uint8_t address) :
             mI2c(i2c)
-            , mTick(tick)
             , mAddress(address)
             , mAddressMag(AK8963_I2C_ADDRESS)
             , mAccOffset{0, 0, 0}
@@ -115,7 +114,7 @@ namespace Component
                 if (this->IsDataReady() == true) {
                     this->UpdateAll();
                     this->UpdateMag();
-                    const uint64_t now = this->mTick.GetUs();
+                    const uint64_t now = Tick::Tick::GetInstance().GetUs();
                     deltaTime = ((now - this->mLastLoopTime) / 1000000.0F);
                     Vector3F gyr = this->mGyr;
                     gyr.x *= M_PI / 180.0F;

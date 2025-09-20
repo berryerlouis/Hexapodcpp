@@ -31,7 +31,6 @@ namespace Service
         class Services : public ServiceInterface {
         public:
             Services(
-                    Tick::TickInterface &tick,
                     ServiceGeneral &serviceGeneral,
                     ServiceControl &serviceControl,
                     ServiceCommunication &serviceCommunication,
@@ -53,7 +52,6 @@ namespace Service
         private:
             Service *Get(const EServices serviceId);
 
-            Tick::TickInterface &mTick;
             Service *mServices[NB_SERVICES];
             Event::MessageInterface &mMessageListener;
         };

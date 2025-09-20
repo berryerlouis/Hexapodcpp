@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 
 #include "../../../mock/drv/MockGpio.h"
-#include "../../../mock/drv/MockTick.h"
 #include "../../../../src/Component/Button/Button.h"
 
 using ::testing::_;
@@ -17,8 +16,7 @@ namespace Component
         protected:
             UT_CMP_BUTTON() :
                 mMockGpio(),
-                mMockTick(),
-                mButton(mMockGpio, mMockTick) {
+                mButton(mMockGpio) {
             }
 
             virtual void
@@ -39,7 +37,6 @@ namespace Component
 
             /* Mocks */
             StrictMock<Driver::Gpio::MockGpio> mMockGpio;
-            StrictMock<Driver::Tick::MockTick> mMockTick;
 
             /* Test class */
             Button mButton;

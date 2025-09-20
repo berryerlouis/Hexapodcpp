@@ -17,9 +17,8 @@ namespace Component
             Vl53l0x::Vl53l0x(
                     Twi::TwiInterface &i2c
                     , Led::LedInterface &led
-                    , Tick::TickInterface &tick
                     , const uint8_t address) :
-                mI2c(i2c), mLed(led), mTick(tick), mAddress(address), mDistance(0),
+                mI2c(i2c), mLed(led), mAddress(address), mDistance(0),
                 mThreshold(DISTANCE_THRESHOLD),
                 mMeasurementTimingBudget(0U), mStop(0U) {
 #ifdef RPI
@@ -40,7 +39,7 @@ namespace Component
                 } while (data != 0x00U);
                 // release reset
                 this->mI2c.WriteRegister(this->mAddress, 0xBF, 0x01);
-                this->mTick.DelayMs(1U);
+                Tick::Tick::GetInstance().DelayMs(1U);
                 do {
                     timeout++;
                     this->mI2c.ReadRegister(this->mAddress, VL53L0X_IDENTIFICATION_MODEL_ID, data);

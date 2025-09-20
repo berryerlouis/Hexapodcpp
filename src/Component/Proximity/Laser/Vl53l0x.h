@@ -1,14 +1,15 @@
 #pragma once
 
-#include "../../../Cluster/Constants.h"
 #include "../../../Driver/Twi/TwiInterface.h"
-#include "../../../Driver/Tick/TickInterface.h"
 #include "../../Led/LedInterface.h"
 #include "../SensorProximityInterface.h"
 
-namespace Component {
-    namespace Proximity {
-        namespace Laser {
+namespace Component
+{
+    namespace Proximity
+    {
+        namespace Laser
+        {
             using namespace Driver;
 
             class Vl53l0x : public SensorProximityInterface {
@@ -21,7 +22,7 @@ namespace Component {
                     CALIBRATION_TYPE_PHASE
                 } calibration_type_t;
 
-                Vl53l0x(Twi::TwiInterface &i2c, Led::LedInterface &led, Tick::TickInterface &tick,
+                Vl53l0x(Twi::TwiInterface &i2c, Led::LedInterface &led,
                         const uint8_t address = 0x29U);
 
 
@@ -40,7 +41,6 @@ namespace Component {
             private:
                 Twi::TwiInterface &mI2c;
                 Led::LedInterface &mLed;
-                Tick::TickInterface &mTick;
                 uint8_t mAddress;
                 uint16_t mDistance;
                 uint16_t mThreshold;

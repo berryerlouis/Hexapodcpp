@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 
 #include "../../../mock/cmp/MockPca9685.h"
-#include "../../../mock/drv/MockTick.h"
 
 #include "../../../../src/Component/Servo/Servo.h"
 
@@ -17,16 +16,14 @@ namespace Component
         class UT_CMP_SERVO : public ::testing::Test {
         protected:
             UT_CMP_SERVO() :
-                mMockTick(),
                 mMockPca9685(),
-                mServo(mMockPca9685, mMockTick, 0U, 90U, 0, 0U, 180U, false) {
+                mServo(mMockPca9685, 0U, 90U, 0, 0U, 180U, false) {
             }
 
             virtual void
             SetUp() {
                 EXPECT_CALL(mMockPca9685, GetAddress( )).WillOnce(Return(0U));
                 const Core::Status success = mServo.Initialize();
-                EXPECT_CALL(mMockTick, GetMs()).Times(1U);
                 mServo.SetEnable(true);
                 EXPECT_EQ(success, Core::Status::CORE_OK);
             }
@@ -38,7 +35,6 @@ namespace Component
             virtual ~UT_CMP_SERVO() = default;
 
             /* Mocks */
-            StrictMock<Driver::Tick::MockTick> mMockTick;
             StrictMock<Component::ServosController::MockPca9685> mMockPca9685;
 
             /* Test class */
@@ -51,7 +47,6 @@ namespace Component
         }
 
         TEST_F(UT_CMP_SERVO, SetAngle_Ok) {
-            EXPECT_CALL(mMockTick, GetMs()).Times(1U).WillOnce(Return(0U));
             EXPECT_EQ(Core::Status::CORE_OK, mServo.SetAngle( 10U ));
             EXPECT_TRUE(mServo.IsMoving());
             EXPECT_EQ(mServo.GetAngle(), 10U);
@@ -60,7 +55,6 @@ namespace Component
         TEST_F(UT_CMP_SERVO, SetAngle_Reverse_Ok) {
             mServo.SetReverse(true);
 
-            EXPECT_CALL(mMockTick, GetMs()).Times(1U).WillOnce(Return(0U));
             EXPECT_EQ(Core::Status::CORE_OK, mServo.SetAngle( 70U ));
             EXPECT_TRUE(mServo.IsMoving());
             EXPECT_EQ(mServo.GetAngle(), 70U);
@@ -83,7 +77,6 @@ namespace Component
         TEST_F(UT_CMP_SERVO, SetAngle_SetOffset_Ok) {
             mServo.SetOffset(-10);
 
-            EXPECT_CALL(mMockTick, GetMs()).Times(1U).WillOnce(Return(0U));
             EXPECT_EQ(Core::Status::CORE_OK, mServo.SetAngle( 120U ));
             EXPECT_EQ(mServo.GetAngle(), 120U);
             EXPECT_TRUE(mServo.IsMoving());

@@ -2,7 +2,6 @@
 
 #include "BodyInterface.h"
 #include "../../Move/Walk/Walk.h"
-#include "../../Driver/Tick/TickInterface.h"
 
 namespace Bot
 {
@@ -20,7 +19,7 @@ namespace Bot
                 Position3d bodyIk;
             };
 
-            Body(Legs::LegsInterface &legs, Driver::Tick::TickInterface &tick);
+            Body(Legs::LegsInterface &legs);
 
             ~Body() = default;
 

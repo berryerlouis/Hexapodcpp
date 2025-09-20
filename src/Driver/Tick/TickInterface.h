@@ -1,6 +1,5 @@
 #pragma once
 #include <stdint.h>
-#include "../DriverInterface.h"
 
 namespace Driver
 {

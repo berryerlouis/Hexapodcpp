@@ -26,10 +26,13 @@ namespace Service
         ~Service() = default;
 
         void
-        UpdateService(Driver::Tick::TickInterface &tick, const uint64_t currentTime) {
+        UpdateService(const uint64_t currentTime) {
             if (this->NeedUpdate(currentTime) == Core::Status::CORE_OK) {
                 this->Update(currentTime);
-                this->SetNewUpdateTime(tick.GetMs(), this->mServiceId);
+                this->SetNewUpdateTime(Driver::Tick::Tick::GetInstance().GetMs(), this->mServiceId);
+                LOG_SERVICE_DEBUG("%s(%d) refreshed.",
+                                  EServicesStruct::ServiceIdToString(this->mServiceId).c_str(),
+                                  this->mServiceId);
             }
         }
 

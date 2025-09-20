@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../../Driver/Gpio/GpioInterface.h"
-#include "../../Driver/Tick/TickInterface.h"
 #include "ButtonInterface.h"
 
 namespace Component
@@ -12,7 +11,7 @@ namespace Component
 
         class Button : public ButtonInterface {
         public:
-            Button(Gpio::GpioInterface &gpio, Tick::TickInterface &tick);
+            Button(Gpio::GpioInterface &gpio);
 
             ~Button() = default;
 
@@ -27,7 +26,6 @@ namespace Component
 
         private:
             Gpio::GpioInterface &mGpioButton;
-            Tick::TickInterface &mTick;
             uint64_t mPushTime;
 
         public:

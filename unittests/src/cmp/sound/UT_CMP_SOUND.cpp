@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 
 #include "../../../mock/drv/MockGpio.h"
-#include "../../../mock/drv/MockTick.h"
 #include "../../../mock/cmp/MockLed.h"
 #include "../../../../src/Component/Sound/Sound.h"
 
@@ -20,9 +19,8 @@ namespace Component
             UT_CMP_SOUND() :
                 mMockGpio(),
                 mMockLed(),
-                mMockTick(),
-                mSoundLeft(SOUND_LEFT, mMockGpio, mMockLed, mMockTick),
-                mSoundRight(SOUND_RIGHT, mMockGpio, mMockLed, mMockTick) {
+                mSoundLeft(SOUND_LEFT, mMockGpio, mMockLed),
+                mSoundRight(SOUND_RIGHT, mMockGpio, mMockLed) {
             }
 
             enum SoundState {
@@ -55,14 +53,13 @@ namespace Component
 
             void
             HitTest(const SoundId &soundId, const SoundState &soundState, const uint64_t time) {
+                Driver::Tick::Tick::GetInstance().SetUs(time);
                 if (soundState == LOUD) {
                     EXPECT_CALL(mMockGpio, Get()).WillOnce(Return(false));
                     EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::Status::CORE_OK));
-                    EXPECT_CALL(mMockTick, GetUs()).Times(1U).WillOnce(Return(time));
                 } else {
                     EXPECT_CALL(mMockGpio, Get()).WillOnce(Return(true));
                     EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
-                    EXPECT_CALL(mMockTick, GetUs()).Times(1U).WillOnce(Return(time));
                 }
 
                 if (soundId == SOUND_LEFT) {
@@ -75,7 +72,6 @@ namespace Component
             /* Mocks */
             StrictMock<Driver::Gpio::MockGpio> mMockGpio;
             StrictMock<Component::Led::MockLed> mMockLed;
-            StrictMock<Driver::Tick::MockTick> mMockTick;
 
             /* Test class */
             Sound mSoundLeft;
@@ -86,6 +82,7 @@ namespace Component
             HitTest(SOUND_LEFT, LOUD, 1U);
             HitTest(SOUND_LEFT, NO_SOUND, 55U);
 
+            Driver::Tick::Tick::GetInstance().SetUs(1000U);
             mSoundLeft.Update(1000U);
             mSoundRight.Update(1000U);
             EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 54U);
@@ -97,8 +94,8 @@ namespace Component
             HitTest(SOUND_RIGHT, LOUD, 110U);
             HitTest(SOUND_LEFT, NO_SOUND, 120U);
 
+            Driver::Tick::Tick::GetInstance().SetUs(1000U);
             mSoundLeft.Update(1000U);
-            EXPECT_CALL(mMockTick, GetUs()).Times(1U).WillOnce(Return(1000U));
             mSoundRight.Update(1000U);
 
             EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 20U);
@@ -110,7 +107,7 @@ namespace Component
             HitTest(SOUND_RIGHT, LOUD, 120U);
             HitTest(SOUND_RIGHT, NO_SOUND, 130U);
 
-            EXPECT_CALL(mMockTick, GetUs()).Times(1U).WillOnce(Return(1000U));
+            Driver::Tick::Tick::GetInstance().SetUs(1000U);
             mSoundLeft.Update(1000U);
             mSoundRight.Update(1000U);
 
@@ -123,6 +120,7 @@ namespace Component
             HitTest(SOUND_RIGHT, LOUD, 120U);
             HitTest(SOUND_RIGHT, NO_SOUND, 130U);
             HitTest(SOUND_LEFT, NO_SOUND, 140U);
+            Driver::Tick::Tick::GetInstance().SetUs(1000U);
             mSoundLeft.Update(1000U);
             mSoundRight.Update(1000U);
 
@@ -135,6 +133,7 @@ namespace Component
             HitTest(SOUND_RIGHT, LOUD, 120U);
             HitTest(SOUND_LEFT, NO_SOUND, 140U);
             HitTest(SOUND_RIGHT, NO_SOUND, 150U);
+            Driver::Tick::Tick::GetInstance().SetUs(1000U);
             mSoundLeft.Update(1000U);
             mSoundRight.Update(1000U);
 
@@ -147,6 +146,7 @@ namespace Component
             HitTest(SOUND_LEFT, LOUD, 130U);
             HitTest(SOUND_RIGHT, NO_SOUND, 150U);
             HitTest(SOUND_LEFT, NO_SOUND, 160U);
+            Driver::Tick::Tick::GetInstance().SetUs(1000U);
             mSoundLeft.Update(1000U);
             mSoundRight.Update(1000U);
 
@@ -159,12 +159,14 @@ namespace Component
             HitTest(SOUND_LEFT, LOUD, 130U);
             HitTest(SOUND_RIGHT, NO_SOUND, 150U);
             HitTest(SOUND_LEFT, NO_SOUND, 160U);
+            Driver::Tick::Tick::GetInstance().SetUs(1000U);
             mSoundLeft.Update(1000U);
             mSoundRight.Update(1000U);
 
             EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 30U);
             EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 30U);
 
+            Driver::Tick::Tick::GetInstance().SetUs(2000U);
             mSoundLeft.Update(2000U);
             mSoundRight.Update(2000U);
 
@@ -177,12 +179,14 @@ namespace Component
             HitTest(SOUND_LEFT, LOUD, 130U);
             HitTest(SOUND_RIGHT, NO_SOUND, 150U);
             HitTest(SOUND_LEFT, NO_SOUND, 160U);
+            Driver::Tick::Tick::GetInstance().SetUs(1000U);
             mSoundLeft.Update(1000U);
             mSoundRight.Update(1000U);
 
             EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 30U);
             EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 30U);
 
+            Driver::Tick::Tick::GetInstance().SetUs(2000U);
             mSoundLeft.Update(2000U);
             mSoundRight.Update(2000U);
 
@@ -193,6 +197,8 @@ namespace Component
             HitTest(SOUND_LEFT, LOUD, 3130U);
             HitTest(SOUND_RIGHT, NO_SOUND, 3150U);
             HitTest(SOUND_LEFT, NO_SOUND, 3160U);
+
+            Driver::Tick::Tick::GetInstance().SetUs(3000U);
             mSoundLeft.Update(3000U);
             mSoundRight.Update(3000U);
 
@@ -203,6 +209,8 @@ namespace Component
             HitTest(SOUND_LEFT, LOUD, 4130U);
             HitTest(SOUND_RIGHT, NO_SOUND, 4150U);
             HitTest(SOUND_LEFT, NO_SOUND, 4170U);
+
+            Driver::Tick::Tick::GetInstance().SetUs(4000U);
             mSoundLeft.Update(4000U);
             mSoundRight.Update(4000U);
 

@@ -4,8 +4,8 @@ namespace Driver
 {
     namespace InputCapture
     {
-        InputCapture::InputCapture(Gpio::GpioInterface &gpio, Tick::TickInterface &tick) :
-            mGpio(gpio), mTick(tick), mState(false), mStartTime(0UL), mDelay(0UL) {
+        InputCapture::InputCapture(Gpio::GpioInterface &gpio) :
+            mGpio(gpio), mState(false), mStartTime(0UL), mDelay(0UL) {
         }
 
         Core::Status InputCapture::Initialize(void) {
@@ -29,10 +29,10 @@ namespace Driver
             const int state = this->mGpio.Get();
 
             if (state != this->mState && state == true) {
-                this->mStartTime = this->mTick.GetUs();
+                this->mStartTime = Tick::Tick::GetInstance().GetUs();
             } else if (
                 state != this->mState && state == false) {
-                this->mDelay = this->mTick.GetUs() - this->mStartTime;
+                this->mDelay = Tick::Tick::GetInstance().GetUs() - this->mStartTime;
             }
             this->mState = state;
         }

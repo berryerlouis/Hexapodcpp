@@ -6,8 +6,7 @@ namespace Service
     namespace Services
     {
         Services::Services(
-                Tick::TickInterface &tick
-                , ServiceGeneral &serviceGeneral
+                ServiceGeneral &serviceGeneral
                 , ServiceControl &serviceControl
                 , ServiceCommunication &serviceCommunication
                 , ServiceProximity &serviceProximity
@@ -18,8 +17,7 @@ namespace Service
                 , ServiceButton &serviceButton
                 , ServiceSound &serviceSound
                 , Event::MessageInterface &messageListener) :
-            mTick(tick)
-            , mServices{
+            mServices{
                     {&serviceGeneral},
                     {&serviceProximity},
                     {&serviceControl},
@@ -54,7 +52,7 @@ namespace Service
 
         void Services::Update(const uint64_t currentTime) {
             for (Service *service: this->mServices) {
-                service->UpdateService(this->mTick, currentTime);
+                service->UpdateService(currentTime);
             }
         }
 

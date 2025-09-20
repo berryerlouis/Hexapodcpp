@@ -3,7 +3,6 @@
 #include "../Driver/Adc/Adc.h"
 #include "../Driver/Gpio/Gpio.h"
 #include "../Driver/Socket/Socket.h"
-#include "../Driver/Tick/Tick.h"
 #include "../Driver/Twi/Twi.h"
 #include "../Driver/Uart/Uart.h"
 #include "../Driver/InputCapture/InputCapture.h"
@@ -53,7 +52,6 @@ namespace App
         virtual void Update(void);
 
     private:
-        Driver::Tick::Tick mTick;
         Driver::Uart::Uart mUart;
         Driver::Socket::Socket mSocket;
         Driver::Twi::Twi mTwi;

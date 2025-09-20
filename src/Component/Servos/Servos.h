@@ -2,7 +2,6 @@
 
 #include "ServosInterface.h"
 #include "../../Driver/Gpio/GpioInterface.h"
-#include "../../Driver/Tick/TickInterface.h"
 
 namespace Component
 {
@@ -14,8 +13,7 @@ namespace Component
         public:
             Servos(ServosController::Pca9685Interface &pca9685_0
                    , ServosController::Pca9685Interface &pca9685_1
-                   , Gpio::GpioInterface &enablePwmPin
-                   , Tick::TickInterface &tick);
+                   , Gpio::GpioInterface &enablePwmPin);
 
 
             ~Servos() = default;

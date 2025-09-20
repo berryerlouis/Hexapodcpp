@@ -3,7 +3,6 @@
 
 
 #include "../../../mock/drv/MockTwi.h"
-#include "../../../mock/drv/MockTick.h"
 
 #include "../../../../src/Component/Proximity/SensorProximityInterface.h"
 #include "../../../../src/Component/Proximity/Laser/Vl53l0x.h"
@@ -26,9 +25,8 @@ namespace Component
             class UT_CMP_VL53L0X : public ::testing::Test {
             protected:
                 UT_CMP_VL53L0X() :
-                    mMockTick(),
                     mMockTwi(),
-                    mVl53l0x(mMockTwi, mMockLed, mMockTick) {
+                    mVl53l0x(mMockTwi, mMockLed) {
                 }
 
                 virtual void
@@ -38,8 +36,6 @@ namespace Component
                     ::testing::Sequence sWrite;
 
                     EXPECT_CALL(mMockLed, Initialize());
-                    EXPECT_CALL(mMockTick, DelayMs(_));
-                    EXPECT_CALL(mMockTick, GetMs()).WillRepeatedly(Return(0U));
                     EXPECT_CALL(mMockTwi, WriteRegister( _, 0xBF, 0x00)).InSequence(sWrite).WillOnce(Return(true));
                     EXPECT_CALL(mMockTwi, ReadRegister( _, Vl53l0x::VL53L0X_IDENTIFICATION_MODEL_ID, _)).InSequence(
                                     sRead).
@@ -70,7 +66,6 @@ namespace Component
                 virtual ~UT_CMP_VL53L0X() = default;
 
                 /* Mocks */
-                StrictMock<Driver::Tick::MockTick> mMockTick;
                 StrictMock<Component::Led::MockLed> mMockLed;
                 StrictMock<Driver::Twi::MockTwi> mMockTwi;
 
