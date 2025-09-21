@@ -8,7 +8,7 @@ namespace Bot
     {
         class MockLegs : public LegsInterface {
         public:
-            MOCK_CONST_METHOD1(GetLeg, Leg::LegInterface*( const ELeg ));
+            MOCK_METHOD1(GetLeg, Leg::LegInterface*( const ELeg ));
         };
     }
 }

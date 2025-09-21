@@ -13,17 +13,25 @@ namespace Cluster
                 ClusterImu &imu,
                 ClusterProximity &proximity,
                 ClusterServo &servo) :
-            mClusters{&general, &battery, &body, &imu, &proximity, &servo, &button, &sound} {
+            mClusters{
+                    {GENERAL, &general},
+                    {BATTERY, &battery},
+                    {BUTTON, &button},
+                    {SOUND, &sound},
+                    {BODY, &body},
+                    {IMU, &imu},
+                    {PROXIMITY, &proximity},
+                    {SERVO, &servo}
+            } {
             LOG_CLUSTER_DEBUG("Clusters", " Initialized.");
         }
 
-        ClusterInterface *Clusters::GetCluster(const EClusters clusterId) const {
-            for (ClusterInterface *cluster: mClusters) {
-                if (cluster != nullptr && cluster->GetClusterId() == clusterId) {
-                    return (cluster);
-                }
+        ClusterBase *Clusters::GetCluster(const EClusters clusterId) {
+            const auto it = mClusters.find(clusterId);
+            if (it != mClusters.end()) {
+                return it->second;
             }
-            return (nullptr);
+            return nullptr;
         }
     }
 }

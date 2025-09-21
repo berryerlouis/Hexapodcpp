@@ -45,6 +45,7 @@ namespace Component
         }
 
         void Sound::Update(const uint64_t currentTime) {
+            (void) currentTime;
             // If the sound is still present, stop the signal
             if (this->stopSoundTime < this->startSoundTime) {
                 this->stopSoundTime = Tick::Tick::GetInstance().GetUs();

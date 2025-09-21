@@ -5,42 +5,35 @@ namespace Bot
     namespace Legs
     {
         Legs::Legs(ServosInterface &servos) :
-            mLegFL(FRONT_LEFT,
-                   servos.GetServo(0),
-                   servos.GetServo(1),
-                   servos.GetServo(2))
-            , mLegML(MIDDLE_LEFT,
-                     servos.GetServo(3),
-                     servos.GetServo(4),
-                     servos.GetServo(5))
-            , mLegRL(REAR_LEFT,
-                     servos.GetServo(6),
-                     servos.GetServo(7),
-                     servos.GetServo(8))
-            , mLegFR(FRONT_RIGHT,
-                     servos.GetServo(15),
-                     servos.GetServo(16),
-                     servos.GetServo(17))
-            , mLegMR(MIDDLE_RIGHT,
-                     servos.GetServo(12),
-                     servos.GetServo(13),
-                     servos.GetServo(14))
-            , mLegRR(REAR_RIGHT,
-                     servos.GetServo(9),
-                     servos.GetServo(10),
-                     servos.GetServo(11))
-            , mLegs{&mLegFL, &mLegML, &mLegRL, &mLegFR, &mLegMR, &mLegRR} {
+            mLegs{
+                    {FRONT_LEFT,
+                     Leg::Leg(FRONT_LEFT, *servos.GetServo(SERVO_0), *servos.GetServo(SERVO_1),
+                              *servos.GetServo(SERVO_2))},
+                    {MIDDLE_LEFT,
+                     Leg::Leg(MIDDLE_LEFT, *servos.GetServo(SERVO_3), *servos.GetServo(SERVO_4),
+                              *servos.GetServo(SERVO_5))},
+                    {REAR_LEFT,
+                     Leg::Leg(REAR_LEFT, *servos.GetServo(SERVO_6), *servos.GetServo(SERVO_7),
+                              *servos.GetServo(SERVO_8))},
+                    {REAR_RIGHT,
+                     Leg::Leg(REAR_RIGHT, *servos.GetServo(SERVO_9), *servos.GetServo(SERVO_10),
+                              *servos.GetServo(SERVO_11))},
+                    {MIDDLE_RIGHT,
+                     Leg::Leg(MIDDLE_RIGHT, *servos.GetServo(SERVO_12), *servos.GetServo(SERVO_13),
+                              *servos.GetServo(SERVO_14))},
+                    {FRONT_RIGHT,
+                     Leg::Leg(FRONT_RIGHT, *servos.GetServo(SERVO_15), *servos.GetServo(SERVO_16),
+                              *servos.GetServo(SERVO_17))}} {
             LOG_BOT_DEBUG("Leg", "Legs Initialized");
         }
 
 
-        Leg::LegInterface *Legs::GetLeg(const ELeg legId) const {
-            for (Leg::LegInterface *leg: this->mLegs) {
-                if (leg != nullptr && leg->GetId() == legId) {
-                    return (leg);
-                }
+        Leg::LegInterface *Legs::GetLeg(const ELeg legId) {
+            const auto it = this->mLegs.find(legId);
+            if (it != this->mLegs.end()) {
+                return &it->second;
             }
-            return (nullptr);
+            return nullptr;
         }
     }
 }

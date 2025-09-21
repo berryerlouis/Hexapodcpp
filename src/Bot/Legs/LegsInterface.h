@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Leg/LegInterface.h"
+#include "../Leg/Leg.h"
 
 namespace Bot
 {
@@ -10,7 +10,7 @@ namespace Bot
         public:
             virtual ~LegsInterface() = default;
 
-            virtual Leg::LegInterface *GetLeg(const ELeg legId) const = 0;
+            virtual Leg::LegInterface *GetLeg(const ELeg legId) = 0;
         };
     }
 }

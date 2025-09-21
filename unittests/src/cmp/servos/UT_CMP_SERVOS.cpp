@@ -53,7 +53,7 @@ namespace Component
 
         TEST_F(UT_CMP_SERVOS, Update_Ok) {
             for (size_t i = 0; i < NB_SERVOS; i++) {
-                mServos.GetServo(i).SetEnable(true);
+                mServos.GetServo(static_cast<EServos>(i))->SetEnable(true);
             }
 
             EXPECT_CALL(mMockPca9685_0, SetPwm( _, _ )).Times(NB_SERVOS / 2U);

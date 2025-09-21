@@ -50,9 +50,7 @@ namespace Service
             virtual void Update(const uint64_t currentTime) final override;
 
         private:
-            Service *Get(const EServices serviceId);
-
-            Service *mServices[NB_SERVICES];
+            std::unordered_map<EServices, Service *> mServices;
             Event::MessageInterface &mMessageListener;
         };
     }

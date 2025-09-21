@@ -18,29 +18,30 @@ namespace Service
                 , ServiceSound &serviceSound
                 , Event::MessageInterface &messageListener) :
             mServices{
-                    {&serviceGeneral},
-                    {&serviceProximity},
-                    {&serviceControl},
-                    {&serviceCommunication},
-                    {&serviceOrientation},
-                    {&serviceBattery},
-                    {&serviceDisplay},
-                    {&serviceBody},
-                    {&serviceButton},
-                    {&serviceSound}},
+                    {GENERAL, &serviceGeneral},
+                    {CONTROL, &serviceControl},
+                    {COMMUNICATION, &serviceCommunication},
+                    {PROXIMITY, &serviceProximity},
+                    {ORIENTATION, &serviceOrientation},
+                    {BATTERY, &serviceBattery},
+                    {DISPLAY, &serviceDisplay},
+                    {BODY, &serviceBody},
+                    {BUTTON, &serviceButton},
+                    {SOUND, &serviceSound}
+            },
             mMessageListener(messageListener) {
         }
 
         Core::Status Services::Initialize(void) {
             Core::Status success = Core::Status::CORE_ERROR;
 
-            for (Service *service: this->mServices) {
+            for (const auto &pair: this->mServices) {
+                Service *service = pair.second;
                 success = service->Initialize();
                 if (success != Core::Status::CORE_OK) {
 #ifdef DEBUG
-                    const char serviceId[2U] = {static_cast<const char>(item.serviceId + 0x30U), ' '};
-                    LOG("error");
-                    LOG(serviceId);
+                    LOG_SERVICE_ERROR("Service id:%s Initialization error.",
+                                      EServicesStruct::ServiceIdToString(pair.first).c_str());
 #endif
                 }
             }
@@ -51,18 +52,10 @@ namespace Service
         }
 
         void Services::Update(const uint64_t currentTime) {
-            for (Service *service: this->mServices) {
+            for (const auto &pair: this->mServices) {
+                Service *service = pair.second;
                 service->UpdateService(currentTime);
             }
-        }
-
-        Service *Services::Get(const EServices serviceId) {
-            for (Service *service: this->mServices) {
-                if (service->GetServiceId() == serviceId) {
-                    return (service);
-                }
-            }
-            return (nullptr);
         }
     } // namespace Services
 } // namespace Service
