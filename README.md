@@ -4,12 +4,52 @@
 
 ![Hmi](images/HMI2.png)
 
-# Install
+# Install IDE and Tools
 
 The following tools are used:
 
 - Install VS-code or CLion
 - Install nodeJs and npm
+
+# Prepare system
+
+``` shell
+sudo apt install build-essential gcc g++ cmake git nodejs npm
+```
+
+# Configure and Compile App
+
+## Configuration For X64
+
+``` shell
+cmake -DCMAKE_BUILD_TYPE=Debug -DTARGET=X64 -Wno-dev -G "Unix Makefiles" -S . -B ./build/gcc-debug
+```
+
+## Configuration For RPI
+
+``` shell
+cmake -DCMAKE_BUILD_TYPE=Debug -DTARGET=RPI -Wno-dev -G "Unix Makefiles" -S . -B ./build/gcc-debug
+```
+
+## Compile
+
+``` shell
+cmake --build ./build/gcc-debug --target Hexapodcpp -- -j 16
+```
+
+# Configure and Compile Google Test
+
+## Configuration (only for X64)
+
+``` shell
+cmake -DCMAKE_BUILD_TYPE=Debug -DGTEST=1 -Wno-dev -G "Unix Makefiles" -S . -B ./build/hexapodTest
+```
+
+## Compile
+
+``` shell
+cmake --build ./build/hexapodTest --target HexapodcppTest -- -j 16
+```
 
 # Yocto
 
