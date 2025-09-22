@@ -77,7 +77,13 @@ cd build/tmp/deploy/sdk/
 
 # Architecture
 
-![Architecture](images/architecture.png)
+![Architecture](images/architecture.svg)
+
+## Render as svg
+
+``` shell
+docker run --rm -v $PWD:/ws -w /ws plantuml/plantuml -tsvg images/architecture.puml
+```
 
 # Using Cmake
 

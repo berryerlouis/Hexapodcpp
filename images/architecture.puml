@@ -1,0 +1,163 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment center
+title Hexapodcpp - Arhitecture
+
+package App {
+  class App
+}
+
+package Bot {
+  class Body
+  interface BodyInterface
+  class Leg
+  interface LegInterface
+  class Legs
+  interface LegsInterface
+}
+
+package Cluster {
+  abstract class ClusterBase
+  class ClusterCommand
+  interface ClusterInterface
+  class ClusterItem
+  class Clusters
+  class ClusterBattery
+  class ClusterBody
+  class ClusterButton
+  class ClusterGeneral
+  class ClusterImu
+  class ClusterProximity
+  class ClusterServo
+  class ClusterSound
+}
+
+package Component {
+  interface ComponentInterface
+  class Ads1115
+  interface Ads1115Interface
+  class Barometer
+  interface BarometerInterface
+  class Battery
+  interface BatteryInterface
+  class BatteryState
+  class Button
+  interface ButtonInterface
+  class ButtonState
+  class Communication
+  interface CommunicationInterface
+  class Ssd1306
+}
+
+package Core {
+  interface CoreInterface
+  class Logger
+  class Observable
+  interface ObservableInterface
+  interface ObserverInterface
+  class Status
+  class Version
+}
+
+package Driver {
+  interface DriverInterface
+}
+
+package Move {
+  class Constants <<static>>
+}
+
+package Service {
+  class Service
+  interface ServiceInterface
+  class Constants <<static>>
+
+  ' Ajout des services principaux (exemples, à adapter selon vos fichiers)
+  class BatteryService
+  class BodyService
+  class ButtonService
+  class CommunicationService
+  class ControlService
+  class DisplayService
+  class EventService
+  class GeneralService
+  class OrientationService
+  class ProximityService
+  class SoundService
+
+  Service <|-- BatteryService
+  Service <|-- BodyService
+  Service <|-- ButtonService
+  Service <|-- CommunicationService
+  Service <|-- ControlService
+  Service <|-- DisplayService
+  Service <|-- EventService
+  Service <|-- GeneralService
+  Service <|-- OrientationService
+  Service <|-- ProximityService
+  Service <|-- SoundService
+}
+
+
+
+' Relations Bot
+Body --> Legs
+Legs o--> Leg : contient *
+Body ..|> BodyInterface
+Leg ..|> LegInterface
+Legs ..|> LegsInterface
+
+' Clusters
+Clusters *--> ClusterBase
+ClusterBase <|-- ClusterBattery
+ClusterBase <|-- ClusterBody
+ClusterBase <|-- ClusterButton
+ClusterBase <|-- ClusterGeneral
+ClusterBase <|-- ClusterImu
+ClusterBase <|-- ClusterProximity
+ClusterBase <|-- ClusterServo
+ClusterBase <|-- ClusterSound
+ClusterBase ..|> ClusterInterface
+ClusterBase --> ClusterCommand
+ClusterBase --> ClusterItem
+
+' Components
+Ads1115 ..|> Ads1115Interface
+Barometer ..|> BarometerInterface
+Battery ..|> BatteryInterface
+Button ..|> ButtonInterface
+Communication ..|> CommunicationInterface
+
+' Core observability
+Observable ..|> ObservableInterface
+ObserverInterface .. Observable
+Logger --> Status
+Service --> Logger
+Service --> Observable
+
+' Services / usage
+Service ..|> ServiceInterface
+App --> Service
+Service --> Body
+Service --> Clusters
+Service --> Battery
+Service --> Communication
+Service --> Logger
+
+' Drivers / Components
+ComponentInterface <|.. Ads1115
+ComponentInterface <|.. Barometer
+ComponentInterface <|.. Battery
+ComponentInterface <|.. Button
+ComponentInterface <|.. Communication
+DriverInterface <.. ComponentInterface
+
+' Move / Body
+Constants .. Body
+
+' Misc utilitaire (liaisons conceptuelles)
+Service ..> "Maths"
+Leg ..> "Maths"
+Logger ..> "Buffer"
+
+@enduml
