@@ -19,6 +19,12 @@ sudo apt install build-essential gcc g++ cmake git nodejs npm
 
 # Configure and Compile App
 
+## Using script
+
+``` shell
+bin/dev/build.sh X64 sources RELEASE
+```
+
 ## Configuration For X64
 
 ``` shell
@@ -39,6 +45,12 @@ cmake --build ./build/gcc-debug --target Hexapodcpp -- -j 16
 
 # Configure and Compile Google Test
 
+## Using script
+
+``` shell
+bin/dev/test.sh all
+```
+
 ## Configuration (only for X64)
 
 ``` shell
@@ -49,6 +61,12 @@ cmake -DCMAKE_BUILD_TYPE=Debug -DGTEST=1 -Wno-dev -G "Unix Makefiles" -S . -B ./
 
 ``` shell
 cmake --build ./build/hexapodTest --target HexapodcppTest -- -j 16
+```
+
+# Release
+
+``` shell
+bin/prod/build.sh
 ```
 
 # Yocto

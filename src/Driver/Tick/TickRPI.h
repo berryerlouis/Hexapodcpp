@@ -9,8 +9,6 @@ namespace Driver
     {
         class Tick : public TickInterface {
         public:
-            Tick();
-
             ~Tick() = default;
 
             virtual uint64_t GetUs(void) final override;
