@@ -15,7 +15,7 @@ set(
 )
 set(
         TEST_FILE
-        src/Bot/Body/UT_BOT_BODY.cpp
+        src/bot/body/UT_BOT_BODY.cpp
 )
 set(UT_BOT_BODY ${SRC_FILES} ${TEST_FILE})
 set(EXECUTABLES_SRC ${EXECUTABLES_SRC} ${UT_BOT_BODY} PARENT_SCOPE)
