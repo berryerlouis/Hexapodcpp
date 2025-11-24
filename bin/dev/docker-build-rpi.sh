@@ -50,7 +50,9 @@ fi
 # Build toolchain image (only base dependencies, cached)
 echo ""
 echo "Building toolchain Docker image (cached)..."
-docker build -f Dockerfile.rpi-zero2 --target toolchain -t "$TOOLCHAIN_IMAGE" .
+docker build -f Dockerfile.rpi-zero2 --target toolchain \
+    --build-arg INSTALL_CORP_CERTS=true \
+    -t "$TOOLCHAIN_IMAGE" .
 
 # Run incremental build using volume mount
 echo ""

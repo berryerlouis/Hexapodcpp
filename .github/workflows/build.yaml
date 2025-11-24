@@ -1,9 +1,10 @@
 name: Make
 
-on: [ push, pull_request ]
+on: [push, pull_request]
 
 jobs:
-  compile-hexapod:
+  build-release:
+    name: Build Release
     runs-on: ubuntu-latest
 
     steps:
@@ -20,6 +21,19 @@ jobs:
         run: |
           bin/dev/build.sh RPI sources RELEASE install
 
+  run-tests:
+    name: Run Google Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install gcc
+        run: |
+          sudo apt update
+          sudo apt install build-essential binutils
+
       - name: Run Google Test
         run: |
           bin/dev/test.sh all
@@ -33,76 +47,6 @@ jobs:
         with:
           name: hexapodcpp
           path: archive/
-
-
-  build:
-    runs-on: ubuntu-latest
-
-    # Use dockcross toolchain (ARMv6 hard-float)
-    container:
-      image: dockcross/linux-armv6:latest
-
-    env:
-      SYSROOT_TAR: ci/sysroot-rpi0w.tar.gz
-      SYSROOT_DIR: /opt/sysroot
-      TOOLCHAIN_FILE: cmake/toolchain-armv6-rpi.cmake
-      BUILD_DIR: build
-      CONFIG: Release
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: (Optional) Install helpers (tar/curl/cmake/pkg-config)
-        run: |
-          apt-get update
-          apt-get install -y --no-install-recommends ca-certificates curl tar cmake pkg-config file
-
-      - name: Download sysroot (if sysroot_url is provided)
-        if: ${{ inputs.sysroot_url != '' }}
-        run: |
-          mkdir -p ci
-          echo "Downloading sysroot from ${{ inputs.sysroot_url }}"
-          curl -L "${{ inputs.sysroot_url }}" -o "${SYSROOT_TAR}"
-
-      - name: Cache extracted sysroot
-        id: cache-sysroot
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.SYSROOT_DIR }}
-          key: sysroot-${{ hashFiles(env.SYSROOT_TAR) }}
-
-      - name: Extract sysroot
-        if: steps.cache-sysroot.outputs.cache-hit != 'true'
-        run: |
-          test -f "${SYSROOT_TAR}" || { echo "Sysroot tar not found at ${SYSROOT_TAR}. Provide inputs.sysroot_url or check in the tar under ci/"; exit 1; }
-          mkdir -p "${SYSROOT_DIR}"
-          tar -C "${SYSROOT_DIR}" -xzf "${SYSROOT_TAR}"
-          echo "Extracted sysroot to ${SYSROOT_DIR}"
-
-      - name: Configure (CMake)
-        run: |
-          cmake -S . -B "${BUILD_DIR}" \
-            -DCMAKE_TOOLCHAIN_FILE="${TOOLCHAIN_FILE}" \
-            -DCMAKE_BUILD_TYPE="${CONFIG}" \
-            -DTARGET=RPI
-
-      - name: Build
-        run: cmake --build "${BUILD_DIR}" -j
-
-      - name: Show binary info
-        run: |
-          file "${BUILD_DIR}/demo" || true
-          readelf -h "${BUILD_DIR}/demo" || true
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: rpi0w-binaries
-          path: |
-            ${{ env.BUILD_DIR }}/demo
-            ${{ env.BUILD_DIR }}/*.so
-            ${{ env.BUILD_DIR }}/*.a
 
   docker-cross-build-rpi:
     name: Docker Cross-Compile (RPi Zero 2 W - ARM64)
@@ -119,7 +63,7 @@ jobs:
 
       - name: Build Toolchain Image
         run: |
-          docker build -f Dockerfile.rpi-zero2 --target toolchain -t hexapodcpp:rpi-toolchain .
+          docker build -f Dockerfile.rpi-zero2 --target toolchain --build-arg INSTALL_CORP_CERTS=false -t hexapodcpp:rpi-toolchain .
 
       - name: Cross-Compile for RPi (${{ matrix.build_type }})
         run: |
@@ -151,4 +95,3 @@ jobs:
           name: hexapodcpp-rpi-arm64-${{ matrix.build_type }}
           path: |
             build/rpi-*/src/Hexapodcpp
- 
