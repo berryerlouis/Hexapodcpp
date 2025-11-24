@@ -29,10 +29,7 @@ namespace Service
         UpdateService(const uint64_t currentTime) {
             if (this->NeedUpdate(currentTime) == Core::Status::CORE_OK) {
                 this->Update(currentTime);
-                this->SetNewUpdateTime(Driver::Tick::Tick::GetInstance().GetMs(), this->mServiceId);
-                LOG_SERVICE_DEBUG("%s(%d) refreshed.",
-                                  EServicesStruct::ServiceIdToString(this->mServiceId).c_str(),
-                                  this->mServiceId);
+                this->SetNewUpdateTime(Driver::Tick::Tick::GetInstance().GetMs());
             }
         }
 
@@ -44,7 +41,7 @@ namespace Service
         }
 
         void
-        SetNewUpdateTime(const uint64_t currentTime, const EServices serviceId) {
+        SetNewUpdateTime(const uint64_t currentTime) {
             this->mDeltaTime = abs(static_cast<int64_t>(currentTime) -
                                    static_cast<int64_t>(this->mPreviousTime) -
                                    static_cast<int64_t>(this->mUpdateTime));
@@ -58,12 +55,12 @@ namespace Service
             if (this->mDeltaTime < this->mMinDeltaTime) {
                 this->SetMinTime(this->mDeltaTime);
                 Frame response;
-                Cluster::General::ClusterGeneral::BuildFrameGetMinTime(serviceId, this->mDeltaTime, response);
+                Cluster::General::ClusterGeneral::BuildFrameGetMinTime(this->mServiceId, this->mDeltaTime, response);
                 this->SendMessage(response);
             } else if (this->mDeltaTime > this->mMaxDeltaTime) {
                 this->SetMaxTime(this->mDeltaTime);
                 Frame response;
-                Cluster::General::ClusterGeneral::BuildFrameGetMaxTime(serviceId, this->mDeltaTime, response);
+                Cluster::General::ClusterGeneral::BuildFrameGetMaxTime(this->mServiceId, this->mDeltaTime, response);
                 this->SendMessage(response);
             }
         }

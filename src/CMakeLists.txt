@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-if (${CROSS})
+if (${CMAKE_CROSSCOMPILING})
     message(INFO " => Compilation for ${TARGET} in ${CMAKE_BUILD_TYPE} mode for ${PROJECT_NAME} using Cross Compiler")
 else ()
     message(INFO " => Compilation for ${TARGET} in ${CMAKE_BUILD_TYPE} mode for ${PROJECT_NAME} using native Compiler")
@@ -66,11 +66,14 @@ set(SRC_FILES
         ${SRC_FILES_SERVICES}
 )
 
-#include_directories(/opt/poky/5.1/sysroots/arm1176jzfshf-vfp-poky-linux-gnueabi/usr/include/c++/14.2.0)
-add_compile_options(-Wall -Wextra -Werror -Wno-cast-align -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O0 -g)
+add_compile_options(-Wall -Wextra -Wno-psabi -Werror -W -Wno-cast-align -fno-exceptions -ffunction-sections -fdata-sections -fno-rtti -fno-threadsafe-statics -O0 -g)
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 if (${TARGET} STREQUAL "RPI")
-    target_link_libraries(${PROJECT_NAME} wiringPi tiny_websockets_lib)
+    target_link_libraries(${PROJECT_NAME}
+            PRIVATE
+            wiringPi
+            tiny_websockets_lib
+    )
 else ()
     target_link_libraries(${PROJECT_NAME} tiny_websockets_lib)
 endif ()

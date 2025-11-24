@@ -63,7 +63,7 @@ namespace Driver
 
         void Socket::Send(const uint8_t data) {
             if (client.available() == true) {
-                client.send((const char *) &data, 1U);
+                client.send(reinterpret_cast<const char *>(&data), 1U);
             }
         }
 

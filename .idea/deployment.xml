@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeDeletion="false">
+    <option name="confirmBeforeDeletion" value="false" />
     <serverData>
       <paths name="Rpi (6e17c7f5-fea9-47d6-9872-8c98f60ce16f)">
         <serverdata>
@@ -8,34 +9,35 @@
             <mapping deploy="/tmp/tmp.MElGUJNU5s" local="$PROJECT_DIR$" />
           </mappings>
           <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/build" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/gcc-debug" />
             <excludedPath local="true" path="$PROJECT_DIR$/HMI" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/unittests" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-cross-release" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-debug" />
             <excludedPath local="true" path="$PROJECT_DIR$/HMI-copy" />
             <excludedPath local="true" path="$PROJECT_DIR$/bin" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-debug" />
             <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-rpi" />
             <excludedPath local="true" path="$PROJECT_DIR$/images" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/unittest" />
             <excludedPath local="true" path="$PROJECT_DIR$/images" />
             <excludedPath local="true" path="$PROJECT_DIR$/unittests" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/hexapodTest" />
             <excludedPath local="true" path="$PROJECT_DIR$/node" />
             <excludedPath local="true" path="$PROJECT_DIR$/bin" />
             <excludedPath local="true" path="$PROJECT_DIR$/HMI-copy" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-gcc-cross-compile-debug" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/gcc-debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-gcc-debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/rpi" />
+            <excludedPath local="true" path="$PROJECT_DIR$/sysroot" />
             <excludedPath local="true" path="$PROJECT_DIR$/node" />
             <excludedPath local="true" path="$PROJECT_DIR$/HMI" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-gcc-cross-compile-win-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/hexapodTest" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build/cross_rpi" />
+            <excludedPath local="true" path="$PROJECT_DIR$/sysroot" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-gcc-cross-compile-debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/avr-debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-gcc-cross-compile-win-debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/avr-release" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-rpi-debug" />
           </excludedPaths>
         </serverdata>
       </paths>

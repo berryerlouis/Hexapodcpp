@@ -11,7 +11,83 @@ The following tools are used:
 - Install VS-code or CLion
 - Install nodeJs and npm
 
-# Prepare system
+# Prepare RPI
+
+``` shell
+sudo apt update
+sudo apt install build-essential gcc g++ cmake git libssl-dev
+```
+
+## Install WiringPi
+
+``` shell
+git clone https://github.com/WiringPi/WiringPi.git
+cd WiringPi
+./build
+```
+
+## Enable I2C
+
+``` shell
+sudo nano /boot/firmware/config.txt
+#uncomment line dtparam=i2c_arm=on
+sudo modprobe i2c-dev
+```
+
+``` shell
+sudo nano /etc/modules
+```
+
+``` shell
+# /etc/modules: kernel modules to load at boot time.
+#
+# This file contains the names of kernel modules that should be loaded
+# at boot time, one per line. Lines beginning with "#" are ignored.
+# Parameters can be specified after the module name.
+i2c-dev
+```
+
+## Create Systemd service
+
+``` shell
+sudo nano /etc/systemd/system/hexabot.service
+```
+
+### Add the following content (change user and working directory as needed)
+
+``` shell
+[Unit]
+Description=Hexabot service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=hexabot
+WorkingDirectory=/hexabot/louis
+ExecStart=/home/hexabot/Hexapodcpp
+Restart=on-failure
+RestartSec=3s
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### Enable service
+
+``` shell
+sudo systemctl daemon-reload
+sudo systemctl enable --now hexabot.service
+```
+
+### verify service
+
+``` shell
+systemctl status hexabot.service
+journalctl -u hexabot.service -e
+```
+
+# Prepare host system
 
 ``` shell
 sudo apt install build-essential gcc g++ cmake git nodejs npm
@@ -34,7 +110,7 @@ cmake -DCMAKE_BUILD_TYPE=Debug -DTARGET=X64 -Wno-dev -G "Unix Makefiles" -S . -B
 ## Configuration For RPI
 
 ``` shell
-cmake -DCMAKE_BUILD_TYPE=Debug -DTARGET=RPI -Wno-dev -G "Unix Makefiles" -S . -B ./build/gcc-debug
+cmake -DCMAKE_BUILD_TYPE=Debug -DTARGET=RPI -Wno-dev -G "Unix Makefiles" -S . -B ./build/gcc-debug'
 ```
 
 ## Compile
@@ -69,28 +145,20 @@ cmake --build ./build/hexapodTest --target HexapodcppTest -- -j 16
 bin/prod/build.sh
 ```
 
-# Yocto
-
-Install kas
+# CrossCompilation using Docker
 
 ``` shell
-sudo pip install kas
-```
+# Release build (default)
+./bin/dev/docker-build-rpi.sh
 
-or
+# Debug build
+./bin/dev/docker-build-rpi.sh debug
 
-``` shell
-sudo apt install kas
-```
+# Release with clean
+./bin/dev/docker-build-rpi.sh release clean
 
-Clone repo and build sdk
-
-``` shell
-git clone git@github.com:berryerlouis/yocto-rpiw.git
-cd yocto-rpiw
-kas build meta-raspberrypi/kas-poky-rpi.yml -c populate_sdk
-cd build/tmp/deploy/sdk/
-./poky-glibc-x86_64-core-image-base-arm1176jzfshf-vfp-raspberrypi0-wifi-toolchain-5.1.sh
+# Debug with clean
+./bin/dev/docker-build-rpi.sh debug clean
 ```
 
 # Architecture

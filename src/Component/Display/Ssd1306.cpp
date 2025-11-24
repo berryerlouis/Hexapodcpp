@@ -55,7 +55,7 @@ namespace Component
 
         void Ssd1306::Update(const uint64_t currentTime) {
             (void) currentTime;
-            static constexpr uint16_t NB_BYTES = 64U;
+            static const uint16_t NB_BYTES = 64U;
             if (this->mNeedToUpdate == true) {
                 if (this->mUpdateIndex == BUFFER_DISPLAY_LENGTH) {
                     memcpy(this->mBufferScreen[1U], this->mBufferScreen[0U],BUFFER_DISPLAY_LENGTH);

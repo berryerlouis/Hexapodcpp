@@ -13,8 +13,10 @@
       <file path="$PROJECT_DIR$/HMI-copy" />
       <file path="$PROJECT_DIR$/bin" />
       <file path="$PROJECT_DIR$/build" />
+      <file path="$PROJECT_DIR$/cmake" />
       <file path="$PROJECT_DIR$/images" />
       <file path="$PROJECT_DIR$/node" />
+      <file path="$PROJECT_DIR$/sysroot" />
     </excludeRoots>
   </component>
   <component name="WestSettings">{}</component>

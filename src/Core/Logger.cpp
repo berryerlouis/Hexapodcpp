@@ -93,9 +93,9 @@ namespace Core
     std::string Logger::CurrentTime() {
 
         // Get current time_point
-        auto now = std::chrono::system_clock::now();
-        auto now_time_t = std::chrono::system_clock::to_time_t(now);
-        auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
+        const auto now = std::chrono::system_clock::now();
+        const auto now_time_t = std::chrono::system_clock::to_time_t(now);
+        const auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
 
         // Convert to local time
         std::tm local_tm = *std::localtime(&now_time_t);
