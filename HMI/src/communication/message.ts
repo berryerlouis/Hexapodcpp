@@ -1,6 +1,6 @@
-import Protocol, {Direction, Encoding} from "./protocol.ts";
-import {Cluster, ClusterName, Command, CommandName} from "./clusters/clusterType.ts";
-import {getClusterByName, getCommandByName} from "./clusters/clusters.ts";
+import Protocol, { Direction, Encoding } from "./protocol.ts";
+import { Cluster, ClusterName, Command, CommandName } from "./clusters/clusterType.ts";
+import { getClusterByName, getCommandByName } from "./clusters/clusters.ts";
 
 export class MessageSizeError extends Error {
     constructor(message: string) {
@@ -21,14 +21,14 @@ export default class Message {
     timeout: number = 0;
     retry: number = 0;
 
-    constructor(clusterName: ClusterName, commandName: CommandName, params: (number) [] = [], encode: (Encoding) [] = []) {
+    constructor(clusterName: ClusterName, commandName: CommandName, params: (number)[] = [], encode: (Encoding)[] = []) {
         this.direction = Direction.TX;
         this.cluster = getClusterByName(clusterName);
         this.command = getCommandByName(this.cluster, commandName);
         this.size = params.length ? params.length : 0;
         this.params = params;
         this.encode = encode;
-        if (params && this.encode.length == 0) {
+        if (params && this.encode.length === 0) {
             for (let i = 0; i < params.length; i++) {
                 this.encode[i] = 0xFF;
             }
@@ -55,14 +55,14 @@ export default class Message {
     }
 
     getValueBool(index: number) {
-        if (!this.params) {
+        if (!this.params || index >= this.params.length) {
             throw new MessageSizeError(`No value at index ${index} in params`);
         }
-        return this.params[index] == 1;
+        return this.params[index] === 1;
     }
 
     getValueUint8(index: number) {
-        if (!this.params) {
+        if (!this.params || index >= this.params.length) {
             throw new MessageSizeError(`No value at index ${index} in params`);
         }
         return this.params[index] & 0xFF;
@@ -77,7 +77,7 @@ export default class Message {
     }
 
     getValueUint16(index: number) {
-        if (!this.params) {
+        if (!this.params || index + 1 >= this.params.length) {
             throw new MessageSizeError(`No value at index ${index} in params`);
         }
         return (this.params[index + 1] << 8) + this.params[index];
@@ -92,7 +92,7 @@ export default class Message {
     }
 
     getValueUint24(index: number) {
-        if (!this.params) {
+        if (!this.params || index + 2 >= this.params.length) {
             throw new MessageSizeError(`No value at index ${index} in params`);
         }
         return (this.params[index + 2] << 16) + (this.params[index + 1] << 8) + this.params[index];
@@ -107,7 +107,7 @@ export default class Message {
     }
 
     getValueUint32(index: number) {
-        if (!this.params) {
+        if (!this.params || index + 3 >= this.params.length) {
             throw new MessageSizeError(`No value at index ${index} in params`);
         }
         return (this.params[index + 3] << 24) + (this.params[index + 2] << 16) + (this.params[index + 1] << 8) + this.params[index];

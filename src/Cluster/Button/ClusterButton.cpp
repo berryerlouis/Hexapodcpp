@@ -8,7 +8,7 @@ namespace Cluster
         using namespace Component::Button;
 
         ClusterButton::ClusterButton(ButtonInterface &button) :
-            ClusterBase(BUTTON, this)
+            ClusterBase(BUTTON, *this)
             , ClusterCommand(NB_COMMANDS_BUTTON)
             , mButton(button) {
             this->AddClusterItem({.commandId = EButtonCommands::GET_BP_STATUS, .expectedSize = 0U});

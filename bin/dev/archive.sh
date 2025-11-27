@@ -1,5 +1,5 @@
 #!/bin/sh
 
 mkdir -p archive
-cp build/src/Hexapodcpp* archive/
-cp build/hexapodTest/test_results.xml archive/
+cp build/hexapod-RPI-RELEASE/src/Hexapodcpp* archive/
+cp build/hexapod-RPI-RELEASE/hexapodTest/test_results.xml archive/

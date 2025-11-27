@@ -37,7 +37,6 @@
             <excludedPath local="true" path="$PROJECT_DIR$/build/cross_rpi" />
             <excludedPath local="true" path="$PROJECT_DIR$/sysroot" />
             <excludedPath local="true" path="$PROJECT_DIR$/build/rpi-gcc-cross-compile-debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-rpi-debug" />
           </excludedPaths>
         </serverdata>
       </paths>

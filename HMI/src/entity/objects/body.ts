@@ -12,8 +12,8 @@ import {
 } from 'three'
 import Legs from "./legs.ts";
 import Socket from "../../communication/socket.ts";
-import {ClusterName} from "../../communication/clusters/clusterType.ts";
-import {ClusterServoCommands} from "../../communication/clusters/clusterServo.ts";
+import { ClusterName } from "../../communication/clusters/clusterType.ts";
+import { ClusterServoCommands } from "../../communication/clusters/clusterServo.ts";
 import Message from "../../communication/message.ts";
 
 interface BodyStruct {
@@ -26,7 +26,7 @@ interface BodyStruct {
 
 export default class Body extends Object3D {
 
-    interval: number;
+    interval: NodeJS.Timeout | null = null;
     params: BodyStruct = {
         width: 1.4,
         widthMiddle: 1.8,
@@ -46,7 +46,6 @@ export default class Body extends Object3D {
 
     constructor(x: number, y: number, z: number, socket: Socket, intervalCommand: number) {
         super();
-        this.interval = 0;
         this.intervalEnable = intervalCommand;
         this.intervalDisable = 1000;
         this.intervalTime = this.intervalDisable;
@@ -61,7 +60,7 @@ export default class Body extends Object3D {
         this.drawBody();
 
         this.socket.addSpecificCallbackRead(ClusterName.SERVO, ClusterServoCommands.GET_ALL, (message: Message) => {
-            if (message.params && message.params.length == 18) {
+            if (message.params && message.params.length === 18) {
                 for (let i = 0; i < 6; i++) {
                     for (let j = 0; j < 3; j++) {
                         this.members.legs.leg[i].legData.servos[j].angle = message.getValueUint8(i * 3 + j);
@@ -73,12 +72,16 @@ export default class Body extends Object3D {
         this.enable = document.getElementById('enable')!;
         this.enable.addEventListener('click', () => {
             if (this.enable.classList.contains('select')) {
-                clearInterval(this.interval);
+                if (this.interval !== null) {
+                    clearInterval(this.interval);
+                }
                 this.interval = setInterval(() => {
                     this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.GET_ALL));
                 }, this.intervalEnable);
             } else {
-                clearInterval(this.interval);
+                if (this.interval !== null) {
+                    clearInterval(this.interval);
+                }
                 this.interval = setInterval(() => {
                     this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.GET_ALL));
                 }, this.intervalDisable);
@@ -86,14 +89,19 @@ export default class Body extends Object3D {
         });
 
         this.socket.addCallbackStarted(() => {
-            clearInterval(this.interval);
+            if (this.interval !== null) {
+                clearInterval(this.interval);
+            }
             this.interval = setInterval(() => {
                 this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.GET_ALL));
             }, this.intervalTime);
         });
 
         this.socket.addCallbackStopped(() => {
-            clearInterval(this.interval);
+            if (this.interval !== null) {
+                clearInterval(this.interval);
+                this.interval = null;
+            }
         });
     }
 
@@ -103,14 +111,14 @@ export default class Body extends Object3D {
         let cylinder: Mesh;
 
         geometry = new BoxGeometry(this.params.height, this.params.thickness, this.params.width * 0.6);
-        material = new MeshLambertMaterial({color: this.params.color});
+        material = new MeshLambertMaterial({ color: this.params.color });
         const bodyH = new Mesh(geometry, material);
         bodyH.position.x += this.x;
         bodyH.position.y += this.y;
         this.add(bodyH);
 
         geometry = new BoxGeometry(this.params.widthMiddle * 0.6, 0.01, this.params.width * 0.3);
-        material = new MeshLambertMaterial({color: this.params.color});
+        material = new MeshLambertMaterial({ color: this.params.color });
         const bodyW = new Mesh(geometry, material);
         bodyW.position.x += this.x;
         bodyW.position.y += this.y;
@@ -160,7 +168,7 @@ export default class Body extends Object3D {
 
 
         geometry = new RingGeometry(this.params.width / 3, this.params.height / 3, 32, 32, -Math.PI / 2, Math.PI * 6 / 7);
-        material = new MeshLambertMaterial({color: this.params.color, side: DoubleSide});
+        material = new MeshLambertMaterial({ color: this.params.color, side: DoubleSide });
         cylinder = new Mesh(geometry, material);
         cylinder.position.x -= this.params.width / 2 - 0.15;
         cylinder.position.z -= this.params.widthMiddle / 2;
@@ -171,7 +179,7 @@ export default class Body extends Object3D {
         this.add(cylinder);
 
         geometry = new RingGeometry(this.params.width / 3, this.params.height / 3, 32, 32, -Math.PI / 2, Math.PI * 6 / 7);
-        material = new MeshLambertMaterial({color: this.params.color, side: DoubleSide});
+        material = new MeshLambertMaterial({ color: this.params.color, side: DoubleSide });
         cylinder = new Mesh(geometry, material);
         cylinder.position.x -= this.params.width / 2 - 0.15;
         cylinder.position.z += this.params.widthMiddle / 2;
@@ -182,7 +190,7 @@ export default class Body extends Object3D {
         this.add(cylinder);
 
         geometry = new RingGeometry(this.params.width / 3, this.params.height / 3, 32, 32, Math.PI / 2, Math.PI * 6 / 7);
-        material = new MeshLambertMaterial({color: this.params.color, side: DoubleSide});
+        material = new MeshLambertMaterial({ color: this.params.color, side: DoubleSide });
         cylinder = new Mesh(geometry, material);
         cylinder.position.x += this.params.width / 2 - 0.15;
         cylinder.position.z += this.params.widthMiddle / 2;
@@ -193,7 +201,7 @@ export default class Body extends Object3D {
         this.add(cylinder);
 
         geometry = new RingGeometry(this.params.width / 3, this.params.height / 3, 32, 32, -Math.PI / 2, Math.PI * 6 / 7);
-        material = new MeshLambertMaterial({color: this.params.color, side: DoubleSide});
+        material = new MeshLambertMaterial({ color: this.params.color, side: DoubleSide });
         cylinder = new Mesh(geometry, material);
         cylinder.position.x += this.params.width / 2 - 0.15;
         cylinder.position.z -= this.params.widthMiddle / 2;
@@ -204,7 +212,7 @@ export default class Body extends Object3D {
         this.add(cylinder);
 
         geometry = new RingGeometry(0, this.params.height / 4, 32, 32, -Math.PI, Math.PI);
-        material = new MeshLambertMaterial({color: this.params.color, side: DoubleSide});
+        material = new MeshLambertMaterial({ color: this.params.color, side: DoubleSide });
         cylinder = new Mesh(geometry, material);
         cylinder.position.x += this.params.height - this.params.height / 2;
         cylinder.rotateX(MathUtils.degToRad(90));

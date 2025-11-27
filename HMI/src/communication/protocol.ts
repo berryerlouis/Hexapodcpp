@@ -1,6 +1,6 @@
 import Message from "./message.ts";
-import {Cluster, Command} from "./clusters/clusterType.ts";
-import {getClusterByCode, getCommandByCode} from "./clusters/clusters.ts";
+import { Cluster, Command } from "./clusters/clusterType.ts";
+import { getClusterByCode, getCommandByCode } from "./clusters/clusters.ts";
 
 export enum Direction {
     RX = "Rx",
@@ -60,12 +60,12 @@ export default class Protocol {
         let messageToEncode = '<';
         messageToEncode += parseInt(cluster.code, 16).toString(16).padStart(2, '0').toUpperCase();
         messageToEncode += parseInt(command.code, 16).toString(16).padStart(2, '0').toUpperCase();
-        if (size == 0) {
+        if (size === 0) {
             messageToEncode += '00';
         } else {
             messageToEncode += "ZZ";
             if (params && params.length > 0) {
-                if (params.length == encoding?.length) {
+                if (params.length === encoding?.length) {
                     let encoded = Protocol.getSizeofParam(params, encoding);
                     messageToEncode += Protocol.toLittleEndian(params, encoded.encodedSize);
                     messageToEncode = messageToEncode.replace('ZZ', (encoded.length).toString(16).padStart(2, '0').toUpperCase());
@@ -79,7 +79,6 @@ export default class Protocol {
     }
 
     private static getSizeofParam(params: number[], encoding?: Encoding[]): { encodedSize: number[], length: number } {
-        let encoded: number = 0;
         let encodedSize: number[] = [];
         let length: number = 0;
         for (let i: number = 0; i < params.length; i++) {
@@ -90,18 +89,19 @@ export default class Protocol {
             if (params[i] < 0) {
                 params[i] = (params[i] & encode);
             }
-            if (encode == 0xFF)
+            let encoded: number = 2;
+            if (encode === 0xFF)
                 encoded = 2;
-            else if (encode == 0xFFFF)
+            else if (encode === 0xFFFF)
                 encoded = 4;
-            else if (encode == 0xFFFFFF)
+            else if (encode === 0xFFFFFF)
                 encoded = 6;
-            else if (encode == 0xFFFFFFFF)
+            else if (encode === 0xFFFFFFFF)
                 encoded = 8;
             encodedSize.push(encoded);
             length += encoded / 2;
         }
-        return {encodedSize, length};
+        return { encodedSize, length };
     }
 
     private static toLittleEndian(params: number[], encodedSize: number[]): string {

@@ -7,7 +7,7 @@ namespace Cluster
         using namespace Component::Servos;
 
         ClusterServo::ClusterServo(ServosInterface &servos) :
-            ClusterBase(SERVO, this)
+            ClusterBase(SERVO, *this)
             , ClusterCommand(NB_COMMANDS_SERVO)
             , mServosInterface(servos) {
             this->AddClusterItem((ClusterItem){.commandId = EServoCommands::GET_ALL, .expectedSize = 0U});

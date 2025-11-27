@@ -1,11 +1,11 @@
 import Message from "./message.ts";
-import Protocol, {Direction} from "./protocol.ts";
-import {openPopupError, openPopupInfo, openPopupWarning} from "../engine/popup.ts";
-import {ClusterGenericCommands, ClusterName, CommandName} from "./clusters/clusterType.ts";
-import {getErrorName} from "./clusters/clusters.ts";
+import Protocol, { Direction } from "./protocol.ts";
+import { clearAllPopups, openPopupError, openPopupInfo, openPopupWarning } from "../engine/popup.ts";
+import { ClusterGenericCommands, ClusterName, CommandName } from "./clusters/clusterType.ts";
+import { getErrorName } from "./clusters/clusters.ts";
 
 
-type Callback = (message: any) => void;
+type Callback = (message: Message) => void;
 type CallbackStarted = () => void;
 type CallbackStopped = () => void;
 
@@ -16,6 +16,9 @@ interface SpecificCallback {
     params?: number[];
 }
 
+const MAX_MESSAGE_QUEUE_SIZE = 100;
+const RECONNECT_INTERVAL_MS = 2500;
+
 export default class Socket {
 
     private listOfSpecificCallbackRead: SpecificCallback[];
@@ -25,56 +28,112 @@ export default class Socket {
     private listOfCallbackStopped: CallbackStopped[];
     private socket: WebSocket;
     private messagesList: Message[];
+    private url: string | URL;
+    private reconnectTimer: number | null = null;
+    private shouldReconnect: boolean = true;
 
     constructor(url: string | URL) {
+        this.url = url;
         this.listOfCallbackRead = [];
         this.listOfCallbackWrite = [];
         this.listOfSpecificCallbackRead = [];
         this.listOfCallbackStarted = [];
         this.listOfCallbackStopped = [];
-        this.messagesList = []
-        this.socket = new WebSocket(url);
+        this.messagesList = [];
+        this.socket = this.createWebSocket();
+    }
 
-        this.socket.addEventListener('open', () => {
+    private createWebSocket(): WebSocket {
+        const socket = new WebSocket(this.url);
+
+        socket.addEventListener('open', () => {
             console.log('Connected to the WebSocket server');
             openPopupInfo('Connected!');
+
+            // Clear reconnect timer on successful connection
+            if (this.reconnectTimer) {
+                clearTimeout(this.reconnectTimer);
+                this.reconnectTimer = null;
+            }
+
             this.notifyCallbackStarted();
         });
 
-        this.socket.addEventListener('message', (event) => {
-            let frame = Protocol.decode(event.data);
-            frame.direction = Direction.RX;
-            frame.setDate();
-            this.notifyRead(frame);
+        socket.addEventListener('message', (event) => {
+            try {
+                let frame = Protocol.decode(event.data);
+                frame.direction = Direction.RX;
+                frame.setDate();
+                this.notifyRead(frame);
 
-            if (this.messagesList.length > 0) {
-                if (frame.command?.name == ClusterGenericCommands.GENERIC ||
-                    frame.cluster?.name == ClusterName.GENERIC ||
-                    frame.cluster?.code == this.messagesList[0].cluster?.code) {
+                if (this.messagesList.length > 0) {
+                    if (frame.command?.name === ClusterGenericCommands.GENERIC ||
+                        frame.cluster?.name === ClusterName.GENERIC ||
+                        frame.cluster?.code === this.messagesList[0].cluster?.code) {
 
-                    if (frame.command?.name == ClusterGenericCommands.GENERIC ||
-                        frame.cluster?.name == ClusterName.GENERIC) {
-                        openPopupWarning(getErrorName(frame.params[0]) + ': ' + this.messagesList[0].raw);
-                    }
-                    this.messagesList.shift();
-                    if (this.messagesList.length > 0) {
-                        this.writeOnSocket(this.messagesList[0]).then();
+                        if (frame.command?.name === ClusterGenericCommands.GENERIC ||
+                            frame.cluster?.name === ClusterName.GENERIC) {
+                            openPopupWarning(getErrorName(frame.params[0]) + ': ' + this.messagesList[0].raw);
+                        }
+                        this.messagesList.shift();
+                        this.updateProgressBar();
+                        if (this.messagesList.length > 0) {
+                            this.writeOnSocket(this.messagesList[0]).then();
+                        }
                     }
                 }
+            } catch (error) {
+                console.error('Error decoding message:', error);
+                openPopupError(`Message decode error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+                return;
             }
         });
 
-        this.socket.addEventListener('close', () => {
+        socket.addEventListener('close', () => {
             console.log('Disconnected from the WebSocket server');
             openPopupWarning('WebSocket disconnected!');
             this.notifyCallbackStopped();
             this.messagesList = [];
+
+            // Attempt reconnection if enabled
+            if (this.shouldReconnect) {
+                this.scheduleReconnect();
+            }
         });
 
-        this.socket.addEventListener('error', (event) => {
+        socket.addEventListener('error', (event) => {
             console.error('WebSocket error:', event);
             openPopupError('WebSocket error!');
         });
+
+        return socket;
+    }
+
+    private scheduleReconnect() {
+        if (this.reconnectTimer) {
+            return; // Already scheduled
+        }
+
+        console.log(`Reconnecting in ${RECONNECT_INTERVAL_MS}ms...`);
+        this.reconnectTimer = setTimeout(() => {
+            if (this.shouldReconnect && this.socket.readyState !== WebSocket.OPEN && this.socket.readyState !== WebSocket.CONNECTING) {
+                console.log('Attempting to reconnect...');
+                clearAllPopups();
+                this.socket = this.createWebSocket();
+            }
+            this.reconnectTimer = null;
+        }, RECONNECT_INTERVAL_MS);
+    }
+
+    disconnect() {
+        this.shouldReconnect = false;
+        if (this.reconnectTimer) {
+            clearTimeout(this.reconnectTimer);
+            this.reconnectTimer = null;
+        }
+        if (this.socket) {
+            this.socket.close();
+        }
     }
 
     isConnected(): boolean {
@@ -107,9 +166,9 @@ export default class Socket {
 
     addSpecificCallbackRead(cluster: ClusterName, command: CommandName, cb: Callback, params?: number[]) {
         if (params == null) {
-            this.listOfSpecificCallbackRead.push({callback: cb, cluster: cluster, command: command});
+            this.listOfSpecificCallbackRead.push({ callback: cb, cluster: cluster, command: command });
         } else {
-            this.listOfSpecificCallbackRead.push({callback: cb, cluster: cluster, command: command, params: params});
+            this.listOfSpecificCallbackRead.push({ callback: cb, cluster: cluster, command: command, params: params });
         }
     }
 
@@ -117,18 +176,18 @@ export default class Socket {
         this.listOfCallbackWrite.push(cb);
     }
 
-    notifyRead(message: any) {
+    notifyRead(message: Message) {
         console.log(`Received: ${message}`);
         this.listOfCallbackRead.forEach((cb) => {
             cb(message);
         });
 
         this.listOfSpecificCallbackRead.forEach((speCb) => {
-            if (message.cluster?.name == speCb.cluster) {
-                if (message.command?.name == speCb.command) {
+            if (message.cluster?.name === speCb.cluster) {
+                if (message.command?.name === speCb.command) {
                     if (message.params && speCb.params) {
                         for (let i = 0; i < speCb.params.length; i++) {
-                            if (message.params[i] != speCb.params[i]) {
+                            if (message.params[i] !== speCb.params[i]) {
                                 return;
                             }
                         }
@@ -141,7 +200,7 @@ export default class Socket {
         });
     }
 
-    notifyWrite(message: any) {
+    notifyWrite(message: Message) {
         message.setDate();
         console.log(`Transmit: ${message}`);
         this.listOfCallbackWrite.forEach((cb) => {
@@ -167,18 +226,33 @@ export default class Socket {
         });
     }
 
-    write(message: Message) {
-        this.messagesList.push(message);
-        let pb: HTMLElement = document.getElementById('progress-message-queue')!;
+    private updateProgressBar() {
+        const pb = document.getElementById('progress-message-queue');
+        const pbVal = document.getElementById('progress-message-queue-val');
         if (pb) {
-            pb.setAttribute('style', 'width: ' + (this.messagesList.length > 100 ? 100 : this.messagesList.length) + '%');
+            const percentage = Math.min((this.messagesList.length / MAX_MESSAGE_QUEUE_SIZE) * 100, 100);
+            pb.setAttribute('style', `width: ${percentage}%`);
         }
-        if (this.messagesList.length >= 100) {
-            openPopupWarning('WebSocket Messages list full!');
+        if (pbVal) {
+            pbVal.innerText = this.messagesList.length.toString();
         }
-        if (this.messagesList.length !== 1) {
+    }
+
+    write(message: Message) {
+        if (this.messagesList.length >= MAX_MESSAGE_QUEUE_SIZE) {
+            openPopupWarning('WebSocket Messages list full! Message dropped.');
             return;
         }
-        this.writeOnSocket(message).then();
+
+        this.messagesList.push(message);
+        this.updateProgressBar();
+
+        if (this.messagesList.length === 1) {
+            this.writeOnSocket(message).catch((error) => {
+                console.error('Failed to write message:', error);
+                this.messagesList.shift();
+                this.updateProgressBar();
+            });
+        }
     }
 }

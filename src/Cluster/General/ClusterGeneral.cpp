@@ -8,7 +8,7 @@ namespace Cluster
         using namespace Component::Software;
 
         ClusterGeneral::ClusterGeneral(SoftwareInterface &software) :
-            ClusterBase(GENERAL, this)
+            ClusterBase(GENERAL, *this)
             , ClusterCommand(NB_COMMANDS_GENERAL)
             , mSoftware(software) {
             this->AddClusterItem({.commandId = EGeneralCommands::RESET, .expectedSize = 0U});

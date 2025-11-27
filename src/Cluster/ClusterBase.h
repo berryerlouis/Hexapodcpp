@@ -7,18 +7,18 @@ namespace Cluster
 {
     class ClusterBase : public ClusterInterface {
     public:
-        ClusterBase(const EClusters clusterId, ClusterCommand *strategyCluster);
+        ClusterBase(const EClusters clusterId, ClusterCommand &strategyCluster);
 
-        virtual Core::Status Execute(Frame &request, Frame &response) final override;
+        Core::Status Execute(Frame &request, Frame &response) final override;
 
-        virtual EClusters GetClusterId(void);
+        EClusters GetClusterId() const final override;
 
-        virtual Core::Status BuildFrameNack(Frame &response);
+        Core::Status BuildFrameNack(Frame &response) final override;
 
-        virtual Core::Status BuildFrameNack(Frame &response, const Core::Status error);
+        Core::Status BuildFrameNack(Frame &response, const Core::Status error) final override;
 
     protected:
         const EClusters mClusterId;
-        ClusterCommand *mClusterCommand;
+        ClusterCommand &mClusterCommand;
     };
 }

@@ -12,16 +12,16 @@ TOOLCHAIN_IMAGE="hexapodcpp:rpi-toolchain"
 OUTPUT_BINARY="Hexapodcpp"
 
 # Parse arguments
-BUILD_TYPE="Release"
+BUILD_TYPE="RELEASE"
 CLEAN_BUILD=false
 
 for arg in "$@"; do
     case $arg in
         debug|DEBUG)
-            BUILD_TYPE="Debug"
+            BUILD_TYPE="DEBUG"
             ;;
         release|RELEASE)
-            BUILD_TYPE="Release"
+            BUILD_TYPE="RELEASE"
             ;;
         clean|CLEAN)
             CLEAN_BUILD=true
@@ -29,7 +29,7 @@ for arg in "$@"; do
     esac
 done
 
-BUILD_DIR="build/rpi-$(echo $BUILD_TYPE | tr '[:upper:]' '[:lower:]')"
+BUILD_DIR="build/hexapod-RPI-$(echo $BUILD_TYPE)"
 
 cd "$PROJECT_ROOT"
 
@@ -60,14 +60,20 @@ echo "Running incremental build with volume mount..."
 docker run --rm \
     -v "$PROJECT_ROOT:/workspace" \
     -w /workspace \
+    -e CLICOLOR_FORCE=1 \
+    -e TERM=xterm-256color \
     "$TOOLCHAIN_IMAGE" \
-    bash -c "cmake -Wno-dev -S . -B $BUILD_DIR \
-        -DCMAKE_TOOLCHAIN_FILE=/workspace/cmake/toolchain-rpi-zero-2-w.cmake \
-        -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-        -DTARGET=RPI \
-        -DOPENSSL_USE_STATIC_LIBS=OFF \
-        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-    && cmake --build $BUILD_DIR --target Hexapodcpp -- -j\$(nproc)"
+    bash -c "export CFLAGS=-fdiagnostics-color && export CXXFLAGS=-fdiagnostics-color && \
+        if [ ! -f $BUILD_DIR/CMakeCache.txt ]; then \
+            cmake -Wno-dev -S . -B $BUILD_DIR \
+                -DCMAKE_TOOLCHAIN_FILE=/workspace/cmake/toolchain-rpi-zero-2-w.cmake \
+                -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+                -DTARGET=RPI \
+                -DOPENSSL_USE_STATIC_LIBS=OFF \
+                -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+                -DCMAKE_COLOR_DIAGNOSTICS=ON; \
+        fi && \
+        CLICOLOR_FORCE=1 cmake --build $BUILD_DIR --target Hexapodcpp -- -j\$(nproc)"
 
 # Copy binary to project root
 echo ""
@@ -86,6 +92,9 @@ echo "Build complete! Binary: ./$OUTPUT_BINARY"
 echo "============================================="
 echo ""
 echo "Deploy to Raspberry Pi:"
-echo "  scp $OUTPUT_BINARY hexabot:/home/hexabot/"
+echo "  Stopping running process on hexabot..."
+ssh hexabot "sudo systemctl stop hexabot.service 2>/dev/null; sudo pkill -9 gdbserver 2>/dev/null; sudo killall -9 Hexapodcpp 2>/dev/null; sleep 0.5; true"
+echo "  Copying binary..."
 scp $OUTPUT_BINARY hexabot:/home/hexabot/
+echo "  Deployment complete!"
 echo ""

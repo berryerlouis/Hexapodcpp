@@ -5,6 +5,23 @@ class PopUpContent {
 
 let contents: PopUpContent[] = [];
 
+export function clearAllPopups() {
+    // Clear all timeouts
+    contents.forEach(popupContent => {
+        if (popupContent.timeout) {
+            clearTimeout(popupContent.timeout);
+        }
+    });
+    contents = [];
+
+    // Clear DOM
+    const popup = document.getElementById('popup');
+    if (popup) {
+        popup.innerHTML = '';
+        popup.style.display = 'none';
+    }
+}
+
 export function openPopupInfo(message: string) {
     let id: string = Math.floor(Math.random() * 100000000).toString();
     openPopup(message, id);
@@ -31,7 +48,8 @@ function openPopup(message: string, id: string) {
     const close = document.createElement("a");
     close.classList.add("popup-close");
     close.innerText = '✖️';
-    close.addEventListener('click', () => {
+
+    const closeHandler = () => {
         content.style.display = 'none';
         let popMessage = document.getElementById(id);
         if (popMessage) {
@@ -40,25 +58,45 @@ function openPopup(message: string, id: string) {
                 document.getElementById('popup')!.style.display = 'none';
             }
         }
-    });
+
+        // Clean up timeout and reference
+        const contentIndex = contents.findIndex(c => c.content?.id === id);
+        if (contentIndex !== -1) {
+            const popupContent = contents[contentIndex];
+            if (popupContent.timeout) {
+                clearTimeout(popupContent.timeout);
+            }
+            contents.splice(contentIndex, 1);
+        }
+        close.removeEventListener('click', closeHandler);
+    };
+
+    close.addEventListener('click', closeHandler);
 
     const content = document.createElement("div");
     content.classList.add("popup-content");
     content.id = id;
     content.append(popMessage);
     content.append(close);
-    contents.push({
-        content, timeout: setTimeout(() => {
-            if (document.getElementById('popup')!.hasChildNodes()) {
-                document.getElementById('popup')!.removeChild(content);
-                document.getElementById('popup')!.style.display = 'none';
-                close.removeEventListener('click', () => {
-                });
+
+    const timeout = setTimeout(() => {
+        const popup = document.getElementById('popup');
+        if (popup?.hasChildNodes() && content.parentElement) {
+            popup.removeChild(content);
+            if (popup.children.length === 0) {
+                popup.style.display = 'none';
             }
-        }, 5000)
-    });
+        }
+
+        const contentIndex = contents.findIndex(c => c.content?.id === id);
+        if (contentIndex !== -1) {
+            contents.splice(contentIndex, 1);
+        }
+        close.removeEventListener('click', closeHandler);
+    }, 5000);
+
+    contents.push({ content, timeout });
 
     document.getElementById('popup')!.style.display = 'block';
     document.getElementById('popup')!.appendChild(content);
-
 }

@@ -2,95 +2,216 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Build X64",
             "type": "shell",
-            "label": "Upload",
-            "command": "bin/stack/avrdude.exe",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/build.sh",
+                    "X64",
+                    "sources",
+                    "${input:buildType}"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/build.sh",
+                    "X64",
+                    "sources",
+                    "${input:buildType}"
+                ]
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Test X64",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/test.sh",
+                    "${input:makeTarget}"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/test.sh",
+                    "${input:makeTarget}"
+                ]
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Build RPI (Docker Cross-Compile)",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/docker-build-rpi.sh",
+                    "${input:buildType}"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/docker-build-rpi.sh",
+                    "${input:buildType}"
+                ]
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build"
+            }
+        },
+        {
+            "label": "Deploy to RPi",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "scp",
+                "args": [
+                    "Hexapodcpp",
+                    "hexabot:/home/hexabot/"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "scp",
+                    "Hexapodcpp",
+                    "hexabot:/home/hexabot/"
+                ]
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run RPi",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "ssh",
+                "args": [
+                    "hexabot",
+                    "sudo systemctl start hexabot.service"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "ssh",
+                    "hexabot",
+                    "sudo systemctl start hexabot.service"
+                ]
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Start GDB Server on RPi",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "ssh",
+                "args": [
+                    "hexabot",
+                    "command -v gdbserver >/dev/null || sudo apt-get install -y gdbserver; pkill gdbserver 2>/dev/null || true; gdbserver :2345 /home/hexabot/Hexapodcpp"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "ssh",
+                    "hexabot",
+                    "command -v gdbserver >/dev/null || sudo apt-get install -y gdbserver; pkill gdbserver 2>/dev/null || true; gdbserver :2345 /home/hexabot/Hexapodcpp"
+                ]
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "."
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".",
+                    "endsPattern": "Listening on port 2345"
+                }
+            }
+        },
+        {
+            "label": "Build & Deploy to RPi",
+            "dependsOn": [
+                "Build RPI (Docker Cross-Compile)",
+                "Deploy to RPi",
+                "Run RPi"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": []
+        },
+        {
+            "label": "Build, Deploy & Debug RPi",
+            "dependsOn": [
+                "Build RPI (Docker Cross-Compile)",
+                "Deploy to RPi",
+                "Start GDB Server on RPi"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": []
+        },
+        {
+            "label": "Debug RPi (Interactive GDB)",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "command": "pwsh.exe",
             "args": [
-                "-c",
-                "arduino",
-                "-P",
-                "COM4",
-                "-b",
-                "500000",
-                "-p",
-                "m1284p",
-                "-U",
-                "flash:w:build/Hexapodcpp.elf"
+                "-NoExit",
+                "-File",
+                ".vscode/debug-rpi.ps1"
             ],
             "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            }
-        },
-        {
-            "label": "Build",
-            "type": "shell",
-            "options": {
-                "cwd": "${workspaceFolder}"
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
             },
-            "command": "bin/dev/build.sh",
-            "args": [
-                "${input:configuration}"
-            ],
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            }
-        },
-        {
-            "label": "Test Cpp",
-            "type": "shell",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "args": [
-                "${input:makeTarget}"
-            ],
-            "command": "bin/dev/test.sh",
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            }
-        },
-        {
-            "label": "Test Js",
-            "type": "shell",
-            "options": {
-                "cwd": "${workspaceFolder}/HMI/"
-            },
-            "command": "npm run test",
-            "problemMatcher": [
-                "$jshint"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            }
-        },
-        {
-            "label": "Test and cover Js",
-            "type": "shell",
-            "options": {
-                "cwd": "${workspaceFolder}/HMI/"
-            },
-            "command": "npm run testcov",
-            "problemMatcher": [
-                "$jshint"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            }
+            "dependsOn": "Start GDB Server on RPi"
         }
     ],
     "inputs": [
@@ -102,15 +223,23 @@
                 "all",
                 "clean",
                 "help",
+                "UT_BOT_BODY",
+                "UT_BOT_LEG",
+                "UT_BOT_LEGS",
                 "UT_CLU_BATTERY",
                 "UT_CLU_BODY",
+                "UT_CLU_BUTTON",
                 "UT_CLU_FRAME",
                 "UT_CLU_GENERAL",
                 "UT_CLU_IMU",
                 "UT_CLU_PROTOCOL",
                 "UT_CLU_PROXIMITY",
                 "UT_CLU_SERVO",
+                "UT_CLU_SOUND",
+                "UT_CMP_ADS1115",
+                "UT_CMP_AHRS",
                 "UT_CMP_BATTERY",
+                "UT_CMP_BUTTON",
                 "UT_CMP_COMMUNICATION",
                 "UT_CMP_LED",
                 "UT_CMP_MPU9150",
@@ -118,25 +247,28 @@
                 "UT_CMP_PROXIMITY",
                 "UT_CMP_SERVO",
                 "UT_CMP_SERVOS",
+                "UT_CMP_SOUND",
                 "UT_CMP_SRF05",
                 "UT_CMP_VL53L0X",
                 "UT_SRV_BATTERY",
-                "UT_SRV_CONTROL",
+                "UT_SRV_BUTTON",
                 "UT_SRV_COMMUNICATION",
+                "UT_SRV_CONTROL",
                 "UT_SRV_DISPLAY",
                 "UT_SRV_GENERAL",
                 "UT_SRV_ORIENTATION",
-                "UT_SRV_PROXIMITY"
+                "UT_SRV_PROXIMITY",
+                "UT_SRV_SOUND"
             ],
             "default": "all"
         },
         {
             "type": "pickString",
-            "id": "configuration",
-            "description": "Which configuration to build ?",
+            "id": "buildType",
+            "description": "Which build type?",
             "options": [
-                "RELEASE",
                 "DEBUG",
+                "RELEASE",
                 "CLEAN"
             ],
             "default": "DEBUG"

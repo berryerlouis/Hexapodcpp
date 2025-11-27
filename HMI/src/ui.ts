@@ -8,11 +8,11 @@ import Display from "./engine/scene.ts";
 import Panel from "./engine/panel.ts";
 import Socket from "./communication/socket.ts";
 import Keyboard from "./engine/keyboard.ts";
-import {ClusterName} from "./communication/clusters/clusterType.ts";
-import {ClusterGeneralCommands} from "./communication/clusters/clusterGeneral.ts";
+import { ClusterName } from "./communication/clusters/clusterType.ts";
+import { ClusterGeneralCommands } from "./communication/clusters/clusterGeneral.ts";
 import Message from "./communication/message.ts";
-import {ClusterBodyCommands} from "./communication/clusters/clusterBody.ts";
-import {ClusterServoCommands} from "./communication/clusters/clusterServo.ts";
+import { ClusterBodyCommands } from "./communication/clusters/clusterBody.ts";
+import { ClusterServoCommands } from "./communication/clusters/clusterServo.ts";
 
 
 export default class Ui {
@@ -76,7 +76,7 @@ export default class Ui {
     update(dt: number) {
         this.control.update(dt);
         this.world.update();
-        this.hexapod.update();
+        this.hexapod.update(dt);
         this.panel.update();
         this.camera.update();
         this.light.update(this.hexapod);

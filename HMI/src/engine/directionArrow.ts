@@ -1,10 +1,10 @@
 import Socket from "../communication/socket.ts";
 import Message from "../communication/message.ts";
-import {ClusterName} from "../communication/clusters/clusterType.ts";
-import {ClusterServoCommands} from "../communication/clusters/clusterServo.ts";
-import {ClusterBodyCommands} from "../communication/clusters/clusterBody.ts";
-import {CircleGeometry, DoubleSide, MathUtils, Mesh, MeshBasicMaterial, Object3D} from "three";
-import {HexapodStruct} from "../entity/hexapod.ts";
+import { ClusterName } from "../communication/clusters/clusterType.ts";
+import { ClusterServoCommands } from "../communication/clusters/clusterServo.ts";
+import { ClusterBodyCommands } from "../communication/clusters/clusterBody.ts";
+import { CircleGeometry, DoubleSide, MathUtils, Mesh, MeshBasicMaterial, Object3D } from "three";
+import { HexapodStruct } from "../entity/hexapod.ts";
 
 export default class DirectionArrow extends Object3D {
     socket: Socket;
@@ -34,14 +34,14 @@ export default class DirectionArrow extends Object3D {
         geometry.rotateX(Math.PI / 2);
         geometry.rotateY(Math.PI);
         geometry.translate(0, 1.11, -0.5);
-        const material = new MeshBasicMaterial({color: 0x4a6a8f});
+        const material = new MeshBasicMaterial({ color: 0x4a6a8f });
         material.side = DoubleSide;
         this.circle = new Mesh(geometry, material);
         //this.circle.visible = false;
         this.add(this.circle);
 
         this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS, (message: Message) => {
-            if (message.params && message.params.length == 9) {
+            if (message.params && message.params.length === 9) {
                 this.setDirection(message.getValueUint16(2));
             }
         });

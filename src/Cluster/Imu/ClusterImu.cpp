@@ -8,7 +8,7 @@ namespace Cluster
         using namespace Component::Barometer;
 
         ClusterImu::ClusterImu(Mpu9150Interface &imu, BarometerInterface &barometer) :
-            ClusterBase(IMU, this)
+            ClusterBase(IMU, *this)
             , ClusterCommand(NB_COMMANDS_IMU)
             , mImu(imu)
             , mBarometer(barometer) {

@@ -9,7 +9,7 @@ namespace Cluster
         using namespace Bot::Body;
 
         ClusterBody::ClusterBody(BodyInterface &body) :
-            ClusterBase(BODY, this)
+            ClusterBase(BODY, *this)
             , ClusterCommand(NB_COMMANDS_BODY)
             , mBody(body) {
             this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::GET_ALL_PARAMS, .expectedSize = 0U});

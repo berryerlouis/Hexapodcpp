@@ -7,7 +7,7 @@ namespace Cluster
         using namespace Component::Proximity;
 
         ClusterProximity::ClusterProximity(SensorProximityMultipleInterface &proximity) :
-            ClusterBase(PROXIMITY, this)
+            ClusterBase(PROXIMITY, *this)
             , ClusterCommand(NB_COMMANDS_PROXIMITY)
             , mProximity(proximity) {
             this->AddClusterItem((ClusterItem){.commandId = EProximityCommands::US_LEFT, .expectedSize = 0U});

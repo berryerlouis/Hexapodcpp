@@ -8,7 +8,7 @@ namespace Cluster
         using namespace Component::Sound;
 
         ClusterSound::ClusterSound(SoundInterface &soundLeft, SoundInterface &soundRight) :
-            ClusterBase(SOUND, this)
+            ClusterBase(SOUND, *this)
             , ClusterCommand(NB_COMMANDS_SOUND)
             , mSoundLeft(soundLeft)
             , mSoundRight(soundRight) {

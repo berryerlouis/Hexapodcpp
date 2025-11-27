@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <functional>
 
 #include "../Battery/ClusterBattery.h"
 #include "../General/ClusterGeneral.h"
@@ -39,10 +40,10 @@ namespace Cluster
 
             ~Clusters() = default;
 
-            virtual ClusterBase *GetCluster(const EClusters clusterId) final override;
+            ClusterBase *GetCluster(const EClusters clusterId) final override;
 
         private:
-            std::unordered_map<EClusters, ClusterBase *> mClusters;
+            std::unordered_map<EClusters, std::reference_wrapper<ClusterBase>> mClusters;
         };
     }
 }
