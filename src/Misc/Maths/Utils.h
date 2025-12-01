@@ -17,21 +17,38 @@ namespace Misc
             return a / 180.0F * M_PI;
         }
 
-        static inline uint8_t Lerp(const uint8_t a, const uint8_t b, const float t) {
-            return a * (1.0 - t) + (b * t);
+        template<typename T>
+        static inline T Lerp(const T a, const T b, const T t) {
+            return a + t * (b - a);
         }
 
-        static inline float LerpF(const float a, const float b, const float t) {
-            return a * (1.0 - t) + (b * t);
-        }
-
-        static inline Maths::Position3d LerpF3d(const Maths::Position3d a, const Maths::Position3d b, const float t) {
+        static inline Maths::Position3d LerpPosition(const Maths::Position3d a, const Maths::Position3d b, const float t) {
             return {
-                    LerpF(a.x, b.x, t),
-                    LerpF(a.y, b.y, t),
-                    LerpF(a.z, b.z, t)
+                    Lerp<float>(a.x, b.x, t),
+                    Lerp<float>(a.y, b.y, t),
+                    Lerp<float>(a.z, b.z, t)
             };
         }
+
+        static inline Maths::Position3d QuadraticLerp(const Maths::Position3d a, const Maths::Position3d b, const Maths::Position3d c, const float t) {
+            float u = 1.0f - t;
+            return {
+                u*u*a.x + 2*u*t*b.x + t*t*c.x,
+                u*u*a.y + 2*u*t*b.y + t*t*c.y,
+                u*u*a.z + 2*u*t*b.z + t*t*c.z
+            };
+        }
+
+        static inline Maths::Position3d bezierQuadratic(const Maths::Position3d &p0, const Maths::Position3d &p1,
+                                                        const Maths::Position3d &p2, const double t) {
+            double u = 1 - t;
+            Maths::Position3d result;
+            result.x = u * u * p0.x + 2 * u * t * p1.x + t * t * p2.x;
+            result.y = u * u * p0.y + 2 * u * t * p1.y + t * t * p2.y;
+            result.z = u * u * p0.z + 2 * u * t * p1.z + t * t * p2.z;
+            return result;
+        }
+
 
         static inline long Map(const long x, const long in_min, const long in_max, const long out_min,
                                const long out_max) {

@@ -1,9 +1,10 @@
 #pragma once
-#include <vector>
 
+#include "Constants.h"
+#include "../../Bot/Constants.h"
 #include "../../Bot/Legs/LegsInterface.h"
 #include "GaitParams.h"
-#include "Gaits.h"
+#include <vector>
 
 namespace Move
 {
@@ -11,37 +12,41 @@ namespace Move
     {
         class GaitCycle {
         public:
-            GaitCycle(Bot::Legs::LegsInterface &legs, const GaitType gait);
-
-            GaitBase &GetSelectedGait() const;
-
-            bool SetGaitType(GaitType gaitType);
-
-            GaitType GetGaitType() const;
-
-            GaitParams &GetGaitParams();
-
+            GaitCycle(Bot::Legs::LegsInterface &legs, GaitParams &gaitParams);
             ~GaitCycle() = default;
 
-            void Update(const uint64_t currentTime);
+            // Playback control
+            bool Start();
+            bool Pause();
+            bool Stop();
 
-            void ResetCycleStep() const;
+            // Update cycle
+            void Update(uint64_t currentTime);
 
-            bool Start(void);
-
-            bool Pause(void);
-
-            bool Stop(void);
-
-        private:
-            void SetLegTarget(const Bot::Legs::ELeg legId, const uint8_t posId, const float deltaTime) const;
-
-            void UpdateCycle(const uint64_t currentTime) const;
-
+        private:            
+            float GetDeltaTimeOfCycleDuration(const uint64_t currentTime);
+            float GetNormalizedTime(const uint64_t currentTime) const;
+            bool IsCycleComplete(const uint64_t currentTime) const;
+            void UpdateAllLegsPosition(const float normalizedTime);
+            void UpdateLegPosition(const Bot::Legs::ELeg legId, const float normalizedTime);
+            void AdvanceToNextCycle(const uint64_t currentTime);
+            
             Bot::Legs::LegsInterface &mLegs;
-            GaitParams mParams;
-            bool mIsRunning;
-            Gaits mGaits;
+            GaitParams &mGaitParams;   
+            uint64_t mLastUpdateTime;
+
+            uint64_t mStartTime;
+            uint8_t mStepPositionIndex;
+            std::vector<Misc::Maths::Position3d> mPositionsLift = {
+                {0.0F, -1.0F, 0.0F},
+                {0.0F, 0.0F, 1.0F}, 
+                {0.0F, 1.0F, 0.0F}};
+            std::vector<Misc::Maths::Position3d> mPositionsDown = {
+                {0.0F, 1.0F, 0.0F}, 
+                {0.0F, 0.0F, -0.1F}, 
+                {0.0F, -1.0F, 0.0F}};
+            std::vector<std::vector<Misc::Maths::Position3d>> mPositions = {mPositionsLift, mPositionsDown};
+
         };
     }
 }

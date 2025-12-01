@@ -47,16 +47,17 @@ namespace Service
         };
 
         TEST_F(UT_SRV_BATTERY, Update) {
-            EXPECT_CALL(mMockBattery, Update( 12340UL )).Times(1U);
+            EXPECT_CALL(mMockBattery, Update(12340UL)).Times(1U);
 
             mServiceBattery.Update(12340UL);
         }
 
         TEST_F(UT_SRV_BATTERY, UpdatedBatteryState) {
             constexpr BatteryState batteryState = BatteryState::WARNING;
-            constexpr uint8_t delay = 10U;
+            constexpr uint8_t voltage = 10U;
+            constexpr uint8_t intensity = 10U;
             Frame response;
-            Cluster::Battery::ClusterBattery::BuildFrameState(batteryState, delay, response);
+            Cluster::Battery::ClusterBattery::BuildFrameState(batteryState, voltage, intensity, response);
             EXPECT_CALL(mMockEventListener, SendMessage(response)).Times(1U);
             mServiceBattery.Notified({batteryState, delay});
         }

@@ -2,34 +2,32 @@
 
 #include <stdint.h>
 #include <string>
-#include "../Constants.h"
+#include "../../Core/Logger.h"
 
 namespace Move
 {
     namespace Gait
     {
-        enum GaitType : uint8_t {
-            TRIPOD = 0x00U,
+        
+#define LOG_GAIT_DEBUG(cmp, ...) LOG_GENERIC(DEBUG, GAIT, "[" cmp "] " __VA_ARGS__)
+#define LOG_GAIT_INFO(cmp, ...)  LOG_GENERIC(INFO, GAIT,  "[" cmp "] "  __VA_ARGS__)
+#define LOG_GAIT_WARNING(cmp, ...) LOG_GENERIC(WARNING, GAIT, "[" cmp "] "  __VA_ARGS__)
+#define LOG_GAIT_ERROR(cmp, ...) LOG_GENERIC(ERROR, GAIT, "[" cmp "] "  __VA_ARGS__)
+
+        enum class GaitType : uint8_t {
+            TRIPOD = 0,
             WAVE,
             RIPPLE,
-            DOUBLE_WAVE
+            NB_GAITS
         };
 
-        static constexpr uint8_t NB_GAIT_TYPES = 4U;
-
-        static inline std::string GaitTypeToString(const GaitType gait) {
-            switch (gait) {
-                case TRIPOD:
-                    return "TRIPOD";
-                case WAVE:
-                    return "WAVE";
-                case RIPPLE:
-                    return "RIPPLE";
-                case DOUBLE_WAVE:
-                    return "DOUBLE_WAVE";
-                default:
-                    return "UNKNOWN";
+        static inline const char* GaitTypeToString(GaitType type) {
+            switch (type) {
+                case GaitType::TRIPOD: return "TRIPOD";
+                case GaitType::WAVE: return "WAVE";
+                case GaitType::RIPPLE: return "RIPPLE";
+                default: return "UNKNOWN";
             }
         }
-    };
+    }
 }

@@ -1,5 +1,9 @@
 #pragma once
-#include "../../Misc/Maths/Utils.h"
+
+#include <cstdint>
+#include "Constants.h"
+#include "../../Bot/Legs/LegsInterface.h"
+#include "../../Misc/Maths/Geometry.h"
 #include "../../Driver/Tick/Tick.h"
 
 namespace Move
@@ -8,72 +12,40 @@ namespace Move
     {
         class GaitParams {
         public:
-            GaitParams(const float directionAngle, const float amplitude,
-                       const float elevation, const float rotation);
-
+            GaitParams(void);
             ~GaitParams() = default;
 
-            void Update(const uint64_t currentTime);
-
-            bool SetDirection(const float directionAngle);
-
-            bool SetRotation(const float rotationAngle, const bool clockWize);
-
-            bool SetAmplitude(const float amplitude);
-
-            bool SetElevation(const float elevation);
-
-            bool SetCycleDuration(const uint16_t duration);
-
-            float GetDirection(void) const;
-
+            // Gait control
+            bool SetGaitType(GaitType gaitType);
+            GaitType GetGaitType() const;
+            
+            bool SetDirection(float directionAngle);
+            bool SetRotation(float rotationAngle, bool clockWize);
+            bool SetAmplitude(float amplitude);
+            bool SetElevation(float elevation);
+            bool SetCycleDuration(uint16_t duration);
+            
+            float GetDirection() const;
             float GetRotation() const;
-
             bool IsRotated() const;
+            bool GetRotationClockWize() const;
+            float GetAmplitude() const;
+            float GetElevation() const;
+            uint16_t GetCycleDuration() const;
 
-            float GetAmplitude(void) const;
+            bool IsRunning() const;
+            bool SetRunning(bool running);
 
-            float GetElevation(void) const;
-
-            uint16_t GetCycleDuration(void) const;
-
-            float GetCurrentDirection(void) const;
-
-            float GetCurrentRotation() const;
-
-            bool GetCurrentRotationClockWize() const;
-
-            float GetCurrentAmplitude(void) const;
-
-            float GetCurrentElevation(void) const;
-
-        private:
-            void UpdateDirection(uint64_t currentTime);
-
-            void UpdateRotation(uint64_t currentTime);
-
-            void UpdateAmplitude(uint64_t currentTime);
-
-            void UpdateElevation(uint64_t currentTime);
-
-            static float GetDeltaTime(float step, uint64_t currentTime, uint64_t startTime);
-
-        private:
-            struct LerpPath {
-                float current;
-                float target;
-                uint64_t startTime;
-            };
-
-        private:
-            LerpPath mLerpDirection;
-            LerpPath mLerpAmplitude;
-            LerpPath mLerpElevation;
-            LerpPath mLerpRotation;
+        private:            
+            GaitType mCurrentGait;
+            bool mIsRunning;
+            float mDirection;
+            float mRotation;
             bool mIsRotated;
-            bool mIsRotatedClockWize;
-            uint16_t mStepDuration;
+            bool mClockWize;
+            float mAmplitude;
+            float mElevation;
+            uint16_t mCycleDuration;
         };
     }
 }
-

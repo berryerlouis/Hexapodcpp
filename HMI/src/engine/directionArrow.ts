@@ -110,6 +110,10 @@ export default class DirectionArrow extends Object3D {
                 this.disableServos();
             }
         });
+        this.socket.addCallbackStopped(() => {
+            this.enable.classList.remove('select');
+            this.disableServos();
+        });
     }
 
     setDirection(direction: number) {

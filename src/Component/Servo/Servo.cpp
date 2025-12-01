@@ -99,7 +99,11 @@ namespace Component
 
         void Servo::Update(const uint64_t currentTime) {
             if (this->IsMoving()) {
-                this->mAngle = this->GetAngleFromDeltaTime(currentTime);
+                if(this->mSpeed != 0U) {
+                    this->mAngle = this->GetAngleFromDeltaTime(currentTime);
+                } else {
+                    this->mIsMoving = false;
+                }
                 if (this->mEnable) {
                     const uint16_t pwm = Misc::Utils::Map(this->mAngle + this->mOffset,
                                                           Servo::SERVO_ANGLE_MIN,
@@ -117,7 +121,7 @@ namespace Component
             if (currentTime < endTime) {
                 float deltaTime = 1.0f;
                 deltaTime -= ((endTime - currentTime) / static_cast<float>(this->mSpeed));
-                return (Misc::Utils::Lerp(this->mAngle, this->mTargetAngle, deltaTime));
+                return (Misc::Utils::Lerp<uint8_t>(this->mAngle, this->mTargetAngle, deltaTime));
             }
             this->mIsMoving = false;
             return (this->mTargetAngle);
@@ -145,9 +149,11 @@ namespace Component
                 // Instant move
                 if (travelTime == 0U) {
                     this->mAngle = this->mTargetAngle;
+                    this->mSpeed = 0U;
+                } else {
+                    this->mSpeed = travelTime;
+                    this->mStartTime = Tick::Tick::GetInstance().GetMs();
                 }
-                this->mSpeed = travelTime;
-                this->mStartTime = Tick::Tick::GetInstance().GetMs();
                 this->mIsMoving = true;
                 return (Core::Status::CORE_OK);
             }

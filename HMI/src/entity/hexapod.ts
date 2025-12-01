@@ -121,7 +121,7 @@ export default class Hexapod extends Object3D {
         this.body.update();
         this.head.update();
 
-        if (this.isMoving) {
+        /*if (this.isMoving) {
             // Calculate actual speed based on amplitude and duration
             // amplitude is in mm, duration is the time for one step cycle in ms
             // Convert to meters per second: (amplitude in mm / 1000) / (duration in ms / 1000)
@@ -163,7 +163,7 @@ export default class Hexapod extends Object3D {
 
             // Notify movement callbacks
             this.notifyCallbackMove();
-        }
+        }*/
     }
 
     setDirection(direction: number) {

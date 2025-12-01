@@ -27,7 +27,8 @@ namespace Service
 
         void ServiceBattery::Notified(const BatteryStruct &battery) {
             Frame response;
-            Cluster::Battery::ClusterBattery::BuildFrameState(battery.state, battery.voltage, response);
+            Cluster::Battery::ClusterBattery::BuildFrameState(battery.state, battery.voltage, battery.intensity,
+                                                              response);
             this->SendMessage(response);
         }
     } // namespace Battery

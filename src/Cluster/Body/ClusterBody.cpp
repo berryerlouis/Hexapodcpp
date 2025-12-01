@@ -73,7 +73,7 @@ namespace Cluster
                 const Move::Walk::EWalkStatus status = static_cast<Move::Walk::EWalkStatus>(request.Get1ByteParam(0U));
                 const uint16_t travelTime = request.Get2BytesParam(1U);
                 this->mBody.UpdateWalkStatus(status, travelTime);
-                success = this->BuildFrameUpdateWalkStatus(response, this->mBody.GetWalkStatus());
+                success = this->BuildFrameUpdateWalkStatus(response, static_cast<uint8_t>(this->mBody.GetWalkStatus()));
             } else if (request.GetCommandId() == EBodyCommands::GET_DIRECTION) {
                 success = this->BuildFrameUpdateDirection(response, Misc::Utils::ToDeg(this->mBody.GetDirection()));
             } else if (request.GetCommandId() == EBodyCommands::SET_DIRECTION) {
@@ -222,7 +222,7 @@ namespace Cluster
                     EClusters::BODY,
                     EBodyCommands::GET_GAIT);
             if (success == Core::Status::CORE_OK) {
-                response.Set1ByteParam(gait);
+                response.Set1ByteParam(static_cast<uint8_t>(gait));
             }
             return (success);
         }

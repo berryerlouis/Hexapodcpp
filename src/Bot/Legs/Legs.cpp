@@ -1,4 +1,5 @@
 #include "Legs.h"
+#include "../../Misc/Maths/Utils.h"
 
 namespace Bot
 {
@@ -34,6 +35,49 @@ namespace Bot
                 return &it->second;
             }
             return nullptr;
+        }
+
+        void Legs::ResetLegs(const uint16_t cycleDuration) {
+            for (auto &leg : this->mLegs) {
+                leg.second.ResetTarget();
+                leg.second.SetLegIk({0.0F, 0.0F, 0.0F}, cycleDuration);
+            }
+        }
+
+        Core::Status Legs::Update(void) {
+            for (auto &leg : this->mLegs) {
+                leg.second.Update();
+            }
+            return Core::Status::CORE_OK;
+        }
+
+        void Legs::SetTarget(const Move::Gait::GaitParams &gaitParams,
+                                const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
+                                const uint8_t stepPositionIndex,
+                                const float normalizedTime) {
+            uint8_t stepPositionIndexAlt = stepPositionIndex;
+            for (auto &leg : this->mLegs) {
+                if(leg.second.GetId() % 2U == 0U) {
+                    stepPositionIndexAlt = (stepPositionIndex + 1U) % positions.size();
+                } else {
+                    stepPositionIndexAlt = stepPositionIndex;
+                }
+                Misc::Maths::Position3d position = Misc::Utils::QuadraticLerp(
+                    positions[stepPositionIndexAlt][0U],
+                    positions[stepPositionIndexAlt][1U],
+                    positions[stepPositionIndexAlt][2U],
+                    normalizedTime
+                );
+                if (false == gaitParams.IsRotated()) {
+                    leg.second.ComputeDirection(position, gaitParams.GetDirection());
+                } else {
+                    leg.second.ComputeRotation(position, gaitParams.GetRotation(),
+                                                gaitParams.GetRotationClockWize());
+                }
+                leg.second.ComputeAmplitude(position, gaitParams.GetAmplitude());
+                leg.second.ComputeElevation(position, gaitParams.GetElevation());
+                leg.second.SetTarget(position);
+            }
         }
     }
 }

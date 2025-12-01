@@ -46,7 +46,7 @@ namespace Bot
 
             void ResetTarget(void) final override;
 
-            Core::Status UpdatePosition(const float deltaTime) final override;
+            Core::Status Update(void) final override;
 
             Legs::ELeg GetId(void) const final override;
 
@@ -75,7 +75,6 @@ namespace Bot
             Position3d mFootPosition;
             SLegIk mLegIk;
             Position3d mCurrentPos;
-            Position3d mTargetPos;
 
         private:
             Legs::ELeg mLegId;

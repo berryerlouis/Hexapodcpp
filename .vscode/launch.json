@@ -34,7 +34,7 @@
                     "/mnt/c": "C:\\"
                 }
             },
-            "preLaunchTask": "Build X64"
+            "preLaunchTask": "Build X64 Debug"
         },
         {
             "name": "Launch TU",

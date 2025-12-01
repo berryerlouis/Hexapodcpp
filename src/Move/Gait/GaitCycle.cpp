@@ -1,125 +1,88 @@
 #include "GaitCycle.h"
+#include "../../Core/Logger.h"
+#include "../../Driver/Tick/Tick.h"
 
 namespace Move
 {
     namespace Gait
-    {
-#define AMPLITUDE_MAX   3.0F
-#define ELEVATION_MAX   3.0F
-
-        GaitCycle::GaitCycle(Bot::Legs::LegsInterface &legs, const GaitType gait) :
-            mLegs(legs)
-            , mParams(0.0F, AMPLITUDE_MAX, ELEVATION_MAX, 0.0F)
-            , mIsRunning(false)
-            , mGaits(mParams, gait) {
+    {        
+        GaitCycle::GaitCycle(Bot::Legs::LegsInterface &legs, GaitParams &gaitParams)
+            : mLegs(legs)
+            , mGaitParams(gaitParams)
+            , mLastUpdateTime(0UL)
+            , mStartTime(0UL)
+            , mStepPositionIndex(0U) {
+                this->mGaitParams.SetRunning(true);
         }
 
-        GaitBase &GaitCycle::GetSelectedGait(void) const {
-            return this->mGaits.GetSelectedGait();
-        }
-
-        bool GaitCycle::SetGaitType(const GaitType gaitType) {
-            this->mGaits.SetGaitType(gaitType);
-            if (this->mIsRunning == true) {
-                this->Pause();
-                this->Start();
-            }
-            return true;
-        }
-
-        GaitType GaitCycle::GetGaitType(void) const {
-            return this->mGaits.GetGaitType();
-        }
-
-        GaitParams &GaitCycle::GetGaitParams() {
-            return this->mParams;
-        }
-
-        bool GaitCycle::Start(void) {
-            if (this->mIsRunning == false) {
-                this->mIsRunning = true;
-                this->ResetCycleStep();
+        bool GaitCycle::Start() {
+            if (!this->mGaitParams.IsRunning()) {
+                this->mGaitParams.SetRunning(true);
+                this->mStartTime = Driver::Tick::Tick::GetInstance().GetMs();
                 return true;
             }
             return false;
         }
 
-        bool GaitCycle::Pause(void) {
-            if (this->mIsRunning == true) {
-                this->mIsRunning = false;
+        bool GaitCycle::Pause() {
+            if (this->mGaitParams.IsRunning()) {
+                this->mGaitParams.SetRunning(false);
                 return true;
             }
             return false;
         }
 
-
-        bool GaitCycle::Stop(void) {
-            if (this->mIsRunning == true) {
-                this->mIsRunning = false;
-                for (uint8_t legId = 0U; legId < 6U; legId++) {
-                    Bot::Leg::LegInterface *leg = this->mLegs.GetLeg(static_cast<Bot::Legs::ELeg>(legId));
-                    leg->ResetTarget();
-                    leg->SetLegIk({0.0F, 0.0F, 0.0F}, this->mParams.GetCycleDuration());
-                }
+        bool GaitCycle::Stop() {
+            if (this->mGaitParams.IsRunning()) {
+                this->mGaitParams.SetRunning(false);
+                this->mLegs.ResetLegs(this->mGaitParams.GetCycleDuration());
                 return true;
             }
             return false;
         }
 
         void GaitCycle::Update(const uint64_t currentTime) {
-            if (this->mIsRunning == true) {
-                this->UpdateCycle(currentTime);
+            if (!this->mGaitParams.IsRunning()) {
+                return;
             }
-            this->mParams.Update(currentTime);
+
+            float normalizedTime = this->GetNormalizedTime(currentTime);
+            this->mLegs.SetTarget(this->mGaitParams,
+                                  this->mPositions,
+                                  this->mStepPositionIndex,
+                                  normalizedTime);
+            
+            if (this->IsCycleComplete(currentTime)) {
+                this->AdvanceToNextCycle(currentTime);
+                this->mLegs.SetTarget(this->mGaitParams,
+                                    this->mPositions,
+                                    this->mStepPositionIndex,
+                                    0.0F);
+            }
+            
+            this->mLegs.Update();
         }
 
-        void GaitCycle::ResetCycleStep(void) const {
-            const uint64_t startTime = Driver::Tick::Tick::GetInstance().GetMs();
-            for (uint8_t groupId = 0U; groupId < this->GetSelectedGait().GetGroups().size(); ++groupId) {
-                this->GetSelectedGait().ResetCycleStep(groupId, startTime);
-            }
+        float GaitCycle::GetDeltaTimeOfCycleDuration(const uint64_t currentTime) {
+            return this->GetNormalizedTime(currentTime);
         }
 
-        void GaitCycle::UpdateCycle(const uint64_t currentTime) const {
-            for (uint8_t groupId = 0U; groupId < this->GetSelectedGait().GetGroups().size(); ++groupId) {
-                if (this->GetSelectedGait().CanUpdate(currentTime, groupId) == true) {
-                    this->GetSelectedGait().Update(currentTime, groupId);
-                    const float deltaTime = this->GetSelectedGait().GetDeltaTime(currentTime, groupId);
-                    const uint8_t posId = this->GetSelectedGait().GetCurrentIndex(groupId);
-                    for (const Bot::Legs::ELeg legId: this->GetSelectedGait().GetGroupLeg(groupId)) {
-                        this->SetLegTarget(legId, posId, deltaTime);
-                        (void) this->mLegs.GetLeg(legId)->UpdatePosition(deltaTime);
-                    }
-                }
-            }
+        float GaitCycle::GetNormalizedTime(const uint64_t currentTime) const {
+            float deltaTimeMs = static_cast<float>(currentTime - this->mStartTime);
+            float cycleDurationMs = this->mGaitParams.GetCycleDuration();
+            float normalizedTime = deltaTimeMs / cycleDurationMs;
+            return (normalizedTime > 1.0F) ? 1.0F : normalizedTime;
         }
 
-        void GaitCycle::SetLegTarget(const Bot::Legs::ELeg legId, const uint8_t posId, const float deltaTime) const {
-            Bot::Leg::LegInterface *leg = this->mLegs.GetLeg(legId);
-            Misc::Maths::Position3d position = this->GetSelectedGait().GetPosition(posId);
-            Misc::Maths::Position3d nextPosition = this->GetSelectedGait().GetPosition(
-                    (posId + 1U) % this->GetSelectedGait().GetNbSteps());
+        bool GaitCycle::IsCycleComplete(const uint64_t currentTime) const {
+            float deltaTimeMs = static_cast<float>(currentTime - this->mStartTime);
+            float cycleDurationMs = this->mGaitParams.GetCycleDuration();
+            return deltaTimeMs >= cycleDurationMs;
+        }
 
-            if (false == this->mParams.IsRotated()) {
-                leg->ComputeDirection(position, this->mParams.GetCurrentDirection());
-                leg->ComputeDirection(nextPosition, this->mParams.GetCurrentDirection());
-            } else {
-                leg->ComputeRotation(position, this->mParams.GetCurrentRotation(),
-                                     this->mParams.GetCurrentRotationClockWize());
-                leg->ComputeRotation(nextPosition, this->mParams.GetCurrentRotation(),
-                                     this->mParams.GetCurrentRotationClockWize());
-            }
-
-            leg->ComputeAmplitude(position, this->mParams.GetCurrentAmplitude());
-            leg->ComputeAmplitude(nextPosition, this->mParams.GetCurrentAmplitude());
-
-            leg->ComputeElevation(position, this->mParams.GetCurrentElevation());
-            leg->ComputeElevation(nextPosition, this->mParams.GetCurrentElevation());
-
-            position = Misc::Utils::LerpF3d(position, nextPosition, deltaTime / 1.5F);
-
-            leg->SetTarget(position);
+        void GaitCycle::AdvanceToNextCycle(const uint64_t currentTime) {
+            this->mStartTime = currentTime;
+            this->mStepPositionIndex = (this->mStepPositionIndex + 1U) % this->mPositions.size();
         }
     }
-
 }

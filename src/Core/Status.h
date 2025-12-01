@@ -16,6 +16,18 @@ namespace Core
         CORE_ERROR_UNKNOWN_CLUSTER = (-9),
     };
 
+    inline Status operator |(const Status a, const Status b) {
+        return static_cast<Status>(static_cast<int>(a) | static_cast<int>(b));
+    }
+
+    inline Status operator &(const Status a, const Status b) {
+        return static_cast<Status>(static_cast<int>(a) & static_cast<int>(b));
+    }
+
+    static inline Status &operator |=(Status &a, const Status b) {
+        return a = a | b;
+    }
+
     static inline bool IsSuccess(const Status status) {
         return (status == CORE_OK);
     }

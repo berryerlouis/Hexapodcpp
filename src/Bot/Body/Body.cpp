@@ -32,19 +32,19 @@ namespace Bot
         }
 
         bool Body::SetDirection(const float directionAngle) {
-            return this->mWalk.GetParams().SetDirection(directionAngle);
+            return this->mWalk.SetDirection(directionAngle);
         }
 
         bool Body::SetRotation(const float rotationAngle, const bool clockWize) {
-            return this->mWalk.GetParams().SetRotation(rotationAngle, clockWize);
+            return this->mWalk.SetRotation(rotationAngle, clockWize);
         }
 
         bool Body::SetAmplitude(const float amplitude) {
-            return this->mWalk.GetParams().SetAmplitude(amplitude);
+            return this->mWalk.SetAmplitude(amplitude);
         }
 
         bool Body::SetElevation(const float elevation) {
-            return this->mWalk.GetParams().SetElevation(elevation);
+            return this->mWalk.SetElevation(elevation);
         }
 
         bool Body::SetDuration(const uint16_t duration) {
@@ -56,27 +56,27 @@ namespace Bot
         }
 
         float Body::GetDirection(void) {
-            return this->mWalk.GetParams().GetDirection();
+            return this->mWalk.GetDirection();
         }
 
         float Body::GetRotation() {
-            return this->mWalk.GetParams().GetRotation();
+            return this->mWalk.GetRotation();
         }
 
         bool Body::GetRotationClockWize() {
-            return this->mWalk.GetParams().GetCurrentRotationClockWize();
+            return this->mWalk.GetRotationClockWize();
         }
 
         float Body::GetAmplitude(void) {
-            return this->mWalk.GetParams().GetAmplitude();
+            return this->mWalk.GetAmplitude();
         }
 
         float Body::GetElevation(void) {
-            return this->mWalk.GetParams().GetElevation();
+            return this->mWalk.GetElevation();
         }
 
         uint16_t Body::GetDuration() {
-            return this->mWalk.GetParams().GetCycleDuration();
+            return this->mWalk.GetCycleDuration();
         }
 
         Move::Gait::GaitType Body::GetGait() {

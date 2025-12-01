@@ -22,8 +22,9 @@ namespace Cluster
             Core::Status success = Core::Status::CORE_ERROR;
             if (request.GetCommandId() == EBatteryCommands::GET_BAT_STATUS) {
                 const uint16_t voltage = this->mBattery.GetVoltage();
+                const uint16_t intensity = this->mBattery.GetCurrent();
                 const BatteryState state = this->mBattery.GetState();
-                success = BuildFrameState(state, voltage, response);
+                success = BuildFrameState(state, voltage, intensity, response);
             } else if (request.GetCommandId() == EBatteryCommands::GET_VOLTAGE) {
                 const uint16_t voltage = this->mBattery.GetVoltage();
                 success = BuildFrameVoltage(voltage, response);
@@ -55,6 +56,7 @@ namespace Cluster
         }
 
         Core::Status ClusterBattery::BuildFrameState(const uint16_t state, const uint16_t voltage,
+                                                     const uint16_t intensity,
                                                      Frame &response) {
             const Core::Status success = response.Build(
                     EClusters::BATTERY,
@@ -62,6 +64,7 @@ namespace Cluster
             if (success == Core::Status::CORE_OK) {
                 response.Set1ByteParam(state);
                 response.Set2BytesParam(voltage);
+                response.Set2BytesParam(intensity);
             }
             return (success);
         }

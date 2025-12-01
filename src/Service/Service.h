@@ -4,7 +4,7 @@
 #include "Event/MessageInterface.h"
 #include "ServiceInterface.h"
 #include "../Cluster/General/ClusterGeneral.h"
-#include "../Driver/Tick/TickInterface.h"
+#include "../Driver/Tick/Tick.h"
 
 namespace Service
 {

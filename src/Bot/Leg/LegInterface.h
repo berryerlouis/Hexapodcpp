@@ -18,7 +18,7 @@ namespace Bot
 
             virtual void ResetTarget(void) = 0;
 
-            virtual Core::Status UpdatePosition(const float deltaTime) = 0;
+            virtual Core::Status Update(void) = 0;
 
             virtual Legs::ELeg GetId(void) const = 0;
 
