@@ -59,7 +59,8 @@ namespace Service
             Frame response;
             Cluster::Battery::ClusterBattery::BuildFrameState(batteryState, voltage, intensity, response);
             EXPECT_CALL(mMockEventListener, SendMessage(response)).Times(1U);
-            mServiceBattery.Notified({batteryState, delay});
+            
+            mServiceBattery.Notified({batteryState});
         }
     }
 }

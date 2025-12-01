@@ -61,16 +61,19 @@ namespace Cluster
             Frame response;
 
             EXPECT_CALL(mMockBattery, GetVoltage()).WillOnce(Return(10U));
+            EXPECT_CALL(mMockBattery, GetIntensity()).WillOnce(Return(10U));
             EXPECT_CALL(mMockBattery, GetState()).WillOnce(Return(NOMINAL));
 
             success = mClusterBattery.ExecuteFrame(request, response);
 
             EXPECT_EQ(response.GetClusterId(), BATTERY);
             EXPECT_EQ(response.GetCommandId(), GET_BAT_STATUS);
-            EXPECT_EQ(response.GetNbParams(), 3U);
+            EXPECT_EQ(response.GetNbParams(), 5U);
             EXPECT_EQ(response.Get1ByteParam(0U), NOMINAL);
             EXPECT_EQ(response.Get1ByteParam(1U), 10U);
             EXPECT_EQ(response.Get1ByteParam(2U), 0U);
+            EXPECT_EQ(response.Get1ByteParam(3U), 10U);
+            EXPECT_EQ(response.Get1ByteParam(4U), 0U);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 

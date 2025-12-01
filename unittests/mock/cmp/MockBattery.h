@@ -13,7 +13,7 @@ namespace Component
 
 			MOCK_METHOD0(GetState, BatteryState( void ));
 			MOCK_METHOD0(GetVoltage, uint16_t( void ));
-			MOCK_METHOD0(GetCurrent, uint16_t( void ));
+			MOCK_METHOD0(GetIntensity, uint16_t( void ));
 		};
 	}
 }

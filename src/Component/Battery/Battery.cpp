@@ -47,7 +47,7 @@ namespace Component
             return (this->mVoltage);
         }
 
-        uint16_t Battery::GetCurrent(void) {
+        uint16_t Battery::GetIntensity(void) {
             return (this->mIntensity);
         }
 

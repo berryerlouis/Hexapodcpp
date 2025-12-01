@@ -23,7 +23,7 @@ namespace Component
 
             virtual uint16_t GetVoltage(void) final override;
 
-            virtual uint16_t GetCurrent(void) final override;
+            virtual uint16_t GetIntensity(void) final override;
 
         private:
             uint16_t mVoltage;

@@ -23,7 +23,7 @@ namespace Component
 
             virtual uint16_t GetVoltage() = 0;
 
-            virtual uint16_t GetCurrent() = 0;
+            virtual uint16_t GetIntensity() = 0;
 
         };
     }

@@ -19,7 +19,7 @@ namespace Cluster
 
             static Core::Status BuildFrameVoltage(const uint16_t voltage, Frame &response);
 
-            static Core::Status BuildFrameCurrent(const uint16_t current, Frame &response);
+            static Core::Status BuildFrameIntensity(const uint16_t intensity, Frame &response);
 
             static Core::Status BuildFrameState(const uint16_t state, const uint16_t voltage, const uint16_t intensity,
                                                 Frame &response);
