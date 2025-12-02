@@ -15,11 +15,25 @@ jobs:
         run: |
           sudo apt update
           sudo apt install build-essential binutils
-          mkdir archive/
 
       - name: Build Release
         run: |
           bin/dev/build.sh RPI sources RELEASE install
+
+      - name: Create Release Archive
+        run: |
+          mkdir -p archive
+          if [ -f "build/hexapod-RPI-RELEASE/src/Hexapodcpp" ]; then
+            cp build/hexapod-RPI-RELEASE/src/Hexapodcpp archive/
+            ls -lh archive/
+          fi
+
+      - name: Upload Release Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: hexapodcpp-rpi-release
+          path: archive/Hexapodcpp
+          if-no-files-found: error
 
   run-tests:
     name: Run Google Tests
@@ -38,15 +52,22 @@ jobs:
         run: |
           bin/dev/test.sh all
 
-      - name: Create Archive Directory
+      - name: Create Test Archive
+        if: always()
         run: |
-          bin/dev/archive.sh
+          mkdir -p archive
+          if [ -f "build/hexapod-X64-TEST/test_results.xml" ]; then
+            cp build/hexapod-X64-TEST/test_results.xml archive/
+          fi
+          ls -lh archive/ || true
 
-      - name: Archive Artefacts
+      - name: Upload Test Results
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: hexapodcpp
-          path: archive/
+          name: test-results
+          path: archive/test_results.xml
+          if-no-files-found: warn
 
   docker-cross-build-rpi:
     name: Docker Cross-Compile (RPi Zero 2 W - ARM64)

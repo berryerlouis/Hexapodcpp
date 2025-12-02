@@ -10,11 +10,11 @@ namespace Bot
         public:
             MOCK_METHOD1(SetTarget, void (const Position3d &));
 
-            MOCK_METHOD0(ResetTarget, void ());
+            MOCK_METHOD0(ResetTarget, void (void));
 
-            MOCK_METHOD1(UpdatePosition, Core::Status (const float));
+            MOCK_METHOD0(Update, Core::Status (void));
 
-            MOCK_CONST_METHOD0(GetId, Legs::ELeg ());
+            MOCK_CONST_METHOD0(GetId, Legs::ELeg (void));
 
             MOCK_METHOD2(SetLegIk, Core::Status (const Position3d &, const uint16_t));
 
@@ -28,11 +28,11 @@ namespace Bot
 
             MOCK_METHOD2(ComputeElevation, void (Position3d &, uint8_t));
 
-            MOCK_CONST_METHOD0(GetFootPosition, Position3d ());
+            MOCK_CONST_METHOD0(GetFootPosition, Position3d (void));
 
-            MOCK_CONST_METHOD0(GetBodyCenterOffsetX, float ());
+            MOCK_CONST_METHOD0(GetBodyCenterOffsetX, float (void));
 
-            MOCK_CONST_METHOD0(GetBodyCenterOffsetY, float ());
+            MOCK_CONST_METHOD0(GetBodyCenterOffsetY, float (void));
         };
     }
 }

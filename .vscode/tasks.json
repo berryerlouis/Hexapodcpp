@@ -327,7 +327,8 @@
                 "UT_SRV_GENERAL",
                 "UT_SRV_ORIENTATION",
                 "UT_SRV_PROXIMITY",
-                "UT_SRV_SOUND"
+                "UT_SRV_SOUND",
+                "UT_MOVE_GAIT_CYCLE"
             ],
             "default": "all"
         },
