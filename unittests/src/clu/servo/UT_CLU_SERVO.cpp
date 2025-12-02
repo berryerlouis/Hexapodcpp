@@ -19,9 +19,9 @@ namespace Cluster
         class UT_CLU_SERVO : public ::testing::Test {
         protected:
             UT_CLU_SERVO() :
-                           mMockServos()
-                           , mMockPca9685()
-                           , mClusterServo(mMockServos) {
+                mMockServos()
+                , mMockPca9685()
+                , mClusterServo(mMockServos) {
             }
 
             virtual void
@@ -119,7 +119,6 @@ namespace Cluster
             Core::Status success = Core::Status::CORE_ERROR;
             Frame response;
             constexpr uint8_t servoId = 1;
-            constexpr uint8_t angle = 11;
             Frame request(SERVO, GET_MIN);
             request.Set1ByteParam(servoId);
             Component::Servo::Servo servo(mMockPca9685, servoId, 90U, 0U, 11U, 120U, false);

@@ -13,7 +13,7 @@ namespace Cluster
     class UT_CLU_FRAME : public ::testing::Test {
     protected:
         UT_CLU_FRAME() :
-                       mFrame() {
+            mFrame() {
         }
 
         virtual void
@@ -83,7 +83,6 @@ namespace Cluster
     TEST_F(UT_CLU_FRAME, BuildAndAdd1ByteArg_Ok) {
         Core::Status success = Core::Status::CORE_ERROR;
 
-        constexpr uint8_t params = 42;
         success = mFrame.Build(
                 BATTERY,
                 EBatteryCommands::GET_VOLTAGE);
@@ -100,7 +99,6 @@ namespace Cluster
     TEST_F(UT_CLU_FRAME, BuildAndAddMultiple1ByteArg_Ok) {
         Core::Status success = Core::Status::CORE_ERROR;
 
-        constexpr uint8_t params = 42;
         success = mFrame.Build(
                 BATTERY,
                 EBatteryCommands::GET_VOLTAGE);
@@ -148,7 +146,6 @@ namespace Cluster
     TEST_F(UT_CLU_FRAME, BuildAndAdd2BytesArg_Ok) {
         Core::Status success = Core::Status::CORE_ERROR;
 
-        constexpr uint16_t params = 42;
         success = mFrame.Build(
                 BATTERY,
                 EBatteryCommands::GET_VOLTAGE);
