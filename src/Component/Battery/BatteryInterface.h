@@ -7,8 +7,6 @@ namespace Component
 {
     namespace Battery
     {
-
-
         class BatteryInterface : public ComponentInterface<5U, BatteryStruct> {
         public:
             BatteryInterface(void) = default;
@@ -24,7 +22,6 @@ namespace Component
             virtual uint16_t GetVoltage() = 0;
 
             virtual uint16_t GetIntensity() = 0;
-
         };
     }
 }

@@ -17,8 +17,8 @@ namespace Bot
         class UT_BOT_BODY : public ::testing::Test {
         protected:
             UT_BOT_BODY() :
-                mMockLegs(),
-                mBody(mMockLegs) {
+                          mMockLegs()
+                          , mBody(mMockLegs) {
             }
 
             virtual void
@@ -39,7 +39,6 @@ namespace Bot
 
 
         TEST_F(UT_BOT_BODY, Initialize_Ok) {
-
             //const Core::Status success = mBody.Initialize();
 
             //EXPECT_EQ(success, Core::Status::CORE_OK);

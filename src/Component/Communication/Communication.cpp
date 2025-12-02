@@ -8,13 +8,13 @@ namespace Component
         Communication::Communication(Socket::SocketInterface<1U, Socket::SocketStruct> &socket,
                                      Clusters::ClustersInterface &clusters,
                                      Led::LedInterface &ledStatus) :
-            mSocket(socket),
-            mClusters(clusters),
-            mLedStatus(ledStatus),
-            mBufferRx{0U},
-            mBufferTx{0U},
-            mIndexBufferRx(0U),
-            mBeginIncomingFrame(false) {
+                                                                   mSocket(socket)
+                                                                   , mClusters(clusters)
+                                                                   , mLedStatus(ledStatus)
+                                                                   , mBufferRx{0U}
+                                                                   , mBufferTx{0U}
+                                                                   , mIndexBufferRx(0U)
+                                                                   , mBeginIncomingFrame(false) {
         }
 
         Core::Status Communication::Initialize(void) {

@@ -16,8 +16,8 @@ namespace Component
         class UT_CMP_ADS1115 : public ::testing::Test {
         protected:
             UT_CMP_ADS1115() :
-                mMockTwi(),
-                mAds1115(mMockTwi) {
+                             mMockTwi()
+                             , mAds1115(mMockTwi) {
             }
 
             virtual void

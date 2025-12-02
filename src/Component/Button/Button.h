@@ -30,7 +30,6 @@ namespace Component
 
         public:
             ButtonState mState;
-
         };
     }
 }

@@ -8,8 +8,15 @@ namespace Component
     {
         Barometer::Barometer(Driver::Twi::TwiInterface &i2c, const uint8_t address,
                              const BarometerResolution resolution) :
-            mI2c(i2c), mAddress(address), mResolution(resolution), mProm{0U}, mRawTemp(0U), mRawPressure(0U), mTemp(0U),
-            mPressure(0U), mAltitude(0U) {
+                                                                   mI2c(i2c)
+                                                                   , mAddress(address)
+                                                                   , mResolution(resolution)
+                                                                   , mProm{0U}
+                                                                   , mRawTemp(0U)
+                                                                   , mRawPressure(0U)
+                                                                   , mTemp(0U)
+                                                                   , mPressure(0U)
+                                                                   , mAltitude(0U) {
 #ifdef RPI
             this->mAddress = wiringPiI2CSetup(address);
 #endif

@@ -17,8 +17,8 @@ namespace Component
         class UT_CMP_LED : public ::testing::Test {
         protected:
             UT_CMP_LED() :
-                mMockGpio(),
-                mLed(mMockGpio) {
+                         mMockGpio()
+                         , mLed(mMockGpio) {
             }
 
             virtual void
@@ -84,7 +84,6 @@ namespace Component
         }
 
         TEST_F(UT_CMP_LED, Get) {
-
             const Led::LedState status = mLed.Get();
 
             EXPECT_EQ(status, Led::LedState::OFF);

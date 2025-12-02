@@ -1,4 +1,3 @@
-
 #include "Logger.h"
 
 #include <chrono>
@@ -91,7 +90,6 @@ namespace Core
     }
 
     std::string Logger::CurrentTime() {
-
         // Get current time_point
         const auto now = std::chrono::system_clock::now();
         const auto now_time_t = std::chrono::system_clock::to_time_t(now);
@@ -107,6 +105,4 @@ namespace Core
 
         return oss.str();
     }
-
 }
-

@@ -6,9 +6,7 @@ namespace Driver
 {
     namespace Uart
     {
-
         class Uart : public UartInterface {
-
         public:
             Uart(const EBaudRate &baud = BAUDRATE_115200);
 

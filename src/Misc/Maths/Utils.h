@@ -22,20 +22,22 @@ namespace Misc
             return a + t * (b - a);
         }
 
-        static inline Maths::Position3d LerpPosition(const Maths::Position3d a, const Maths::Position3d b, const float t) {
+        static inline Maths::Position3d LerpPosition(const Maths::Position3d a, const Maths::Position3d b,
+                                                     const float t) {
             return {
-                    Lerp<float>(a.x, b.x, t),
-                    Lerp<float>(a.y, b.y, t),
-                    Lerp<float>(a.z, b.z, t)
+                Lerp<float>(a.x, b.x, t),
+                Lerp<float>(a.y, b.y, t),
+                Lerp<float>(a.z, b.z, t)
             };
         }
 
-        static inline Maths::Position3d QuadraticLerp(const Maths::Position3d a, const Maths::Position3d b, const Maths::Position3d c, const float t) {
+        static inline Maths::Position3d QuadraticLerp(const Maths::Position3d a, const Maths::Position3d b,
+                                                      const Maths::Position3d c, const float t) {
             float u = 1.0f - t;
             return {
-                u*u*a.x + 2*u*t*b.x + t*t*c.x,
-                u*u*a.y + 2*u*t*b.y + t*t*c.y,
-                u*u*a.z + 2*u*t*b.z + t*t*c.z
+                u * u * a.x + 2 * u * t * b.x + t * t * c.x,
+                u * u * a.y + 2 * u * t * b.y + t * t * c.y,
+                u * u * a.z + 2 * u * t * b.z + t * t * c.z
             };
         }
 

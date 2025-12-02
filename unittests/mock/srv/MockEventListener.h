@@ -5,11 +5,11 @@
 
 namespace Service
 {
-	namespace Event
-	{
-		class MockEventListener : public MessageInterface {
-		public:
-			MOCK_CONST_METHOD1(SendMessage, void( const Cluster::Frame & ));
-		};
-	}
+    namespace Event
+    {
+        class MockEventListener : public MessageInterface {
+        public:
+            MOCK_CONST_METHOD1(SendMessage, void (const Cluster::Frame &));
+        };
+    }
 }

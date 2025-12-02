@@ -20,6 +20,5 @@ namespace Service
         void ServiceBody::Update(const uint64_t currentTime) {
             this->mBody.Update(currentTime);
         }
-
     } // namespace Body
 } // namespace Service

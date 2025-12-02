@@ -16,8 +16,8 @@ namespace Cluster
         class UT_CLU_BODY : public ::testing::Test {
         protected:
             UT_CLU_BODY() :
-                mBodyMock(),
-                mClusterBody(mBodyMock) {
+                          mBodyMock()
+                          , mClusterBody(mBodyMock) {
             }
 
             virtual void
@@ -57,7 +57,7 @@ namespace Cluster
             Frame response;
             const uint8_t params[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-            EXPECT_CALL(mBodyMock, SetBodyPositionRotation( _, _, _ )).Times(1U);
+            EXPECT_CALL(mBodyMock, SetBodyPositionRotation(_, _, _)).Times(1U);
             request.Build(BODY, EBodyCommands::SET_BODY_POS_ROT, params, 14U);
             success = mClusterBody.ExecuteFrame(request, response);
 

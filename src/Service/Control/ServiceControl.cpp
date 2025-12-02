@@ -26,6 +26,5 @@ namespace Service
                 this->mStepPca9685 = 0U;
             }
         }
-
     } // namespace Control
 } // namespace Service

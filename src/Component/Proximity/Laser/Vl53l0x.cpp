@@ -18,9 +18,13 @@ namespace Component
                     Twi::TwiInterface &i2c
                     , Led::LedInterface &led
                     , const uint8_t address) :
-                mI2c(i2c), mLed(led), mAddress(address), mDistance(0),
-                mThreshold(DISTANCE_THRESHOLD),
-                mMeasurementTimingBudget(0U), mStop(0U) {
+                                             mI2c(i2c)
+                                             , mLed(led)
+                                             , mAddress(address)
+                                             , mDistance(0)
+                                             , mThreshold(DISTANCE_THRESHOLD)
+                                             , mMeasurementTimingBudget(0U)
+                                             , mStop(0U) {
 #ifdef RPI
                 this->mAddress = wiringPiI2CSetup(address);
 #endif

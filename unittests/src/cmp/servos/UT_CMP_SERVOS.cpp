@@ -17,18 +17,18 @@ namespace Component
         class UT_CMP_SERVOS : public ::testing::Test {
         protected:
             UT_CMP_SERVOS() :
-                mMockGpio(),
-                mMockPca9685_0(),
-                mMockPca9685_1(),
-                mServos(mMockPca9685_0, mMockPca9685_1, mMockGpio) {
+                            mMockGpio()
+                            , mMockPca9685_0()
+                            , mMockPca9685_1()
+                            , mServos(mMockPca9685_0, mMockPca9685_1, mMockGpio) {
             }
 
             virtual void
             SetUp() {
                 Core::Status success = Core::Status::CORE_ERROR;
 
-                EXPECT_CALL(mMockPca9685_0, GetAddress( )).WillRepeatedly(Return(0U));
-                EXPECT_CALL(mMockPca9685_1, GetAddress( )).WillRepeatedly(Return(1U));
+                EXPECT_CALL(mMockPca9685_0, GetAddress()).WillRepeatedly(Return(0U));
+                EXPECT_CALL(mMockPca9685_1, GetAddress()).WillRepeatedly(Return(1U));
                 EXPECT_CALL(mMockPca9685_0, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockPca9685_1, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockGpio, Set()).Times(1U);
@@ -56,8 +56,8 @@ namespace Component
                 mServos.GetServo(static_cast<EServos>(i))->SetEnable(true);
             }
 
-            EXPECT_CALL(mMockPca9685_0, SetPwm( _, _ )).Times(NB_SERVOS / 2U);
-            EXPECT_CALL(mMockPca9685_1, SetPwm( _, _ )).Times(NB_SERVOS / 2U);
+            EXPECT_CALL(mMockPca9685_0, SetPwm(_, _)).Times(NB_SERVOS / 2U);
+            EXPECT_CALL(mMockPca9685_1, SetPwm(_, _)).Times(NB_SERVOS / 2U);
 
             mServos.Update(0UL);
         }

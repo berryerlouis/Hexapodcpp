@@ -21,7 +21,6 @@ namespace Driver
             virtual void StartConversion(void) final override;
 
             virtual uint16_t Read(void) final override;
-
         };
     } // namespace Adc
 } // namespace Driver

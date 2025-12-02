@@ -45,9 +45,6 @@ namespace Driver
             uint64_t mFakeUs = 0U;
             uint64_t mFakeMs = 0U;
 #endif
-
-
         };
     } // namespace Tick
 } // namespace Driver
-

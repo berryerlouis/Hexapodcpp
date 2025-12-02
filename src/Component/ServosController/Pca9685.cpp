@@ -9,7 +9,11 @@ namespace Component
     namespace ServosController
     {
         Pca9685::Pca9685(Twi::TwiInterface &i2c, const uint8_t address) :
-            mI2c(i2c), mAddress(address), mInternalOscillatorFrequency(EConstant::FREQUENCY_OSCILLATOR), mPwm{0U, 0U} {
+                                                                        mI2c(i2c)
+                                                                        , mAddress(address)
+                                                                        , mInternalOscillatorFrequency(
+                                                                                EConstant::FREQUENCY_OSCILLATOR)
+                                                                        , mPwm{0U, 0U} {
 #ifdef RPI
 #ifndef GTEST
             this->mAddress = wiringPiI2CSetup(address);
@@ -79,7 +83,7 @@ namespace Component
             this->mI2c.WriteRegister(this->mAddress, (uint8_t) ERegister::PRESCALE, prescale);
             this->mI2c.WriteRegister(this->mAddress, (uint8_t) ERegister::MODE1, oldmode);
             this->mI2c.WriteRegister(this->mAddress, (uint8_t) ERegister::MODE1,
-                                     (uint8_t) (oldmode | ERegisterMode1::RESTART | ERegisterMode1::AI));
+                                     (uint8_t)(oldmode | ERegisterMode1::RESTART | ERegisterMode1::AI));
         }
 
         void Pca9685::SetPwm(const uint8_t num, const uint16_t off) {

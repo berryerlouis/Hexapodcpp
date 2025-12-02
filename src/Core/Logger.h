@@ -28,7 +28,6 @@ namespace Core
 
 
     class Logger {
-
     public:
         static void Log(const LogLevel level, const char *format, ...);
 

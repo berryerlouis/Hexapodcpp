@@ -18,9 +18,9 @@ namespace Service
         class UT_SRV_BUTTON : public ::testing::Test {
         protected:
             UT_SRV_BUTTON() :
-                mMockEventListener(),
-                mMockButton(),
-                mServiceButton(mMockButton, mMockEventListener) {
+                            mMockEventListener()
+                            , mMockButton()
+                            , mServiceButton(mMockButton, mMockEventListener) {
             }
 
             virtual void
@@ -47,7 +47,7 @@ namespace Service
         };
 
         TEST_F(UT_SRV_BUTTON, Update) {
-            EXPECT_CALL(mMockButton, Update( 12340UL )).Times(1U);
+            EXPECT_CALL(mMockButton, Update(12340UL)).Times(1U);
             mServiceButton.Update(12340UL);
         }
 

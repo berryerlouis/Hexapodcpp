@@ -19,9 +19,9 @@ namespace Service
         class UT_SRV_PROXIMITY : public ::testing::Test {
         protected:
             UT_SRV_PROXIMITY() :
-                mMockSensorProximity(),
-                mMockEventListener(),
-                mServiceProximity(mMockSensorProximity, mMockEventListener) {
+                               mMockSensorProximity()
+                               , mMockEventListener()
+                               , mServiceProximity(mMockSensorProximity, mMockEventListener) {
             }
 
             virtual void
@@ -48,7 +48,7 @@ namespace Service
         };
 
         TEST_F(UT_SRV_PROXIMITY, Update) {
-            EXPECT_CALL(mMockSensorProximity, Update( 12450UL )).Times(1U);
+            EXPECT_CALL(mMockSensorProximity, Update(12450UL)).Times(1U);
             mServiceProximity.Update(12450UL);
         }
 

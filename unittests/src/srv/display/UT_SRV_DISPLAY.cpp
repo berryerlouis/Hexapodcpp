@@ -23,17 +23,18 @@ namespace Service
         class UT_SRV_DISPLAY : public ::testing::Test {
         protected:
             UT_SRV_DISPLAY() :
-                mMockSsd1306(),
-                mMockCommunication(),
-                mMockBattery(),
-                mMockButton(),
-                mMockSoundLeft(),
-                mMockSoundRight(),
-                mMockSensorProximity(),
-                mMockEventListener(),
-                mServiceDisplay(mMockSsd1306, mMockCommunication, mMockBattery, mMockButton, mMockSoundLeft,
-                                mMockSoundRight,
-                                mMockSensorProximity, mMockEventListener) {
+                             mMockSsd1306()
+                             , mMockCommunication()
+                             , mMockBattery()
+                             , mMockButton()
+                             , mMockSoundLeft()
+                             , mMockSoundRight()
+                             , mMockSensorProximity()
+                             , mMockEventListener()
+                             , mServiceDisplay(mMockSsd1306, mMockCommunication, mMockBattery, mMockButton,
+                                               mMockSoundLeft,
+                                               mMockSoundRight,
+                                               mMockSensorProximity, mMockEventListener) {
             }
 
             virtual void
@@ -43,18 +44,18 @@ namespace Service
 
                 EXPECT_CALL(mMockSsd1306, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockSsd1306,
-                            DrawLine( 0, 10U, SCREEN_WIDTH, 10U, Bitmap::Bitmaps::Color::COLOR_WHITE )).Times(1U);
+                            DrawLine(0, 10U, SCREEN_WIDTH, 10U, Bitmap::Bitmaps::Color::COLOR_WHITE)).Times(1U);
                 EXPECT_CALL(mMockSsd1306,
-                            DrawLine( 18U, 10U, 18U, SCREEN_HEIGHT, Bitmap::Bitmaps::Color::COLOR_WHITE )).Times(1U);
+                            DrawLine(18U, 10U, 18U, SCREEN_HEIGHT, Bitmap::Bitmaps::Color::COLOR_WHITE)).Times(1U);
                 EXPECT_CALL(mMockSsd1306,
-                            DrawLine( SCREEN_WIDTH - 18U, 10U, SCREEN_WIDTH- 18U , SCREEN_HEIGHT, Bitmap::Bitmaps::Color
-                                ::COLOR_WHITE )).Times(1U);
+                            DrawLine(SCREEN_WIDTH - 18U, 10U, SCREEN_WIDTH - 18U, SCREEN_HEIGHT, Bitmap::Bitmaps::Color
+                                     ::COLOR_WHITE)).Times(1U);
                 EXPECT_CALL(mMockSsd1306,
-                            DrawBitmap( _, 0U, 0U, Bitmap::Bitmaps::Color::COLOR_WHITE )).Times(1U);
+                            DrawBitmap(_, 0U, 0U, Bitmap::Bitmaps::Color::COLOR_WHITE)).Times(1U);
                 EXPECT_CALL(mMockSsd1306,
-                            EraseArea( 94U, 0U, 16U, 8U )).Times(1U);
+                            EraseArea(94U, 0U, 16U, 8U)).Times(1U);
                 EXPECT_CALL(mMockSsd1306,
-                            DrawBitmap( _, 94U, 0U, Bitmap::Bitmaps::Color::COLOR_WHITE )).Times(1U);
+                            DrawBitmap(_, 94U, 0U, Bitmap::Bitmaps::Color::COLOR_WHITE)).Times(1U);
 
                 EXPECT_EQ(Core::Status::CORE_OK, mServiceDisplay.Initialize());
             }
@@ -86,12 +87,12 @@ namespace Service
             for (uint64_t i = 500U; i < 10U * 500U; i += 500U) {
                 if (toggle == true) {
                     toggle = false;
-                    EXPECT_CALL(mMockSsd1306, DrawBitmap( _, _, 0U, Bitmap::Bitmaps::Color::COLOR_WHITE )).Times(1U);
+                    EXPECT_CALL(mMockSsd1306, DrawBitmap(_, _, 0U, Bitmap::Bitmaps::Color::COLOR_WHITE)).Times(1U);
                 } else {
                     toggle = true;
-                    EXPECT_CALL(mMockSsd1306, EraseArea( _, 0U, _, 8U )).Times(1U);
+                    EXPECT_CALL(mMockSsd1306, EraseArea(_, 0U, _, 8U)).Times(1U);
                 }
-                EXPECT_CALL(mMockSsd1306, Update( i )).Times(1U);
+                EXPECT_CALL(mMockSsd1306, Update(i)).Times(1U);
                 mServiceDisplay.Update(i);
             }
         }

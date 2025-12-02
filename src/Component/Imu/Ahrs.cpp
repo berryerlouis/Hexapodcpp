@@ -6,9 +6,9 @@ namespace Component
     namespace Imu
     {
         Ahrs::Ahrs() :
-            mQuaternion{1.0F, 0.0F, 0.0F, 0.0F}
-            , mGyroMeasError(M_PI * (40.0F / 180.0F))
-            , mBeta(sqrt(3.0F / 4.0F) * mGyroMeasError) {
+                     mQuaternion{1.0F, 0.0F, 0.0F, 0.0F}
+                     , mGyroMeasError(M_PI * (40.0F / 180.0F))
+                     , mBeta(sqrt(3.0F / 4.0F) * mGyroMeasError) {
         }
 
         void Ahrs::GetRollPitchYaw(Imu3d &ypr) const {
@@ -33,7 +33,6 @@ namespace Component
                           Vector3F gyr,
                           Vector3F mag,
                           const float deltaTime) {
-
             float q1 = this->mQuaternion[0U];
             float q2 = this->mQuaternion[1U];
             float q3 = this->mQuaternion[2U];

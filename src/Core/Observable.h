@@ -9,7 +9,7 @@ namespace Core
     class Observable : public ObservableInterface<T> {
     public:
         Observable() :
-            mIndexList(0U) {
+                     mIndexList(0U) {
             for (size_t i = 0; i < MAX_OBSERVERS; i++) {
                 mListObserver[i] = nullptr;
             }

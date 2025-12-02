@@ -174,11 +174,11 @@ namespace Bot
 
             if (success != Core::Status::CORE_OK)
                 LOG_BOT_ERROR("Leg", "leg %s(%d) Set IK (coxaIk:%d, femurIk:%d, tibiaIk:%d)",
-                          ElegToString(this->mLegId).c_str(),
-                          this->mLegId,
-                          static_cast<uint8_t>(this->mLegIk.coxaIk),
-                          static_cast<uint8_t>(this->mLegIk.femurIk),
-                          static_cast<uint8_t>(this->mLegIk.tibiaIk));
+                              ElegToString(this->mLegId).c_str(),
+                              this->mLegId,
+                              static_cast<uint8_t>(this->mLegIk.coxaIk),
+                              static_cast<uint8_t>(this->mLegIk.femurIk),
+                              static_cast<uint8_t>(this->mLegIk.tibiaIk));
             return success;
         }
 
@@ -229,13 +229,13 @@ namespace Bot
                     this->mLegIk.coxaIk += 150.0F;
                     break;
             }
-            
+
             // Normalize angle: first wrap to -180 to +180 range
             this->mLegIk.coxaIk = fmod(this->mLegIk.coxaIk + 180.0F, 360.0F) - 180.0F;
             if (this->mLegIk.coxaIk < 0.0F) {
                 this->mLegIk.coxaIk += 360.0F;
             }
-            
+
             // Clamp to valid servo range (60-120 degrees)
             if (this->mLegIk.coxaIk < 60.0F) {
                 this->mLegIk.coxaIk = 60.0F;
@@ -245,7 +245,7 @@ namespace Bot
                 // Angle is closer to 0-60 when wrapped
                 this->mLegIk.coxaIk = 60.0F;
             }
-            
+
             Core::Status success = Core::Status::CORE_OK;
             success |= this->mCoxa.SetAngle(static_cast<uint8_t>(this->mLegIk.coxaIk), travelTime);
             success |= this->mFemur.SetAngle(static_cast<uint8_t>(this->mLegIk.femurIk), travelTime);

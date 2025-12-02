@@ -18,10 +18,10 @@ namespace Service
         class UT_SRV_COMMUNICATION : public ::testing::Test {
         protected:
             UT_SRV_COMMUNICATION() :
-                mMockCommunication(),
-                mMockClusters(),
-                mMockEventListener(),
-                mServiceCommunication(mMockCommunication, mMockClusters, mMockEventListener) {
+                                   mMockCommunication()
+                                   , mMockClusters()
+                                   , mMockEventListener()
+                                   , mServiceCommunication(mMockCommunication, mMockClusters, mMockEventListener) {
             }
 
             virtual void
@@ -50,9 +50,8 @@ namespace Service
         };
 
         TEST_F(UT_SRV_COMMUNICATION, Initialize_Update) {
-            EXPECT_CALL(mMockCommunication, Update( 12450UL )).Times(1U);
+            EXPECT_CALL(mMockCommunication, Update(12450UL)).Times(1U);
             mServiceCommunication.Update(12450UL);
         }
-
     }
 }

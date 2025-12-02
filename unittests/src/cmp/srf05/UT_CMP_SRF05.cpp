@@ -23,10 +23,10 @@ namespace Component
             class UT_CMP_SRF05 : public ::testing::Test {
             protected:
                 UT_CMP_SRF05() :
-                    mMockGpio(),
-                    mMockInputCapture(),
-                    mMockLed(),
-                    mSrf05(Cluster::EProximityCommands::US_LEFT, mMockGpio, mMockInputCapture, mMockLed) {
+                               mMockGpio()
+                               , mMockInputCapture()
+                               , mMockLed()
+                               , mSrf05(Cluster::EProximityCommands::US_LEFT, mMockGpio, mMockInputCapture, mMockLed) {
                 }
 
                 virtual void
@@ -57,7 +57,7 @@ namespace Component
             };
 
             TEST_F(UT_CMP_SRF05, SetThreshold) {
-                EXPECT_EQ(mSrf05.SetThreshold( 35U ), Core::Status::CORE_OK);
+                EXPECT_EQ(mSrf05.SetThreshold(35U), Core::Status::CORE_OK);
                 EXPECT_EQ(35U, mSrf05.GetThreshold());
             }
 

@@ -43,7 +43,7 @@ namespace Cluster
             ClusterBase *GetCluster(const EClusters clusterId) final override;
 
         private:
-            std::unordered_map<EClusters, std::reference_wrapper<ClusterBase>> mClusters;
+            std::unordered_map<EClusters, std::reference_wrapper<ClusterBase> > mClusters;
         };
     }
 }

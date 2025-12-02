@@ -8,7 +8,7 @@ namespace Cluster
     {
         class MockClusters : public ClustersInterface {
         public:
-            MOCK_METHOD1(GetCluster, ClusterBase * ( const EClusters ));
+            MOCK_METHOD1(GetCluster, ClusterBase *(const EClusters));
         };
     }
 }

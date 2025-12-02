@@ -16,8 +16,8 @@ namespace Cluster
         class UT_CLU_BATTERY : public ::testing::Test {
         protected:
             UT_CLU_BATTERY() :
-                mMockBattery(),
-                mClusterBattery(mMockBattery) {
+                             mMockBattery()
+                             , mClusterBattery(mMockBattery) {
             }
 
             virtual void

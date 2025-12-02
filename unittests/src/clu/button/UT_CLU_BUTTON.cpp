@@ -16,8 +16,8 @@ namespace Cluster
         class UT_CLU_BUTTON : public ::testing::Test {
         protected:
             UT_CLU_BUTTON() :
-                mMockButton(),
-                mClusterButton(mMockButton) {
+                            mMockButton()
+                            , mClusterButton(mMockButton) {
             }
 
             virtual void

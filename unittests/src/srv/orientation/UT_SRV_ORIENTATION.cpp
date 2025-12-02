@@ -21,10 +21,10 @@ namespace Service
         class UT_SRV_ORIENTATION : public ::testing::Test {
         protected:
             UT_SRV_ORIENTATION() :
-                mMockMpu9150(),
-                mMockBarometer(),
-                mMockEventListener(),
-                mServiceOrientation(mMockMpu9150, mMockBarometer, mMockEventListener) {
+                                 mMockMpu9150()
+                                 , mMockBarometer()
+                                 , mMockEventListener()
+                                 , mServiceOrientation(mMockMpu9150, mMockBarometer, mMockEventListener) {
             }
 
             virtual void
@@ -53,8 +53,8 @@ namespace Service
         };
 
         TEST_F(UT_SRV_ORIENTATION, Update_Ok) {
-            EXPECT_CALL(mMockMpu9150, Update( _ )).Times(1U);
-            EXPECT_CALL(mMockBarometer, Update( _ )).Times(1U);
+            EXPECT_CALL(mMockMpu9150, Update(_)).Times(1U);
+            EXPECT_CALL(mMockBarometer, Update(_)).Times(1U);
 
             mServiceOrientation.Update(0UL);
         }

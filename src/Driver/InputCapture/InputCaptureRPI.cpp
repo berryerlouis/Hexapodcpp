@@ -15,7 +15,10 @@ namespace Driver
         }
 
         InputCapture::InputCapture(Gpio::GpioInterface &gpio) :
-            mGpio(gpio), mState(false), mStartTime(0UL), mDelay(0UL) {
+                                                              mGpio(gpio)
+                                                              , mState(false)
+                                                              , mStartTime(0UL)
+                                                              , mDelay(0UL) {
             inputCapture[inputCaptureIndex] = this;
             inputCaptureIndex++;
             wiringPiISR(this->mGpio.GetPin().pin, INT_EDGE_BOTH, &InterruptInputCapture);

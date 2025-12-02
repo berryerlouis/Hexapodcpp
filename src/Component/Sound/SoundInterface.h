@@ -7,7 +7,6 @@ namespace Component
 {
     namespace Sound
     {
-
         class SoundInterface : public ComponentInterface<5U, SoundStruct> {
         public:
             SoundInterface() = default;

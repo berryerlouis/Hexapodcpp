@@ -145,7 +145,7 @@ namespace Cluster
 
             EXPECT_EQ(size, 12U);
 
-            EXPECT_TRUE(0U == strcmp( bufferTx, "<0401020102>" ));
+            EXPECT_TRUE(0U == strcmp(bufferTx, "<0401020102>"));
         }
     }
 }

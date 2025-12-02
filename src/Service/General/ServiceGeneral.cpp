@@ -20,6 +20,5 @@ namespace Service
         void ServiceGeneral::Update(const uint64_t currentTime) {
             this->mSoftware.Update(currentTime);
         }
-
     } // namespace General
 } // namespace Service

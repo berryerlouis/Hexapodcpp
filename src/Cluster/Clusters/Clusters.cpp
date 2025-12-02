@@ -13,16 +13,16 @@ namespace Cluster
                 ClusterImu &imu,
                 ClusterProximity &proximity,
                 ClusterServo &servo) :
-            mClusters{
-                    {GENERAL, std::ref(general)},
-                    {BATTERY, std::ref(battery)},
-                    {BUTTON, std::ref(button)},
-                    {SOUND, std::ref(sound)},
-                    {BODY, std::ref(body)},
-                    {IMU, std::ref(imu)},
-                    {PROXIMITY, std::ref(proximity)},
-                    {SERVO, std::ref(servo)}
-            } {
+                                     mClusters{
+                                         {GENERAL, std::ref(general)},
+                                         {BATTERY, std::ref(battery)},
+                                         {BUTTON, std::ref(button)},
+                                         {SOUND, std::ref(sound)},
+                                         {BODY, std::ref(body)},
+                                         {IMU, std::ref(imu)},
+                                         {PROXIMITY, std::ref(proximity)},
+                                         {SERVO, std::ref(servo)}
+                                     } {
             LOG_CLUSTER_DEBUG("Clusters", " Initialized.");
         }
 

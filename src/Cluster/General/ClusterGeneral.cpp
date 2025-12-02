@@ -8,9 +8,9 @@ namespace Cluster
         using namespace Component::Software;
 
         ClusterGeneral::ClusterGeneral(SoftwareInterface &software) :
-            ClusterBase(GENERAL, *this)
-            , ClusterCommand(NB_COMMANDS_GENERAL)
-            , mSoftware(software) {
+                                                                    ClusterBase(GENERAL, *this)
+                                                                    , ClusterCommand(NB_COMMANDS_GENERAL)
+                                                                    , mSoftware(software) {
             this->AddClusterItem({.commandId = EGeneralCommands::RESET, .expectedSize = 0U});
             this->AddClusterItem({.commandId = EGeneralCommands::VERSION, .expectedSize = 0U});
             this->AddClusterItem({.commandId = EGeneralCommands::MIN_EXECUTION_TIME, .expectedSize = 0U});
@@ -94,6 +94,5 @@ namespace Cluster
             }
             return (success);
         }
-
     }
 }

@@ -18,10 +18,10 @@ namespace Component
         class UT_CMP_PROXIMITY : public ::testing::Test {
         protected:
             UT_CMP_PROXIMITY() :
-                mMockSrf05Left(),
-                mMockSrf05Right(),
-                mMockVl53l0x(),
-                mSensorProximity(mMockSrf05Left, mMockSrf05Right, mMockVl53l0x) {
+                               mMockSrf05Left()
+                               , mMockSrf05Right()
+                               , mMockVl53l0x()
+                               , mSensorProximity(mMockSrf05Left, mMockSrf05Right, mMockVl53l0x) {
             }
 
             virtual void
@@ -53,17 +53,15 @@ namespace Component
         };
 
         TEST_F(UT_CMP_PROXIMITY, Update_Ok) {
-
-            EXPECT_CALL(mMockSrf05Left, Update( _ )).Times(1U);
+            EXPECT_CALL(mMockSrf05Left, Update(_)).Times(1U);
             mSensorProximity.Update(0UL);
-            EXPECT_CALL(mMockSrf05Right, Update( _ )).Times(1U);
+            EXPECT_CALL(mMockSrf05Right, Update(_)).Times(1U);
             mSensorProximity.Update(0UL);
-            EXPECT_CALL(mMockVl53l0x, Update( _ )).Times(1U);
+            EXPECT_CALL(mMockVl53l0x, Update(_)).Times(1U);
             mSensorProximity.Update(0UL);
         }
 
         TEST_F(UT_CMP_PROXIMITY, GetDistance_Ok) {
-
             EXPECT_CALL(mMockSrf05Left, GetDistance()).Times(1U);
             EXPECT_CALL(mMockSrf05Right, GetDistance()).Times(1U);
             EXPECT_CALL(mMockVl53l0x, GetDistance()).Times(1U);
@@ -76,14 +74,14 @@ namespace Component
         TEST_F(UT_CMP_PROXIMITY, SetThreshold_Ok) {
             const uint16_t threshold = 10U;
 
-            EXPECT_CALL(mMockSrf05Left, SetThreshold( threshold )).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
-            EXPECT_CALL(mMockSrf05Right, SetThreshold( threshold )).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
-            EXPECT_CALL(mMockVl53l0x, SetThreshold( threshold )).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
+            EXPECT_CALL(mMockSrf05Left, SetThreshold(threshold)).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
+            EXPECT_CALL(mMockSrf05Right, SetThreshold(threshold)).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
+            EXPECT_CALL(mMockVl53l0x, SetThreshold(threshold)).Times(1U).WillOnce(Return(Core::Status::CORE_OK));
 
 
             for (size_t sensorId = 0U; sensorId < SensorProximity::NB_SENSORS; sensorId++) {
                 EXPECT_EQ(Core::Status::CORE_OK,
-                          mSensorProximity.SetThreshold( static_cast<SensorsId>(sensorId), threshold ));
+                          mSensorProximity.SetThreshold(static_cast<SensorsId>(sensorId), threshold));
             }
         }
     }

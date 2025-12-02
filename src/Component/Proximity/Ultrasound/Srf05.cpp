@@ -6,7 +6,6 @@ namespace Component
     {
         namespace Ultrasound
         {
-
             Srf05::Srf05(const Cluster::EProximityCommands side, Driver::Gpio::GpioInterface &gpioTrigger,
                          Driver::InputCapture::InputCaptureInterface &gpioEcho, Led::LedInterface &led) :
                 mSide(side)

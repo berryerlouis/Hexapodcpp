@@ -8,7 +8,7 @@ namespace Driver
         static bool once = false;
 
         Gpio::Gpio(const SGpio &gpio, const EPortDirection &portDirection) :
-            mGpio(gpio) {
+                                                                           mGpio(gpio) {
             if (!once) {
                 wiringPiSetupGpio();
                 once = true;

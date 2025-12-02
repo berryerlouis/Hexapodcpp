@@ -14,9 +14,9 @@ namespace Component
         }
 
         Button::Button(Gpio::GpioInterface &gpio) :
-            mGpioButton(gpio)
-            , mPushTime(0U)
-            , mState(RELEASE) {
+                                                  mGpioButton(gpio)
+                                                  , mPushTime(0U)
+                                                  , mState(RELEASE) {
             button[buttonIndex] = this;
             buttonIndex++;
         }
@@ -48,7 +48,5 @@ namespace Component
         ButtonState Button::Get() const {
             return (this->mState);
         }
-
     }
-
 }

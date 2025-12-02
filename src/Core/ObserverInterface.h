@@ -4,7 +4,6 @@
 
 namespace Core
 {
-
     template<class T>
     class ObserverInterface {
     public:
@@ -14,5 +13,4 @@ namespace Core
 
         virtual void Notified(const T &item) = 0;
     };
-
 }

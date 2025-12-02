@@ -13,70 +13,73 @@ using ::testing::StrictMock;
 
 namespace Service
 {
-	namespace Control
-	{
-		class UT_SRV_CONTROL : public ::testing::Test {
-		protected:
-			UT_SRV_CONTROL() : mMockPca9685(),
-			                   mMockServos(),
-			                   mMockEventListener(),
-			                   mServiceControl(mMockServos, mMockEventListener) {
-			}
+    namespace Control
+    {
+        class UT_SRV_CONTROL : public ::testing::Test {
+        protected:
+            UT_SRV_CONTROL() :
+                             mMockPca9685()
+                             , mMockServos()
+                             , mMockEventListener()
+                             , mServiceControl(mMockServos, mMockEventListener) {
+            }
 
-			virtual void SetUp() {
-				EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::Status::CORE_ERROR));
-				EXPECT_EQ(Core::Status::CORE_ERROR, mServiceControl.Initialize());
+            virtual void
+            SetUp() {
+                EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::Status::CORE_ERROR));
+                EXPECT_EQ(Core::Status::CORE_ERROR, mServiceControl.Initialize());
 
-				EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
-				EXPECT_EQ(Core::Status::CORE_OK, mServiceControl.Initialize());
-			}
+                EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_EQ(Core::Status::CORE_OK, mServiceControl.Initialize());
+            }
 
-			virtual void TearDown() {
-			}
+            virtual void
+            TearDown() {
+            }
 
-			virtual ~UT_SRV_CONTROL() = default;
+            virtual ~UT_SRV_CONTROL() = default;
 
-			/* Mocks */
-			StrictMock<Component::ServosController::MockPca9685> mMockPca9685;
-			StrictMock<Component::Servos::MockServos> mMockServos;
-			StrictMock<Event::MockEventListener> mMockEventListener;
+            /* Mocks */
+            StrictMock<Component::ServosController::MockPca9685> mMockPca9685;
+            StrictMock<Component::Servos::MockServos> mMockServos;
+            StrictMock<Event::MockEventListener> mMockEventListener;
 
-			/* Test class */
-			ServiceControl mServiceControl;
-		};
+            /* Test class */
+            ServiceControl mServiceControl;
+        };
 
-		TEST_F(UT_SRV_CONTROL, Update_Ok) {
-			Core::Status success = Core::Status::CORE_ERROR;
+        TEST_F(UT_SRV_CONTROL, Update_Ok) {
+            Core::Status success = Core::Status::CORE_ERROR;
 
-			EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+            EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
 
-			success = mServiceControl.Initialize();
+            success = mServiceControl.Initialize();
 
-			EXPECT_CALL(mMockServos, Update( _ )).Times(1U);
-			EXPECT_CALL(mMockServos, GetServosController( _ )).WillOnce(ReturnRef(mMockPca9685));
-			EXPECT_CALL(mMockPca9685, Update( _ )).Times(1U);
+            EXPECT_CALL(mMockServos, Update(_)).Times(1U);
+            EXPECT_CALL(mMockServos, GetServosController(_)).WillOnce(ReturnRef(mMockPca9685));
+            EXPECT_CALL(mMockPca9685, Update(_)).Times(1U);
 
-			mServiceControl.Update(0UL);
+            mServiceControl.Update(0UL);
 
-			EXPECT_EQ(success, Core::Status::CORE_OK);
-		}
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+        }
 
-		TEST_F(UT_SRV_CONTROL, Update_2Times_Ok) {
-			Core::Status success = Core::Status::CORE_ERROR;
+        TEST_F(UT_SRV_CONTROL, Update_2Times_Ok) {
+            Core::Status success = Core::Status::CORE_ERROR;
 
-			EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+            EXPECT_CALL(mMockServos, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
 
-			success = mServiceControl.Initialize();
+            success = mServiceControl.Initialize();
 
-			EXPECT_CALL(mMockServos, Update( _ )).Times(2U);
-			EXPECT_CALL(mMockServos, GetServosController( 0 )).WillOnce(ReturnRef(mMockPca9685));
-			EXPECT_CALL(mMockServos, GetServosController( 1 )).WillOnce(ReturnRef(mMockPca9685));
-			EXPECT_CALL(mMockPca9685, Update( _ )).Times(2U);
+            EXPECT_CALL(mMockServos, Update(_)).Times(2U);
+            EXPECT_CALL(mMockServos, GetServosController(0)).WillOnce(ReturnRef(mMockPca9685));
+            EXPECT_CALL(mMockServos, GetServosController(1)).WillOnce(ReturnRef(mMockPca9685));
+            EXPECT_CALL(mMockPca9685, Update(_)).Times(2U);
 
-			mServiceControl.Update(0UL);
-			mServiceControl.Update(0UL);
+            mServiceControl.Update(0UL);
+            mServiceControl.Update(0UL);
 
-			EXPECT_EQ(success, Core::Status::CORE_OK);
-		}
-	}
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+        }
+    }
 }

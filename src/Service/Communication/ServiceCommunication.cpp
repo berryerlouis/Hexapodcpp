@@ -23,6 +23,5 @@ namespace Service
         void ServiceCommunication::Update(const uint64_t currentTime) {
             this->mCommunication.Update(currentTime);
         }
-
     } // namespace Communication
 } // namespace Service

@@ -18,9 +18,9 @@ namespace Service
         class UT_SRV_GENERAL : public ::testing::Test {
         protected:
             UT_SRV_GENERAL() :
-                mMockSoftware(),
-                mMockEventListener(),
-                mServiceGeneral(mMockSoftware, mMockEventListener) {
+                             mMockSoftware()
+                             , mMockEventListener()
+                             , mServiceGeneral(mMockSoftware, mMockEventListener) {
             }
 
             virtual void

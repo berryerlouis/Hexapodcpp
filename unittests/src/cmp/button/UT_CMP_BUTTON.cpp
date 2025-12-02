@@ -15,8 +15,8 @@ namespace Component
         class UT_CMP_BUTTON : public ::testing::Test {
         protected:
             UT_CMP_BUTTON() :
-                mMockGpio(),
-                mButton(mMockGpio) {
+                            mMockGpio()
+                            , mButton(mMockGpio) {
             }
 
             virtual void

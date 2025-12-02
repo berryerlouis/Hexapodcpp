@@ -10,10 +10,10 @@ namespace Component
         static constexpr float RPI_CURRENT_CONSUMPTION = 270.0;
 
         Battery::Battery(Adc::Ads1115Interface &adc) :
-            mVoltage(0U)
-            , mIntensity(0U)
-            , mState(BatteryState::UNKNOWN)
-            , mAdc(adc) {
+                                                     mVoltage(0U)
+                                                     , mIntensity(0U)
+                                                     , mState(BatteryState::UNKNOWN)
+                                                     , mAdc(adc) {
         }
 
         Core::Status Battery::Initialize(void) {
@@ -50,6 +50,5 @@ namespace Component
         uint16_t Battery::GetIntensity(void) {
             return (this->mIntensity);
         }
-
     }
 }

@@ -5,7 +5,7 @@ namespace Driver
     namespace Gpio
     {
         Gpio::Gpio(const SGpio &gpio, const EPortDirection &portDirection) :
-            mGpio(gpio) {
+                                                                           mGpio(gpio) {
             (void) portDirection;
         }
 

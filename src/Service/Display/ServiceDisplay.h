@@ -91,7 +91,6 @@ namespace Service
             uint64_t mNotifiedTimeProximityLaser;
             uint64_t mNotifiedTimeSoundLeft;
             uint64_t mNotifiedTimeSoundRight;
-
         };
     }
 }

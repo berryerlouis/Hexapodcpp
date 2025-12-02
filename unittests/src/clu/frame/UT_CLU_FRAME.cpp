@@ -13,7 +13,7 @@ namespace Cluster
     class UT_CLU_FRAME : public ::testing::Test {
     protected:
         UT_CLU_FRAME() :
-            mFrame() {
+                       mFrame() {
         }
 
         virtual void
@@ -76,7 +76,7 @@ namespace Cluster
         EXPECT_EQ(mFrame.GetCommandId(), EBatteryCommands::GET_VOLTAGE);
         EXPECT_EQ(mFrame.GetNbParams(), 1U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
-        EXPECT_EQ(mFrame.Get1ByteParam( 0U ), 42U);
+        EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
         EXPECT_EQ(success, Core::Status::CORE_OK);
     }
 
@@ -93,7 +93,7 @@ namespace Cluster
         EXPECT_EQ(mFrame.GetCommandId(), EBatteryCommands::GET_VOLTAGE);
         EXPECT_EQ(mFrame.GetNbParams(), 1U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
-        EXPECT_EQ(mFrame.Get1ByteParam( 0U ), 42U);
+        EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
         EXPECT_EQ(success, Core::Status::CORE_OK);
     }
 
@@ -114,15 +114,15 @@ namespace Cluster
         EXPECT_EQ(mFrame.GetCommandId(), EBatteryCommands::GET_VOLTAGE);
         EXPECT_EQ(mFrame.GetNbParams(), 5U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
-        EXPECT_EQ(mFrame.Get1ByteParam( 0U ), 42U);
+        EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
         EXPECT_EQ(mFrame.Get1ByteParam(1U), 24U);
-        EXPECT_EQ(mFrame.Get1ByteParam( 1U ), 24U);
+        EXPECT_EQ(mFrame.Get1ByteParam(1U), 24U);
         EXPECT_EQ(mFrame.Get1ByteParam(2U), 55U);
-        EXPECT_EQ(mFrame.Get1ByteParam( 2U ), 55U);
+        EXPECT_EQ(mFrame.Get1ByteParam(2U), 55U);
         EXPECT_EQ(mFrame.Get1ByteParam(3U), 64U);
-        EXPECT_EQ(mFrame.Get1ByteParam( 3U ), 64U);
+        EXPECT_EQ(mFrame.Get1ByteParam(3U), 64U);
         EXPECT_EQ(mFrame.Get1ByteParam(4U), 15U);
-        EXPECT_EQ(mFrame.Get1ByteParam( 4U ), 15U);
+        EXPECT_EQ(mFrame.Get1ByteParam(4U), 15U);
         EXPECT_EQ(success, Core::Status::CORE_OK);
     }
 
@@ -141,7 +141,7 @@ namespace Cluster
         EXPECT_EQ(mFrame.GetNbParams(), 2U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
         EXPECT_EQ(mFrame.Get1ByteParam(1U), 0U);
-        EXPECT_EQ(mFrame.Get2BytesParam( 0U ), 42U);
+        EXPECT_EQ(mFrame.Get2BytesParam(0U), 42U);
         EXPECT_EQ(success, Core::Status::CORE_OK);
     }
 
@@ -159,7 +159,7 @@ namespace Cluster
         EXPECT_EQ(mFrame.GetNbParams(), 2U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
         EXPECT_EQ(mFrame.Get1ByteParam(1U), 0U);
-        EXPECT_EQ(mFrame.Get2BytesParam( 0U ), 42U);
+        EXPECT_EQ(mFrame.Get2BytesParam(0U), 42U);
         EXPECT_EQ(success, Core::Status::CORE_OK);
     }
 
@@ -180,19 +180,19 @@ namespace Cluster
         EXPECT_EQ(mFrame.GetNbParams(), 10U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
         EXPECT_EQ(mFrame.Get1ByteParam(1U), 0U);
-        EXPECT_EQ(mFrame.Get2BytesParam( 0U ), 42U);
+        EXPECT_EQ(mFrame.Get2BytesParam(0U), 42U);
         EXPECT_EQ(mFrame.Get1ByteParam(2U), 24U);
         EXPECT_EQ(mFrame.Get1ByteParam(3U), 0U);
-        EXPECT_EQ(mFrame.Get2BytesParam( 2U ), 24U);
+        EXPECT_EQ(mFrame.Get2BytesParam(2U), 24U);
         EXPECT_EQ(mFrame.Get1ByteParam(4U), 55U);
         EXPECT_EQ(mFrame.Get1ByteParam(5U), 0U);
-        EXPECT_EQ(mFrame.Get2BytesParam( 4U ), 55U);
+        EXPECT_EQ(mFrame.Get2BytesParam(4U), 55U);
         EXPECT_EQ(mFrame.Get1ByteParam(6U), 64U);
         EXPECT_EQ(mFrame.Get1ByteParam(7U), 0U);
-        EXPECT_EQ(mFrame.Get2BytesParam( 6U ), 64U);
+        EXPECT_EQ(mFrame.Get2BytesParam(6U), 64U);
         EXPECT_EQ(mFrame.Get1ByteParam(8U), 0U);
         EXPECT_EQ(mFrame.Get1ByteParam(9U), 0x15U);
-        EXPECT_EQ(mFrame.Get2BytesParam( 8U ), 0x1500U);
+        EXPECT_EQ(mFrame.Get2BytesParam(8U), 0x1500U);
         EXPECT_EQ(success, Core::Status::CORE_OK);
     }
 
@@ -211,7 +211,7 @@ namespace Cluster
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 0x40U);
         EXPECT_EQ(mFrame.Get1ByteParam(1U), 0x41U);
         EXPECT_EQ(mFrame.Get1ByteParam(2U), 0x42U);
-        EXPECT_EQ(mFrame.Get3BytesParam( 0U ), 0x424140U);
+        EXPECT_EQ(mFrame.Get3BytesParam(0U), 0x424140U);
         EXPECT_EQ(success, Core::Status::CORE_OK);
     }
 
@@ -237,9 +237,9 @@ namespace Cluster
         EXPECT_EQ(mFrame.Get1ByteParam(3U), 0x33U);
         EXPECT_EQ(mFrame.Get1ByteParam(4U), 0x55U);
         EXPECT_EQ(mFrame.Get1ByteParam(5U), 0xAAU);
-        EXPECT_EQ(mFrame.Get3BytesParam( 0U ), 0x424140U);
-        EXPECT_EQ(mFrame.Get2BytesParam( 3U ), 0x5533U);
-        EXPECT_EQ(mFrame.Get1ByteParam( 5U ), 0xAAU);
+        EXPECT_EQ(mFrame.Get3BytesParam(0U), 0x424140U);
+        EXPECT_EQ(mFrame.Get2BytesParam(3U), 0x5533U);
+        EXPECT_EQ(mFrame.Get1ByteParam(5U), 0xAAU);
         EXPECT_EQ(success, Core::Status::CORE_OK);
     }
 
@@ -259,7 +259,7 @@ namespace Cluster
         EXPECT_EQ(mFrame.Get1ByteParam(1U), 0x40U);
         EXPECT_EQ(mFrame.Get1ByteParam(2U), 0x41U);
         EXPECT_EQ(mFrame.Get1ByteParam(3U), 0x42U);
-        EXPECT_EQ(mFrame.Get4BytesParam( 0U ), 0x42414039U);
+        EXPECT_EQ(mFrame.Get4BytesParam(0U), 0x42414039U);
         EXPECT_EQ(success, Core::Status::CORE_OK);
     }
 
@@ -291,10 +291,10 @@ namespace Cluster
         EXPECT_EQ(mFrame.Get1ByteParam(7U), 0x40U);
         EXPECT_EQ(mFrame.Get1ByteParam(8U), 0x41U);
         EXPECT_EQ(mFrame.Get1ByteParam(9U), 0x42U);
-        EXPECT_EQ(mFrame.Get3BytesParam( 0U ), 0x424140U);
-        EXPECT_EQ(mFrame.Get2BytesParam( 3U ), 0x5533U);
-        EXPECT_EQ(mFrame.Get1ByteParam( 5U ), 0xAAU);
-        EXPECT_EQ(mFrame.Get4BytesParam( 6U ), 0x42414039U);
+        EXPECT_EQ(mFrame.Get3BytesParam(0U), 0x424140U);
+        EXPECT_EQ(mFrame.Get2BytesParam(3U), 0x5533U);
+        EXPECT_EQ(mFrame.Get1ByteParam(5U), 0xAAU);
+        EXPECT_EQ(mFrame.Get4BytesParam(6U), 0x42414039U);
         EXPECT_EQ(success, Core::Status::CORE_OK);
     }
 
@@ -316,7 +316,7 @@ namespace Cluster
         EXPECT_EQ(mFrame.Get1ByteParam(3U), 0x40U);
         EXPECT_EQ(mFrame.Get1ByteParam(4U), 0x41U);
         EXPECT_EQ(mFrame.Get1ByteParam(5U), 0x42U);
-        EXPECT_EQ(mFrame.Get6BytesParam( 0U ), 0x424140394241U);
+        EXPECT_EQ(mFrame.Get6BytesParam(0U), 0x424140394241U);
         EXPECT_EQ(success, Core::Status::CORE_OK);
     }
 
@@ -340,7 +340,7 @@ namespace Cluster
         EXPECT_EQ(mFrame.Get1ByteParam(5U), 0x40U);
         EXPECT_EQ(mFrame.Get1ByteParam(6U), 0x41U);
         EXPECT_EQ(mFrame.Get1ByteParam(7U), 0x42U);
-        EXPECT_EQ(mFrame.Get8BytesParam( 0U ), 0x4241403942414039U);
+        EXPECT_EQ(mFrame.Get8BytesParam(0U), 0x4241403942414039U);
         EXPECT_EQ(success, Core::Status::CORE_OK);
     }
 }

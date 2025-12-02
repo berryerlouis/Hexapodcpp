@@ -13,6 +13,7 @@ namespace Cluster
     class ClusterInterface {
     public:
         ClusterInterface() = default;
+
         virtual ~ClusterInterface() = default;
 
         virtual Core::Status Execute(Frame &request, Frame &response) = 0;

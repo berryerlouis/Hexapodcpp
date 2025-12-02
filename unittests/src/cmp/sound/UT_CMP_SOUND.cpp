@@ -17,10 +17,10 @@ namespace Component
         class UT_CMP_SOUND : public ::testing::Test {
         protected:
             UT_CMP_SOUND() :
-                mMockGpio(),
-                mMockLed(),
-                mSoundLeft(SOUND_LEFT, mMockGpio, mMockLed),
-                mSoundRight(SOUND_RIGHT, mMockGpio, mMockLed) {
+                           mMockGpio()
+                           , mMockLed()
+                           , mSoundLeft(SOUND_LEFT, mMockGpio, mMockLed)
+                           , mSoundRight(SOUND_RIGHT, mMockGpio, mMockLed) {
             }
 
             enum SoundState {

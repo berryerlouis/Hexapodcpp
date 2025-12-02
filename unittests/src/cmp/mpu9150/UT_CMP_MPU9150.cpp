@@ -18,22 +18,22 @@ namespace Component
         class UT_CMP_MPU9150 : public ::testing::Test {
         protected:
             UT_CMP_MPU9150() :
-                mMockTwi(),
-                mMpu9150(mMockTwi) {
+                             mMockTwi()
+                             , mMpu9150(mMockTwi) {
             }
 
             virtual void
             SetUp() {
                 Core::Status success = Core::Status::CORE_ERROR;
 
-                EXPECT_CALL(mMockTwi, ReadRegister( _, _, _ )).WillRepeatedly(Return(true));
-                EXPECT_CALL(mMockTwi, WriteRegister( _, _, _ )).WillRepeatedly(Return(true));
+                EXPECT_CALL(mMockTwi, ReadRegister(_, _, _)).WillRepeatedly(Return(true));
+                EXPECT_CALL(mMockTwi, WriteRegister(_, _, _)).WillRepeatedly(Return(true));
 
-                EXPECT_CALL(mMockTwi, ReadRegister( Mpu9150::MPU9150_I2C_ADDRESS, Mpu9150::ERegister::WHO_AM_I, _ )).
-                        WillOnce(DoAll(SetArgReferee<2U>(Mpu9150::MPU9150_I2C_ADDRESS - 1), Return(true)));
-                EXPECT_CALL(mMockTwi, ReadRegister( Mpu9150::AK8963_I2C_ADDRESS, 0, _ )).
-                        WillOnce(DoAll(SetArgReferee<2U>(0x48U), Return(true)));
-                EXPECT_CALL(mMockTwi, ReadRegisters( Mpu9150::AK8963_I2C_ADDRESS, 0x10, _, 3)).WillRepeatedly(
+                EXPECT_CALL(mMockTwi, ReadRegister(Mpu9150::MPU9150_I2C_ADDRESS, Mpu9150::ERegister::WHO_AM_I, _)).
+                        WillOnce(DoAll(SetArgReferee < 2U > (Mpu9150::MPU9150_I2C_ADDRESS - 1), Return(true)));
+                EXPECT_CALL(mMockTwi, ReadRegister(Mpu9150::AK8963_I2C_ADDRESS, 0, _)).
+                        WillOnce(DoAll(SetArgReferee < 2U > (0x48U), Return(true)));
+                EXPECT_CALL(mMockTwi, ReadRegisters(Mpu9150::AK8963_I2C_ADDRESS, 0x10, _, 3)).WillRepeatedly(
                         Return(true));
                 success = mMpu9150.Initialize();
 

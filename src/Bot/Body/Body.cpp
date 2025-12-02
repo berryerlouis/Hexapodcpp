@@ -5,11 +5,11 @@ namespace Bot
     namespace Body
     {
         Body::Body(Legs::LegsInterface &legs) :
-            mBodyIk{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, {0.0, 0.0, 0.0}}
-            , mLegs(legs)
-            , mWalk(mLegs)
-            , mPosition{0.0, 0.0, 0.0}
-            , mRotation{0.0, 0.0, 0.0} {
+                                              mBodyIk{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, {0.0, 0.0, 0.0}}
+                                              , mLegs(legs)
+                                              , mWalk(mLegs)
+                                              , mPosition{0.0, 0.0, 0.0}
+                                              , mRotation{0.0, 0.0, 0.0} {
         }
 
         Core::Status Body::Initialize(void) {

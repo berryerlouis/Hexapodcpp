@@ -18,10 +18,10 @@ namespace Service
         class UT_SRV_SOUND : public ::testing::Test {
         protected:
             UT_SRV_SOUND() :
-                mMockEventListener(),
-                mMockSoundLeft(),
-                mMockSoundRight(),
-                mServiceSound(mMockSoundLeft, mMockSoundRight, mMockEventListener) {
+                           mMockEventListener()
+                           , mMockSoundLeft()
+                           , mMockSoundRight()
+                           , mServiceSound(mMockSoundLeft, mMockSoundRight, mMockEventListener) {
             }
 
             virtual void

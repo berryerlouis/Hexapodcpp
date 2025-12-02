@@ -4,7 +4,6 @@
 
 
 int main(const int argc, char **argv) {
-
     setvbuf(stdout, nullptr, _IONBF, 0U);
 
     LOG_INFO("Hexapod started.");
@@ -27,4 +26,3 @@ int main(const int argc, char **argv) {
     }
     return -1;
 }
-

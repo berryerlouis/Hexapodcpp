@@ -15,7 +15,7 @@ namespace Component
         class UT_CMP_AHRS : public ::testing::Test {
         protected:
             UT_CMP_AHRS() :
-                mAhrs() {
+                          mAhrs() {
             }
 
             virtual void

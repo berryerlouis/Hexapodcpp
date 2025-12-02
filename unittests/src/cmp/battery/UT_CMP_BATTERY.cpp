@@ -16,8 +16,8 @@ namespace Component
         class UT_CMP_BATTERY : public ::testing::Test {
         protected:
             UT_CMP_BATTERY() :
-                mMockAdc(),
-                mBattery(mMockAdc) {
+                             mMockAdc()
+                             , mBattery(mMockAdc) {
             }
 
             virtual void

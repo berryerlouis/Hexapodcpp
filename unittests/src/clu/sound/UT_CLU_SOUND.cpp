@@ -16,9 +16,9 @@ namespace Cluster
         class UT_CLU_SOUND : public ::testing::Test {
         protected:
             UT_CLU_SOUND() :
-                mMockSoundLeft(),
-                mMockSoundRight(),
-                mClusterSound(mMockSoundLeft, mMockSoundRight) {
+                           mMockSoundLeft()
+                           , mMockSoundRight()
+                           , mClusterSound(mMockSoundLeft, mMockSoundRight) {
             }
 
             virtual void

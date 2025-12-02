@@ -10,6 +10,7 @@ namespace Driver
     namespace Uart
     {
         Misc::Buffer::Buffer mBufferRx;
+
         std::string GetLineFromCin() {
             std::string line;
             std::getline(std::cin, line);
@@ -18,20 +19,31 @@ namespace Driver
 
         char buffer[255U];
         std::future<std::string> future;
+
         Uart::Uart(const EBaudRate &baud) {
             (void) baud;
             future = std::async(std::launch::async, GetLineFromCin);
         }
 
-        Core::Status Uart::Initialize(void) { return (Core::Status::CORE_OK); }
+        Core::Status Uart::Initialize(void) {
+            return (Core::Status::CORE_OK);
+        }
 
-        void Uart::Update(const uint64_t currentTime) { (void) currentTime; }
+        void Uart::Update(const uint64_t currentTime) {
+            (void) currentTime;
+        }
 
-        void Uart::Send(const char *data, const size_t len) { std::cout << data << std::endl; };
+        void Uart::Send(const char *data, const size_t len) {
+            std::cout << data << std::endl;
+        };
 
-        void Uart::Send(const uint8_t data) { std::cout << data << std::endl; };
+        void Uart::Send(const uint8_t data) {
+            std::cout << data << std::endl;
+        };
 
-        uint8_t Uart::Read(void) { return mBufferRx.Pop(); }
+        uint8_t Uart::Read(void) {
+            return mBufferRx.Pop();
+        }
 
         uint8_t Uart::DataAvailable(void) {
             if (future.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {

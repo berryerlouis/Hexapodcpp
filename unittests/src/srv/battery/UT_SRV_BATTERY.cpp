@@ -18,9 +18,9 @@ namespace Service
         class UT_SRV_BATTERY : public ::testing::Test {
         protected:
             UT_SRV_BATTERY() :
-                mMockEventListener(),
-                mMockBattery(),
-                mServiceBattery(mMockBattery, mMockEventListener) {
+                             mMockEventListener()
+                             , mMockBattery()
+                             , mServiceBattery(mMockBattery, mMockEventListener) {
             }
 
             virtual void
@@ -59,7 +59,7 @@ namespace Service
             Frame response;
             Cluster::Battery::ClusterBattery::BuildFrameState(batteryState, voltage, intensity, response);
             EXPECT_CALL(mMockEventListener, SendMessage(response)).Times(1U);
-            
+
             mServiceBattery.Notified({batteryState});
         }
     }

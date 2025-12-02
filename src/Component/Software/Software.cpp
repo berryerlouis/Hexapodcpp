@@ -6,10 +6,10 @@ namespace Component
     namespace Software
     {
         Software::Software() :
-            mLastLoopTime(0UL),
-            mMinLoopTime(0xFFFFFFFFUL),
-            mMaxLoopTime(0UL),
-            mPrevTime(0UL) {
+                             mLastLoopTime(0UL)
+                             , mMinLoopTime(0xFFFFFFFFUL)
+                             , mMaxLoopTime(0UL)
+                             , mPrevTime(0UL) {
         }
 
         Core::Status Software::Initialize(void) {

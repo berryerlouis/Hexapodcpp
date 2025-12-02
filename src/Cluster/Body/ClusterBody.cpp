@@ -9,25 +9,137 @@ namespace Cluster
         using namespace Bot::Body;
 
         ClusterBody::ClusterBody(BodyInterface &body) :
-            ClusterBase(BODY, *this)
-            , ClusterCommand(NB_COMMANDS_BODY)
-            , mBody(body) {
-            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::GET_ALL_PARAMS, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_BODY_POS_ROT, .expectedSize = 14U});
-            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_LEG_POS_ROT, .expectedSize = 9U});
-            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_WALK_STATUS, .expectedSize = 3U});
-            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_DIRECTION, .expectedSize = 2U});
-            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::GET_DIRECTION, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_AMPLITUDE, .expectedSize = 1U});
-            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::GET_AMPLITUDE, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_ELEVATION, .expectedSize = 1U});
-            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::GET_ELEVATION, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::GET_DURATION, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_DURATION, .expectedSize = 2U});
-            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::GET_GAIT, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_GAIT, .expectedSize = 1U});
-            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_ROTATION, .expectedSize = 3U});
-            this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::GET_ROTATION, .expectedSize = 0U});
+                                                      ClusterBase(BODY, *this)
+                                                      , ClusterCommand(NB_COMMANDS_BODY)
+                                                      , mBody(body) {
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EBodyCommands::GET_ALL_PARAMS,
+                .
+                expectedSize = 0U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EBodyCommands::SET_BODY_POS_ROT,
+                .
+                expectedSize = 14U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EBodyCommands::SET_LEG_POS_ROT,
+                .
+                expectedSize = 9U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EBodyCommands::SET_WALK_STATUS,
+                .
+                expectedSize = 3U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EBodyCommands::SET_DIRECTION,
+                .
+                expectedSize = 2U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EBodyCommands::GET_DIRECTION,
+                .
+                expectedSize = 0U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EBodyCommands::SET_AMPLITUDE,
+                .
+                expectedSize = 1U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EBodyCommands::GET_AMPLITUDE,
+                .
+                expectedSize = 0U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EBodyCommands::SET_ELEVATION,
+                .
+                expectedSize = 1U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EBodyCommands::GET_ELEVATION,
+                .
+                expectedSize = 0U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EBodyCommands::GET_DURATION,
+                .
+                expectedSize = 0U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EBodyCommands::SET_DURATION,
+                .
+                expectedSize = 2U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EBodyCommands::GET_GAIT,
+                .
+                expectedSize = 0U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EBodyCommands::SET_GAIT,
+                .
+                expectedSize = 1U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EBodyCommands::SET_ROTATION,
+                .
+                expectedSize = 3U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EBodyCommands::GET_ROTATION,
+                .
+                expectedSize = 0U
+            }
+            )
+            ;
             LOG_CLUSTER_DEBUG("Body", "(%d) Initialized.", BODY);
         }
 
@@ -45,15 +157,15 @@ namespace Cluster
             } else if (request.GetCommandId() == EBodyCommands::SET_BODY_POS_ROT) {
                 const Position3d position =
                 {
-                        .x = request.Get2BytesParam(0U) / 10.0f,
-                        .y = request.Get2BytesParam(2U) / 10.0f,
-                        .z = request.Get2BytesParam(4U) / 10.0f
+                    .x = request.Get2BytesParam(0U) / 10.0f,
+                    .y = request.Get2BytesParam(2U) / 10.0f,
+                    .z = request.Get2BytesParam(4U) / 10.0f
                 };
                 const Rotation3d rotation =
                 {
-                        .angleX = request.Get2BytesParam(6U) / 10.0f,
-                        .angleY = request.Get2BytesParam(8U) / 10.0f,
-                        .angleZ = request.Get2BytesParam(10U) / 10.0f
+                    .angleX = request.Get2BytesParam(6U) / 10.0f,
+                    .angleY = request.Get2BytesParam(8U) / 10.0f,
+                    .angleZ = request.Get2BytesParam(10U) / 10.0f
                 };
                 const uint16_t travelTime = request.Get2BytesParam(12U);
                 const uint32_t successMove = this->mBody.SetBodyPositionRotation(position, rotation, travelTime);
@@ -62,9 +174,9 @@ namespace Cluster
                 const uint8_t legId = request.Get1ByteParam(0U);
                 const Position3d position =
                 {
-                        .x = request.Get2BytesParam(1U) / 10.0f,
-                        .y = request.Get2BytesParam(3U) / 10.0f,
-                        .z = request.Get2BytesParam(5U) / 10.0f
+                    .x = request.Get2BytesParam(1U) / 10.0f,
+                    .y = request.Get2BytesParam(3U) / 10.0f,
+                    .z = request.Get2BytesParam(5U) / 10.0f
                 };
                 const uint16_t travelTime = request.Get2BytesParam(7U);
                 const uint32_t successMove = this->mBody.SetLegPositionRotation(legId, position, travelTime);
@@ -226,7 +338,5 @@ namespace Cluster
             }
             return (success);
         }
-
-
     };
 }

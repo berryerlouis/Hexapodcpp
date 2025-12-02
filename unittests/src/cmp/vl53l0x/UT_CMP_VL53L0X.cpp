@@ -25,8 +25,8 @@ namespace Component
             class UT_CMP_VL53L0X : public ::testing::Test {
             protected:
                 UT_CMP_VL53L0X() :
-                    mMockTwi(),
-                    mVl53l0x(mMockTwi, mMockLed) {
+                                 mMockTwi()
+                                 , mVl53l0x(mMockTwi, mMockLed) {
                 }
 
                 virtual void
@@ -36,23 +36,23 @@ namespace Component
                     ::testing::Sequence sWrite;
 
                     EXPECT_CALL(mMockLed, Initialize());
-                    EXPECT_CALL(mMockTwi, WriteRegister( _, 0xBF, 0x00)).InSequence(sWrite).WillOnce(Return(true));
-                    EXPECT_CALL(mMockTwi, ReadRegister( _, Vl53l0x::VL53L0X_IDENTIFICATION_MODEL_ID, _)).InSequence(
+                    EXPECT_CALL(mMockTwi, WriteRegister(_, 0xBF, 0x00)).InSequence(sWrite).WillOnce(Return(true));
+                    EXPECT_CALL(mMockTwi, ReadRegister(_, Vl53l0x::VL53L0X_IDENTIFICATION_MODEL_ID, _)).InSequence(
                                     sRead).
-                            WillOnce(DoAll(SetArgReferee<2U>(0x00U), Return(true)));
-                    EXPECT_CALL(mMockTwi, WriteRegister( _, 0xBF, 0x01)).InSequence(sWrite).WillOnce(Return(true));
-                    EXPECT_CALL(mMockTwi, ReadRegister( _, Vl53l0x::VL53L0X_IDENTIFICATION_MODEL_ID, _ )).InSequence(
+                            WillOnce(DoAll(SetArgReferee < 2U > (0x00U), Return(true)));
+                    EXPECT_CALL(mMockTwi, WriteRegister(_, 0xBF, 0x01)).InSequence(sWrite).WillOnce(Return(true));
+                    EXPECT_CALL(mMockTwi, ReadRegister(_, Vl53l0x::VL53L0X_IDENTIFICATION_MODEL_ID, _)).InSequence(
                                     sRead).
-                            WillOnce(DoAll(SetArgReferee<2U>(0xEEU), Return(true)));
+                            WillOnce(DoAll(SetArgReferee < 2U > (0xEEU), Return(true)));
 
-                    EXPECT_CALL(mMockTwi, ReadRegister( _, _, _ )).InSequence(sRead).
-                            WillRepeatedly(DoAll(SetArgReferee<2U>(0x07U), Return(true)));
-                    EXPECT_CALL(mMockTwi, WriteRegister( _, _, _ )).InSequence(sWrite).WillRepeatedly(Return(true));
-                    EXPECT_CALL(mMockTwi, ReadRegisters( _, _, _, _ )).WillRepeatedly(Return(true));
-                    EXPECT_CALL(mMockTwi, WriteRegisters( _, _, _, _ )).WillRepeatedly(Return(true));
-                    EXPECT_CALL(mMockTwi, ReadRegister16Bits( _, _, _ )).WillRepeatedly(Return(true));
-                    EXPECT_CALL(mMockTwi, WriteRegister16Bits( _, _, _ )).WillRepeatedly(Return(true));
-                    EXPECT_CALL(mMockTwi, WriteRegister32Bits( _, _, _ )).WillRepeatedly(Return(true));
+                    EXPECT_CALL(mMockTwi, ReadRegister(_, _, _)).InSequence(sRead).
+                            WillRepeatedly(DoAll(SetArgReferee < 2U > (0x07U), Return(true)));
+                    EXPECT_CALL(mMockTwi, WriteRegister(_, _, _)).InSequence(sWrite).WillRepeatedly(Return(true));
+                    EXPECT_CALL(mMockTwi, ReadRegisters(_, _, _, _)).WillRepeatedly(Return(true));
+                    EXPECT_CALL(mMockTwi, WriteRegisters(_, _, _, _)).WillRepeatedly(Return(true));
+                    EXPECT_CALL(mMockTwi, ReadRegister16Bits(_, _, _)).WillRepeatedly(Return(true));
+                    EXPECT_CALL(mMockTwi, WriteRegister16Bits(_, _, _)).WillRepeatedly(Return(true));
+                    EXPECT_CALL(mMockTwi, WriteRegister32Bits(_, _, _)).WillRepeatedly(Return(true));
 
                     success = mVl53l0x.Initialize();
 
@@ -76,17 +76,17 @@ namespace Component
             TEST_F(UT_CMP_VL53L0X, Update_Ok) {
                 ::testing::Sequence s;
                 EXPECT_CALL(mMockLed, Off());
-                EXPECT_CALL(mMockTwi, ReadRegister( _, _, _ )).InSequence(s).
-                        WillOnce(DoAll(SetArgReferee<2U>(0x07U), Return(true)));
-                EXPECT_CALL(mMockTwi, ReadRegister( _, _, _ )).InSequence(s).
-                        WillOnce(DoAll(SetArgReferee<2U>(0x00U), Return(true)));
-                EXPECT_CALL(mMockTwi, ReadRegister( _, _, _ )).InSequence(s).
-                        WillOnce(DoAll(SetArgReferee<2U>(0x07U), Return(true)));
+                EXPECT_CALL(mMockTwi, ReadRegister(_, _, _)).InSequence(s).
+                        WillOnce(DoAll(SetArgReferee < 2U > (0x07U), Return(true)));
+                EXPECT_CALL(mMockTwi, ReadRegister(_, _, _)).InSequence(s).
+                        WillOnce(DoAll(SetArgReferee < 2U > (0x00U), Return(true)));
+                EXPECT_CALL(mMockTwi, ReadRegister(_, _, _)).InSequence(s).
+                        WillOnce(DoAll(SetArgReferee < 2U > (0x07U), Return(true)));
                 mVl53l0x.Update(0U);
             }
 
             TEST_F(UT_CMP_VL53L0X, SetThreshold) {
-                EXPECT_EQ(Core::Status::CORE_OK, mVl53l0x.SetThreshold( 350U ));
+                EXPECT_EQ(Core::Status::CORE_OK, mVl53l0x.SetThreshold(350U));
                 EXPECT_EQ(350U, mVl53l0x.GetThreshold());
             }
         }

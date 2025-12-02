@@ -8,8 +8,8 @@ namespace Service
     {
         ServiceButton::ServiceButton(ButtonInterface &ButtonInterface,
                                      Event::MessageInterface &messageListener) :
-            Service(BUTTON, 10U, messageListener)
-            , mButtonInterface(ButtonInterface) {
+                                                                               Service(BUTTON, 10U, messageListener)
+                                                                               , mButtonInterface(ButtonInterface) {
         }
 
         Core::Status ServiceButton::Initialize(void) {

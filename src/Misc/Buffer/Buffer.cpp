@@ -7,16 +7,20 @@ namespace Misc
     namespace Buffer
     {
         Buffer::Buffer() :
-            mBuffer{0U},
-            mHead(0U),
-            mTail(0U),
-            mIsEmpty(true) {
+                         mBuffer{0U}
+                         , mHead(0U)
+                         , mTail(0U)
+                         , mIsEmpty(true) {
         }
 
         uint8_t Buffer::GetLength() const {
             //ISR_EMBEDDED_CODE(
-            if (this->mIsEmpty) { return (0U); }
-            if (this->mHead >= this->mTail) { return (this->mHead - this->mTail); } else {
+            if (this->mIsEmpty) {
+                return (0U);
+            }
+            if (this->mHead >= this->mTail) {
+                return (this->mHead - this->mTail);
+            } else {
                 return (BUFFER_MAX_SIZE - (this->mTail - this->mHead));
             }
             // );
@@ -25,7 +29,9 @@ namespace Misc
         void Buffer::Push(const volatile uint8_t &item) {
             //ISR_EMBEDDED_CODE(
             this->mBuffer[this->mHead] = item;
-            if (++this->mHead >= BUFFER_MAX_SIZE) { this->mHead = 0U; }
+            if (++this->mHead >= BUFFER_MAX_SIZE) {
+                this->mHead = 0U;
+            }
             this->mIsEmpty = false;
             //);
         }
@@ -35,8 +41,12 @@ namespace Misc
             //ISR_EMBEDDED_CODE(
             if (!this->mIsEmpty) {
                 datum = this->mBuffer[this->mTail];
-                if (++this->mTail >= BUFFER_MAX_SIZE) { this->mTail = 0U; }
-                if (this->mTail == this->mHead) { this->mIsEmpty = true; }
+                if (++this->mTail >= BUFFER_MAX_SIZE) {
+                    this->mTail = 0U;
+                }
+                if (this->mTail == this->mHead) {
+                    this->mIsEmpty = true;
+                }
             }
             //);
             return (datum);

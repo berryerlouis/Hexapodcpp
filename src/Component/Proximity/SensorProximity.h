@@ -31,6 +31,5 @@ namespace Component
         private:
             SensorProximityInterface *mSensors[NB_SENSORS];
         };
-
     } // namespace Proximity
 } // namespace Component

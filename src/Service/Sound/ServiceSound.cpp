@@ -8,9 +8,9 @@ namespace Service
     {
         ServiceSound::ServiceSound(SoundInterface &soundInterfaceLeft, SoundInterface &soundInterfaceRight,
                                    Event::MessageInterface &messageListener) :
-            Service(SOUND, 500U, messageListener)
-            , mSoundLeft(soundInterfaceLeft)
-            , mSoundRight(soundInterfaceRight) {
+                                                                             Service(SOUND, 500U, messageListener)
+                                                                             , mSoundLeft(soundInterfaceLeft)
+                                                                             , mSoundRight(soundInterfaceRight) {
         }
 
         Core::Status ServiceSound::Initialize(void) {

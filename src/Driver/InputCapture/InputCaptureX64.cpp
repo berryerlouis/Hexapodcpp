@@ -5,7 +5,10 @@ namespace Driver
     namespace InputCapture
     {
         InputCapture::InputCapture(Gpio::GpioInterface &gpio) :
-            mGpio(gpio), mState(false), mStartTime(0UL), mDelay(0UL) {
+                                                              mGpio(gpio)
+                                                              , mState(false)
+                                                              , mStartTime(0UL)
+                                                              , mDelay(0UL) {
         }
 
         Core::Status InputCapture::Initialize(void) {

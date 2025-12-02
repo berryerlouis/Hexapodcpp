@@ -80,6 +80,5 @@ namespace Driver
             wiringPiI2CRawWrite(address, buffer, length + 1U);
             return (true);
         }
-
     } // namespace Twi
 } // namespace Driver

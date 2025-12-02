@@ -24,34 +24,34 @@ namespace Component
 
         Servo::Servo(ServosController::Pca9685Interface &pca9685, const uint8_t servoId,
                      const uint8_t angle) :
-            mPca9685(pca9685)
-            , mServoId(servoId)
-            , mAngle(angle)
-            , mTargetAngle(0U)
-            , mStartTime(0UL)
-            , mSpeed(1U)
-            , mOffset(0)
-            , mMin(SERVO_ANGLE_MIN)
-            , mMax(SERVO_ANGLE_MAX)
-            , mReverse(false)
-            , mEnable(false)
-            , mIsMoving(false) {
+                                          mPca9685(pca9685)
+                                          , mServoId(servoId)
+                                          , mAngle(angle)
+                                          , mTargetAngle(0U)
+                                          , mStartTime(0UL)
+                                          , mSpeed(1U)
+                                          , mOffset(0)
+                                          , mMin(SERVO_ANGLE_MIN)
+                                          , mMax(SERVO_ANGLE_MAX)
+                                          , mReverse(false)
+                                          , mEnable(false)
+                                          , mIsMoving(false) {
         }
 
         Servo::Servo(ServosController::Pca9685Interface &pca9685, const uint8_t servoId,
                      const uint8_t angle, const int8_t offset) :
-            mPca9685(pca9685)
-            , mServoId(servoId)
-            , mAngle(angle)
-            , mTargetAngle(0U)
-            , mStartTime(0UL)
-            , mSpeed(1U)
-            , mOffset(offset)
-            , mMin(SERVO_ANGLE_MIN)
-            , mMax(SERVO_ANGLE_MAX)
-            , mReverse(false)
-            , mEnable(false)
-            , mIsMoving(false) {
+                                                               mPca9685(pca9685)
+                                                               , mServoId(servoId)
+                                                               , mAngle(angle)
+                                                               , mTargetAngle(0U)
+                                                               , mStartTime(0UL)
+                                                               , mSpeed(1U)
+                                                               , mOffset(offset)
+                                                               , mMin(SERVO_ANGLE_MIN)
+                                                               , mMax(SERVO_ANGLE_MAX)
+                                                               , mReverse(false)
+                                                               , mEnable(false)
+                                                               , mIsMoving(false) {
         }
 
         Servo::Servo(ServosController::Pca9685Interface &pca9685, const uint8_t servoId,
@@ -73,18 +73,18 @@ namespace Component
         Servo::Servo(ServosController::Pca9685Interface &pca9685, const uint8_t servoId,
                      const uint8_t angle, const int8_t offset, const uint8_t min, const uint8_t max,
                      const bool reverse) :
-            mPca9685(pca9685)
-            , mServoId(servoId)
-            , mAngle(angle)
-            , mTargetAngle(0U)
-            , mStartTime(0UL)
-            , mSpeed(1U)
-            , mOffset(offset)
-            , mMin(min)
-            , mMax(max)
-            , mReverse(reverse)
-            , mEnable(false)
-            , mIsMoving(false) {
+                                         mPca9685(pca9685)
+                                         , mServoId(servoId)
+                                         , mAngle(angle)
+                                         , mTargetAngle(0U)
+                                         , mStartTime(0UL)
+                                         , mSpeed(1U)
+                                         , mOffset(offset)
+                                         , mMin(min)
+                                         , mMax(max)
+                                         , mReverse(reverse)
+                                         , mEnable(false)
+                                         , mIsMoving(false) {
         }
 
         Core::Status Servo::Initialize(void) {
@@ -99,7 +99,7 @@ namespace Component
 
         void Servo::Update(const uint64_t currentTime) {
             if (this->IsMoving()) {
-                if(this->mSpeed != 0U) {
+                if (this->mSpeed != 0U) {
                     this->mAngle = this->GetAngleFromDeltaTime(currentTime);
                 } else {
                     this->mIsMoving = false;

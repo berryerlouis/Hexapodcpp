@@ -6,7 +6,6 @@
 namespace Cluster
 {
     class ClusterCommand {
-
     public:
         ClusterCommand(const uint8_t size);
 
@@ -24,5 +23,4 @@ namespace Cluster
         uint8_t mClusterCommandSize;
         const uint8_t mSize;
     };
-
 }

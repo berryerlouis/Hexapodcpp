@@ -5,16 +5,16 @@ namespace Component
     namespace LedPwm
     {
         LedPwm::LedPwm(Led::LedInterface &led) :
-            mLed(led)
-            , mDutyCycle(50U)
-            , mLastTime(0U)
-            , mIndexInterval(0U)
-            , mInterval{200, 100, 100, 500}
-            , mSpeedInterval(2U)
-            , mToggleFade(false)
-            , mRunning(false)
-            , mFadeDuration(0)
-            , mFadeStep(0) {
+                                               mLed(led)
+                                               , mDutyCycle(50U)
+                                               , mLastTime(0U)
+                                               , mIndexInterval(0U)
+                                               , mInterval{200, 100, 100, 500}
+                                               , mSpeedInterval(2U)
+                                               , mToggleFade(false)
+                                               , mRunning(false)
+                                               , mFadeDuration(0)
+                                               , mFadeStep(0) {
         }
 
         LedPwm::~LedPwm() {

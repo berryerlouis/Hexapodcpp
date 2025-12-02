@@ -12,16 +12,86 @@ namespace Cluster
             , ClusterCommand(NB_COMMANDS_IMU)
             , mImu(imu)
             , mBarometer(barometer) {
-            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::ALL, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::ACC, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::GYR, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::MAG, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::TMP, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::YAW_PITCH_ROLL, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::PRESSURE, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::ALTITUDE, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::TMP_BAR, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::CALIB_SENSOR, .expectedSize = 2U});
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EImuCommands::ALL,
+                .
+                expectedSize = 0U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EImuCommands::ACC,
+                .
+                expectedSize = 0U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EImuCommands::GYR,
+                .
+                expectedSize = 0U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EImuCommands::MAG,
+                .
+                expectedSize = 0U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EImuCommands::TMP,
+                .
+                expectedSize = 0U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EImuCommands::YAW_PITCH_ROLL,
+                .
+                expectedSize = 0U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EImuCommands::PRESSURE,
+                .
+                expectedSize = 0U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EImuCommands::ALTITUDE,
+                .
+                expectedSize = 0U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EImuCommands::TMP_BAR,
+                .
+                expectedSize = 0U
+            }
+            )
+            ;
+            this->AddClusterItem((ClusterItem) {
+                .
+                commandId = EImuCommands::CALIB_SENSOR,
+                .
+                expectedSize = 2U
+            }
+            )
+            ;
             LOG_CLUSTER_DEBUG("Imu", "(%d) Initialized.", IMU);
         }
 
@@ -186,4 +256,3 @@ namespace Cluster
         }
     };
 }
-

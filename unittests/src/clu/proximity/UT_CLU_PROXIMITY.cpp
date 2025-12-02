@@ -16,8 +16,8 @@ namespace Cluster
         class UT_CLU_PROXIMITY : public ::testing::Test {
         protected:
             UT_CLU_PROXIMITY() :
-                mMockSensorProximity(),
-                mClusterProximity(mMockSensorProximity) {
+                               mMockSensorProximity()
+                               , mClusterProximity(mMockSensorProximity) {
             }
 
             virtual void
@@ -104,7 +104,7 @@ namespace Cluster
             request.Set2BytesParam(10U);
 
             Frame response;
-            EXPECT_CALL(mMockSensorProximity, SetThreshold(static_cast<SensorsId>(LASER),10U)).WillOnce(
+            EXPECT_CALL(mMockSensorProximity, SetThreshold(static_cast<SensorsId>(LASER), 10U)).WillOnce(
                     Return(Core::Status::CORE_OK));
             success = mClusterProximity.ExecuteFrame(request, response);
 

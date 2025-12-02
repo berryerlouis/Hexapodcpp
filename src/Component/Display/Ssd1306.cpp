@@ -10,11 +10,11 @@ namespace Component
     namespace Display
     {
         Ssd1306::Ssd1306(Twi::TwiInterface &twi, const uint8_t address) :
-            mTwi(twi)
-            , mAddress(address)
-            , mBufferScreen{0x00U}
-            , mNeedToUpdate(false),
-            mUpdateIndex(BUFFER_DISPLAY_LENGTH) {
+                                                                        mTwi(twi)
+                                                                        , mAddress(address)
+                                                                        , mBufferScreen{0x00U}
+                                                                        , mNeedToUpdate(false)
+                                                                        , mUpdateIndex(BUFFER_DISPLAY_LENGTH) {
 #ifdef RPI
             this->mAddress = wiringPiI2CSetup(address);
 #endif
@@ -23,9 +23,9 @@ namespace Component
 
         Core::Status Ssd1306::Initialize(void) {
             uint8_t init1[] = {
-                    SSD1306_DISPLAYOFF,
-                    SSD1306_SETDISPLAYCLOCKDIV, 0x80U,
-                    SSD1306_SETMULTIPLEX, SCREEN_HEIGHT - 1
+                SSD1306_DISPLAYOFF,
+                SSD1306_SETDISPLAYCLOCKDIV, 0x80U,
+                SSD1306_SETMULTIPLEX, SCREEN_HEIGHT - 1
             };
             this->mTwi.WriteRegisters(this->mAddress, SSD1306_SEND_COMMAND, init1, sizeof(init1));
 
@@ -43,9 +43,9 @@ namespace Component
             this->mTwi.WriteRegister(this->mAddress, SSD1306_SEND_COMMAND, 0xF1);
 
             uint8_t init5[] = {
-                    SSD1306_SETVCOMDETECT, 0x40,
-                    SSD1306_DISPLAYALLON_RESUME, SSD1306_NORMALDISPLAY,
-                    SSD1306_DEACTIVATE_SCROLL, SSD1306_DISPLAYON
+                SSD1306_SETVCOMDETECT, 0x40,
+                SSD1306_DISPLAYALLON_RESUME, SSD1306_NORMALDISPLAY,
+                SSD1306_DEACTIVATE_SCROLL, SSD1306_DISPLAYON
             };
             this->mTwi.WriteRegisters(this->mAddress, SSD1306_SEND_COMMAND, init5, sizeof(init5));
 
@@ -58,7 +58,7 @@ namespace Component
             static const uint16_t NB_BYTES = 64U;
             if (this->mNeedToUpdate == true) {
                 if (this->mUpdateIndex == BUFFER_DISPLAY_LENGTH) {
-                    memcpy(this->mBufferScreen[1U], this->mBufferScreen[0U],BUFFER_DISPLAY_LENGTH);
+                    memcpy(this->mBufferScreen[1U], this->mBufferScreen[0U], BUFFER_DISPLAY_LENGTH);
                     uint8_t screenConfig[] = {SSD1306_PAGEADDR, 0U, 0xFFU, SSD1306_COLUMNADDR, 0U, SCREEN_WIDTH - 1U};
                     this->mTwi.WriteRegisters(this->mAddress, SSD1306_SEND_COMMAND, screenConfig,
                                               sizeof(screenConfig));

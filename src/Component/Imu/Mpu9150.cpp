@@ -20,25 +20,25 @@ namespace Component
         Vector3 magSign = {-1, -1, 1};
 
         Mpu9150::Mpu9150(Twi::TwiInterface &i2c, const uint8_t address) :
-            mI2c(i2c)
-            , mAddress(address)
-            , mAddressMag(AK8963_I2C_ADDRESS)
-            , mAccOffset{0, 0, 0}
-            , mGyrOffset{0, 0, 0}
-            , mMagOffset{47.5F, 71.0F, -54.5}
-            , mMagBias{0, 0, 0}
-            , mIndexCalib(0U)
-            , mStartCalib(false)
-            , mSensorToCalib(NONE)
-            , mMagCalibMin{100000, 100000, 100000}
-            , mMagCalibMax{-100000, -100000, -100000}
-            , mAcc{0, 0, 0}
-            , mGyr{0, 0, 0}
-            , mMag{0, 0, 0}
-            , mTmp(0U)
-            , mLastLoopTime(0U)
-            , mAhrs()
-            , mYawPitchRoll{0, 0, 0} {
+                                                                        mI2c(i2c)
+                                                                        , mAddress(address)
+                                                                        , mAddressMag(AK8963_I2C_ADDRESS)
+                                                                        , mAccOffset{0, 0, 0}
+                                                                        , mGyrOffset{0, 0, 0}
+                                                                        , mMagOffset{47.5F, 71.0F, -54.5}
+                                                                        , mMagBias{0, 0, 0}
+                                                                        , mIndexCalib(0U)
+                                                                        , mStartCalib(false)
+                                                                        , mSensorToCalib(NONE)
+                                                                        , mMagCalibMin{100000, 100000, 100000}
+                                                                        , mMagCalibMax{-100000, -100000, -100000}
+                                                                        , mAcc{0, 0, 0}
+                                                                        , mGyr{0, 0, 0}
+                                                                        , mMag{0, 0, 0}
+                                                                        , mTmp(0U)
+                                                                        , mLastLoopTime(0U)
+                                                                        , mAhrs()
+                                                                        , mYawPitchRoll{0, 0, 0} {
 #ifdef RPI
             this->mAddress = wiringPiI2CSetup(address);
             this->mAddressMag = wiringPiI2CSetup(AK8963_I2C_ADDRESS);
@@ -309,21 +309,27 @@ namespace Component
         }
 
         Vector3 Mpu9150::ReadAcc(void) const {
-            return (Vector3{.x = static_cast<int16_t>(this->mAcc.x * 100),
-                            .y = static_cast<int16_t>(this->mAcc.y * 100),
-                            .z = static_cast<int16_t>(this->mAcc.z * 100)});
+            return (Vector3{
+                .x = static_cast<int16_t>(this->mAcc.x * 100),
+                .y = static_cast<int16_t>(this->mAcc.y * 100),
+                .z = static_cast<int16_t>(this->mAcc.z * 100)
+            });
         }
 
         Vector3 Mpu9150::ReadGyr(void) const {
-            return (Vector3{.x = static_cast<int16_t>(this->mGyr.x * 10),
-                            .y = static_cast<int16_t>(this->mGyr.y * 10),
-                            .z = static_cast<int16_t>(this->mGyr.z * 10)});
+            return (Vector3{
+                .x = static_cast<int16_t>(this->mGyr.x * 10),
+                .y = static_cast<int16_t>(this->mGyr.y * 10),
+                .z = static_cast<int16_t>(this->mGyr.z * 10)
+            });
         }
 
         Vector3 Mpu9150::ReadMag(void) const {
-            return (Vector3{.x = static_cast<int16_t>(this->mMag.x),
-                            .y = static_cast<int16_t>(this->mMag.y),
-                            .z = static_cast<int16_t>(this->mMag.z)});
+            return (Vector3{
+                .x = static_cast<int16_t>(this->mMag.x),
+                .y = static_cast<int16_t>(this->mMag.y),
+                .z = static_cast<int16_t>(this->mMag.z)
+            });
         }
 
         int16_t Mpu9150::ReadTemp(void) const {

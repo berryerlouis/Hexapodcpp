@@ -24,12 +24,12 @@ namespace Component
         class UT_CMP_COMMUNICATION : public ::testing::Test {
         protected:
             UT_CMP_COMMUNICATION() :
-                mMockBody(),
-                mMockSocket(),
-                mMockClusters(),
-                mMockLed(),
-                mClusterBody(mMockBody),
-                mCommunication(mMockSocket, mMockClusters, mMockLed) {
+                                   mMockBody()
+                                   , mMockSocket()
+                                   , mMockClusters()
+                                   , mMockLed()
+                                   , mClusterBody(mMockBody)
+                                   , mCommunication(mMockSocket, mMockClusters, mMockLed) {
             }
 
             virtual void
@@ -86,8 +86,8 @@ namespace Component
             EXPECT_CALL(mMockSocket, Update(0U));
             //EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::Status::CORE_OK));
             //EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
-            EXPECT_CALL(mMockSocket, Send( Matcher <const char *>( _ ), _ )).Times(1U);
-            EXPECT_CALL(mMockClusters, GetCluster( GENERAL )).Times(1U);
+            EXPECT_CALL(mMockSocket, Send(Matcher<const char *>(_), _)).Times(1U);
+            EXPECT_CALL(mMockClusters, GetCluster(GENERAL)).Times(1U);
 
             EXPECT_CALL(mMockSocket, DataAvailable()).WillOnce(Return(strlen(bufferRx)));
             ::testing::Sequence s;
@@ -103,8 +103,8 @@ namespace Component
             EXPECT_CALL(mMockSocket, Update(0U));
             //EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::Status::CORE_OK));
             //EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
-            EXPECT_CALL(mMockSocket, Send( Matcher <const char *>( _ ), _ )).Times(1U);
-            EXPECT_CALL(mMockClusters, GetCluster( IMU )).Times(1U);
+            EXPECT_CALL(mMockSocket, Send(Matcher<const char *>(_), _)).Times(1U);
+            EXPECT_CALL(mMockClusters, GetCluster(IMU)).Times(1U);
 
             EXPECT_CALL(mMockSocket, DataAvailable()).WillOnce(Return(strlen(bufferRx)));
             ::testing::Sequence s;
@@ -126,8 +126,5 @@ namespace Component
             }
             mCommunication.Update(0UL);
         }
-
     }
 }
-
-

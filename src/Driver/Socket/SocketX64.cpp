@@ -24,7 +24,6 @@ namespace Driver
                 bufferMessage.clear();
                 once = false;
             }
-
         }
 
         Socket::Socket(void) {
@@ -79,6 +78,5 @@ namespace Driver
         uint8_t Socket::DataAvailable(void) {
             return bufferMessage.length();
         }
-
     } // namespace Socket
 } // namespace Driver

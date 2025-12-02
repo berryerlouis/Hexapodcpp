@@ -1,26 +1,25 @@
 #include "GaitCycle.h"
-#include "../../Core/Logger.h"
 
 namespace Move
 {
     namespace Gait
     {
         using namespace Misc::Maths;
-        
+
         static constexpr float AMPLITUDE_MAX = 3.0F;
         static constexpr float ELEVATION_MAX = 3.0F;
         static constexpr float DURATION_MIN = 1000.0F; // in milliseconds
 
         GaitParams::GaitParams(void) :
-            mCurrentGait(GaitType::TRIPOD)
-            , mIsRunning(false)
-            , mDirection(0.0F)
-            , mRotation(0.0F)
-            , mIsRotated(false)
-            , mClockWize(false)
-            , mAmplitude(AMPLITUDE_MAX)
-            , mElevation(ELEVATION_MAX)
-            , mCycleDuration(DURATION_MIN){
+                                     mCurrentGait(GaitType::TRIPOD)
+                                     , mIsRunning(false)
+                                     , mDirection(0.0F)
+                                     , mRotation(0.0F)
+                                     , mIsRotated(false)
+                                     , mClockWize(false)
+                                     , mAmplitude(AMPLITUDE_MAX)
+                                     , mElevation(ELEVATION_MAX)
+                                     , mCycleDuration(DURATION_MIN) {
         }
 
         bool GaitParams::SetGaitType(const GaitType gaitType) {
@@ -32,7 +31,7 @@ namespace Move
             return this->mCurrentGait;
         }
 
-        bool GaitParams::SetDirection(float directionAngle) {
+        bool GaitParams::SetDirection(const float directionAngle) {
             if (directionAngle <= 2.0F * M_PI) {
                 this->mDirection = directionAngle;
                 return true;
@@ -40,17 +39,17 @@ namespace Move
             return false;
         }
 
-        bool GaitParams::SetRotation(float rotationAngle, bool clockWize) {
+        bool GaitParams::SetRotation(const float rotationAngle, const bool clockWize) {
             if (rotationAngle != 0.0F && rotationAngle <= 2.0F * M_PI) {
                 this->mRotation = rotationAngle;
                 this->mIsRotated = true;
-                this->mClockWize = clockWize;                
+                this->mClockWize = clockWize;
                 return true;
             }
             return false;
         }
 
-        bool GaitParams::SetAmplitude(float amplitude) {
+        bool GaitParams::SetAmplitude(const float amplitude) {
             if (amplitude <= AMPLITUDE_MAX) {
                 this->mAmplitude = amplitude;
                 return true;
@@ -58,7 +57,7 @@ namespace Move
             return false;
         }
 
-        bool GaitParams::SetElevation(float elevation) {
+        bool GaitParams::SetElevation(const float elevation) {
             if (elevation <= ELEVATION_MAX) {
                 this->mElevation = elevation;
                 return true;
@@ -66,7 +65,7 @@ namespace Move
             return false;
         }
 
-        bool GaitParams::SetCycleDuration(uint16_t duration) {
+        bool GaitParams::SetCycleDuration(const uint16_t duration) {
             if (duration >= DURATION_MIN) {
                 this->mCycleDuration = duration;
                 return true;
@@ -85,7 +84,7 @@ namespace Move
         bool GaitParams::IsRotated() const {
             return this->mIsRotated;
         }
-        
+
         bool GaitParams::GetRotationClockWize() const {
             return this->mClockWize;
         }
@@ -106,10 +105,9 @@ namespace Move
             return this->mIsRunning;
         }
 
-        bool GaitParams::SetRunning(bool running) {
+        bool GaitParams::SetRunning(const bool running) {
             this->mIsRunning = running;
             return true;
         }
-
     }
 }

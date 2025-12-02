@@ -8,9 +8,9 @@ namespace Cluster
         using namespace Component::Battery;
 
         ClusterBattery::ClusterBattery(BatteryInterface &battery) :
-            ClusterBase(BATTERY, *this)
-            , ClusterCommand(NB_COMMANDS_BATTERY)
-            , mBattery(battery) {
+                                                                  ClusterBase(BATTERY, *this)
+                                                                  , ClusterCommand(NB_COMMANDS_BATTERY)
+                                                                  , mBattery(battery) {
             this->AddClusterItem({.commandId = EBatteryCommands::GET_BAT_STATUS, .expectedSize = 0U});
             this->AddClusterItem({.commandId = EBatteryCommands::GET_VOLTAGE, .expectedSize = 0U});
             this->AddClusterItem({.commandId = EBatteryCommands::GET_CURRENT, .expectedSize = 0U});
