@@ -17,11 +17,11 @@ namespace Move
             ~GaitCycle() = default;
 
             // Playback control
-            bool Start();
+            bool Start(void);
 
-            bool Pause() const;
+            bool Pause(void) const;
 
-            bool Stop() const;
+            bool Stop(void) const;
 
             // Update cycle
             void Update(uint64_t currentTime);

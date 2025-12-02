@@ -14,7 +14,7 @@ namespace Bot
 
             MOCK_METHOD0(Update, Core::Status (void));
 
-            MOCK_METHOD4(SetTarget, void (const Move::Gait::GaitParams &,
+            MOCK_METHOD4(ComputeTarget, void (const Move::Gait::GaitParams &,
                                           const std::vector<std::vector<Misc::Maths::Position3d> > &,
                                           const uint8_t,
                                           const float));

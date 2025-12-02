@@ -18,7 +18,8 @@ namespace Bot
 
             virtual Core::Status Update(void) = 0;
 
-            virtual void SetTarget(const Move::Gait::GaitParams &gaitParams,
+            virtual void ComputeTarget(const uint64_t currentTime,
+                                   const Move::Gait::GaitParams &gaitParams,
                                    const std::vector<std::vector<Misc::Maths::Position3d> > &positions,
                                    const uint8_t stepPositionIndex,
                                    const float normalizedTime) = 0;

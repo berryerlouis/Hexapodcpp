@@ -25,13 +25,21 @@ namespace Bot
 
             Core::Status Update(void) final override;
 
-            void SetTarget(const Move::Gait::GaitParams &gaitParams,
+            void ComputeTarget(const uint64_t currentTime,
+                           const Move::Gait::GaitParams &gaitParams,
                            const std::vector<std::vector<Misc::Maths::Position3d> > &positions,
                            const uint8_t stepPositionIndex,
                            const float normalizedTime) final override;
 
         private:
+
+            uint8_t GetStepIndexPosition(const uint8_t legId,
+                                         const uint8_t nbPositions,
+                                         const uint8_t stepPositionIndex, 
+                                         const Move::Gait::GaitType gaitType);
+
             std::unordered_map<ELeg, Leg::Leg> mLegs;
+            uint8_t mLegIdInWaveGait = 0U;
         };
     }
 }

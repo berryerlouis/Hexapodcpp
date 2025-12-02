@@ -14,6 +14,7 @@ namespace Bot
             , mBodyCenterOffsetY{0.0F}
             , mFootPosition{0.0F, 0.0F, 0.0F}
             , mLegIk{{0.0F, 0.0F, 0.0F}, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F}
+            , mStartPos{0.0F, 0.0F, 0.0F}
             , mCurrentPos{0.0F, 0.0F, 0.0F}
             , mLegId(legId)
             , mCoxa(coxa)
@@ -138,6 +139,46 @@ namespace Bot
 
         Core::Status Leg::Update(void) {
             return this->SetLegIk(this->mCurrentPos);
+        }
+        
+        void Leg::ComputeLerpTarget(const uint64_t currentTime, Misc::Maths::Position3d &position, const Move::Gait::GaitParams &gaitParams) {
+            if (false == gaitParams.IsRotated()) {
+                this->ComputeDirection(position, gaitParams.GetDirection());
+            } else {
+                this->ComputeRotation(position, gaitParams.GetRotation(), gaitParams.GetRotationClockWize());
+            }
+            this->ComputeAmplitude(position, gaitParams.GetAmplitude());
+            this->ComputeElevation(position, gaitParams.GetElevation());
+
+            uint64_t timeDiff = currentTime - gaitParams.GetChangeTimeStamp();
+            if(timeDiff < 500U) {
+                if(this->mStartPos.x == INFINITY && this->mStartPos.y == INFINITY && this->mStartPos.z == INFINITY) {
+                    this->mStartPos = this->mCurrentPos;
+                }
+                position = Misc::Utils::LerpPosition(this->mStartPos, position, static_cast<float>(timeDiff) / 500.0F);
+                
+                if(this->mLegId == Legs::ELeg::FRONT_LEFT) {
+                    LOG_BOT_DEBUG("Leg", "leg %s(%d) lerp:%.2f (start.x:%.2f, start.y:%.2f, start.z:%.2f), (pos.x:%.2f, pos.y:%.2f, pos.z:%.2f)",
+                                ElegToString(this->mLegId).c_str(),
+                                this->mLegId,
+                                static_cast<float>(timeDiff) / 500.0F,
+                                this->mStartPos.x,
+                                this->mStartPos.y,
+                                this->mStartPos.z,
+                                position.x,
+                                position.y,
+                                position.z);
+                }
+            } else {
+                this->mStartPos = {INFINITY, INFINITY, INFINITY};
+            }
+            
+            
+            /*if (this->mCurrentPos.abs(position).x > 0.01F ||
+                this->mCurrentPos.abs(position).y > 0.01F ||
+                this->mCurrentPos.abs(position).z > 0.01F) {
+                return;
+            }*/
         }
 
         Core::Status Leg::SetLegIk(const Position3d &position, const uint16_t travelTime) {

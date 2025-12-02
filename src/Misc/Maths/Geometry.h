@@ -80,6 +80,14 @@ namespace Misc
                 z = z - value;
                 return *this;
             }
+
+            Position3d
+            abs(const Position3d &value) {
+                x = std::abs(x - value.x);
+                y = std::abs(y - value.y);
+                z = std::abs(z - value.z);
+                return *this;
+            }
         };
 
         struct Rotation3d {

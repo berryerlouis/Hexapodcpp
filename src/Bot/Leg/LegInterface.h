@@ -3,6 +3,7 @@
 #include "../../Component/Servo/ServoInterface.h"
 #include "../../Misc/Maths/Geometry.h"
 #include "../Constants.h"
+#include "../../Move/Gait/GaitParams.h"
 
 namespace Bot
 {
@@ -19,6 +20,8 @@ namespace Bot
             virtual void ResetTarget(void) = 0;
 
             virtual Core::Status Update(void) = 0;
+
+            virtual void ComputeLerpTarget(const uint64_t currentTime, Misc::Maths::Position3d &position, const Move::Gait::GaitParams &gaitParams) = 0;
 
             virtual Legs::ELeg GetId(void) const = 0;
 

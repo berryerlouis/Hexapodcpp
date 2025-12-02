@@ -48,6 +48,8 @@ namespace Bot
 
             Core::Status Update(void) final override;
 
+            void ComputeLerpTarget(const uint64_t currentTime, Misc::Maths::Position3d &position, const Move::Gait::GaitParams &gaitParams) final override;
+
             Legs::ELeg GetId(void) const final override;
 
             Core::Status SetLegIk(const Position3d &position, const uint16_t travelTime = 0U) final override;
@@ -74,6 +76,7 @@ namespace Bot
             float mBodyCenterOffsetY;
             Position3d mFootPosition;
             SLegIk mLegIk;
+            Position3d mStartPos;
             Position3d mCurrentPos;
 
         private:

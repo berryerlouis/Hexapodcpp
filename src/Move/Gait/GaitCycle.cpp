@@ -1,20 +1,21 @@
 #include "GaitCycle.h"
+#include "../../Core/Logger.h"
 #include "../../Driver/Tick/Tick.h"
 
 namespace Move
 {
     namespace Gait
-    {
-        GaitCycle::GaitCycle(Bot::Legs::LegsInterface &legs, GaitParams &gaitParams) :
-            mLegs(legs)
+    {        
+        GaitCycle::GaitCycle(Bot::Legs::LegsInterface &legs, GaitParams &gaitParams)
+            : mLegs(legs)
             , mGaitParams(gaitParams)
             , mLastUpdateTime(0UL)
             , mStartTime(0UL)
             , mStepPositionIndex(0U) {
-            this->mGaitParams.SetRunning(true);
+                this->mGaitParams.SetRunning(true);
         }
 
-        bool GaitCycle::Start() {
+        bool GaitCycle::Start(void) {
             if (!this->mGaitParams.IsRunning()) {
                 this->mGaitParams.SetRunning(true);
                 this->mStartTime = Driver::Tick::Tick::GetInstance().GetMs();
@@ -23,7 +24,7 @@ namespace Move
             return false;
         }
 
-        bool GaitCycle::Pause() const {
+        bool GaitCycle::Pause(void) const {
             if (this->mGaitParams.IsRunning()) {
                 this->mGaitParams.SetRunning(false);
                 return true;
@@ -31,7 +32,7 @@ namespace Move
             return false;
         }
 
-        bool GaitCycle::Stop() const {
+        bool GaitCycle::Stop(void) const{
             if (this->mGaitParams.IsRunning()) {
                 this->mGaitParams.SetRunning(false);
                 this->mLegs.ResetLegs(this->mGaitParams.GetCycleDuration());
@@ -45,37 +46,39 @@ namespace Move
                 return;
             }
 
-            const float normalizedTime = this->GetNormalizedTime(currentTime);
-            this->mLegs.SetTarget(this->mGaitParams,
-                                  this->mPositions,
-                                  this->mStepPositionIndex,
-                                  normalizedTime);
-
-            if (this->IsCycleComplete(currentTime)) {
-                this->AdvanceToNextCycle(currentTime);
-                this->mLegs.SetTarget(this->mGaitParams,
+            float normalizedTime = this->GetNormalizedTime(currentTime);
+            this->mLegs.ComputeTarget(currentTime, 
+                                      this->mGaitParams,
                                       this->mPositions,
                                       this->mStepPositionIndex,
-                                      0.0F);
+                                      normalizedTime);
+            
+            if (this->IsCycleComplete(currentTime)) {
+                this->AdvanceToNextCycle(currentTime);
+                this->mLegs.ComputeTarget(currentTime, 
+                                      this->mGaitParams,
+                                      this->mPositions,
+                                      this->mStepPositionIndex,
+                                      normalizedTime);
             }
-
+            
             this->mLegs.Update();
         }
 
-        float GaitCycle::GetDeltaTimeOfCycleDuration(const uint64_t currentTime) const {
+        float GaitCycle::GetDeltaTimeOfCycleDuration(const uint64_t currentTime) const{
             return this->GetNormalizedTime(currentTime);
         }
 
         float GaitCycle::GetNormalizedTime(const uint64_t currentTime) const {
-            const float deltaTimeMs = static_cast<float>(currentTime - this->mStartTime);
-            const float cycleDurationMs = this->mGaitParams.GetCycleDuration();
-            const float normalizedTime = deltaTimeMs / cycleDurationMs;
+            float deltaTimeMs = static_cast<float>(currentTime - this->mStartTime);
+            float cycleDurationMs = this->mGaitParams.GetCycleDuration();
+            float normalizedTime = deltaTimeMs / cycleDurationMs;
             return (normalizedTime > 1.0F) ? 1.0F : normalizedTime;
         }
 
         bool GaitCycle::IsCycleComplete(const uint64_t currentTime) const {
-            const float deltaTimeMs = static_cast<float>(currentTime - this->mStartTime);
-            const float cycleDurationMs = this->mGaitParams.GetCycleDuration();
+            float deltaTimeMs = static_cast<float>(currentTime - this->mStartTime);
+            float cycleDurationMs = this->mGaitParams.GetCycleDuration();
             return deltaTimeMs >= cycleDurationMs;
         }
 
