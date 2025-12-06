@@ -5,6 +5,7 @@
 #include "../../Bot/Legs/LegsInterface.h"
 #include "GaitParams.h"
 #include "GaitStrategy.h"
+#include <memory>
 #include <vector>
 
 namespace Move
