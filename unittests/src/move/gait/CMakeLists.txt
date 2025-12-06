@@ -2,14 +2,15 @@
 
 # Source files under test
 set(SRC_FILES
-    ../src/Move/Gait/GaitParams.cpp
-    ../src/Move/Gait/GaitCycle.cpp
+        ../src/Move/Gait/GaitParams.cpp
+        ../src/Move/Gait/GaitCycle.cpp
+        ../src/Move/Gait/GaitStrategy.cpp
 )
 
 # Test files
 set(TEST_FILES
-    src/move/gait/UT_MOVE_GAIT_PARAMS.cpp
-    src/move/gait/UT_MOVE_GAIT_CYCLE.cpp
+        src/move/gait/UT_MOVE_GAIT_PARAMS.cpp
+        src/move/gait/UT_MOVE_GAIT_CYCLE.cpp
 )
 
 # Combine and export to parent scope

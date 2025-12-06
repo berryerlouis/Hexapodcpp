@@ -1,6 +1,6 @@
 #pragma once
 
-#include <unordered_map>
+#include <map>
 #include <functional>
 
 #include "../Battery/ClusterBattery.h"
@@ -28,22 +28,21 @@ namespace Cluster
 
         class Clusters : public ClustersInterface {
         public:
-            Clusters(
-                    ClusterGeneral &general,
-                    ClusterBattery &battery,
-                    ClusterButton &button,
-                    ClusterSound &sound,
-                    ClusterBody &body,
-                    ClusterImu &imu,
-                    ClusterProximity &proximity,
-                    ClusterServo &servo);
+            Clusters(ClusterGeneral &general,
+                     ClusterBattery &battery,
+                     ClusterButton &button,
+                     ClusterSound &sound,
+                     ClusterBody &body,
+                     ClusterImu &imu,
+                     ClusterProximity &proximity,
+                     ClusterServo &servo);
 
             ~Clusters() = default;
 
             ClusterBase *GetCluster(const EClusters clusterId) final override;
 
         private:
-            std::unordered_map<EClusters, std::reference_wrapper<ClusterBase> > mClusters;
+            std::map<EClusters, std::reference_wrapper<ClusterBase> > mClusters;
         };
     }
 }

@@ -30,18 +30,17 @@ namespace Service
 
         class Services : public ServiceInterface {
         public:
-            Services(
-                    ServiceGeneral &serviceGeneral,
-                    ServiceControl &serviceControl,
-                    ServiceCommunication &serviceCommunication,
-                    ServiceProximity &serviceProximity,
-                    ServiceOrientation &serviceOrientation,
-                    ServiceBattery &serviceBattery,
-                    ServiceDisplay &serviceDisplay,
-                    ServiceBody &serviceBody,
-                    ServiceButton &serviceButton,
-                    ServiceSound &serviceSound,
-                    Event::MessageInterface &messageListener);
+            Services(ServiceGeneral &serviceGeneral,
+                     ServiceControl &serviceControl,
+                     ServiceCommunication &serviceCommunication,
+                     ServiceProximity &serviceProximity,
+                     ServiceOrientation &serviceOrientation,
+                     ServiceBattery &serviceBattery,
+                     ServiceDisplay &serviceDisplay,
+                     ServiceBody &serviceBody,
+                     ServiceButton &serviceButton,
+                     ServiceSound &serviceSound,
+                     Event::MessageInterface &messageListener);
 
             ~Services() = default;
 
@@ -50,7 +49,7 @@ namespace Service
             virtual void Update(const uint64_t currentTime) final override;
 
         private:
-            std::unordered_map<EServices, Service *> mServices;
+            std::map<EServices, Service *> mServices;
             Event::MessageInterface &mMessageListener;
         };
     }

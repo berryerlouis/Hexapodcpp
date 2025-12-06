@@ -1,6 +1,6 @@
 set(
         SRC_FILES
-        ../src/Driver/Tick/TickX64.cpp
+        ../src/Driver/Timer/TickX64.cpp
         ../src/Component/Servo/Servo.cpp
 )
 set(

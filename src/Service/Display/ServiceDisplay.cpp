@@ -162,7 +162,7 @@ namespace Service
                     this->mSsd1306.EraseArea(0U,
                                              SCREEN_HEIGHT - 10U, this->mBmpProximity.width, 8U);
                 } else {
-                    this->mNotifiedTimeProximityUsLeft = Tick::Tick::GetInstance().GetMs();
+                    this->mNotifiedTimeProximityUsLeft = Timer::Tick::GetInstance().GetMs();
                     this->mBmpProximity.bmp = const_cast<uint8_t *>(Bitmaps::ArrowLeft);
                     this->mSsd1306.DrawBitmap(&this->mBmpProximity,
                                               0U,
@@ -175,7 +175,7 @@ namespace Service
                                              SCREEN_HEIGHT - 10U,
                                              this->mBmpProximity.width, 8U);
                 } else {
-                    this->mNotifiedTimeProximityLaser = Tick::Tick::GetInstance().GetMs();
+                    this->mNotifiedTimeProximityLaser = Timer::Tick::GetInstance().GetMs();
                     this->mBmpProximity.bmp = const_cast<uint8_t *>(Bitmaps::ArrowUp);
                     this->mSsd1306.DrawBitmap(&this->mBmpProximity,
                                               (SCREEN_WIDTH / 2U) - (this->mBmpProximity.width / 2U),
@@ -189,7 +189,7 @@ namespace Service
                                              SCREEN_HEIGHT - 10U,
                                              this->mBmpProximity.width, 8U);
                 } else {
-                    this->mNotifiedTimeProximityUsRight = Tick::Tick::GetInstance().GetMs();
+                    this->mNotifiedTimeProximityUsRight = Timer::Tick::GetInstance().GetMs();
                     this->mBmpProximity.bmp = const_cast<uint8_t *>(Bitmaps::ArrowRight);
                     this->mSsd1306.DrawBitmap(&this->mBmpProximity,
                                               (SCREEN_WIDTH - this->mBmpProximity.width),
@@ -202,7 +202,7 @@ namespace Service
         void ServiceDisplay::DisplaySound(const SoundStruct &soundStruct) {
             if (soundStruct.id == SOUND_RIGHT) {
                 if (soundStruct.delay > 0U) {
-                    this->mNotifiedTimeSoundRight = Tick::Tick::GetInstance().GetMs();
+                    this->mNotifiedTimeSoundRight = Timer::Tick::GetInstance().GetMs();
                     this->mBmpSound.bmp = const_cast<uint8_t *>(Bitmaps::SoundRight);
                     this->mSsd1306.DrawBitmap(&this->mBmpSound, (SCREEN_WIDTH) - (this->mBmpSound.width),
                                               12U, Bitmaps::Color::COLOR_WHITE);
@@ -213,7 +213,7 @@ namespace Service
                 }
             } else if (soundStruct.id == SOUND_LEFT) {
                 if (soundStruct.delay > 0U) {
-                    this->mNotifiedTimeSoundLeft = Tick::Tick::GetInstance().GetMs();
+                    this->mNotifiedTimeSoundLeft = Timer::Tick::GetInstance().GetMs();
                     this->mBmpSound.bmp = const_cast<uint8_t *>(Bitmaps::SoundLeft);
                     this->mSsd1306.DrawBitmap(&this->mBmpSound, 0U, 12U,
                                               Bitmaps::Color::COLOR_WHITE);

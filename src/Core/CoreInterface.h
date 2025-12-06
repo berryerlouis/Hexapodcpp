@@ -4,7 +4,7 @@
 #include <stddef.h>
 
 #include "Status.h"
-#include "../Driver/Tick/Tick.h"
+#include "../Driver/Timer/Tick.h"
 #include "Logger.h"
 
 namespace Core

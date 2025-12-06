@@ -11,106 +11,45 @@ namespace Move
     {
         class Walk {
         public:
-            Walk(Bot::Legs::LegsInterface &legs) :
-                                                 mGaitParams()
-                                                 , mGaitCycle(legs, mGaitParams)
-                                                 , mStatus(EWalkStatus::STOPPED) {
-            }
+            Walk(Bot::Legs::LegsInterface &legs);
 
             ~Walk() = default;
 
-            void
-            Update(const uint64_t currentTime) {
-                this->mGaitCycle.Update(currentTime);
-            }
+            void Update(const uint64_t currentTime);
 
-            void
-            UpdateStatus(const EWalkStatus status) {
-                this->mStatus = status;
-                if (this->mStatus == EWalkStatus::WALKING) {
-                    this->mGaitCycle.Start();
-                } else if (this->mStatus == EWalkStatus::PAUSED) {
-                    this->mGaitCycle.Pause();
-                } else {
-                    this->mGaitCycle.Stop();
-                }
-            }
+            void UpdateStatus(const EWalkStatus status);
 
-            EWalkStatus
-            GetStatus() const {
-                return this->mStatus;
-            }
+            EWalkStatus GetStatus() const;
 
             // Direct access to gait parameters
-            bool
-            SetDirection(const float directionAngle) {
-                return this->mGaitParams.SetDirection(directionAngle);
-            }
+            bool SetDirection(const float directionAngle);
 
-            bool
-            SetRotation(const float rotationAngle, const bool clockWize) {
-                return this->mGaitParams.SetRotation(rotationAngle, clockWize);
-            }
+            bool SetRotation(const float rotationAngle,
+                             const bool clockWize);
 
-            bool
-            SetAmplitude(const float amplitude) {
-                return this->mGaitParams.SetAmplitude(amplitude);
-            }
+            bool SetAmplitude(const float amplitude);
 
-            bool
-            SetElevation(const float elevation) {
-                return this->mGaitParams.SetElevation(elevation);
-            }
+            bool SetElevation(const float elevation);
 
-            bool
-            SetCycleDuration(const uint16_t duration) {
-                return this->mGaitParams.SetCycleDuration(duration);
-            }
+            bool SetCycleDuration(const uint16_t duration);
 
-            bool
-            SetGait(const Gait::GaitType gait) {
-                return this->mGaitParams.SetGaitType(gait);
-            }
+            bool SetGait(const Gait::GaitType gait);
 
-            float
-            GetDirection() const {
-                return this->mGaitParams.GetDirection();
-            }
+            float GetDirection() const;
 
-            float
-            GetRotation() const {
-                return this->mGaitParams.GetRotation();
-            }
+            float GetRotation() const;
 
-            bool
-            GetRotationClockWize() const {
-                return this->mGaitParams.GetRotationClockWize();
-            }
+            bool GetRotationClockWize() const;
 
-            bool
-            IsRotated() const {
-                return this->mGaitParams.IsRotated();
-            }
+            bool IsRotated() const;
 
-            float
-            GetAmplitude() const {
-                return this->mGaitParams.GetAmplitude();
-            }
+            float GetAmplitude() const;
 
-            float
-            GetElevation() const {
-                return this->mGaitParams.GetElevation();
-            }
+            float GetElevation() const;
 
-            uint16_t
-            GetCycleDuration() const {
-                return this->mGaitParams.GetCycleDuration();
-            }
+            uint16_t GetCycleDuration() const;
 
-            Gait::GaitType
-            GetGait() const {
-                return this->mGaitParams.GetGaitType();
-            }
+            Gait::GaitType GetGait() const;
 
         private:
             Gait::GaitParams mGaitParams;

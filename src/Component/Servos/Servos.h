@@ -1,6 +1,6 @@
 #pragma once
 
-#include <unordered_map>
+#include <map>
 
 #include "ServosInterface.h"
 #include "../../Driver/Gpio/GpioInterface.h"
@@ -35,7 +35,7 @@ namespace Component
             virtual ServosController::Pca9685Interface &GetServosController(const uint8_t pca9685Id) final override;
 
         private:
-            std::unordered_map<EServos, Servo::Servo> mServos;
+            std::map<EServos, Servo::Servo> mServos;
             ServosController::Pca9685Interface &mPca9685Left;
             ServosController::Pca9685Interface &mPca9685Right;
             Gpio::GpioInterface &mEnablePwmPin;

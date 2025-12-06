@@ -23,7 +23,7 @@
                     "bin/dev/build.sh",
                     "X64",
                     "sources",
-                    "${input:buildType}"
+                    "DEBUG"
                 ]
             },
             "problemMatcher": [
@@ -293,8 +293,6 @@
                 "clean",
                 "help",
                 "UT_BOT_BODY",
-                "UT_BOT_LEG",
-                "UT_BOT_LEGS",
                 "UT_CLU_BATTERY",
                 "UT_CLU_BODY",
                 "UT_CLU_BUTTON",
@@ -328,7 +326,8 @@
                 "UT_SRV_ORIENTATION",
                 "UT_SRV_PROXIMITY",
                 "UT_SRV_SOUND",
-                "UT_MOVE_GAIT_CYCLE"
+                "UT_MOVE_GAIT_CYCLE",
+                "UT_MOVE_GAIT_PARAMS"
             ],
             "default": "all"
         },

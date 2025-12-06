@@ -340,14 +340,12 @@ package Bot <<Rectangle>> {
     + GetLeg(id): Leg&
     + SetTarget(id, pos)
     + Update(time)
-    + ResetLegs()
   }
   
   class Legs {
     + GetLeg(id): Leg&
     + SetTarget(id, pos)
     + Update(time)
-    + ResetLegs()
   }
   
   Legs ..|> LegsInterface

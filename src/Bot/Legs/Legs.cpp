@@ -45,9 +45,13 @@ namespace Bot
                                      *servos.GetServo(SERVO_17))
                     }
             } {
-            LOG_BOT_DEBUG("Leg", "Legs Initialized");
+            LOG_BOT_DEBUG("Leg",
+                          "Legs Initialized");
         }
 
+        std::map<ELeg, Leg::Leg> &Legs::GetLegs(void) {
+            return this->mLegs;
+        }
 
         Leg::LegInterface *Legs::GetLeg(const ELeg legId) {
             const auto it = this->mLegs.find(legId);
@@ -57,68 +61,11 @@ namespace Bot
             return nullptr;
         }
 
-        void Legs::ResetLegs(const uint16_t cycleDuration) {
-            for (auto &leg: this->mLegs) {
-                leg.second.ResetTarget();
-                leg.second.SetLegIk({0.0F, 0.0F, 0.0F}, cycleDuration);
-            }
-        }
-
         Core::Status Legs::Update(void) {
             for (auto &leg: this->mLegs) {
                 leg.second.Update();
             }
             return Core::Status::CORE_OK;
-        }
-
-        void Legs::ComputeTarget(const uint64_t currentTime,
-                             const Move::Gait::GaitParams &gaitParams,
-                             const std::vector<std::vector<Misc::Maths::Position3d> > &positions,
-                             const uint8_t stepPositionIndex,
-                             const float normalizedTime) {
-            uint8_t stepPositionIndexAlt = stepPositionIndex;
-            for (auto &leg: this->mLegs) {
-                uint8_t legId = static_cast<uint8_t>(leg.second.GetId());
-                stepPositionIndexAlt = this->GetStepIndexPosition(legId,
-                                     static_cast<uint8_t>(positions.size()),
-                                     stepPositionIndex,
-                                     gaitParams.GetGaitType());
-
-                Misc::Maths::Position3d position = Misc::Utils::QuadraticLerp(
-                        positions[stepPositionIndexAlt][0U],
-                        positions[stepPositionIndexAlt][1U],
-                        positions[stepPositionIndexAlt][2U],
-                        normalizedTime
-                        );
-                leg.second.ComputeLerpTarget(currentTime, position, gaitParams);
-                leg.second.SetTarget(position);
-            }
-        }
-
-        uint8_t Legs::GetStepIndexPosition(const uint8_t legId,
-                                           const uint8_t nbPositions,
-                                           const uint8_t stepPositionIndex, 
-                                           const Move::Gait::GaitType gaitType) {
-            uint8_t stepPositionIndexAlt = stepPositionIndex;
-            if (gaitType == Move::Gait::GaitType::TRIPOD) {
-                // TRIPOD: 2 groups alternating
-                // Group 0: FRONT_LEFT(0), REAR_LEFT(2), MIDDLE_RIGHT(4)
-                // Group 1: MIDDLE_LEFT(1), REAR_RIGHT(3), FRONT_RIGHT(5)
-                if (legId % 2U == 0U) {
-                    stepPositionIndexAlt = stepPositionIndex;
-                } else {
-                    stepPositionIndexAlt = (stepPositionIndex + 1U) % nbPositions;
-                }
-            } else if (gaitType == Move::Gait::GaitType::WAVE) {
-                // WAVE: 6 sequential phases, one leg at a time
-                // Each leg offset by 1 position in sequence
-                mLegIdInWaveGait++;
-            } else if (gaitType == Move::Gait::GaitType::RIPPLE) {
-                // RIPPLE: 3 pairs of legs (2 legs per phase)
-                // Pair 0: legs 0-1, Pair 1: legs 2-3, Pair 2: legs 4-5
-                stepPositionIndexAlt = (stepPositionIndex + (legId / 2U)) % nbPositions;
-            }
-            return stepPositionIndexAlt;
         }
     }
 }

@@ -2,12 +2,12 @@
 
 # Source files under test
 set(SRC_FILES
-    ../src/Component/Battery/Battery.cpp
+        ../src/Component/Battery/Battery.cpp
 )
 
 # Test files
 set(TEST_FILES
-    src/cmp/battery/UT_CMP_BATTERY.cpp
+        src/cmp/battery/UT_CMP_BATTERY.cpp
 )
 
 # Combine and export to parent scope

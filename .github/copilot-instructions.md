@@ -60,7 +60,7 @@ Cross-compilation: Use Docker or `cmake/toolchain-rpi-zero-2-w.cmake` with `-DTA
 - No exceptions / RTTI; avoid dynamic polymorphic downcasts.
 - Fixed-size arrays preferred to dynamic containers for embedded determinism.
 - Use explicit initialization lists for large composed objects (see `App::App()` ordering example).
-- Keep per-tick operations bounded; use `Driver::Tick::Tick::GetInstance().DelayUs(100U)` pattern if adjusting loop pacing.
+- Keep per-tick operations bounded; use `Driver::Timer::Tick::GetInstance().DelayUs(100U)` pattern if adjusting loop pacing.
 
 ## 8. Deployment / Flashing
 - AVR flashing script example: `bin/dev/upload.sh` (uses `avrdude` with `m1284p` over `/dev/ttyUSB0`). Adjust serial permissions and module: `sudo modprobe cp210x` then `chmod a+rw /dev/ttyUSB0`.

@@ -18,9 +18,9 @@ namespace Service
         class UT_SRV_BATTERY : public ::testing::Test {
         protected:
             UT_SRV_BATTERY() :
-                mMockEventListener()
-                , mMockBattery()
-                , mServiceBattery(mMockBattery, mMockEventListener) {
+                             mMockEventListener()
+                             , mMockBattery()
+                             , mServiceBattery(mMockBattery, mMockEventListener) {
             }
 
             virtual void

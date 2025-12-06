@@ -12,7 +12,7 @@ namespace Driver
 
         enum EPort { PORT_A, PORT_B, PORT_C, PORT_D };
 
-#define NB_PORT 4U
+#define NB_PORT    4U
 
         struct SGpio {
             uint8_t pin;

@@ -19,9 +19,9 @@ namespace Cluster
         class UT_CLU_SERVO : public ::testing::Test {
         protected:
             UT_CLU_SERVO() :
-                mMockServos()
-                , mMockPca9685()
-                , mClusterServo(mMockServos) {
+                           mMockServos()
+                           , mMockPca9685()
+                           , mClusterServo(mMockServos) {
             }
 
             virtual void

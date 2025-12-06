@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Constants.h"
-#include "../../Driver/Tick/Tick.h"
+#include "../../Driver/Timer/Tick.h"
 
 namespace Move
 {
@@ -46,7 +46,7 @@ namespace Move
 
             bool SetRunning(bool running);
 
-            uint64_t GetChangeTimeStamp() const;
+            uint64_t GetUpdatedTimeStamp() const;
 
         private:
             GaitType mCurrentGait;
@@ -58,7 +58,7 @@ namespace Move
             float mAmplitude;
             float mElevation;
             uint16_t mCycleDuration;
-            uint64_t mChangeTimeStamp;
+            uint64_t mUpdatedTimeStamp;
         };
     }
 }

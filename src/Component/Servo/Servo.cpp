@@ -152,7 +152,7 @@ namespace Component
                     this->mSpeed = 0U;
                 } else {
                     this->mSpeed = travelTime;
-                    this->mStartTime = Tick::Tick::GetInstance().GetMs();
+                    this->mStartTime = Timer::Tick::GetInstance().GetMs();
                 }
                 this->mIsMoving = true;
                 return (Core::Status::CORE_OK);

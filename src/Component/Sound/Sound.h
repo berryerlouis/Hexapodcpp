@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../Driver/Gpio/GpioInterface.h"
-#include "../../Driver/Tick/Tick.h"
+#include "../../Driver/Timer/Tick.h"
 #include "../Led/LedInterface.h"
 #include "SoundState.h"
 #include "SoundInterface.h"

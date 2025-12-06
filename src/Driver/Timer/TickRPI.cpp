@@ -4,7 +4,7 @@
 
 namespace Driver
 {
-    namespace Tick
+    namespace Timer
     {
         uint64_t start;
         std::chrono::time_point<std::chrono::steady_clock> start_time;

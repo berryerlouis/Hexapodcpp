@@ -10,9 +10,12 @@ namespace Bot
         public:
             MOCK_METHOD1(SetTarget, void (const Position3d &));
 
-            MOCK_METHOD0(ResetTarget, void (void));
-
             MOCK_METHOD0(Update, Core::Status (void));
+
+            MOCK_METHOD0(GetCurrentPosition, Position3d &(void));
+
+            MOCK_METHOD9(ComputeLerpTarget, void (const uint64_t, Misc::Maths::Position3d &, const float, const float,
+                                                  const float, const bool, const float, const bool, const uint64_t));
 
             MOCK_CONST_METHOD0(GetId, Legs::ELeg (void));
 

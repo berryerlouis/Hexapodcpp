@@ -4,6 +4,7 @@
 #include "../../Bot/Constants.h"
 #include "../../Bot/Legs/LegsInterface.h"
 #include "GaitParams.h"
+#include "GaitStrategy.h"
 #include <vector>
 
 namespace Move
@@ -21,7 +22,9 @@ namespace Move
 
             bool Pause(void) const;
 
-            bool Stop(void) const;
+            bool Stop(void);
+
+            bool SetGaitType(GaitType gaitType);
 
             // Update cycle
             void Update(uint64_t currentTime);
@@ -38,6 +41,7 @@ namespace Move
             Bot::Legs::LegsInterface &mLegs;
             GaitParams &mGaitParams;
             uint64_t mLastUpdateTime;
+            std::unique_ptr<Move::Gait::GaitStrategy> mGaitStrategy;
 
             uint64_t mStartTime;
             uint8_t mStepPositionIndex;
@@ -51,6 +55,8 @@ namespace Move
                 {0.0F, 0.0F, -0.1F},
                 {0.0F, -1.0F, 0.0F}
             };
+            Misc::Maths::Position3d mPositionsStop = {0.0F, 0.0F, 0.0F};
+
             std::vector<std::vector<Misc::Maths::Position3d> > mPositions = {mPositionsLift, mPositionsDown};
         };
     }

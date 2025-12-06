@@ -21,7 +21,7 @@ namespace Move
                                      , mAmplitude(AMPLITUDE_MAX)
                                      , mElevation(ELEVATION_MAX)
                                      , mCycleDuration(DURATION_MIN)
-                                     , mChangeTimeStamp(0UL) {
+                                     , mUpdatedTimeStamp(0UL) {
         }
 
         bool GaitParams::SetGaitType(const GaitType gaitType) {
@@ -36,7 +36,7 @@ namespace Move
         bool GaitParams::SetDirection(const float directionAngle) {
             if (directionAngle <= 2.0F * M_PI) {
                 this->mDirection = directionAngle;
-                this->mChangeTimeStamp = Driver::Tick::Tick::GetInstance().GetMs();
+                this->mUpdatedTimeStamp = Driver::Timer::Tick::GetInstance().GetMs();
                 return true;
             }
             return false;
@@ -47,13 +47,13 @@ namespace Move
                 this->mRotation = rotationAngle;
                 this->mIsRotated = true;
                 this->mClockWize = clockWize;
-                this->mChangeTimeStamp = Driver::Tick::Tick::GetInstance().GetMs();
+                this->mUpdatedTimeStamp = Driver::Timer::Tick::GetInstance().GetMs();
                 return true;
             } else if (rotationAngle == 0.0F) {
                 this->mRotation = 0.0F;
                 this->mIsRotated = false;
                 this->mClockWize = clockWize;
-                this->mChangeTimeStamp = Driver::Tick::Tick::GetInstance().GetMs();
+                this->mUpdatedTimeStamp = Driver::Timer::Tick::GetInstance().GetMs();
                 return true;
             }
             return false;
@@ -62,7 +62,7 @@ namespace Move
         bool GaitParams::SetAmplitude(const float amplitude) {
             if (amplitude <= AMPLITUDE_MAX) {
                 this->mAmplitude = amplitude;
-                this->mChangeTimeStamp = Driver::Tick::Tick::GetInstance().GetMs();
+                this->mUpdatedTimeStamp = Driver::Timer::Tick::GetInstance().GetMs();
                 return true;
             }
             return false;
@@ -71,7 +71,7 @@ namespace Move
         bool GaitParams::SetElevation(const float elevation) {
             if (elevation <= ELEVATION_MAX) {
                 this->mElevation = elevation;
-                this->mChangeTimeStamp = Driver::Tick::Tick::GetInstance().GetMs();
+                this->mUpdatedTimeStamp = Driver::Timer::Tick::GetInstance().GetMs();
                 return true;
             }
             return false;
@@ -121,9 +121,9 @@ namespace Move
             this->mIsRunning = running;
             return true;
         }
-        
-        uint64_t GaitParams::GetChangeTimeStamp() const {
-            return this->mChangeTimeStamp;
-        }   
+
+        uint64_t GaitParams::GetUpdatedTimeStamp() const {
+            return this->mUpdatedTimeStamp;
+        }
     }
 }

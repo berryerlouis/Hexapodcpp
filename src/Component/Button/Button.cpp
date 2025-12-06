@@ -23,19 +23,20 @@ namespace Component
 
         Core::Status Button::Initialize(void) {
             this->mGpioButton.SetInterruptPin(&InterruptGpioBp);
-            LOG_COMPONENT_DEBUG("Button", "Initialized.");
-            return (Core::Status::CORE_OK);
+            LOG_COMPONENT_DEBUG("Button",
+                                "Initialized.");
+            return Core::Status::CORE_OK;
         }
 
         void Button::Hit(void) {
             if (this->mGpioButton.Get() == true) {
                 this->mState = PUSH;
-                this->mPushTime = Tick::Tick::GetInstance().GetUs();
+                this->mPushTime = Driver::Timer::Tick::GetInstance().GetUs();
                 this->Notify({this->mState, 0U});
             } else {
                 if (this->mState == PUSH) {
                     this->mState = RELEASE;
-                    const uint64_t delayMs = Tick::Tick::GetInstance().GetUs() - this->mPushTime;
+                    const uint64_t delayMs = Timer::Tick::GetInstance().GetUs() - this->mPushTime;
                     this->Notify({this->mState, delayMs});
                 }
             }
@@ -46,7 +47,7 @@ namespace Component
         }
 
         ButtonState Button::Get() const {
-            return (this->mState);
+            return this->mState;
         }
     }
 }

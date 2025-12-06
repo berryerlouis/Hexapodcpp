@@ -3,6 +3,7 @@
 #include "../Leg/Leg.h"
 #include "../../Move/Gait/GaitParams.h"
 #include <vector>
+#include <map>
 
 namespace Bot
 {
@@ -12,17 +13,11 @@ namespace Bot
         public:
             virtual ~LegsInterface() = default;
 
+            virtual std::map<ELeg, Leg::Leg> &GetLegs(void) = 0;
+
             virtual Leg::LegInterface *GetLeg(const ELeg legId) = 0;
 
-            virtual void ResetLegs(const uint16_t cycleDuration) = 0;
-
             virtual Core::Status Update(void) = 0;
-
-            virtual void ComputeTarget(const uint64_t currentTime,
-                                   const Move::Gait::GaitParams &gaitParams,
-                                   const std::vector<std::vector<Misc::Maths::Position3d> > &positions,
-                                   const uint8_t stepPositionIndex,
-                                   const float normalizedTime) = 0;
         };
     }
 }

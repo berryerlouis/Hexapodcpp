@@ -7,8 +7,9 @@ namespace Driver
     {
         static bool once = false;
 
-        Gpio::Gpio(const SGpio &gpio, const EPortDirection &portDirection) :
-                                                                           mGpio(gpio) {
+        Gpio::Gpio(const SGpio &gpio,
+                   const EPortDirection &portDirection) :
+                                                        mGpio(gpio) {
             if (!once) {
                 wiringPiSetupGpio();
                 once = true;
@@ -20,17 +21,17 @@ namespace Driver
         }
 
         SGpio &Gpio::GetPin(void) {
-            return (this->mGpio);
+            return this->mGpio;
         }
 
         Core::Status Gpio::Set(void) {
             digitalWrite(this->mGpio.pin, HIGH);
-            return (Core::Status::CORE_OK);
+            return Core::Status::CORE_OK;
         }
 
         Core::Status Gpio::Reset(void) {
             digitalWrite(this->mGpio.pin, LOW);
-            return (Core::Status::CORE_OK);
+            return Core::Status::CORE_OK;
         }
 
         bool Gpio::Get(void) {

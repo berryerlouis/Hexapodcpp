@@ -7,13 +7,15 @@ namespace Component
         static Sound *sound[NB_SENSORS_SOUND] = {};
         uint8_t Sound::soundIndex = 0U;
 
-        Sound::Sound(const SoundId &soundId, Gpio::GpioInterface &gpio, Led::LedInterface &led) :
-            mSoundId(soundId)
-            , mGpioSound(gpio)
-            , mLed(led)
-            , mIntervalSoundTimeArray{0U}
-            , mIntervalSoundTimeArrayIndex(0U)
-            , mAverageIntervalSoundTime(0U) {
+        Sound::Sound(const SoundId &soundId,
+                     Gpio::GpioInterface &gpio,
+                     Led::LedInterface &led) :
+                                             mSoundId(soundId)
+                                             , mGpioSound(gpio)
+                                             , mLed(led)
+                                             , mIntervalSoundTimeArray{0U}
+                                             , mIntervalSoundTimeArrayIndex(0U)
+                                             , mAverageIntervalSoundTime(0U) {
             sound[soundId] = this;
             soundIndex++;
         }
@@ -24,19 +26,21 @@ namespace Component
             this->stopSoundTime = 0U;
             this->mLed.Off();
             this->mGpioSound.SetInterruptPin(&this->InterruptGpioSoundHit);
-            LOG_COMPONENT_DEBUG("Sound", "pin %d Initialized.", this->mGpioSound.GetPin().pin);
-            return (success);
+            LOG_COMPONENT_DEBUG("Sound",
+                                "pin %d Initialized.",
+                                this->mGpioSound.GetPin().pin);
+            return success;
         }
 
         void Sound::Hit(void) {
             if (this->mGpioSound.Get() == false) {
-                this->startSoundTime = Tick::Tick::GetInstance().GetUs();
+                this->startSoundTime = Timer::Tick::GetInstance().GetUs();
                 this->mLed.On();
             } else {
-                this->stopSoundTime = Tick::Tick::GetInstance().GetUs();
+                this->stopSoundTime = Timer::Tick::GetInstance().GetUs();
                 this->mLed.Off();
-                if (this->startSoundTime != 0U
-                    && this->mIntervalSoundTimeArrayIndex < NB_MAX_INTERVAL_SOUND_TIME) {
+                if (this->startSoundTime != 0U &&
+                    this->mIntervalSoundTimeArrayIndex < NB_MAX_INTERVAL_SOUND_TIME) {
                     this->mIntervalSoundTimeArray[this->mIntervalSoundTimeArrayIndex] =
                             this->stopSoundTime - this->startSoundTime;
                     this->mIntervalSoundTimeArrayIndex++;
@@ -48,7 +52,7 @@ namespace Component
             (void) currentTime;
             // If the sound is still present, stop the signal
             if (this->stopSoundTime < this->startSoundTime) {
-                this->stopSoundTime = Tick::Tick::GetInstance().GetUs();
+                this->stopSoundTime = Timer::Tick::GetInstance().GetUs();
                 if (this->mIntervalSoundTimeArrayIndex < NB_MAX_INTERVAL_SOUND_TIME) {
                     this->mIntervalSoundTimeArray[this->mIntervalSoundTimeArrayIndex] =
                             this->stopSoundTime - this->startSoundTime;
@@ -58,7 +62,7 @@ namespace Component
 
             // Make the average
             if (this->mIntervalSoundTimeArrayIndex > 0U) {
-                //make the average of all hits interval
+                // make the average of all hits interval
                 this->mAverageIntervalSoundTime = 0U;
                 for (uint8_t indexInterval = 0U;
                      indexInterval < this->mIntervalSoundTimeArrayIndex;
@@ -71,7 +75,7 @@ namespace Component
         }
 
         uint64_t Sound::GetIntervalSoundHit(void) const {
-            return (this->mAverageIntervalSoundTime);
+            return this->mAverageIntervalSoundTime;
         }
 
         SoundStruct Sound::ComputeAndNotifyMaxSound(void) {

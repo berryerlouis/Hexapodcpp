@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Gpio/GpioInterface.h"
+#include "../Timer/Tick.h"
 #include "InputCaptureInterface.h"
 
 namespace Driver

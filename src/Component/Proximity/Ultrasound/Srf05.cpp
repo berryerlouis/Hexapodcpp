@@ -6,20 +6,24 @@ namespace Component
     {
         namespace Ultrasound
         {
-            Srf05::Srf05(const Cluster::EProximityCommands side, Driver::Gpio::GpioInterface &gpioTrigger,
-                         Driver::InputCapture::InputCaptureInterface &gpioEcho, Led::LedInterface &led) :
-                mSide(side)
-                , mGpioTrigger(gpioTrigger)
-                , mGpioEcho(gpioEcho)
-                , mLed(led)
-                , mThreshold(DISTANCE_THRESHOLD) {
+            Srf05::Srf05(const Cluster::EProximityCommands side,
+                         Driver::Gpio::GpioInterface &gpioTrigger,
+                         Driver::InputCapture::InputCaptureInterface &gpioEcho,
+                         Led::LedInterface &led) :
+                                                 mSide(side)
+                                                 , mGpioTrigger(gpioTrigger)
+                                                 , mGpioEcho(gpioEcho)
+                                                 , mLed(led)
+                                                 , mThreshold(DISTANCE_THRESHOLD) {
             }
 
             Core::Status Srf05::Initialize(void) {
                 this->mGpioEcho.Initialize();
                 this->mLed.Initialize();
-                LOG_COMPONENT_DEBUG("Ultrasound", "pin trigger %d Initialized.", this->mGpioTrigger.GetPin().pin);
-                return (Core::Status::CORE_OK);
+                LOG_COMPONENT_DEBUG("Ultrasound",
+                                    "pin trigger %d Initialized.",
+                                    this->mGpioTrigger.GetPin().pin);
+                return Core::Status::CORE_OK;
             }
 
             void Srf05::Update(const uint64_t currentTime) {
@@ -36,17 +40,17 @@ namespace Component
             }
 
             uint16_t Srf05::GetThreshold(void) {
-                return (this->mThreshold);
+                return this->mThreshold;
             }
 
             Core::Status Srf05::SetThreshold(const uint16_t threshold) {
                 this->mThreshold = threshold;
-                return (Core::Status::CORE_OK);
+                return Core::Status::CORE_OK;
             }
 
             void Srf05::SendPulse(void) const {
                 this->mGpioTrigger.Set();
-                Driver::Tick::Tick::GetInstance().DelayUs(10U);
+                Driver::Timer::Tick::GetInstance().DelayUs(10U);
                 this->mGpioTrigger.Reset();
             }
 
