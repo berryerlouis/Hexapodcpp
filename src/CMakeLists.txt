@@ -92,7 +92,7 @@ add_compile_options(
 )
 
 # Debug symbols
-if (CMAKE_BUILD_TYPE STREQUAL "DEBUG")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_options(-O0 -g3)
 else ()
     add_compile_options(-O2)

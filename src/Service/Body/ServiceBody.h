@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Service.h"
 #include "../../Bot/Body/BodyInterface.h"
+#include "../Service.h"
 
 namespace Service
 {
@@ -11,7 +11,11 @@ namespace Service
 
         class ServiceBody : public Service {
         public:
-            ServiceBody(BodyInterface &body, Event::MessageInterface &messageListener);
+            ServiceBody(
+                    BodyInterface &body,
+                    Message::MessageInterface &messageListener,
+                    Event::EventListenerInterface &eventListener
+            );
 
             ~ServiceBody() = default;
 
@@ -19,8 +23,10 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
+            virtual void DispatchEvent(const Event::EventType event) const final override;
+
         protected:
             BodyInterface &mBody;
         };
-    }
-}
+    } // namespace Body
+} // namespace Service

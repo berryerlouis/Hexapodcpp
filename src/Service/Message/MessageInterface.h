@@ -4,7 +4,7 @@
 
 namespace Service
 {
-    namespace Event
+    namespace Message
     {
         class MessageInterface {
         public:

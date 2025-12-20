@@ -6,11 +6,15 @@ namespace Service
 {
     namespace Sound
     {
-        ServiceSound::ServiceSound(SoundInterface &soundInterfaceLeft, SoundInterface &soundInterfaceRight,
-                                   Event::MessageInterface &messageListener) :
-                                                                             Service(SOUND, 500U, messageListener)
-                                                                             , mSoundLeft(soundInterfaceLeft)
-                                                                             , mSoundRight(soundInterfaceRight) {
+        ServiceSound::ServiceSound(
+                SoundInterface &soundInterfaceLeft,
+                SoundInterface &soundInterfaceRight,
+                Message::MessageInterface &messageListener,
+                Event::EventListenerInterface &eventListener
+        ) :
+            Service(SOUND, 500U, messageListener, eventListener),
+            mSoundLeft(soundInterfaceLeft),
+            mSoundRight(soundInterfaceRight) {
         }
 
         Core::Status ServiceSound::Initialize(void) {
@@ -37,6 +41,10 @@ namespace Service
                 Cluster::Sound::ClusterSound::BuildFrameGetSoundState(maxSound.id, maxSound.delay, response);
                 this->SendMessage(response);
             }
+        }
+
+        void ServiceSound::DispatchEvent(const Event::EventType event) const {
+            (void) event;
         }
     } // namespace Sound
 } // namespace Service

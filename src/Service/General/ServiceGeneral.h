@@ -11,7 +11,11 @@ namespace Service
 
         class ServiceGeneral : public Service {
         public:
-            ServiceGeneral(SoftwareInterface &software, Event::MessageInterface &messageListener);
+            ServiceGeneral(
+                    SoftwareInterface &software,
+                    Message::MessageInterface &messageListener,
+                    Event::EventListenerInterface &eventListener
+            );
 
             ~ServiceGeneral() = default;
 
@@ -19,8 +23,10 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
+            virtual void DispatchEvent(const Event::EventType event) const final override;
+
         protected:
             SoftwareInterface &mSoftware;
         };
-    }
-}
+    } // namespace General
+} // namespace Service

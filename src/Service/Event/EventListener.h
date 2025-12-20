@@ -1,25 +1,24 @@
 #pragma once
 
-#include "MessageInterface.h"
-
-#include "../../Component/Communication/CommunicationInterface.h"
+#include <list>
+#include "EventListenerInterface.h"
 
 namespace Service
 {
     namespace Event
     {
-        using namespace Component::Communication;
-
-        class EventListener : public MessageInterface {
+        class EventListener : public EventListenerInterface {
         public:
-            EventListener(CommunicationInterface &communication);
+            EventListener();
 
             ~EventListener() = default;
 
-            virtual void SendMessage(const Frame &message) const final override;
+            virtual EventType GetEvent(void) final override;
+
+            virtual void SetEvent(const EventType event) override;
 
         private:
-            Component::Communication::CommunicationInterface &mCommunication;
+            std::list<EventType> mEventList;
         };
-    }
-}
+    } // namespace Event
+} // namespace Service

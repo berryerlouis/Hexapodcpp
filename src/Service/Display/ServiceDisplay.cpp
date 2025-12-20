@@ -5,35 +5,38 @@ namespace Service
 {
     namespace Display
     {
-        ServiceDisplay::ServiceDisplay(Ssd1306Interface &ssd1306
-                                       , CommunicationInterface &communication
-                                       , BatteryInterface &battery
-                                       , ButtonInterface &button
-                                       , SoundInterface &soundInterfaceLeft
-                                       , SoundInterface &soundInterfaceRight
-                                       , SensorProximityMultipleInterface &sensors
-                                       , Event::MessageInterface &messageListener) :
-            Service(DISPLAY, 10U, messageListener)
-            , mSsd1306(ssd1306)
-            , mCommunication(communication)
-            , mBattery(battery)
-            , mButton(button)
-            , mSoundLeft(soundInterfaceLeft)
-            , mSoundRight(soundInterfaceRight)
-            , mSensors(sensors)
-            , mBmpBatteryLevel{.bmp = const_cast<uint8_t *>(Bitmaps::Battery0), .width = 16U, .height = 7U}
-            , mBmpCommunication{.bmp = const_cast<uint8_t *>(Bitmaps::Communication), .width = 16U, .height = 8U}
-            , mBmpProximity{.bmp = const_cast<uint8_t *>(Bitmaps::ArrowCenter), .width = 16U, .height = 6U}
-            , mBmpButton{.bmp = const_cast<uint8_t *>(Bitmaps::ButtonRelease), .width = 16U, .height = 7U}
-            , mBmpSound{.bmp = const_cast<uint8_t *>(Bitmaps::SoundLeft), .width = 16U, .height = 7U}
-            , mPreviousTime(0UL)
-            , mToggleCommunicationBmp(false)
-            , mState(NO_CLIENT)
-            , mNotifiedTimeProximityUsLeft(0UL)
-            , mNotifiedTimeProximityUsRight(0UL)
-            , mNotifiedTimeProximityLaser(0UL)
-            , mNotifiedTimeSoundLeft(0UL)
-            , mNotifiedTimeSoundRight(0UL) {
+        ServiceDisplay::ServiceDisplay(
+                Ssd1306Interface &ssd1306,
+                CommunicationInterface &communication,
+                BatteryInterface &battery,
+                ButtonInterface &button,
+                SoundInterface &soundInterfaceLeft,
+                SoundInterface &soundInterfaceRight,
+                SensorProximityMultipleInterface &sensors,
+                Message::MessageInterface &messageListener,
+                Event::EventListenerInterface &eventListener
+        ) :
+            Service(DISPLAY, 10U, messageListener, eventListener),
+            mSsd1306(ssd1306),
+            mCommunication(communication),
+            mBattery(battery),
+            mButton(button),
+            mSoundLeft(soundInterfaceLeft),
+            mSoundRight(soundInterfaceRight),
+            mSensors(sensors),
+            mBmpBatteryLevel{.bmp = const_cast<uint8_t *>(Bitmaps::Battery0), .width = 16U, .height = 7U},
+            mBmpCommunication{.bmp = const_cast<uint8_t *>(Bitmaps::Communication), .width = 16U, .height = 8U},
+            mBmpProximity{.bmp = const_cast<uint8_t *>(Bitmaps::ArrowCenter), .width = 16U, .height = 6U},
+            mBmpButton{.bmp = const_cast<uint8_t *>(Bitmaps::ButtonRelease), .width = 16U, .height = 7U},
+            mBmpSound{.bmp = const_cast<uint8_t *>(Bitmaps::SoundLeft), .width = 16U, .height = 7U},
+            mPreviousTime(0UL),
+            mToggleCommunicationBmp(false),
+            mState(NO_CLIENT),
+            mNotifiedTimeProximityUsLeft(0UL),
+            mNotifiedTimeProximityUsRight(0UL),
+            mNotifiedTimeProximityLaser(0UL),
+            mNotifiedTimeSoundLeft(0UL),
+            mNotifiedTimeSoundRight(0UL) {
         }
 
         Core::Status ServiceDisplay::Initialize(void) {
@@ -59,12 +62,10 @@ namespace Service
                 this->DisplayCommunicationBmp();
                 mPreviousTime = currentTime;
             }
-            if ((this->mNotifiedTimeSoundLeft > 0U) &&
-                ((currentTime - this->mNotifiedTimeSoundLeft) >= 1000UL)) {
+            if ((this->mNotifiedTimeSoundLeft > 0U) && ((currentTime - this->mNotifiedTimeSoundLeft) >= 1000UL)) {
                 this->DisplaySound({Component::Sound::SOUND_LEFT, 0U});
             }
-            if ((this->mNotifiedTimeSoundRight > 0U) &&
-                ((currentTime - this->mNotifiedTimeSoundRight) >= 1000UL)) {
+            if ((this->mNotifiedTimeSoundRight > 0U) && ((currentTime - this->mNotifiedTimeSoundRight) >= 1000UL)) {
                 this->DisplaySound({Component::Sound::SOUND_RIGHT, 0U});
             }
             if ((this->mNotifiedTimeProximityLaser > 0U) &&
@@ -98,8 +99,12 @@ namespace Service
         void ServiceDisplay::Notified(const CommunicationStruct &state) {
             this->mState = state;
             if (state == CLIENT_CONNECTED) {
-                this->mSsd1306.DrawBitmap(&this->mBmpCommunication, SCREEN_WIDTH - this->mBmpCommunication.width, 0U,
-                                          Bitmaps::Color::COLOR_WHITE);
+                this->mSsd1306.DrawBitmap(
+                        &this->mBmpCommunication,
+                        SCREEN_WIDTH - this->mBmpCommunication.width,
+                        0U,
+                        Bitmaps::Color::COLOR_WHITE
+                );
             }
         }
 
@@ -110,34 +115,45 @@ namespace Service
         void ServiceDisplay::DisplayBackground(void) const {
             this->mSsd1306.DrawLine(0U, 10U, SCREEN_WIDTH, 10U, Bitmaps::Color::COLOR_WHITE);
             this->mSsd1306.DrawLine(18U, 10U, 18U, SCREEN_HEIGHT, Bitmaps::Color::COLOR_WHITE);
-            this->mSsd1306.DrawLine(SCREEN_WIDTH - 18U, 10U, SCREEN_WIDTH - 18U, SCREEN_HEIGHT,
-                                    Bitmaps::Color::COLOR_WHITE);
+            this->mSsd1306.DrawLine(
+                    SCREEN_WIDTH - 18U, 10U, SCREEN_WIDTH - 18U, SCREEN_HEIGHT, Bitmaps::Color::COLOR_WHITE
+            );
         }
 
         void ServiceDisplay::DisplayButtonBmp(const ButtonState &buttonState) {
-            this->mSsd1306.EraseArea(SCREEN_WIDTH - this->mBmpCommunication.width - 2U - this->mBmpButton.width, 0U,
-                                     this->mBmpButton.width, 8U);
+            this->mSsd1306.EraseArea(
+                    SCREEN_WIDTH - this->mBmpCommunication.width - 2U - this->mBmpButton.width,
+                    0U,
+                    this->mBmpButton.width,
+                    8U
+            );
             if (buttonState == RELEASE) {
                 this->mBmpButton.bmp = const_cast<uint8_t *>(Bitmaps::ButtonRelease);
             } else {
                 this->mBmpButton.bmp = const_cast<uint8_t *>(Bitmaps::ButtonPush);
             }
-            this->mSsd1306.DrawBitmap(&this->mBmpButton,
-                                      SCREEN_WIDTH - this->mBmpCommunication.width - 2U - this->mBmpButton.width,
-                                      0U,
-                                      Bitmaps::Color::COLOR_WHITE);
+            this->mSsd1306.DrawBitmap(
+                    &this->mBmpButton,
+                    SCREEN_WIDTH - this->mBmpCommunication.width - 2U - this->mBmpButton.width,
+                    0U,
+                    Bitmaps::Color::COLOR_WHITE
+            );
         }
 
         void ServiceDisplay::DisplayCommunicationBmp(void) {
             if (this->mState == NO_CLIENT) {
                 if (this->mToggleCommunicationBmp == true) {
-                    this->mSsd1306.DrawBitmap(&this->mBmpCommunication, SCREEN_WIDTH - this->mBmpCommunication.width,
-                                              0U,
-                                              Bitmaps::Color::COLOR_WHITE);
+                    this->mSsd1306.DrawBitmap(
+                            &this->mBmpCommunication,
+                            SCREEN_WIDTH - this->mBmpCommunication.width,
+                            0U,
+                            Bitmaps::Color::COLOR_WHITE
+                    );
                     this->mToggleCommunicationBmp = false;
                 } else {
-                    this->mSsd1306.EraseArea(SCREEN_WIDTH - this->mBmpCommunication.width, 0U,
-                                             this->mBmpCommunication.width, 8U);
+                    this->mSsd1306.EraseArea(
+                            SCREEN_WIDTH - this->mBmpCommunication.width, 0U, this->mBmpCommunication.width, 8U
+                    );
                     this->mToggleCommunicationBmp = true;
                 }
             }
@@ -154,47 +170,58 @@ namespace Service
             this->mSsd1306.DrawBitmap(&this->mBmpBatteryLevel, 0, 0, Bitmaps::Color::COLOR_WHITE);
         }
 
-        void ServiceDisplay::DisplayProximitySensor(const Component::Proximity::SensorsId sensorId,
-                                                    const uint16_t distance) {
+        void ServiceDisplay::DisplayProximitySensor(
+                const Component::Proximity::SensorsId sensorId,
+                const uint16_t distance
+        ) {
             if (sensorId == Component::Proximity::SensorsId::SRF_LEFT) {
                 if (distance > 30U) {
                     this->mNotifiedTimeProximityUsLeft = 0U;
-                    this->mSsd1306.EraseArea(0U,
-                                             SCREEN_HEIGHT - 10U, this->mBmpProximity.width, 8U);
+                    this->mSsd1306.EraseArea(0U, SCREEN_HEIGHT - 10U, this->mBmpProximity.width, 8U);
                 } else {
                     this->mNotifiedTimeProximityUsLeft = Timer::Tick::GetInstance().GetMs();
                     this->mBmpProximity.bmp = const_cast<uint8_t *>(Bitmaps::ArrowLeft);
-                    this->mSsd1306.DrawBitmap(&this->mBmpProximity,
-                                              0U,
-                                              SCREEN_HEIGHT - 10U, Bitmaps::Color::COLOR_WHITE);
+                    this->mSsd1306.DrawBitmap(
+                            &this->mBmpProximity, 0U, SCREEN_HEIGHT - 10U, Bitmaps::Color::COLOR_WHITE
+                    );
                 }
             } else if (sensorId == Component::Proximity::SensorsId::VLX) {
                 if (distance > 300U) {
                     this->mNotifiedTimeProximityLaser = 0U;
-                    this->mSsd1306.EraseArea((SCREEN_WIDTH / 2U) - (this->mBmpProximity.width / 2U),
-                                             SCREEN_HEIGHT - 10U,
-                                             this->mBmpProximity.width, 8U);
+                    this->mSsd1306.EraseArea(
+                            (SCREEN_WIDTH / 2U) - (this->mBmpProximity.width / 2U),
+                            SCREEN_HEIGHT - 10U,
+                            this->mBmpProximity.width,
+                            8U
+                    );
                 } else {
                     this->mNotifiedTimeProximityLaser = Timer::Tick::GetInstance().GetMs();
                     this->mBmpProximity.bmp = const_cast<uint8_t *>(Bitmaps::ArrowUp);
-                    this->mSsd1306.DrawBitmap(&this->mBmpProximity,
-                                              (SCREEN_WIDTH / 2U) - (this->mBmpProximity.width / 2U),
-                                              SCREEN_HEIGHT - 10U,
-                                              Bitmaps::Color::COLOR_WHITE);
+                    this->mSsd1306.DrawBitmap(
+                            &this->mBmpProximity,
+                            (SCREEN_WIDTH / 2U) - (this->mBmpProximity.width / 2U),
+                            SCREEN_HEIGHT - 10U,
+                            Bitmaps::Color::COLOR_WHITE
+                    );
                 }
             } else if (sensorId == Component::Proximity::SensorsId::SRF_RIGHT) {
                 if (distance > 30U) {
                     this->mNotifiedTimeProximityUsRight = 0U;
-                    this->mSsd1306.EraseArea((SCREEN_WIDTH - this->mBmpProximity.width),
-                                             SCREEN_HEIGHT - 10U,
-                                             this->mBmpProximity.width, 8U);
+                    this->mSsd1306.EraseArea(
+                            (SCREEN_WIDTH - this->mBmpProximity.width),
+                            SCREEN_HEIGHT - 10U,
+                            this->mBmpProximity.width,
+                            8U
+                    );
                 } else {
                     this->mNotifiedTimeProximityUsRight = Timer::Tick::GetInstance().GetMs();
                     this->mBmpProximity.bmp = const_cast<uint8_t *>(Bitmaps::ArrowRight);
-                    this->mSsd1306.DrawBitmap(&this->mBmpProximity,
-                                              (SCREEN_WIDTH - this->mBmpProximity.width),
-                                              SCREEN_HEIGHT - 10U,
-                                              Bitmaps::Color::COLOR_WHITE);
+                    this->mSsd1306.DrawBitmap(
+                            &this->mBmpProximity,
+                            (SCREEN_WIDTH - this->mBmpProximity.width),
+                            SCREEN_HEIGHT - 10U,
+                            Bitmaps::Color::COLOR_WHITE
+                    );
                 }
             }
         }
@@ -204,19 +231,18 @@ namespace Service
                 if (soundStruct.delay > 0U) {
                     this->mNotifiedTimeSoundRight = Timer::Tick::GetInstance().GetMs();
                     this->mBmpSound.bmp = const_cast<uint8_t *>(Bitmaps::SoundRight);
-                    this->mSsd1306.DrawBitmap(&this->mBmpSound, (SCREEN_WIDTH) - (this->mBmpSound.width),
-                                              12U, Bitmaps::Color::COLOR_WHITE);
+                    this->mSsd1306.DrawBitmap(
+                            &this->mBmpSound, (SCREEN_WIDTH) - (this->mBmpSound.width), 12U, Bitmaps::Color::COLOR_WHITE
+                    );
                 } else {
                     this->mNotifiedTimeSoundRight = 0U;
-                    this->mSsd1306.EraseArea((SCREEN_WIDTH) - (this->mBmpSound.width),
-                                             12U, this->mBmpSound.width, 8U);
+                    this->mSsd1306.EraseArea((SCREEN_WIDTH) - (this->mBmpSound.width), 12U, this->mBmpSound.width, 8U);
                 }
             } else if (soundStruct.id == SOUND_LEFT) {
                 if (soundStruct.delay > 0U) {
                     this->mNotifiedTimeSoundLeft = Timer::Tick::GetInstance().GetMs();
                     this->mBmpSound.bmp = const_cast<uint8_t *>(Bitmaps::SoundLeft);
-                    this->mSsd1306.DrawBitmap(&this->mBmpSound, 0U, 12U,
-                                              Bitmaps::Color::COLOR_WHITE);
+                    this->mSsd1306.DrawBitmap(&this->mBmpSound, 0U, 12U, Bitmaps::Color::COLOR_WHITE);
                 } else {
                     this->mNotifiedTimeSoundLeft = 0U;
                     this->mSsd1306.EraseArea(0U, 12U, this->mBmpSound.width, 8U);
@@ -224,10 +250,13 @@ namespace Service
             } else {
                 this->mNotifiedTimeSoundRight = 0U;
                 this->mNotifiedTimeSoundLeft = 0U;
-                this->mSsd1306.EraseArea((SCREEN_WIDTH) - (this->mBmpSound.width),
-                                         12U, this->mBmpSound.width, 8U);
+                this->mSsd1306.EraseArea((SCREEN_WIDTH) - (this->mBmpSound.width), 12U, this->mBmpSound.width, 8U);
                 this->mSsd1306.EraseArea(0U, 12U, this->mBmpSound.width, 8U);
             }
+        }
+
+        void ServiceDisplay::DispatchEvent(const Event::EventType event) const {
+            (void) event;
         }
     } // namespace Display
 } // namespace Service

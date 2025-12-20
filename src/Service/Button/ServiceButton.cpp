@@ -6,10 +6,12 @@ namespace Service
 {
     namespace Button
     {
-        ServiceButton::ServiceButton(ButtonInterface &ButtonInterface,
-                                     Event::MessageInterface &messageListener) :
-                                                                               Service(BUTTON, 10U, messageListener)
-                                                                               , mButtonInterface(ButtonInterface) {
+        ServiceButton::ServiceButton(
+                ButtonInterface &ButtonInterface,
+                Message::MessageInterface &messageListener,
+                Event::EventListenerInterface &eventListener
+        ) :
+            Service(BUTTON, 10U, messageListener, eventListener), mButtonInterface(ButtonInterface) {
         }
 
         Core::Status ServiceButton::Initialize(void) {
@@ -29,6 +31,10 @@ namespace Service
             Frame response;
             Cluster::Button::ClusterButton::BuildFrameGetButtonState(button.state, response);
             this->SendMessage(response);
+        }
+
+        void ServiceButton::DispatchEvent(const Event::EventType event) const {
+            (void) event;
         }
     } // namespace Button
 } // namespace Service

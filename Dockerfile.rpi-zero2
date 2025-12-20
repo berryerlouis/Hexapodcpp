@@ -18,8 +18,8 @@ RUN git config --global --add safe.directory '*'
 
 # (Optional) Corporate CA certificates - only needed for local development behind corporate proxy - true by default
 # Comment out if building in CI/CD or public environments
-ARG INSTALL_CORP_CERTS=true
-RUN if [ "$INSTALL_CORP_CERTS" = "true" ]; then \
+ARG INSTALL_CORP_CERTS=false
+RUN if [ $INSTALL_CORP_CERTS == true ]; then \
     mkdir -p /usr/local/share/ca-certificates/ZScaler \
     && wget -O /usr/local/share/ca-certificates/ZScaler/ZscalerRootCA.crt https://raw.github.schneider-electric.com/swag-doc/swag-proxy/refs/heads/main/ZscalerRootCA.crt \
     && wget -O /usr/local/share/ca-certificates/ZScaler/cacert_certifi_zscaler.crt https://raw.github.schneider-electric.com/swag-doc/swag-proxy/refs/heads/main/cacert_certifi_zscaler.crt \
@@ -49,25 +49,23 @@ RUN git clone --depth=1 https://github.com/berryerlouis/TinyWebsockets.git /tmp/
 ENV FETCHCONTENT_SOURCE_DIR_WIRINGPI=/tmp/wiringpi-src
 ENV FETCHCONTENT_SOURCE_DIR_TINYWEBSOCKETS=/tmp/tinywebsockets
 
-
 # Final build stage (copies sources for reproducible build)
 FROM toolchain AS build
 WORKDIR /workspace
 COPY . .
 
-
-RUN echo "== OpenSSL preflight ==" \
-    && echo "Listing OpenSSL libraries:" \
-    && ls -l /usr/lib/aarch64-linux-gnu/libssl* /usr/lib/aarch64-linux-gnu/libcrypto* || true \
-    && echo "Creating symlinks if needed:" \
-    && if [ ! -f /usr/aarch64-linux-gnu/lib/libssl.so ]; then \
-    mkdir -p /usr/aarch64-linux-gnu/lib && \
-    ln -sf /usr/lib/aarch64-linux-gnu/libssl.so.3 /usr/aarch64-linux-gnu/lib/libssl.so && \
-    ln -sf /usr/lib/aarch64-linux-gnu/libcrypto.so.3 /usr/aarch64-linux-gnu/lib/libcrypto.so && \
-    echo "Created OpenSSL symlinks in /usr/aarch64-linux-gnu/lib"; \
-    fi \
-    && ls -l /usr/aarch64-linux-gnu/lib/libssl* /usr/aarch64-linux-gnu/lib/libcrypto* \
-    && test -f /usr/include/openssl/ssl.h && echo "Found headers at /usr/include/openssl" 
+#RUN echo "== OpenSSL preflight ==" \
+#    && echo "Listing OpenSSL libraries:" \
+#    && ls -l /usr/lib/aarch64-linux-gnu/libssl* /usr/lib/aarch64-linux-gnu/libcrypto* || true \
+#    && echo "Creating symlinks if needed:" \
+#    && if [ ! -f /usr/aarch64-linux-gnu/lib/libssl.so ]; then \
+#    mkdir -p /usr/aarch64-linux-gnu/lib && \
+#    ln -sf /usr/lib/aarch64-linux-gnu/libssl.so.3 /usr/aarch64-linux-gnu/lib/libssl.so && \
+#    ln -sf /usr/lib/aarch64-linux-gnu/libcrypto.so.3 /usr/aarch64-linux-gnu/lib/libcrypto.so && \
+#    echo "Created OpenSSL symlinks in /usr/aarch64-linux-gnu/lib"; \
+#    fi \
+#    && ls -l /usr/aarch64-linux-gnu/lib/libssl* /usr/aarch64-linux-gnu/lib/libcrypto* \
+#    && test -f /usr/include/openssl/ssl.h && echo "Found headers at /usr/include/openssl"
 #    && cmake -Wno-dev -S . -B build/rpi-release \
 #    -DCMAKE_TOOLCHAIN_FILE=/workspace/cmake/toolchain-rpi-zero-2-w.cmake \
 #    -DCMAKE_BUILD_TYPE=Release \

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../Component/Imu/Mpu9150Interface.h"
 #include "../../Component/Barometer/Barometer.h"
+#include "../../Component/Imu/Mpu9150Interface.h"
 #include "../Service.h"
 
 namespace Service
@@ -13,8 +13,12 @@ namespace Service
 
         class ServiceOrientation : public Service {
         public:
-            ServiceOrientation(Mpu9150Interface &imu, BarometerInterface &barometer,
-                               Event::MessageInterface &messageListener);
+            ServiceOrientation(
+                    Mpu9150Interface &imu,
+                    BarometerInterface &barometer,
+                    Message::MessageInterface &messageListener,
+                    Event::EventListenerInterface &eventListener
+            );
 
             ~ServiceOrientation() = default;
 
@@ -22,9 +26,11 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
+            virtual void DispatchEvent(const Event::EventType event) const final override;
+
         protected:
             Mpu9150Interface &mImu;
             BarometerInterface &mBarometer;
         };
-    }
-}
+    } // namespace Orientation
+} // namespace Service

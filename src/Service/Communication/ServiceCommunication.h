@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../Component/Communication/CommunicationInterface.h"
 #include "../../Cluster/Clusters/ClustersInterface.h"
+#include "../../Component/Communication/CommunicationInterface.h"
 #include "../Service.h"
 
 namespace Service
@@ -12,8 +12,12 @@ namespace Service
 
         class ServiceCommunication : public Service {
         public:
-            ServiceCommunication(CommunicationInterface &communication, Clusters::ClustersInterface &clusters,
-                                 Event::MessageInterface &messageListener);
+            ServiceCommunication(
+                    CommunicationInterface &communication,
+                    Clusters::ClustersInterface &clusters,
+                    Message::MessageInterface &messageListener,
+                    Event::EventListenerInterface &eventListener
+            );
 
             ~ServiceCommunication() = default;
 
@@ -21,11 +25,13 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
+            virtual void DispatchEvent(const Event::EventType event) const final override;
+
         private:
             Clusters::ClustersInterface &mClusters;
 
         protected:
             CommunicationInterface &mCommunication;
         };
-    }
-}
+    } // namespace Communication
+} // namespace Service

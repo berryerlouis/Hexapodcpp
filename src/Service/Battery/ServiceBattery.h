@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Service.h"
 #include "../../Component/Battery/BatteryInterface.h"
 #include "../../Core/ObserverInterface.h"
+#include "../Service.h"
 
 namespace Service
 {
@@ -13,8 +13,11 @@ namespace Service
 
         class ServiceBattery : public Service, Core::ObserverInterface<BatteryStruct> {
         public:
-            ServiceBattery(BatteryInterface &batteryInterface,
-                           Event::MessageInterface &messageListener);
+            ServiceBattery(
+                    BatteryInterface &batteryInterface,
+                    Message::MessageInterface &messageListener,
+                    Event::EventListenerInterface &eventListener
+            );
 
             ~ServiceBattery() = default;
 
@@ -24,8 +27,10 @@ namespace Service
 
             virtual void Notified(const BatteryStruct &battery) final override;
 
+            virtual void DispatchEvent(const Event::EventType event) const final override;
+
         protected:
             BatteryInterface &mBatteryInterface;
         };
-    }
-}
+    } // namespace Battery
+} // namespace Service

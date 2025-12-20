@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Service.h"
 #include "../../Component/Button/ButtonInterface.h"
 #include "../../Core/ObserverInterface.h"
+#include "../Service.h"
 
 namespace Service
 {
@@ -13,8 +13,11 @@ namespace Service
 
         class ServiceButton : public Service, Core::ObserverInterface<ButtonStruct> {
         public:
-            ServiceButton(ButtonInterface &ButtonInterface,
-                          Event::MessageInterface &messageListener);
+            ServiceButton(
+                    ButtonInterface &ButtonInterface,
+                    Message::MessageInterface &messageListener,
+                    Event::EventListenerInterface &eventListener
+            );
 
             ~ServiceButton() = default;
 
@@ -24,8 +27,10 @@ namespace Service
 
             virtual void Notified(const ButtonStruct &button) final override;
 
+            virtual void DispatchEvent(const Event::EventType event) const final override;
+
         protected:
             ButtonInterface &mButtonInterface;
         };
-    }
-}
+    } // namespace Button
+} // namespace Service

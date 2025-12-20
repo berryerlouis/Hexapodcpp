@@ -1,16 +1,17 @@
 #pragma once
 
-#include "../Constants.h"
-#include "../Service.h"
 #include "../Battery/ServiceBattery.h"
 #include "../Body/ServiceBody.h"
 #include "../Button/ServiceButton.h"
 #include "../Communication/ServiceCommunication.h"
+#include "../Constants.h"
 #include "../Control/ServiceControl.h"
 #include "../Display/ServiceDisplay.h"
+#include "../Event/EventListener.h"
 #include "../General/ServiceGeneral.h"
 #include "../Orientation/ServiceOrientation.h"
 #include "../Proximity/ServiceProximity.h"
+#include "../Service.h"
 #include "../Sound/ServiceSound.h"
 
 namespace Service
@@ -28,19 +29,22 @@ namespace Service
         using namespace ::Service::Button;
         using namespace ::Service::Sound;
 
-        class Services : public ServiceInterface {
+        class Services : public Core::CoreInterface {
         public:
-            Services(ServiceGeneral &serviceGeneral,
-                     ServiceControl &serviceControl,
-                     ServiceCommunication &serviceCommunication,
-                     ServiceProximity &serviceProximity,
-                     ServiceOrientation &serviceOrientation,
-                     ServiceBattery &serviceBattery,
-                     ServiceDisplay &serviceDisplay,
-                     ServiceBody &serviceBody,
-                     ServiceButton &serviceButton,
-                     ServiceSound &serviceSound,
-                     Event::MessageInterface &messageListener);
+            Services(
+                    ServiceGeneral &serviceGeneral,
+                    ServiceControl &serviceControl,
+                    ServiceCommunication &serviceCommunication,
+                    ServiceProximity &serviceProximity,
+                    ServiceOrientation &serviceOrientation,
+                    ServiceBattery &serviceBattery,
+                    ServiceDisplay &serviceDisplay,
+                    ServiceBody &serviceBody,
+                    ServiceButton &serviceButton,
+                    ServiceSound &serviceSound,
+                    Message::MessageInterface &messageListener,
+                    Event::EventListenerInterface &eventListener
+            );
 
             ~Services() = default;
 
@@ -50,7 +54,8 @@ namespace Service
 
         private:
             std::map<EServices, Service *> mServices;
-            Event::MessageInterface &mMessageListener;
+            Message::MessageInterface &mMessageListener;
+            Event::EventListenerInterface &mEventListener;
         };
-    }
-}
+    } // namespace Services
+} // namespace Service

@@ -29,7 +29,7 @@ for arg in "$@"; do
     esac
 done
 
-BUILD_DIR="build/hexapod-RPI-$(echo $BUILD_TYPE)"
+BUILD_DIR="build/hexapod-RPI-$($BUILD_TYPE)"
 
 cd "$PROJECT_ROOT"
 

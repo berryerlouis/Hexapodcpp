@@ -6,12 +6,13 @@ set(SRC_FILES_SERVICES
         Service/Communication/ServiceCommunication.cpp
         Service/Control/ServiceControl.cpp
         Service/Display/ServiceDisplay.cpp
+        Service/Event/EventListener.cpp
         Service/General/ServiceGeneral.cpp
         Service/Orientation/ServiceOrientation.cpp
         Service/Proximity/ServiceProximity.cpp
         Service/Sound/ServiceSound.cpp
         Service/Services/Services.cpp
-        Service/Event/EventListener.cpp
+        Service/Message/MessageListener.cpp
         Service/Body/ServiceBody.cpp
         PARENT_SCOPE
 )

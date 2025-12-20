@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Service.h"
 #include "../../Component/Sound/Sound.h"
+#include "../Service.h"
 
 namespace Service
 {
@@ -12,8 +12,12 @@ namespace Service
 
         class ServiceSound : public Service {
         public:
-            ServiceSound(SoundInterface &soundInterfaceLeft, SoundInterface &soundInterfaceRight,
-                         Event::MessageInterface &messageListener);
+            ServiceSound(
+                    SoundInterface &soundInterfaceLeft,
+                    SoundInterface &soundInterfaceRight,
+                    Message::MessageInterface &messageListener,
+                    Event::EventListenerInterface &eventListener
+            );
 
             ~ServiceSound() = default;
 
@@ -21,11 +25,13 @@ namespace Service
 
             virtual void Update(const uint64_t currentTime) final override;
 
+            virtual void DispatchEvent(const Event::EventType event) const final override;
+
         private:
             void SendMaxSound(void) const;
 
             SoundInterface &mSoundLeft;
             SoundInterface &mSoundRight;
         };
-    }
-}
+    } // namespace Sound
+} // namespace Service

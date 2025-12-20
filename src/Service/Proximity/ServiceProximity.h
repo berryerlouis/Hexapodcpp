@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../../Component/Proximity/SensorProximityInterface.h"
-#include "../Service.h"
 #include "../../Core/ObserverInterface.h"
+#include "../Service.h"
 
 namespace Service
 {
@@ -15,8 +15,11 @@ namespace Service
 
         class ServiceProximity : public Service, Core::ObserverInterface<SensorsStruct> {
         public:
-            ServiceProximity(SensorProximityMultipleInterface &proximity,
-                             Event::MessageInterface &messageListener);
+            ServiceProximity(
+                    SensorProximityMultipleInterface &proximity,
+                    Message::MessageInterface &messageListener,
+                    Event::EventListenerInterface &eventListener
+            );
 
             ~ServiceProximity() = default;
 
@@ -26,8 +29,10 @@ namespace Service
 
             virtual void Notified(const SensorsStruct &sensor) final override;
 
+            virtual void DispatchEvent(const Event::EventType event) const final override;
+
         protected:
             SensorProximityMultipleInterface &mProximity;
         };
-    }
-}
+    } // namespace Proximity
+} // namespace Service
