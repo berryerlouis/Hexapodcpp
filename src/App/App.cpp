@@ -125,7 +125,6 @@ namespace App
                      mMessageListener,
                      mEventListener),
         mServiceDisplay(mSsd1306,
-                        mCommunication,
                         mBattery,
                         mButton,
                         mSoundLeft,

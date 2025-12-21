@@ -32,7 +32,7 @@ namespace Service
             this->mBarometer.Update(currentTime);
         }
 
-        void ServiceOrientation::DispatchEvent(const Event::Event &event) const {
+        void ServiceOrientation::DispatchEvent(const Event::Event &event) {
             (void) event;
         }
     } // namespace Orientation

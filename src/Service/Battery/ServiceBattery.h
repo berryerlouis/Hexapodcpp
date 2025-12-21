@@ -25,7 +25,7 @@ namespace Service
 
             virtual void         Notified(const BatteryStruct &battery) final override;
 
-            virtual void         DispatchEvent(const Event::Event &event) const final override;
+            virtual void         DispatchEvent(const Event::Event &event) final override;
 
         protected:
             BatteryInterface &mBatteryInterface;

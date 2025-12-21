@@ -25,7 +25,7 @@ namespace Service
 
             virtual void         Notified(const ButtonStruct &button) final override;
 
-            virtual void         DispatchEvent(const Event::Event &event) const final override;
+            virtual void         DispatchEvent(const Event::Event &event) final override;
 
         protected:
             ButtonInterface &mButtonInterface;

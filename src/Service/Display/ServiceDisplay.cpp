@@ -6,7 +6,6 @@ namespace Service
     namespace Display
     {
         ServiceDisplay::ServiceDisplay(Ssd1306Interface                 &ssd1306,
-                                       CommunicationInterface           &communication,
                                        BatteryInterface                 &battery,
                                        ButtonInterface                  &button,
                                        SoundInterface                   &soundInterfaceLeft,
@@ -19,7 +18,6 @@ namespace Service
                     messageListener,
                     eventListener),
             mSsd1306(ssd1306),
-            mCommunication(communication),
             mBattery(battery),
             mButton(button),
             mSoundLeft(soundInterfaceLeft),
@@ -57,7 +55,6 @@ namespace Service
                 this->mSoundLeft.Attach(this);
                 this->mSoundRight.Attach(this);
                 this->mSensors.Attach(this);
-                this->mCommunication.Attach(this);
                 this->mBattery.Attach(this);
                 this->DisplayBackground();
                 this->DisplayBatteryLevel(UNKNOWN);
@@ -105,16 +102,6 @@ namespace Service
 
         void ServiceDisplay::Notified(const SensorsStruct &sensor) {
             this->DisplayProximitySensor(sensor.id, sensor.distance);
-        }
-
-        void ServiceDisplay::Notified(const CommunicationStruct &state) {
-            this->mState = state;
-            if (state == CLIENT_CONNECTED) {
-                this->mSsd1306.DrawBitmap(&this->mBmpCommunication,
-                                          SCREEN_WIDTH - this->mBmpCommunication.width,
-                                          0U,
-                                          Bitmaps::Color::COLOR_WHITE);
-            }
         }
 
         void ServiceDisplay::Notified(const BatteryStruct &state) {
@@ -253,8 +240,18 @@ namespace Service
             }
         }
 
-        void ServiceDisplay::DispatchEvent(const Event::Event &event) const {
-            (void) event;
+        void ServiceDisplay::DispatchEvent(const Event::Event &event) {
+            if (event.serviceId == EServices::COMMUNICATION) {
+                if (event.eventType == Event::Event::EVENT_COM_DONE) {
+                    this->mState = CLIENT_CONNECTED;
+                    this->mSsd1306.DrawBitmap(&this->mBmpCommunication,
+                                              SCREEN_WIDTH - this->mBmpCommunication.width,
+                                              0U,
+                                              Bitmaps::Color::COLOR_WHITE);
+                } else {
+                    this->mState = NO_CLIENT;
+                }
+            }
         }
     } // namespace Display
 } // namespace Service

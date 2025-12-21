@@ -30,11 +30,9 @@ namespace Service
                                Core::ObserverInterface<BatteryStruct>,
                                Core::ObserverInterface<ButtonStruct>,
                                Core::ObserverInterface<SoundStruct>,
-                               Core::ObserverInterface<SensorsStruct>,
-                               Core::ObserverInterface<CommunicationStruct> {
+                               Core::ObserverInterface<SensorsStruct> {
         public:
             ServiceDisplay(Ssd1306Interface                 &ssd1306,
-                           CommunicationInterface           &communication,
                            BatteryInterface                 &battery,
                            ButtonInterface                  &button,
                            SoundInterface                   &soundInterfaceLeft,
@@ -49,15 +47,13 @@ namespace Service
 
             virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void         DispatchEvent(const Event::Event &event) const final override;
+            virtual void         DispatchEvent(const Event::Event &event) final override;
 
             virtual void         Notified(const ButtonStruct &button) final override;
 
             virtual void         Notified(const SoundStruct &sound) final override;
 
             virtual void         Notified(const SensorsStruct &sensor) final override;
-
-            virtual void         Notified(const CommunicationStruct &state) final override;
 
             virtual void         Notified(const BatteryStruct &state) final override;
 
@@ -76,7 +72,6 @@ namespace Service
 
         private:
             Ssd1306Interface                 &mSsd1306;
-            CommunicationInterface           &mCommunication;
             BatteryInterface                 &mBattery;
             ButtonInterface                  &mButton;
             SoundInterface                   &mSoundLeft;

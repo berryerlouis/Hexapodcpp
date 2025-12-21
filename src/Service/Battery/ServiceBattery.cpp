@@ -38,7 +38,7 @@ namespace Service
             this->SendMessage(response);
         }
 
-        void ServiceBattery::DispatchEvent(const Event::Event &event) const {
+        void ServiceBattery::DispatchEvent(const Event::Event &event) {
             (void) event;
         }
     } // namespace Battery

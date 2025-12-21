@@ -32,7 +32,7 @@ namespace Service
             }
         }
 
-        void ServiceControl::DispatchEvent(const Event::Event &event) const {
+        void ServiceControl::DispatchEvent(const Event::Event &event) {
             (void) event;
         }
     } // namespace Control

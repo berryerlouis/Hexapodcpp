@@ -37,7 +37,7 @@ namespace Service
                                                   : Event::Event::EVENT_BUTTON_RELEASED);
         }
 
-        void ServiceButton::DispatchEvent(const Event::Event &event) const {
+        void ServiceButton::DispatchEvent(const Event::Event &event) {
             (void) event;
         }
     } // namespace Button

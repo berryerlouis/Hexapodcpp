@@ -13,6 +13,8 @@ namespace Service
                 EVENT_INIT_FAILURE,
                 EVENT_BUTTON_PRESSED,
                 EVENT_BUTTON_RELEASED,
+                EVENT_COM_NONE,
+                EVENT_COM_DONE,
                 EVENT_NONE,
                 EVENT_INVALID
             };

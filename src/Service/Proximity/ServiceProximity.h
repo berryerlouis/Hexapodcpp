@@ -27,7 +27,7 @@ namespace Service
 
             virtual void         Notified(const SensorsStruct &sensor) final override;
 
-            virtual void         DispatchEvent(const Event::Event &event) const final override;
+            virtual void         DispatchEvent(const Event::Event &event) final override;
 
         protected:
             SensorProximityMultipleInterface &mProximity;

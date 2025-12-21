@@ -26,7 +26,7 @@ namespace Service
             this->mSoftware.Update(currentTime);
         }
 
-        void ServiceGeneral::DispatchEvent(const Event::Event &event) const {
+        void ServiceGeneral::DispatchEvent(const Event::Event &event) {
             if (event.eventType == Event::Event::EVENT_INIT_FAILURE) {
                 LOG_SERVICE_ERROR("Service Id %s(%d) Failed on initialization.",
                                   EServicesStruct::ServiceIdToString(event.serviceId).c_str(),

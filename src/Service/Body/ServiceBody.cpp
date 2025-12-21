@@ -26,8 +26,14 @@ namespace Service
             this->mBody.Update(currentTime);
         }
 
-        void ServiceBody::DispatchEvent(const Event::Event &event) const {
-            (void) event;
+        void ServiceBody::DispatchEvent(const Event::Event &event) {
+            if (event.serviceId == EServices::BUTTON) {
+                if (event.eventType == Event::Event::EVENT_BUTTON_PRESSED) {
+                    if (this->mBody.GetWalkStatus() == Move::Walk::EWalkStatus::WALKING) {
+                        this->mBody.UpdateWalkStatus(Move::Walk::EWalkStatus::STOPPED, 1000U);
+                    }
+                }
+            }
         }
     } // namespace Body
 } // namespace Service

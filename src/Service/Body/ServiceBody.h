@@ -21,7 +21,7 @@ namespace Service
 
             virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void         DispatchEvent(const Event::Event &event) const final override;
+            virtual void         DispatchEvent(const Event::Event &event) final override;
 
         protected:
             BodyInterface &mBody;

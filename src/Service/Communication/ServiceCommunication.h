@@ -10,7 +10,7 @@ namespace Service
     {
         using namespace Component::Communication;
 
-        class ServiceCommunication : public Service {
+        class ServiceCommunication : public Service, Core::ObserverInterface<CommunicationStruct> {
         public:
             ServiceCommunication(CommunicationInterface        &communication,
                                  Clusters::ClustersInterface   &clusters,
@@ -23,7 +23,9 @@ namespace Service
 
             virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void         DispatchEvent(const Event::Event &event) const final override;
+            virtual void         DispatchEvent(const Event::Event &event) final override;
+
+            virtual void         Notified(const CommunicationStruct &state) final override;
 
         private:
             Clusters::ClustersInterface &mClusters;

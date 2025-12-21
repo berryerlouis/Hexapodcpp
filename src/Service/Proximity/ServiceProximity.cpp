@@ -35,7 +35,7 @@ namespace Service
             this->SendMessage(response);
         }
 
-        void ServiceProximity::DispatchEvent(const Event::Event &event) const {
+        void ServiceProximity::DispatchEvent(const Event::Event &event) {
             (void) event;
         }
     } // namespace Proximity

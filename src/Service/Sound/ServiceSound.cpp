@@ -44,7 +44,7 @@ namespace Service
             }
         }
 
-        void ServiceSound::DispatchEvent(const Event::Event &event) const {
+        void ServiceSound::DispatchEvent(const Event::Event &event) {
             (void) event;
         }
     } // namespace Sound

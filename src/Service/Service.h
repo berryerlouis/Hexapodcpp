@@ -41,7 +41,7 @@ namespace Service
             this->mEventListener.SetEvent(this->GetServiceId(), eventType);
         }
 
-        virtual void DispatchEvent(const Event::Event &event) const = 0;
+        virtual void DispatchEvent(const Event::Event &event) = 0;
 
         void         UpdateService(const uint64_t currentTime) {
             if (this->NeedUpdate(currentTime) == Core::Status::CORE_OK) {
