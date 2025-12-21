@@ -4,12 +4,14 @@ namespace Service
 {
     namespace General
     {
-        ServiceGeneral::ServiceGeneral(
-                SoftwareInterface &software,
-                Message::MessageInterface &messageListener,
-                Event::EventListenerInterface &eventListener
-        ) :
-            Service(GENERAL, 1U, messageListener, eventListener), mSoftware(software) {
+        ServiceGeneral::ServiceGeneral(SoftwareInterface             &software,
+                                       Message::MessageInterface     &messageListener,
+                                       Event::EventListenerInterface &eventListener) :
+            Service(GENERAL,
+                    1U,
+                    messageListener,
+                    eventListener),
+            mSoftware(software) {
         }
 
         Core::Status ServiceGeneral::Initialize(void) {
@@ -24,8 +26,12 @@ namespace Service
             this->mSoftware.Update(currentTime);
         }
 
-        void ServiceGeneral::DispatchEvent(const Event::EventType event) const {
-            (void) event;
+        void ServiceGeneral::DispatchEvent(const Event::Event &event) const {
+            if (event.eventType == Event::Event::EVENT_INIT_FAILURE) {
+                LOG_SERVICE_ERROR("Service Id %s(%d) Failed on initialization.",
+                                  EServicesStruct::ServiceIdToString(event.serviceId).c_str(),
+                                  event.serviceId);
+            }
         }
     } // namespace General
 } // namespace Service

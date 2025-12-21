@@ -4,13 +4,14 @@ namespace Move
 {
     namespace Gait
     {
-        void GaitTripod::doGaitStrategy(const bool isCycleComplete,
-                                        const uint64_t currentTime,
-                                        std::map<Bot::Legs::ELeg, Bot::Leg::Leg> &legs,
-                                        const Move::Gait::GaitParams &gaitParams,
-                                        const std::vector<std::vector<Misc::Maths::Position3d> > &positions,
-                                        const uint8_t stepPositionIndex,
-                                        const float normalizedTime) const {
+        void GaitTripod::doGaitStrategy(const bool                                               isCycleComplete,
+                                        const uint64_t                                           currentTime,
+                                        std::map<Bot::Legs::ELeg,
+                                                 Bot::Leg::Leg>                                 &legs,
+                                        const Move::Gait::GaitParams                            &gaitParams,
+                                        const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
+                                        const uint8_t                                            stepPositionIndex,
+                                        const float                                              normalizedTime) const {
             (void) isCycleComplete;
             uint8_t stepPositionIndexAlt = stepPositionIndex;
             for (auto &leg: legs) {
@@ -20,12 +21,10 @@ namespace Move
                 } else {
                     stepPositionIndexAlt = (stepPositionIndex + 1U) % static_cast<uint8_t>(positions.size());
                 }
-                Misc::Maths::Position3d position = Misc::Utils::QuadraticLerp(
-                        positions[stepPositionIndexAlt][0U],
-                        positions[stepPositionIndexAlt][1U],
-                        positions[stepPositionIndexAlt][2U],
-                        normalizedTime
-                        );
+                Misc::Maths::Position3d position = Misc::Utils::QuadraticLerp(positions[stepPositionIndexAlt][0U],
+                                                                              positions[stepPositionIndexAlt][1U],
+                                                                              positions[stepPositionIndexAlt][2U],
+                                                                              normalizedTime);
                 leg.second.ComputeLerpTarget(currentTime,
                                              position,
                                              gaitParams.GetAmplitude(),
@@ -39,13 +38,14 @@ namespace Move
             }
         }
 
-        void GaitWave::doGaitStrategy(const bool isCycleComplete,
-                                      const uint64_t currentTime,
-                                      std::map<Bot::Legs::ELeg, Bot::Leg::Leg> &legs,
-                                      const Move::Gait::GaitParams &gaitParams,
-                                      const std::vector<std::vector<Misc::Maths::Position3d> > &positions,
-                                      const uint8_t stepPositionIndex,
-                                      const float normalizedTime) const {
+        void GaitWave::doGaitStrategy(const bool                                               isCycleComplete,
+                                      const uint64_t                                           currentTime,
+                                      std::map<Bot::Legs::ELeg,
+                                               Bot::Leg::Leg>                                 &legs,
+                                      const Move::Gait::GaitParams                            &gaitParams,
+                                      const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
+                                      const uint8_t                                            stepPositionIndex,
+                                      const float                                              normalizedTime) const {
             (void) isCycleComplete;
             float normalizedTimeAlt = 0U;
             float stepPositionIndexAlt = stepPositionIndex;
@@ -54,7 +54,7 @@ namespace Move
 
             for (auto &leg: legs) {
                 uint8_t legId = static_cast<uint8_t>(leg.second.GetId());
-                bool move = false;
+                bool    move = false;
                 if (GaitWave::activeAllLegId == false) {
                     if ((legId == GaitWave::activeLegId) && (!isCycleComplete)) {
                         normalizedTimeAlt = normalizedTime;
@@ -69,12 +69,10 @@ namespace Move
                     }
                 }
                 if (move) {
-                    Misc::Maths::Position3d position = Misc::Utils::QuadraticLerp(
-                            positions[stepPositionIndexAlt][0U],
-                            positions[stepPositionIndexAlt][1U],
-                            positions[stepPositionIndexAlt][2U],
-                            normalizedTimeAlt
-                            );
+                    Misc::Maths::Position3d position = Misc::Utils::QuadraticLerp(positions[stepPositionIndexAlt][0U],
+                                                                                  positions[stepPositionIndexAlt][1U],
+                                                                                  positions[stepPositionIndexAlt][2U],
+                                                                                  normalizedTimeAlt);
                     leg.second.ComputeLerpTarget(currentTime,
                                                  position,
                                                  gaitParams.GetAmplitude(),
@@ -100,13 +98,14 @@ namespace Move
             }
         }
 
-        void GaitRipple::doGaitStrategy(const bool isCycleComplete,
-                                        const uint64_t currentTime,
-                                        std::map<Bot::Legs::ELeg, Bot::Leg::Leg> &legs,
-                                        const Move::Gait::GaitParams &gaitParams,
-                                        const std::vector<std::vector<Misc::Maths::Position3d> > &positions,
-                                        const uint8_t stepPositionIndex,
-                                        const float normalizedTime) const {
+        void GaitRipple::doGaitStrategy(const bool                                               isCycleComplete,
+                                        const uint64_t                                           currentTime,
+                                        std::map<Bot::Legs::ELeg,
+                                                 Bot::Leg::Leg>                                 &legs,
+                                        const Move::Gait::GaitParams                            &gaitParams,
+                                        const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
+                                        const uint8_t                                            stepPositionIndex,
+                                        const float                                              normalizedTime) const {
             (void) isCycleComplete;
             uint8_t stepPositionIndexAlt = stepPositionIndex;
             for (auto &leg: legs) {
@@ -116,12 +115,10 @@ namespace Move
                 } else {
                     stepPositionIndexAlt = (stepPositionIndex + 1U) % static_cast<uint8_t>(positions.size());
                 }
-                Misc::Maths::Position3d position = Misc::Utils::QuadraticLerp(
-                        positions[stepPositionIndexAlt][0U],
-                        positions[stepPositionIndexAlt][1U],
-                        positions[stepPositionIndexAlt][2U],
-                        normalizedTime
-                        );
+                Misc::Maths::Position3d position = Misc::Utils::QuadraticLerp(positions[stepPositionIndexAlt][0U],
+                                                                              positions[stepPositionIndexAlt][1U],
+                                                                              positions[stepPositionIndexAlt][2U],
+                                                                              normalizedTime);
                 leg.second.ComputeLerpTarget(currentTime,
                                              position,
                                              gaitParams.GetAmplitude(),
@@ -134,5 +131,5 @@ namespace Move
                 leg.second.SetTarget(position);
             }
         }
-    }
-}
+    } // namespace Gait
+} // namespace Move

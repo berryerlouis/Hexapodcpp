@@ -13,21 +13,19 @@ namespace Service
 
         class ServiceBattery : public Service, Core::ObserverInterface<BatteryStruct> {
         public:
-            ServiceBattery(
-                    BatteryInterface &batteryInterface,
-                    Message::MessageInterface &messageListener,
-                    Event::EventListenerInterface &eventListener
-            );
+            ServiceBattery(BatteryInterface              &batteryInterface,
+                           Message::MessageInterface     &messageListener,
+                           Event::EventListenerInterface &eventListener);
 
             ~ServiceBattery() = default;
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void Notified(const BatteryStruct &battery) final override;
+            virtual void         Notified(const BatteryStruct &battery) final override;
 
-            virtual void DispatchEvent(const Event::EventType event) const final override;
+            virtual void         DispatchEvent(const Event::Event &event) const final override;
 
         protected:
             BatteryInterface &mBatteryInterface;

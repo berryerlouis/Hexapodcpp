@@ -14,15 +14,16 @@ namespace Driver
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void Send(const char *data, const size_t len) final override;
+            virtual void         Send(const char  *data,
+                                      const size_t len) final override;
 
-            virtual void Send(const uint8_t data) final override;
+            virtual void         Send(const uint8_t data) final override;
 
-            virtual uint8_t Read(void) final override;
+            virtual uint8_t      Read(void) final override;
 
-            virtual uint8_t DataAvailable(void) final override;
+            virtual uint8_t      DataAvailable(void) final override;
         };
     } // namespace Uart
 } // namespace Driver

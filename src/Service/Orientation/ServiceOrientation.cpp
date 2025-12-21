@@ -4,13 +4,16 @@ namespace Service
 {
     namespace Orientation
     {
-        ServiceOrientation::ServiceOrientation(
-                Mpu9150Interface &imu,
-                BarometerInterface &barometer,
-                Message::MessageInterface &messageListener,
-                Event::EventListenerInterface &eventListener
-        ) :
-            Service(ORIENTATION, 20U, messageListener, eventListener), mImu(imu), mBarometer(barometer) {
+        ServiceOrientation::ServiceOrientation(Mpu9150Interface              &imu,
+                                               BarometerInterface            &barometer,
+                                               Message::MessageInterface     &messageListener,
+                                               Event::EventListenerInterface &eventListener) :
+            Service(ORIENTATION,
+                    20U,
+                    messageListener,
+                    eventListener),
+            mImu(imu),
+            mBarometer(barometer) {
         }
 
         Core::Status ServiceOrientation::Initialize(void) {
@@ -29,7 +32,7 @@ namespace Service
             this->mBarometer.Update(currentTime);
         }
 
-        void ServiceOrientation::DispatchEvent(const Event::EventType event) const {
+        void ServiceOrientation::DispatchEvent(const Event::Event &event) const {
             (void) event;
         }
     } // namespace Orientation

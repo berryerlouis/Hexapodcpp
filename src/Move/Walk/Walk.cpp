@@ -5,9 +5,10 @@ namespace Move
     namespace Walk
     {
         Walk::Walk(Bot::Legs::LegsInterface &legs) :
-                                                   mGaitParams()
-                                                   , mGaitCycle(legs, mGaitParams)
-                                                   , mStatus(EWalkStatus::STOPPED) {
+            mGaitParams(),
+            mGaitCycle(legs,
+                       mGaitParams),
+            mStatus(EWalkStatus::STOPPED) {
         }
 
         void Walk::Update(const uint64_t currentTime) {
@@ -34,9 +35,8 @@ namespace Move
         }
 
         bool Walk::SetRotation(const float rotationAngle,
-                               const bool clockWize) {
-            return this->mGaitParams.SetRotation(rotationAngle,
-                                                 clockWize);
+                               const bool  clockWize) {
+            return this->mGaitParams.SetRotation(rotationAngle, clockWize);
         }
 
         bool Walk::SetAmplitude(const float amplitude) {
@@ -86,5 +86,5 @@ namespace Move
         Gait::GaitType Walk::GetGait() const {
             return this->mGaitParams.GetGaitType();
         }
-    }
-}
+    } // namespace Walk
+} // namespace Move

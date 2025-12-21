@@ -5,22 +5,24 @@ namespace Driver
 {
     namespace Socket
     {
-        websockets::WebsocketsServer server;
-        websockets::WebsocketsClient client;
+        websockets::WebsocketsServer         server;
+        websockets::WebsocketsClient         client;
         static websockets::WSInterfaceString bufferMessage;
-        static bool once = false;
+        static bool                          once = false;
 
-        void Socket::onMessage(websockets::WebsocketsClient &client, websockets::WebsocketsMessage message) {
+        void                                 Socket::onMessage(websockets::WebsocketsClient &client,
+                               websockets::WebsocketsMessage message) {
             (void) client;
             bufferMessage += message.data();
         }
 
-        void Socket::onEvent(websockets::WebsocketsClient &client, websockets::WebsocketsEvent event,
+        void Socket::onEvent(websockets::WebsocketsClient &client,
+                             websockets::WebsocketsEvent   event,
                              websockets::WSInterfaceString data) {
             (void) client;
             (void) data;
-            if (event == websockets::WebsocketsEvent::ConnectionOpened || event ==
-                websockets::WebsocketsEvent::ConnectionClosed) {
+            if (event == websockets::WebsocketsEvent::ConnectionOpened ||
+                event == websockets::WebsocketsEvent::ConnectionClosed) {
                 bufferMessage.clear();
                 once = false;
             }
@@ -54,7 +56,8 @@ namespace Driver
             }
         }
 
-        void Socket::Send(const char *data, const size_t len) {
+        void Socket::Send(const char  *data,
+                          const size_t len) {
             if (client.available() == true) {
                 client.send(data, len);
             }

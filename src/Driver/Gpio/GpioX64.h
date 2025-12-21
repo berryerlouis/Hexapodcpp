@@ -8,7 +8,8 @@ namespace Driver
     {
         class Gpio : public GpioInterface {
         public:
-            Gpio(const SGpio &gpio, const EPortDirection &portDirection);
+            Gpio(const SGpio          &gpio,
+                 const EPortDirection &portDirection);
 
             ~Gpio() = default;
 
@@ -16,15 +17,15 @@ namespace Driver
 
             virtual Core::Status Reset(void) final override;
 
-            virtual bool Get(void) final override;
+            virtual bool         Get(void) final override;
 
-            virtual SGpio &GetPin(void) final override;
+            virtual SGpio       &GetPin(void) final override;
 
-            virtual void SetInterruptPin(void) final override;
+            virtual void         SetInterruptPin(void) final override;
 
-            virtual void SetInterruptPin(const InterruptCallback callback) final override;
+            virtual void         SetInterruptPin(const InterruptCallback callback) final override;
 
-            virtual void ResetInterruptPin(void) final override;
+            virtual void         ResetInterruptPin(void) final override;
 
         private:
             SGpio mGpio;

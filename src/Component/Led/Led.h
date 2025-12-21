@@ -1,7 +1,7 @@
 #pragma once
 
-#include "LedInterface.h"
 #include "../../Driver/Gpio/GpioInterface.h"
+#include "LedInterface.h"
 
 namespace Component
 {
@@ -15,7 +15,7 @@ namespace Component
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
             virtual Core::Status On() final override;
 
@@ -23,11 +23,11 @@ namespace Component
 
             virtual Core::Status Toggle() final override;
 
-            virtual LedState Get() const final override;
+            virtual LedState     Get() const final override;
 
         private:
             Driver::Gpio::GpioInterface &mGpio;
-            LedState mState;
+            LedState                     mState;
         };
-    }
-}
+    } // namespace Led
+} // namespace Component

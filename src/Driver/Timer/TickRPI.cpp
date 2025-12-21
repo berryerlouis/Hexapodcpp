@@ -1,15 +1,15 @@
-#include "Tick.h"
 #include <chrono>
 #include <thread>
+#include "Tick.h"
 
 namespace Driver
 {
     namespace Timer
     {
-        uint64_t start;
+        uint64_t                                           start;
         std::chrono::time_point<std::chrono::steady_clock> start_time;
 
-        Tick &Tick::GetInstance() {
+        Tick                                              &Tick::GetInstance() {
             static Tick instance;
             return instance;
         }
@@ -38,5 +38,5 @@ namespace Driver
         void Tick::DelayUs(const uint64_t delayUs) {
             std::this_thread::sleep_for(std::chrono::microseconds(delayUs));
         }
-    }
-}
+    } // namespace Timer
+} // namespace Driver

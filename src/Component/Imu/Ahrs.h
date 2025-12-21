@@ -13,9 +13,9 @@ namespace Component
 
             ~Ahrs() = default;
 
-            void Update(Vector3F acc,
-                        Vector3F gyr,
-                        Vector3F mag,
+            void Update(Vector3F    acc,
+                        Vector3F    gyr,
+                        Vector3F    mag,
                         const float deltaTime);
 
             void GetRollPitchYaw(Imu3d &ypr) const;
@@ -25,5 +25,5 @@ namespace Component
             float mGyroMeasError;
             float mBeta;
         };
-    }
-}
+    } // namespace Imu
+} // namespace Component

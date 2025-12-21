@@ -1,8 +1,8 @@
-#include "UartX64.h"
 #include <chrono>
 #include <future>
 #include <iostream>
 #include <string>
+#include "UartX64.h"
 
 
 namespace Driver
@@ -11,13 +11,13 @@ namespace Driver
     {
         Misc::Buffer::Buffer mBufferRx;
 
-        std::string GetLineFromCin() {
+        std::string          GetLineFromCin() {
             std::string line;
             std::getline(std::cin, line);
             return line;
         }
 
-        char buffer[255U];
+        char                     buffer[255U];
         std::future<std::string> future;
 
         Uart::Uart(const EBaudRate &baud) {
@@ -33,7 +33,8 @@ namespace Driver
             (void) currentTime;
         }
 
-        void Uart::Send(const char *data, const size_t len) {
+        void Uart::Send(const char  *data,
+                        const size_t len) {
             std::cout << data << std::endl;
         };
 
@@ -48,7 +49,7 @@ namespace Driver
         uint8_t Uart::DataAvailable(void) {
             if (future.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
                 const std::string line = future.get();
-                uint8_t buffer[line.length()];
+                uint8_t           buffer[line.length()];
 
                 // Set a new line. Subtle race condition between the previous line
                 // and this. Some lines could be missed. To aleviate, you need an

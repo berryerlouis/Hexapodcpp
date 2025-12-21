@@ -17,7 +17,8 @@ namespace Driver
             (void) currentTime;
         }
 
-        void Uart::Send(const char *data, const size_t len) {
+        void Uart::Send(const char  *data,
+                        const size_t len) {
             (void) data;
             (void) len;
         }

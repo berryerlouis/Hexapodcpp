@@ -8,5 +8,5 @@ namespace Driver
             BAUDRATE_115200 = 115200UL,
             BAUDRATE_500000 = 500000UL,
         };
-    }
-}
+    } // namespace Uart
+} // namespace Driver

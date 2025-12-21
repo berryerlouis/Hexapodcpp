@@ -5,16 +5,17 @@ namespace Component
 {
     namespace Communication
     {
-        Communication::Communication(Socket::SocketInterface<1U, Socket::SocketStruct> &socket,
-                                     Clusters::ClustersInterface &clusters,
-                                     Led::LedInterface &ledStatus) :
-                                                                   mSocket(socket)
-                                                                   , mClusters(clusters)
-                                                                   , mLedStatus(ledStatus)
-                                                                   , mBufferRx{0U}
-                                                                   , mBufferTx{0U}
-                                                                   , mIndexBufferRx(0U)
-                                                                   , mBeginIncomingFrame(false) {
+        Communication::Communication(Socket::SocketInterface<1U,
+                                                             Socket::SocketStruct> &socket,
+                                     Clusters::ClustersInterface                   &clusters,
+                                     Led::LedInterface                             &ledStatus) :
+            mSocket(socket),
+            mClusters(clusters),
+            mLedStatus(ledStatus),
+            mBufferRx{0U},
+            mBufferTx{0U},
+            mIndexBufferRx(0U),
+            mBeginIncomingFrame(false) {
         }
 
         Core::Status Communication::Initialize(void) {
@@ -30,11 +31,10 @@ namespace Component
         void Communication::Update(const uint64_t currentTime) {
             this->mSocket.Update(currentTime);
             if (true == this->ReceivedStringFrame()) {
-                //this->mLedStatus.On();
-                Frame request;
-                Frame response;
-                const Core::Status parsedStatus =
-                        Protocol::Decode(const_cast<const char *>(this->mBufferRx), request);
+                // this->mLedStatus.On();
+                Frame              request;
+                Frame              response;
+                const Core::Status parsedStatus = Protocol::Decode(const_cast<const char *>(this->mBufferRx), request);
                 if (parsedStatus == Core::Status::CORE_OK) {
                     const uint8_t frameClusterID = request.GetClusterId();
                     if (frameClusterID < NB_CLUSTERS) {
@@ -58,11 +58,12 @@ namespace Component
                 } else {
                     response.Build(0xFFU, GENERIC);
                     response.Set1ByteParam(parsedStatus);
-                    LOG_COMPONENT_ERROR("Communication", "RX => Parsing error %s",
+                    LOG_COMPONENT_ERROR("Communication",
+                                        "RX => Parsing error %s",
                                         Core::StatusToString(parsedStatus).c_str());
                 }
                 this->SendMessage(response);
-                //this->mLedStatus.Off();
+                // this->mLedStatus.Off();
             }
         }
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Constants.h"
 #include "../ClusterBase.h"
+#include "../Constants.h"
 
 namespace Cluster
 {
@@ -15,5 +15,5 @@ namespace Cluster
 
             virtual ClusterBase *GetCluster(const EClusters clusterId) = 0;
         };
-    }
-}
+    } // namespace Clusters
+} // namespace Cluster

@@ -18,7 +18,9 @@ namespace Cluster
     static constexpr uint8_t NB_CLUSTERS = 8U;
 
 
-    enum EClusterCommandGeneric { GENERIC = 0xFFU };
+    enum EClusterCommandGeneric {
+        GENERIC = 0xFFU
+    };
 
     enum EGeneralCommands {
         RESET = 0x00U,

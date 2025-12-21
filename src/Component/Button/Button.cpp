@@ -7,24 +7,23 @@ namespace Component
         static Button *button[3U] = {};
         static uint8_t buttonIndex = 0U;
 
-        void InterruptGpioBp(void) {
+        void           InterruptGpioBp(void) {
             for (size_t i = 0U; i < buttonIndex; i++) {
                 button[i]->Hit();
             }
         }
 
         Button::Button(Gpio::GpioInterface &gpio) :
-                                                  mGpioButton(gpio)
-                                                  , mPushTime(0U)
-                                                  , mState(RELEASE) {
+            mGpioButton(gpio),
+            mPushTime(0U),
+            mState(RELEASE) {
             button[buttonIndex] = this;
             buttonIndex++;
         }
 
         Core::Status Button::Initialize(void) {
             this->mGpioButton.SetInterruptPin(&InterruptGpioBp);
-            LOG_COMPONENT_DEBUG("Button",
-                                "Initialized.");
+            LOG_COMPONENT_DEBUG("Button", "Initialized.");
             return Core::Status::CORE_OK;
         }
 
@@ -49,5 +48,5 @@ namespace Component
         ButtonState Button::Get() const {
             return this->mState;
         }
-    }
-}
+    } // namespace Button
+} // namespace Component

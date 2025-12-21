@@ -5,17 +5,17 @@ namespace Component
     namespace Sound
     {
         static Sound *sound[NB_SENSORS_SOUND] = {};
-        uint8_t Sound::soundIndex = 0U;
+        uint8_t       Sound::soundIndex = 0U;
 
-        Sound::Sound(const SoundId &soundId,
+        Sound::Sound(const SoundId       &soundId,
                      Gpio::GpioInterface &gpio,
-                     Led::LedInterface &led) :
-                                             mSoundId(soundId)
-                                             , mGpioSound(gpio)
-                                             , mLed(led)
-                                             , mIntervalSoundTimeArray{0U}
-                                             , mIntervalSoundTimeArrayIndex(0U)
-                                             , mAverageIntervalSoundTime(0U) {
+                     Led::LedInterface   &led) :
+            mSoundId(soundId),
+            mGpioSound(gpio),
+            mLed(led),
+            mIntervalSoundTimeArray{0U},
+            mIntervalSoundTimeArrayIndex(0U),
+            mAverageIntervalSoundTime(0U) {
             sound[soundId] = this;
             soundIndex++;
         }
@@ -26,9 +26,7 @@ namespace Component
             this->stopSoundTime = 0U;
             this->mLed.Off();
             this->mGpioSound.SetInterruptPin(&this->InterruptGpioSoundHit);
-            LOG_COMPONENT_DEBUG("Sound",
-                                "pin %d Initialized.",
-                                this->mGpioSound.GetPin().pin);
+            LOG_COMPONENT_DEBUG("Sound", "pin %d Initialized.", this->mGpioSound.GetPin().pin);
             return success;
         }
 
@@ -39,8 +37,7 @@ namespace Component
             } else {
                 this->stopSoundTime = Timer::Tick::GetInstance().GetUs();
                 this->mLed.Off();
-                if (this->startSoundTime != 0U &&
-                    this->mIntervalSoundTimeArrayIndex < NB_MAX_INTERVAL_SOUND_TIME) {
+                if (this->startSoundTime != 0U && this->mIntervalSoundTimeArrayIndex < NB_MAX_INTERVAL_SOUND_TIME) {
                     this->mIntervalSoundTimeArray[this->mIntervalSoundTimeArrayIndex] =
                             this->stopSoundTime - this->startSoundTime;
                     this->mIntervalSoundTimeArrayIndex++;
@@ -64,9 +61,7 @@ namespace Component
             if (this->mIntervalSoundTimeArrayIndex > 0U) {
                 // make the average of all hits interval
                 this->mAverageIntervalSoundTime = 0U;
-                for (uint8_t indexInterval = 0U;
-                     indexInterval < this->mIntervalSoundTimeArrayIndex;
-                     indexInterval++) {
+                for (uint8_t indexInterval = 0U; indexInterval < this->mIntervalSoundTimeArrayIndex; indexInterval++) {
                     this->mAverageIntervalSoundTime += this->mIntervalSoundTimeArray[indexInterval];
                 }
                 this->mAverageIntervalSoundTime /= this->mIntervalSoundTimeArrayIndex;
@@ -79,16 +74,14 @@ namespace Component
         }
 
         SoundStruct Sound::ComputeAndNotifyMaxSound(void) {
-            SoundStruct soundStruct = {.id = SOUND_NONE, .delay = 0U};
+            SoundStruct    soundStruct = {.id = SOUND_NONE, .delay = 0U};
             const uint64_t soundLeft = sound[SOUND_LEFT]->GetIntervalSoundHit();
             const uint64_t soundRight = sound[SOUND_RIGHT]->GetIntervalSoundHit();
             sound[SOUND_LEFT]->startSoundTime = 0U;
             sound[SOUND_RIGHT]->startSoundTime = 0U;
             sound[SOUND_LEFT]->mAverageIntervalSoundTime = 0U;
             sound[SOUND_RIGHT]->mAverageIntervalSoundTime = 0U;
-            for (uint8_t indexInterval = 0U;
-                 indexInterval < 100U;
-                 indexInterval++) {
+            for (uint8_t indexInterval = 0U; indexInterval < 100U; indexInterval++) {
                 sound[SOUND_LEFT]->mIntervalSoundTimeArray[indexInterval] = 0U;
                 sound[SOUND_RIGHT]->mIntervalSoundTimeArray[indexInterval] = 0U;
             }
@@ -113,5 +106,5 @@ namespace Component
                 }
             }
         }
-    }
-}
+    } // namespace Sound
+} // namespace Component

@@ -8,8 +8,7 @@ namespace Core
     template<uint8_t MAX_OBSERVERS, class T>
     class Observable : public ObservableInterface<T> {
     public:
-        Observable() :
-                     mIndexList(0U) {
+        Observable() : mIndexList(0U) {
             for (size_t i = 0; i < MAX_OBSERVERS; i++) {
                 mListObserver[i] = nullptr;
             }
@@ -17,8 +16,7 @@ namespace Core
 
         ~Observable() = default;
 
-        virtual Core::Status
-        Attach(ObserverInterface<T> *observer) final override {
+        virtual Core::Status Attach(ObserverInterface<T> *observer) final override {
             Core::Status success = Core::Status::CORE_ERROR;
             if (this->mIndexList != MAX_OBSERVERS) {
                 this->mListObserver[this->mIndexList] = observer;
@@ -29,8 +27,7 @@ namespace Core
         }
 
     protected:
-        virtual void
-        Notify(const T item) final override {
+        virtual void Notify(const T item) final override {
             for (size_t i = 0; i < this->mIndexList; i++) {
                 if (this->mListObserver[i] != nullptr) {
                     this->mListObserver[i]->Notified(item);
@@ -39,7 +36,7 @@ namespace Core
         }
 
     private:
-        uint8_t mIndexList;
+        uint8_t               mIndexList;
         ObserverInterface<T> *mListObserver[MAX_OBSERVERS];
     };
-}
+} // namespace Core

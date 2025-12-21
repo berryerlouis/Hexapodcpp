@@ -1,5 +1,5 @@
-#include "GaitCycle.h"
 #include "../../Misc/Maths/Utils.h"
+#include "GaitCycle.h"
 
 namespace Move
 {
@@ -12,16 +12,16 @@ namespace Move
         static constexpr float DURATION_MIN = 1000.0F; // in milliseconds
 
         GaitParams::GaitParams(void) :
-                                     mCurrentGait(GaitType::TRIPOD)
-                                     , mIsRunning(false)
-                                     , mDirection(0.0F)
-                                     , mRotation(0.0F)
-                                     , mIsRotated(false)
-                                     , mClockWize(false)
-                                     , mAmplitude(AMPLITUDE_MAX)
-                                     , mElevation(ELEVATION_MAX)
-                                     , mCycleDuration(DURATION_MIN)
-                                     , mUpdatedTimeStamp(0UL) {
+            mCurrentGait(GaitType::TRIPOD),
+            mIsRunning(false),
+            mDirection(0.0F),
+            mRotation(0.0F),
+            mIsRotated(false),
+            mClockWize(false),
+            mAmplitude(AMPLITUDE_MAX),
+            mElevation(ELEVATION_MAX),
+            mCycleDuration(DURATION_MIN),
+            mUpdatedTimeStamp(0UL) {
         }
 
         bool GaitParams::SetGaitType(const GaitType gaitType) {
@@ -42,7 +42,8 @@ namespace Move
             return false;
         }
 
-        bool GaitParams::SetRotation(const float rotationAngle, const bool clockWize) {
+        bool GaitParams::SetRotation(const float rotationAngle,
+                                     const bool  clockWize) {
             if (rotationAngle != 0.0F && rotationAngle <= 2.0F * M_PI) {
                 this->mRotation = rotationAngle;
                 this->mIsRotated = true;
@@ -125,5 +126,5 @@ namespace Move
         uint64_t GaitParams::GetUpdatedTimeStamp() const {
             return this->mUpdatedTimeStamp;
         }
-    }
-}
+    } // namespace Gait
+} // namespace Move

@@ -3,9 +3,9 @@
 namespace Cluster
 {
     ClusterCommand::ClusterCommand(const uint8_t size) :
-                                                       mClusterCommands{}
-                                                       , mClusterCommandSize(0U)
-                                                       , mSize(size < NB_COMMANDS_MAX ? size : NB_COMMANDS_MAX) {
+        mClusterCommands{},
+        mClusterCommandSize(0U),
+        mSize(size < NB_COMMANDS_MAX ? size : NB_COMMANDS_MAX) {
     }
 
     bool ClusterCommand::AddClusterItem(const ClusterItem clusterItem) {
@@ -19,7 +19,8 @@ namespace Cluster
         return true;
     }
 
-    Core::Status ClusterCommand::Execute(const Frame &request, Frame &response) {
+    Core::Status ClusterCommand::Execute(const Frame &request,
+                                         Frame       &response) {
         const uint8_t cmdId = request.GetCommandId();
 
         // Bounds check
@@ -34,4 +35,4 @@ namespace Cluster
 
         return this->ExecuteFrame(request, response);
     }
-}
+} // namespace Cluster

@@ -8,5 +8,5 @@ namespace Driver
             FREQ_100_KHZ = 100000,
             FREQ_400_KHZ = 400000,
         };
-    }
-}
+    } // namespace Twi
+} // namespace Driver

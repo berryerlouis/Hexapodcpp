@@ -5,176 +5,242 @@ namespace Misc
 {
     namespace Bitmap
     {
-        const uint8_t Bitmaps::Battery100[] =
-        {
-            XXXXXXXX, XXXXXXX_,
-            X_______, ______X_,
-            X_XXX_XX, X_XXX_XX,
-            X_XX_XXX, _XXX__XX,
-            X_X_XXX_, XXX_X_XX,
-            X_______, ______X_,
-            XXXXXXXX, XXXXXXX_
+        const uint8_t Bitmaps::Battery100[] = {XXXXXXXX,
+                                               XXXXXXX_,
+                                               X_______,
+                                               ______X_,
+                                               X_XXX_XX,
+                                               X_XXX_XX,
+                                               X_XX_XXX,
+                                               _XXX__XX,
+                                               X_X_XXX_,
+                                               XXX_X_XX,
+                                               X_______,
+                                               ______X_,
+                                               XXXXXXXX,
+                                               XXXXXXX_};
+
+        const uint8_t Bitmaps::Battery75[] = {XXXXXXXX,
+                                              XXXXXXX_,
+                                              X_______,
+                                              ______X_,
+                                              X_XXX_XX,
+                                              X_XXX_XX,
+                                              X_XX_XXX,
+                                              _XXX__XX,
+                                              X_X_XXX_,
+                                              XXX___XX,
+                                              X_______,
+                                              ______X_,
+                                              XXXXXXXX,
+                                              XXXXXXX_};
+
+        const uint8_t Bitmaps::Battery50[] = {XXXXXXXX,
+                                              XXXXXXX_,
+                                              X_______,
+                                              ______X_,
+                                              X_XXX_XX,
+                                              X_____XX,
+                                              X_XX_XXX,
+                                              ______XX,
+                                              X_X_XXX_,
+                                              ______XX,
+                                              X_______,
+                                              ______X_,
+                                              XXXXXXXX,
+                                              XXXXXXX_};
+
+        const uint8_t Bitmaps::Battery25[] = {XXXXXXXX,
+                                              XXXXXXX_,
+                                              X_______,
+                                              ______X_,
+                                              X_XXX___,
+                                              ______XX,
+                                              X_XX____,
+                                              ______XX,
+                                              X_X_____,
+                                              ______XX,
+                                              X_______,
+                                              ______X_,
+                                              XXXXXXXX,
+                                              XXXXXXX_};
+
+        const uint8_t Bitmaps::Battery0[] = {XXXXXXXX,
+                                             XXXXXXX_,
+                                             X_______,
+                                             ______X_,
+                                             X_______,
+                                             ______XX,
+                                             X_______,
+                                             ______XX,
+                                             X_______,
+                                             ______XX,
+                                             X_______,
+                                             ______X_,
+                                             XXXXXXXX,
+                                             XXXXXXX_};
+
+        const uint8_t Bitmaps::Usb[] = {
+                ________,
+                ________,
+                _____XXX,
+                XXXXX___,
+                _____X__,
+                __XX_XXX,
+                XXXXXX__,
+                __XXXXXX,
+                _____X__,
+                __XX_XXX,
+                _____XXX,
+                XXXXX___,
+                ________,
+                ________,
         };
 
-        const uint8_t Bitmaps::Battery75[] =
-        {
-            XXXXXXXX, XXXXXXX_,
-            X_______, ______X_,
-            X_XXX_XX, X_XXX_XX,
-            X_XX_XXX, _XXX__XX,
-            X_X_XXX_, XXX___XX,
-            X_______, ______X_,
-            XXXXXXXX, XXXXXXX_
+        const uint8_t Bitmaps::ArrowRight[] = {________,
+                                               _XXX____,
+                                               ________,
+                                               __XXX___,
+                                               __XXXXXX,
+                                               XXXXXX__,
+                                               __XXXXXX,
+                                               XXXXXX__,
+                                               ________,
+                                               __XXX___,
+                                               ________,
+                                               _XXX____};
+
+        const uint8_t Bitmaps::ArrowLeft[] = {____XXX_,
+                                              ________,
+                                              ___XXX__,
+                                              ________,
+                                              __XXXXXX,
+                                              XXXXXX__,
+                                              __XXXXXX,
+                                              XXXXXX__,
+                                              ___XXX__,
+                                              ________,
+                                              ____XXX_,
+                                              ________};
+
+        const uint8_t Bitmaps::ArrowUp[] = {_______X,
+                                            X_______,
+                                            ______XX,
+                                            XX______,
+                                            _____XXX,
+                                            XXX_____,
+                                            _______X,
+                                            X_______,
+                                            _______X,
+                                            X_______,
+                                            _______X,
+                                            X_______};
+
+        const uint8_t Bitmaps::ArrowDown[] = {_______X,
+                                              X_______,
+                                              _______X,
+                                              X_______,
+                                              _______X,
+                                              X_______,
+                                              _____XXX,
+                                              XXX_____,
+                                              ______XX,
+                                              XX______,
+                                              _______X,
+                                              X_______};
+
+        const uint8_t Bitmaps::ArrowCenter[] = {_______X,
+                                                X_______,
+                                                _____XXX,
+                                                XXX_____,
+                                                ____XXXX,
+                                                XXXX____,
+                                                ____XXXX,
+                                                XXXX____,
+                                                _____XXX,
+                                                XXX_____,
+                                                _______X,
+                                                X_______};
+
+        const uint8_t Bitmaps::Communication[] = {________,
+                                                  ________,
+                                                  ____XXX_,
+                                                  ____XX__,
+                                                  ___XX___,
+                                                  ___XXXX_,
+                                                  __XX____,
+                                                  __XXXXXX,
+                                                  XXXXXX__,
+                                                  ____XX__,
+                                                  _XXXX___,
+                                                  ___XX___,
+                                                  __XX____,
+                                                  _XXX____,
+                                                  ________,
+                                                  ________};
+
+        const uint8_t Bitmaps::ButtonRelease[] = {_____XXX,
+                                                  XXX_____,
+                                                  _______X,
+                                                  X_______,
+                                                  _______X,
+                                                  X_______,
+                                                  _______X,
+                                                  X_______,
+                                                  ____XXXX,
+                                                  XXXX____,
+                                                  ____XXXX,
+                                                  XXXX____,
+                                                  ____XX__,
+                                                  __XX____};
+
+        const uint8_t Bitmaps::ButtonPush[] = {________,
+                                               ________,
+                                               ________,
+                                               ________,
+                                               _____XXX,
+                                               XXX_____,
+                                               _______X,
+                                               X_______,
+                                               ____XXXX,
+                                               XXXX____,
+                                               ____XXXX,
+                                               XXXX____,
+                                               ____XX__,
+                                               __XX____};
+
+        const uint8_t Bitmaps::SoundLeft[] = {
+                ____X___,
+                ________,
+                ___X___X,
+                ________,
+                __X___X_,
+                ___X____,
+                __X___X_,
+                __X___X_,
+                __X___X_,
+                ___X____,
+                ___X___X,
+                ________,
+                ____X___,
+                ________,
         };
 
-        const uint8_t Bitmaps::Battery50[] =
-        {
-            XXXXXXXX, XXXXXXX_,
-            X_______, ______X_,
-            X_XXX_XX, X_____XX,
-            X_XX_XXX, ______XX,
-            X_X_XXX_, ______XX,
-            X_______, ______X_,
-            XXXXXXXX, XXXXXXX_
+        const uint8_t Bitmaps::SoundRight[] = {
+                ________,
+                ___X____,
+                ________,
+                X___X___,
+                ____X___,
+                _X___X__,
+                _X___X__,
+                _X___X__,
+                ____X___,
+                _X___X__,
+                ________,
+                X___X___,
+                ________,
+                ___X____,
         };
-
-        const uint8_t Bitmaps::Battery25[] =
-        {
-            XXXXXXXX, XXXXXXX_,
-            X_______, ______X_,
-            X_XXX___, ______XX,
-            X_XX____, ______XX,
-            X_X_____, ______XX,
-            X_______, ______X_,
-            XXXXXXXX, XXXXXXX_
-        };
-
-        const uint8_t Bitmaps::Battery0[] =
-        {
-            XXXXXXXX, XXXXXXX_,
-            X_______, ______X_,
-            X_______, ______XX,
-            X_______, ______XX,
-            X_______, ______XX,
-            X_______, ______X_,
-            XXXXXXXX, XXXXXXX_
-        };
-
-        const uint8_t Bitmaps::Usb[] =
-        {
-            ________, ________,
-            _____XXX, XXXXX___,
-            _____X__, __XX_XXX,
-            XXXXXX__, __XXXXXX,
-            _____X__, __XX_XXX,
-            _____XXX, XXXXX___,
-            ________, ________,
-        };
-
-        const uint8_t Bitmaps::ArrowRight[] =
-        {
-            ________, _XXX____,
-            ________, __XXX___,
-            __XXXXXX, XXXXXX__,
-            __XXXXXX, XXXXXX__,
-            ________, __XXX___,
-            ________, _XXX____
-        };
-
-        const uint8_t Bitmaps::ArrowLeft[] =
-        {
-            ____XXX_, ________,
-            ___XXX__, ________,
-            __XXXXXX, XXXXXX__,
-            __XXXXXX, XXXXXX__,
-            ___XXX__, ________,
-            ____XXX_, ________
-        };
-
-        const uint8_t Bitmaps::ArrowUp[] =
-        {
-            _______X, X_______,
-            ______XX, XX______,
-            _____XXX, XXX_____,
-            _______X, X_______,
-            _______X, X_______,
-            _______X, X_______
-        };
-
-        const uint8_t Bitmaps::ArrowDown[] =
-        {
-            _______X, X_______,
-            _______X, X_______,
-            _______X, X_______,
-            _____XXX, XXX_____,
-            ______XX, XX______,
-            _______X, X_______
-        };
-
-        const uint8_t Bitmaps::ArrowCenter[] =
-        {
-            _______X, X_______,
-            _____XXX, XXX_____,
-            ____XXXX, XXXX____,
-            ____XXXX, XXXX____,
-            _____XXX, XXX_____,
-            _______X, X_______
-        };
-
-        const uint8_t Bitmaps::Communication[] =
-        {
-            ________, ________,
-            ____XXX_, ____XX__,
-            ___XX___, ___XXXX_,
-            __XX____, __XXXXXX,
-            XXXXXX__, ____XX__,
-            _XXXX___, ___XX___,
-            __XX____, _XXX____,
-            ________, ________
-        };
-
-        const uint8_t Bitmaps::ButtonRelease[] =
-        {
-            _____XXX, XXX_____,
-            _______X, X_______,
-            _______X, X_______,
-            _______X, X_______,
-            ____XXXX, XXXX____,
-            ____XXXX, XXXX____,
-            ____XX__, __XX____
-        };
-
-        const uint8_t Bitmaps::ButtonPush[] =
-        {
-            ________, ________,
-            ________, ________,
-            _____XXX, XXX_____,
-            _______X, X_______,
-            ____XXXX, XXXX____,
-            ____XXXX, XXXX____,
-            ____XX__, __XX____
-        };
-
-        const uint8_t Bitmaps::SoundLeft[] =
-        {
-            ____X___, ________,
-            ___X___X, ________,
-            __X___X_, ___X____,
-            __X___X_, __X___X_,
-            __X___X_, ___X____,
-            ___X___X, ________,
-            ____X___, ________,
-        };
-
-        const uint8_t Bitmaps::SoundRight[] =
-        {
-            ________, ___X____,
-            ________, X___X___,
-            ____X___, _X___X__,
-            _X___X__, _X___X__,
-            ____X___, _X___X__,
-            ________, X___X___,
-            ________, ___X____,
-        };
-    }
-}
+    } // namespace Bitmap
+} // namespace Misc

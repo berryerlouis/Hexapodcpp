@@ -7,7 +7,9 @@ namespace Core
 {
     LogLevel Logger::currentLogLevel = LogLevel::DEBUG;
 
-    void Logger::Log(const LogLevel level, const char *format, ...) {
+    void     Logger::Log(const LogLevel level,
+                     const char    *format,
+                     ...) {
         if (GetLogLevel() < LogLevel::NONE && level < LogLevel::NONE && level >= GetLogLevel()) {
             va_list args;
             va_start(args, format);
@@ -17,10 +19,8 @@ namespace Core
             const std::string color = GetColor(level);
             const std::string levelStr = LevelToString(level);
 
-            std::cout << "[" << CurrentTime() << "] "
-                    << color << "[" << levelStr << "] "
-                    << formatted
-                    << LOG_COLOR_RESET << std::endl;
+            std::cout << "[" << CurrentTime() << "] " << color << "[" << levelStr << "] " << formatted
+                      << LOG_COLOR_RESET << std::endl;
         }
     }
 
@@ -51,7 +51,8 @@ namespace Core
         return LogLevel::UNKNOWN;
     }
 
-    std::string Logger::FormatString(const char *format, va_list args) {
+    std::string Logger::FormatString(const char *format,
+                                     va_list     args) {
         char buffer[1024U];
         vsnprintf(buffer, sizeof(buffer), format, args);
         return std::string(buffer);
@@ -59,33 +60,22 @@ namespace Core
 
     std::string Logger::LevelToString(const LogLevel level) {
         switch (level) {
-            case LogLevel::DEBUG:
-                return "DEBUG";
-            case LogLevel::INFO:
-                return "INFO";
-            case LogLevel::WARNING:
-                return "WARNING";
-            case LogLevel::ERROR:
-                return "ERROR";
-            case LogLevel::NONE:
-                return "NONE";
-            default:
-                return "UNKNOWN";
+            case LogLevel::DEBUG: return "DEBUG";
+            case LogLevel::INFO: return "INFO";
+            case LogLevel::WARNING: return "WARNING";
+            case LogLevel::ERROR: return "ERROR";
+            case LogLevel::NONE: return "NONE";
+            default: return "UNKNOWN";
         }
     }
 
     std::string Logger::GetColor(const LogLevel level) {
         switch (level) {
-            case LogLevel::DEBUG:
-                return LOG_COLOR_CYAN;
-            case LogLevel::INFO:
-                return LOG_COLOR_GREEN;
-            case LogLevel::WARNING:
-                return LOG_COLOR_YELLOW;
-            case LogLevel::ERROR:
-                return LOG_COLOR_RED;
-            default:
-                return LOG_COLOR_WHITE;
+            case LogLevel::DEBUG: return LOG_COLOR_CYAN;
+            case LogLevel::INFO: return LOG_COLOR_GREEN;
+            case LogLevel::WARNING: return LOG_COLOR_YELLOW;
+            case LogLevel::ERROR: return LOG_COLOR_RED;
+            default: return LOG_COLOR_WHITE;
         }
     }
 
@@ -105,4 +95,4 @@ namespace Core
 
         return oss.str();
     }
-}
+} // namespace Core

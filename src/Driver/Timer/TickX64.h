@@ -1,7 +1,7 @@
 #pragma once
 
-#include "TickInterface.h"
 #include <chrono>
+#include "TickInterface.h"
 
 namespace Driver
 {
@@ -9,27 +9,24 @@ namespace Driver
     {
         class Tick : public TickInterface {
         public:
-            virtual uint64_t GetUs(void) final override;
+            virtual uint64_t                                   GetUs(void) final override;
 
-            virtual uint64_t
-            GetMs(void) final override;
+            virtual uint64_t                                   GetMs(void) final override;
 
-            virtual void DelayMs(uint64_t delayMs) final override;
+            virtual void                                       DelayMs(uint64_t delayMs) final override;
 
-            virtual void DelayUs(uint64_t delayUs) final override;
+            virtual void                                       DelayUs(uint64_t delayUs) final override;
 
             std::chrono::time_point<std::chrono::system_clock> now;
 
-            static Tick &GetInstance();
+            static Tick                                       &GetInstance();
 
 #ifdef GTEST
-            void
-            SetUs(const uint64_t fakeUs) {
+            void SetUs(const uint64_t fakeUs) {
                 this->mFakeUs = fakeUs;
             }
 
-            void
-            ResetFake() {
+            void ResetFake() {
                 this->mFakeUs = 0U;
             }
 #endif
@@ -46,5 +43,5 @@ namespace Driver
             uint64_t mFakeMs = 0U;
 #endif
         };
-    } // namespace Tick
+    } // namespace Timer
 } // namespace Driver

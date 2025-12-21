@@ -7,16 +7,17 @@ namespace Cluster
         Protocol::Protocol() {
         }
 
-        Core::Status Protocol::Decode(const char *frameBuffer, Frame &frame) {
+        Core::Status Protocol::Decode(const char *frameBuffer,
+                                      Frame      &frame) {
             if (frameBuffer == nullptr) {
                 return (Core::Status::CORE_ERROR_NULLPTR);
             }
             const uint8_t frameLength = strlen(frameBuffer);
             if (frameLength >= 6U && frameLength % 2U == 0U) {
-                uint8_t commandId = 0U;
-                uint8_t clusterId = 0U;
-                uint8_t nbParams = 0U;
-                uint8_t params[FRAME_MAX_PARAMS] = {0U};
+                uint8_t      commandId = 0U;
+                uint8_t      clusterId = 0U;
+                uint8_t      nbParams = 0U;
+                uint8_t      params[FRAME_MAX_PARAMS] = {0U};
                 unsigned int tempClusterId = 0U;
                 unsigned int tempCommandId = 0U;
                 unsigned int tempNbParams = 0U;
@@ -44,7 +45,8 @@ namespace Cluster
             return (Core::Status::CORE_ERROR_SIZE);
         }
 
-        uint8_t Protocol::Encode(const Frame &response, char *buffer) {
+        uint8_t Protocol::Encode(const Frame &response,
+                                 char        *buffer) {
             if (buffer == nullptr) {
                 return (0U);
             }
@@ -52,7 +54,7 @@ namespace Cluster
             const uint8_t cluster = response.GetClusterId();
             const uint8_t command = response.GetCommandId();
 
-            uint8_t length = snprintf(buffer, 8U, "<%02X%02X%02X", cluster, command, size);
+            uint8_t       length = snprintf(buffer, 8U, "<%02X%02X%02X", cluster, command, size);
 
             for (size_t i = 0U; i < size; i++) {
                 length += snprintf(&buffer[length], 3U, "%02X", response.Get1ByteParam(i));
@@ -72,5 +74,5 @@ namespace Cluster
             }
             return (0xFFU);
         }
-    }
-}
+    } // namespace Decoding
+} // namespace Cluster

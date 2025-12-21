@@ -13,23 +13,21 @@ namespace Service
 
         class ServiceOrientation : public Service {
         public:
-            ServiceOrientation(
-                    Mpu9150Interface &imu,
-                    BarometerInterface &barometer,
-                    Message::MessageInterface &messageListener,
-                    Event::EventListenerInterface &eventListener
-            );
+            ServiceOrientation(Mpu9150Interface              &imu,
+                               BarometerInterface            &barometer,
+                               Message::MessageInterface     &messageListener,
+                               Event::EventListenerInterface &eventListener);
 
             ~ServiceOrientation() = default;
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void DispatchEvent(const Event::EventType event) const final override;
+            virtual void         DispatchEvent(const Event::Event &event) const final override;
 
         protected:
-            Mpu9150Interface &mImu;
+            Mpu9150Interface   &mImu;
             BarometerInterface &mBarometer;
         };
     } // namespace Orientation

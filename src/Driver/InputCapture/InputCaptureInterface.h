@@ -14,13 +14,13 @@ namespace Driver
 
             virtual Core::Status Initialize(void) = 0;
 
-            virtual void Update(const uint64_t currentTime) = 0;
+            virtual void         Update(const uint64_t currentTime) = 0;
 
-            virtual void EdgeChange(void) = 0;
+            virtual void         EdgeChange(void) = 0;
 
-            virtual uint64_t GetInputCaptureTime(void) = 0;
+            virtual uint64_t     GetInputCaptureTime(void) = 0;
 
-            virtual void ResetInputCaptureTime(void) = 0;
+            virtual void         ResetInputCaptureTime(void) = 0;
         };
-    }
-}
+    } // namespace InputCapture
+} // namespace Driver

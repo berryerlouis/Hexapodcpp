@@ -6,11 +6,14 @@ namespace Component
 {
     namespace Button
     {
-        enum ButtonState { RELEASE = 0U, PUSH };
+        enum ButtonState {
+            RELEASE = 0U,
+            PUSH
+        };
 
         struct ButtonStruct {
             const ButtonState &state;
-            const uint64_t delayMs;
+            const uint64_t     delayMs;
         };
     } // namespace Button
 } // namespace Component

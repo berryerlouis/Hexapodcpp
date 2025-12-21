@@ -11,5 +11,5 @@ namespace Service
         void MessageListener::SendMessage(const Frame &message) const {
             this->mCommunication.SendMessage(message);
         }
-    } // namespace Event
+    } // namespace Message
 } // namespace Service

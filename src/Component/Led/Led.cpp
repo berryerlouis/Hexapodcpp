@@ -5,8 +5,8 @@ namespace Component
     namespace Led
     {
         Led::Led(Driver::Gpio::GpioInterface &gpio) :
-                                                    mGpio(gpio)
-                                                    , mState(OFF) {
+            mGpio(gpio),
+            mState(OFF) {
         }
 
         Core::Status Led::Initialize(void) {
@@ -41,5 +41,5 @@ namespace Component
         Led::LedState Led::Get() const {
             return (this->mState);
         }
-    }
-}
+    } // namespace Led
+} // namespace Component

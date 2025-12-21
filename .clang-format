@@ -3,10 +3,8 @@ Language: Cpp
 BasedOnStyle: LLVM
 AccessModifierOffset: -4
 AlignConsecutiveAssignments: false
-AlignConsecutiveDeclarations: false
 AlignOperands: true
 AlignTrailingComments: false
-AllowShortBlocksOnASingleLine: false
 AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: false
 AlwaysBreakTemplateDeclarations: Yes
@@ -27,13 +25,21 @@ BraceWrapping:
   SplitEmptyFunction: true
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
-AlignAfterOpenBracket: BlockIndent
+AllowAllArgumentsOnNextLine: false
+AllowShortEnumsOnASingleLine: false
+AlignConsecutiveDeclarations:
+  Enabled: true
+  AcrossEmptyLines: true
+  AcrossComments: false
+AlignAfterOpenBracket: Align
 BinPackArguments: false
-BinPackParameters: false
+BinPackParameters: AlwaysOnePerLine
 AllowAllParametersOfDeclarationOnNextLine: false
 BreakBeforeBraces: Custom
 BreakConstructorInitializers: AfterColon
 BreakConstructorInitializersBeforeComma: false
+AllowShortBlocksOnASingleLine: Never
+AllowShortCaseLabelsOnASingleLine: true
 ColumnLimit: 120
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 ContinuationIndentWidth: 8
@@ -61,4 +67,5 @@ SpacesInConditionalStatement: false
 SpacesInCStyleCastParentheses: false
 SpacesInParentheses: false
 TabWidth: 4
+AlignEscapedNewlines: Left
 ...

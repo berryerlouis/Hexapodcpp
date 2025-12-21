@@ -22,13 +22,13 @@ namespace Component
 
             virtual Core::Status Initialize(void) = 0;
 
-            virtual void Update(const uint64_t currentTime) = 0;
+            virtual void         Update(const uint64_t currentTime) = 0;
 
-            virtual int16_t GetTemp(void) = 0;
+            virtual int16_t      GetTemp(void) = 0;
 
-            virtual int32_t GetPressure(void) = 0;
+            virtual int32_t      GetPressure(void) = 0;
 
-            virtual uint16_t GetAltitude(void) = 0;
+            virtual uint16_t     GetAltitude(void) = 0;
         };
-    }
-}
+    } // namespace Barometer
+} // namespace Component

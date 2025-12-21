@@ -12,4 +12,4 @@ namespace Cluster
         uint8_t commandId;
         uint8_t expectedSize;
     };
-}
+} // namespace Cluster

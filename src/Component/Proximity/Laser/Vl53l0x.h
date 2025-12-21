@@ -14,7 +14,7 @@ namespace Component
 
             class Vl53l0x : public SensorProximityInterface {
             public:
-                static constexpr uint8_t VL53L0X_ADDRESS = 0x29U;
+                static constexpr uint8_t  VL53L0X_ADDRESS = 0x29U;
                 static constexpr uint16_t DISTANCE_THRESHOLD = 300U;
 
                 typedef enum {
@@ -22,40 +22,44 @@ namespace Component
                     CALIBRATION_TYPE_PHASE
                 } calibration_type_t;
 
-                Vl53l0x(Twi::TwiInterface &i2c, Led::LedInterface &led,
-                        const uint8_t address = 0x29U);
+                Vl53l0x(Twi::TwiInterface &i2c,
+                        Led::LedInterface &led,
+                        const uint8_t      address = 0x29U);
 
 
                 ~Vl53l0x() = default;
 
-                Core::Status Initialize(void);
+                Core::Status         Initialize(void);
 
-                void Update(const uint64_t currentTime);
+                void                 Update(const uint64_t currentTime);
 
-                virtual uint16_t GetDistance(void) final override;
+                virtual uint16_t     GetDistance(void) final override;
 
                 virtual Core::Status SetThreshold(const uint16_t threshold) final override;
 
-                virtual uint16_t GetThreshold(void) final override;
+                virtual uint16_t     GetThreshold(void) final override;
 
             private:
                 Twi::TwiInterface &mI2c;
                 Led::LedInterface &mLed;
-                uint8_t mAddress;
-                uint16_t mDistance;
-                uint16_t mThreshold;
-                uint32_t mMeasurementTimingBudget = 0U;
-                uint8_t mStop;
+                uint8_t            mAddress;
+                uint16_t           mDistance;
+                uint16_t           mThreshold;
+                uint32_t           mMeasurementTimingBudget = 0U;
+                uint8_t            mStop;
 
-                void Tune(void) const;
+                void               Tune(void) const;
 
-                bool PerformSingleRefCalibration(const calibration_type_t calib) const;
+                bool               PerformSingleRefCalibration(const calibration_type_t calib) const;
 
-                bool WriteRegister16Bits(const uint8_t reg, const uint16_t &data);
+                bool               WriteRegister16Bits(const uint8_t   reg,
+                                                       const uint16_t &data);
 
-                bool WriteRegister32Bits(const uint8_t reg, const uint32_t &data);
+                bool               WriteRegister32Bits(const uint8_t   reg,
+                                                       const uint32_t &data);
 
-                bool ReadRegister16Bits(const uint8_t reg, uint16_t &data);
+                bool               ReadRegister16Bits(const uint8_t reg,
+                                                      uint16_t     &data);
 
             public:
                 static constexpr uint8_t VL53L0X_SYSRANGE_START = 0x00U;
@@ -117,6 +121,6 @@ namespace Component
                 static constexpr uint8_t VL53L0X_ALGO_PHASECAL_LIM = 0x30U;
                 static constexpr uint8_t VL53L0X_ALGO_PHASECAL_CONFIG_TIMEOUT = 0x30U;
             };
-        }
-    }
-}
+        } // namespace Laser
+    } // namespace Proximity
+} // namespace Component

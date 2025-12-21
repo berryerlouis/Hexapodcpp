@@ -12,5 +12,5 @@ namespace Component
             PIN_2,
             PIN_3
         };
-    }
-}
+    } // namespace Adc
+} // namespace Component

@@ -11,9 +11,9 @@ namespace Service
 {
     class Service : public ServiceInterface {
     public:
-        Service(const EServices serviceId,
-                const uint64_t updateTime,
-                Message::MessageInterface &messageListener,
+        Service(const EServices                serviceId,
+                const uint64_t                 updateTime,
+                Message::MessageInterface     &messageListener,
                 Event::EventListenerInterface &eventListener) :
             mUpdateTime(updateTime),
             mDeltaTime(0U),
@@ -24,21 +24,26 @@ namespace Service
             mMaxDeltaTime(0UL),
             mMessageListener(messageListener),
             mEventListener(eventListener) {
-            LOG_SERVICE_DEBUG(
-                    "%s(%d) each %dms.", EServicesStruct::ServiceIdToString(serviceId).c_str(), serviceId, updateTime
-            );
+            LOG_SERVICE_DEBUG("%s(%d) each %dms.",
+                              EServicesStruct::ServiceIdToString(serviceId).c_str(),
+                              serviceId,
+                              updateTime);
         }
 
         ~Service() = default;
 
-
-        void SetEvent(const Event::EventType event) const {
-            this->mEventListener.SetEvent(event);
+        void SetEvent(const EServices               serviceId,
+                      const Event::Event::EventType eventType) const {
+            this->mEventListener.SetEvent(serviceId, eventType);
         }
 
-        virtual void DispatchEvent(const Event::EventType event) const = 0;
+        void SetEvent(const Event::Event::EventType eventType) const {
+            this->mEventListener.SetEvent(this->GetServiceId(), eventType);
+        }
 
-        void UpdateService(const uint64_t currentTime) {
+        virtual void DispatchEvent(const Event::Event &event) const = 0;
+
+        void         UpdateService(const uint64_t currentTime) {
             if (this->NeedUpdate(currentTime) == Core::Status::CORE_OK) {
                 this->Update(currentTime);
                 this->SetNewUpdateTime(Driver::Timer::Tick::GetInstance().GetMs());
@@ -52,9 +57,8 @@ namespace Service
         }
 
         void SetNewUpdateTime(const uint64_t currentTime) {
-            this->mDeltaTime =
-                    abs(static_cast<int64_t>(currentTime) - static_cast<int64_t>(this->mPreviousTime) -
-                        static_cast<int64_t>(this->mUpdateTime));
+            this->mDeltaTime = abs(static_cast<int64_t>(currentTime) - static_cast<int64_t>(this->mPreviousTime) -
+                                   static_cast<int64_t>(this->mUpdateTime));
 
             if (this->mPreviousTime == 0U) {
                 this->mDeltaTime = 0U;
@@ -115,14 +119,14 @@ namespace Service
 
         volatile uint64_t mUpdateTime;
         volatile uint64_t mDeltaTime;
-        bool mInitialized;
-        EServices mServiceId;
+        bool              mInitialized;
+        EServices         mServiceId;
 
     private:
-        volatile uint64_t mPreviousTime;
-        volatile uint64_t mMinDeltaTime;
-        volatile uint64_t mMaxDeltaTime;
-        Message::MessageInterface &mMessageListener;
+        volatile uint64_t              mPreviousTime;
+        volatile uint64_t              mMinDeltaTime;
+        volatile uint64_t              mMaxDeltaTime;
+        Message::MessageInterface     &mMessageListener;
         Event::EventListenerInterface &mEventListener;
     };
 } // namespace Service

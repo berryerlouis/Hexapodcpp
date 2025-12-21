@@ -6,12 +6,14 @@ namespace Service
 {
     namespace Battery
     {
-        ServiceBattery::ServiceBattery(
-                BatteryInterface &batteryInterface,
-                Message::MessageInterface &messageListener,
-                Event::EventListenerInterface &eventListener
-        ) :
-            Service(BATTERY, 100U, messageListener, eventListener), mBatteryInterface(batteryInterface) {
+        ServiceBattery::ServiceBattery(BatteryInterface              &batteryInterface,
+                                       Message::MessageInterface     &messageListener,
+                                       Event::EventListenerInterface &eventListener) :
+            Service(BATTERY,
+                    100U,
+                    messageListener,
+                    eventListener),
+            mBatteryInterface(batteryInterface) {
         }
 
         Core::Status ServiceBattery::Initialize(void) {
@@ -19,7 +21,6 @@ namespace Service
             if (Core::Status::CORE_OK == success) {
                 this->mBatteryInterface.Attach(this);
                 this->mInitialized = true;
-                this->SetEvent(Event::EventType::EVENT_INIT);
             }
             return (success);
         }
@@ -30,13 +31,14 @@ namespace Service
 
         void ServiceBattery::Notified(const BatteryStruct &battery) {
             Frame response;
-            Cluster::Battery::ClusterBattery::BuildFrameState(
-                    battery.state, battery.voltage, battery.intensity, response
-            );
+            Cluster::Battery::ClusterBattery::BuildFrameState(battery.state,
+                                                              battery.voltage,
+                                                              battery.intensity,
+                                                              response);
             this->SendMessage(response);
         }
 
-        void ServiceBattery::DispatchEvent(const Event::EventType event) const {
+        void ServiceBattery::DispatchEvent(const Event::Event &event) const {
             (void) event;
         }
     } // namespace Battery

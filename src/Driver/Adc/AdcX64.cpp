@@ -23,5 +23,5 @@ namespace Driver
         uint16_t Adc::Read() {
             return 0U;
         }
-    }
-}
+    } // namespace Adc
+} // namespace Driver

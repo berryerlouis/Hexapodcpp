@@ -1,11 +1,11 @@
 #pragma once
 
-#include <iostream>
-#include <string>
+#include <cstdarg>
 #include <ctime>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
-#include <cstdarg>
+#include <string>
 
 namespace Core
 {
@@ -29,18 +29,21 @@ namespace Core
 
     class Logger {
     public:
-        static void Log(const LogLevel level, const char *format, ...);
+        static void     Log(const LogLevel level,
+                            const char    *format,
+                            ...);
 
         static LogLevel GetLogLevel();
 
-        static void SetLogLevel(const LogLevel level);
+        static void     SetLogLevel(const LogLevel level);
 
         static LogLevel StringToLevel(const char *level);
 
     private:
-        static LogLevel currentLogLevel;
+        static LogLevel    currentLogLevel;
 
-        static std::string FormatString(const char *format, va_list args);
+        static std::string FormatString(const char *format,
+                                        va_list     args);
 
         static std::string LevelToString(const LogLevel level);
 
@@ -56,4 +59,4 @@ namespace Core
 #define LOG_ERROR(...) Core::Logger::Log(Core::LogLevel::ERROR, __VA_ARGS__)
 
 #define LOG_GENERIC(level, component, ...) LOG_##level("[" #component "] " __VA_ARGS__)
-}
+} // namespace Core

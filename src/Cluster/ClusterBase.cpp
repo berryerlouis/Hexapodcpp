@@ -2,12 +2,14 @@
 
 namespace Cluster
 {
-    ClusterBase::ClusterBase(const EClusters clusterId, ClusterCommand &strategyCluster) :
-        mClusterId(clusterId)
-        , mClusterCommand(strategyCluster) {
+    ClusterBase::ClusterBase(const EClusters clusterId,
+                             ClusterCommand &strategyCluster) :
+        mClusterId(clusterId),
+        mClusterCommand(strategyCluster) {
     }
 
-    Core::Status ClusterBase::Execute(Frame &request, Frame &response) {
+    Core::Status ClusterBase::Execute(Frame &request,
+                                      Frame &response) {
         if (request.GetClusterId() != this->GetClusterId()) {
             return Core::Status::CORE_ERROR;
         }
@@ -24,9 +26,10 @@ namespace Cluster
         return success;
     }
 
-    Core::Status ClusterBase::BuildFrameNack(Frame &response, const Core::Status error) {
+    Core::Status ClusterBase::BuildFrameNack(Frame             &response,
+                                             const Core::Status error) {
         const Core::Status success = response.Build(this->mClusterId, GENERIC);
         response.Set1ByteParam(error);
         return success;
     }
-}
+} // namespace Cluster

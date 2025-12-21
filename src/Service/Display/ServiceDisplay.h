@@ -33,69 +33,68 @@ namespace Service
                                Core::ObserverInterface<SensorsStruct>,
                                Core::ObserverInterface<CommunicationStruct> {
         public:
-            ServiceDisplay(
-                    Ssd1306Interface &ssd1306,
-                    CommunicationInterface &communication,
-                    BatteryInterface &battery,
-                    ButtonInterface &button,
-                    SoundInterface &soundInterfaceLeft,
-                    SoundInterface &soundInterfaceRight,
-                    SensorProximityMultipleInterface &sensors,
-                    Message::MessageInterface &messageListener,
-                    Event::EventListenerInterface &eventListener
-            );
+            ServiceDisplay(Ssd1306Interface                 &ssd1306,
+                           CommunicationInterface           &communication,
+                           BatteryInterface                 &battery,
+                           ButtonInterface                  &button,
+                           SoundInterface                   &soundInterfaceLeft,
+                           SoundInterface                   &soundInterfaceRight,
+                           SensorProximityMultipleInterface &sensors,
+                           Message::MessageInterface        &messageListener,
+                           Event::EventListenerInterface    &eventListener);
 
             ~ServiceDisplay() = default;
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void DispatchEvent(const Event::EventType event) const final override;
+            virtual void         DispatchEvent(const Event::Event &event) const final override;
 
-            virtual void Notified(const ButtonStruct &button) final override;
+            virtual void         Notified(const ButtonStruct &button) final override;
 
-            virtual void Notified(const SoundStruct &sound) final override;
+            virtual void         Notified(const SoundStruct &sound) final override;
 
-            virtual void Notified(const SensorsStruct &sensor) final override;
+            virtual void         Notified(const SensorsStruct &sensor) final override;
 
-            virtual void Notified(const CommunicationStruct &state) final override;
+            virtual void         Notified(const CommunicationStruct &state) final override;
 
-            virtual void Notified(const BatteryStruct &state) final override;
+            virtual void         Notified(const BatteryStruct &state) final override;
 
-            void DisplayBackground(void) const;
+            void                 DisplayBackground(void) const;
 
-            void DisplayCommunicationBmp(void);
+            void                 DisplayCommunicationBmp(void);
 
-            void DisplayButtonBmp(const ButtonState &buttonState);
+            void                 DisplayButtonBmp(const ButtonState &buttonState);
 
-            void DisplayBatteryLevel(const Battery::BatteryState state);
+            void                 DisplayBatteryLevel(const Battery::BatteryState state);
 
-            void DisplayProximitySensor(const Component::Proximity::SensorsId sensorId, const uint16_t distance);
+            void                 DisplayProximitySensor(const Component::Proximity::SensorsId sensorId,
+                                                        const uint16_t                        distance);
 
-            void DisplaySound(const SoundStruct &soundStruct);
+            void                 DisplaySound(const SoundStruct &soundStruct);
 
         private:
-            Ssd1306Interface &mSsd1306;
-            CommunicationInterface &mCommunication;
-            BatteryInterface &mBattery;
-            ButtonInterface &mButton;
-            SoundInterface &mSoundLeft;
-            SoundInterface &mSoundRight;
+            Ssd1306Interface                 &mSsd1306;
+            CommunicationInterface           &mCommunication;
+            BatteryInterface                 &mBattery;
+            ButtonInterface                  &mButton;
+            SoundInterface                   &mSoundLeft;
+            SoundInterface                   &mSoundRight;
             SensorProximityMultipleInterface &mSensors;
-            Bitmaps::SBitmap mBmpBatteryLevel;
-            Bitmaps::SBitmap mBmpCommunication;
-            Bitmaps::SBitmap mBmpProximity;
-            Bitmaps::SBitmap mBmpButton;
-            Bitmaps::SBitmap mBmpSound;
-            uint64_t mPreviousTime;
-            uint32_t mToggleCommunicationBmp;
-            CommunicationStruct mState;
-            uint64_t mNotifiedTimeProximityUsLeft;
-            uint64_t mNotifiedTimeProximityUsRight;
-            uint64_t mNotifiedTimeProximityLaser;
-            uint64_t mNotifiedTimeSoundLeft;
-            uint64_t mNotifiedTimeSoundRight;
+            Bitmaps::SBitmap                  mBmpBatteryLevel;
+            Bitmaps::SBitmap                  mBmpCommunication;
+            Bitmaps::SBitmap                  mBmpProximity;
+            Bitmaps::SBitmap                  mBmpButton;
+            Bitmaps::SBitmap                  mBmpSound;
+            uint64_t                          mPreviousTime;
+            uint32_t                          mToggleCommunicationBmp;
+            CommunicationStruct               mState;
+            uint64_t                          mNotifiedTimeProximityUsLeft;
+            uint64_t                          mNotifiedTimeProximityUsRight;
+            uint64_t                          mNotifiedTimeProximityLaser;
+            uint64_t                          mNotifiedTimeSoundLeft;
+            uint64_t                          mNotifiedTimeSoundRight;
         };
     } // namespace Display
 } // namespace Service

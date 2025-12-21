@@ -1,7 +1,7 @@
 #pragma once
 
-#include "BatteryInterface.h"
 #include "../Adc/Ads1115.h"
+#include "BatteryInterface.h"
 
 namespace Component
 {
@@ -17,19 +17,19 @@ namespace Component
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
             virtual BatteryState GetState(void) final override;
 
-            virtual uint16_t GetVoltage(void) final override;
+            virtual uint16_t     GetVoltage(void) final override;
 
-            virtual uint16_t GetIntensity(void) final override;
+            virtual uint16_t     GetIntensity(void) final override;
 
         private:
-            uint16_t mVoltage;
-            uint16_t mIntensity;
-            BatteryState mState;
+            uint16_t               mVoltage;
+            uint16_t               mIntensity;
+            BatteryState           mState;
             Adc::Ads1115Interface &mAdc;
         };
-    }
-}
+    } // namespace Battery
+} // namespace Component

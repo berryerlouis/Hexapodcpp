@@ -12,20 +12,18 @@ namespace Service
 
         class ServiceCommunication : public Service {
         public:
-            ServiceCommunication(
-                    CommunicationInterface &communication,
-                    Clusters::ClustersInterface &clusters,
-                    Message::MessageInterface &messageListener,
-                    Event::EventListenerInterface &eventListener
-            );
+            ServiceCommunication(CommunicationInterface        &communication,
+                                 Clusters::ClustersInterface   &clusters,
+                                 Message::MessageInterface     &messageListener,
+                                 Event::EventListenerInterface &eventListener);
 
             ~ServiceCommunication() = default;
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void DispatchEvent(const Event::EventType event) const final override;
+            virtual void         DispatchEvent(const Event::Event &event) const final override;
 
         private:
             Clusters::ClustersInterface &mClusters;

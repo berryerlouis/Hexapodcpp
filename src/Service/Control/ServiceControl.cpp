@@ -4,12 +4,15 @@ namespace Service
 {
     namespace Control
     {
-        ServiceControl::ServiceControl(
-                ServosInterface &servos,
-                Message::MessageInterface &messageListener,
-                Event::EventListenerInterface &eventListener
-        ) :
-            Service(CONTROL, 20U, messageListener, eventListener), mStepPca9685(0U), mServosInterface(servos) {
+        ServiceControl::ServiceControl(ServosInterface               &servos,
+                                       Message::MessageInterface     &messageListener,
+                                       Event::EventListenerInterface &eventListener) :
+            Service(CONTROL,
+                    20U,
+                    messageListener,
+                    eventListener),
+            mStepPca9685(0U),
+            mServosInterface(servos) {
         }
 
         Core::Status ServiceControl::Initialize(void) {
@@ -29,7 +32,7 @@ namespace Service
             }
         }
 
-        void ServiceControl::DispatchEvent(const Event::EventType event) const {
+        void ServiceControl::DispatchEvent(const Event::Event &event) const {
             (void) event;
         }
     } // namespace Control

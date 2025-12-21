@@ -5,11 +5,23 @@ namespace Bot
     namespace Body
     {
         Body::Body(Legs::LegsInterface &legs) :
-                                              mBodyIk{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, {0.0, 0.0, 0.0}}
-                                              , mLegs(legs)
-                                              , mWalk(mLegs)
-                                              , mPosition{0.0, 0.0, 0.0}
-                                              , mRotation{0.0, 0.0, 0.0} {
+            mBodyIk{0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    {0.0,
+                     0.0,
+                     0.0}},
+            mLegs(legs),
+            mWalk(mLegs),
+            mPosition{0.0,
+                      0.0,
+                      0.0},
+            mRotation{0.0,
+                      0.0,
+                      0.0} {
         }
 
         Core::Status Body::Initialize(void) {
@@ -22,7 +34,8 @@ namespace Bot
             this->mWalk.Update(currentTime);
         }
 
-        void Body::UpdateWalkStatus(const Move::Walk::EWalkStatus status, const uint16_t duration) {
+        void Body::UpdateWalkStatus(const Move::Walk::EWalkStatus status,
+                                    const uint16_t                duration) {
             this->SetDuration(duration);
             this->mWalk.UpdateStatus(status);
         }
@@ -35,7 +48,8 @@ namespace Bot
             return this->mWalk.SetDirection(directionAngle);
         }
 
-        bool Body::SetRotation(const float rotationAngle, const bool clockWize) {
+        bool Body::SetRotation(const float rotationAngle,
+                               const bool  clockWize) {
             return this->mWalk.SetRotation(rotationAngle, clockWize);
         }
 
@@ -85,7 +99,7 @@ namespace Bot
 
         uint32_t Body::SetBodyPositionRotation(const Position3d &position,
                                                const Rotation3d &rotation,
-                                               const uint16_t travelTime) {
+                                               const uint16_t    travelTime) {
             this->mPosition = position;
             this->mRotation = rotation;
             uint32_t success = 0U;
@@ -98,9 +112,9 @@ namespace Bot
             return success;
         }
 
-        uint32_t Body::SetLegPositionRotation(const uint8_t &legId,
+        uint32_t Body::SetLegPositionRotation(const uint8_t    &legId,
                                               const Position3d &position,
-                                              const uint16_t travelTime) {
+                                              const uint16_t    travelTime) {
             if (legId < Legs::NB_LEGS) {
                 Leg::LegInterface *leg = this->mLegs.GetLeg(static_cast<Legs::ELeg>(legId));
                 return leg->SetLegIk(position, travelTime);
@@ -108,20 +122,23 @@ namespace Bot
             return 255UL;
         }
 
-        void Body::SetComputeIk(const Leg::LegInterface &leg, const Position3d &position, const Rotation3d &rotation) {
+        void Body::SetComputeIk(const Leg::LegInterface &leg,
+                                const Position3d        &position,
+                                const Rotation3d        &rotation) {
             this->mBodyIk.totalX = leg.GetFootPosition().x + leg.GetBodyCenterOffsetX() + position.x;
             this->mBodyIk.totalY = leg.GetFootPosition().y + leg.GetBodyCenterOffsetY() + position.y;
-            this->mBodyIk.distBodyCenterFeet = sqrt(
-                    this->mBodyIk.totalX * this->mBodyIk.totalX +
-                    this->mBodyIk.totalY * this->mBodyIk.totalY);
+            this->mBodyIk.distBodyCenterFeet =
+                    sqrt(this->mBodyIk.totalX * this->mBodyIk.totalX + this->mBodyIk.totalY * this->mBodyIk.totalY);
             this->mBodyIk.angleBodyCenterX = atan2(this->mBodyIk.totalY, this->mBodyIk.totalX);
             this->mBodyIk.rollZ = tan(rotation.angleZ * M_PI / 180.0) * this->mBodyIk.totalX;
             this->mBodyIk.pitchZ = tan(rotation.angleX * M_PI / 180.0) * this->mBodyIk.totalY;
             this->mBodyIk.bodyIk.x = (cos(this->mBodyIk.angleBodyCenterX + (rotation.angleY * M_PI / 180.0)) *
-                                      this->mBodyIk.distBodyCenterFeet) - this->mBodyIk.totalX;
+                                      this->mBodyIk.distBodyCenterFeet) -
+                                     this->mBodyIk.totalX;
             this->mBodyIk.bodyIk.y = (sin(this->mBodyIk.angleBodyCenterX + (rotation.angleY * M_PI / 180.0)) *
-                                      this->mBodyIk.distBodyCenterFeet) - this->mBodyIk.totalY;
+                                      this->mBodyIk.distBodyCenterFeet) -
+                                     this->mBodyIk.totalY;
             this->mBodyIk.bodyIk.z = this->mBodyIk.rollZ + this->mBodyIk.pitchZ;
         }
-    }
-}
+    } // namespace Body
+} // namespace Bot

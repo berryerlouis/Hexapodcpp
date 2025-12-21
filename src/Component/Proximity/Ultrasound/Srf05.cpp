@@ -6,23 +6,21 @@ namespace Component
     {
         namespace Ultrasound
         {
-            Srf05::Srf05(const Cluster::EProximityCommands side,
-                         Driver::Gpio::GpioInterface &gpioTrigger,
+            Srf05::Srf05(const Cluster::EProximityCommands            side,
+                         Driver::Gpio::GpioInterface                 &gpioTrigger,
                          Driver::InputCapture::InputCaptureInterface &gpioEcho,
-                         Led::LedInterface &led) :
-                                                 mSide(side)
-                                                 , mGpioTrigger(gpioTrigger)
-                                                 , mGpioEcho(gpioEcho)
-                                                 , mLed(led)
-                                                 , mThreshold(DISTANCE_THRESHOLD) {
+                         Led::LedInterface                           &led) :
+                mSide(side),
+                mGpioTrigger(gpioTrigger),
+                mGpioEcho(gpioEcho),
+                mLed(led),
+                mThreshold(DISTANCE_THRESHOLD) {
             }
 
             Core::Status Srf05::Initialize(void) {
                 this->mGpioEcho.Initialize();
                 this->mLed.Initialize();
-                LOG_COMPONENT_DEBUG("Ultrasound",
-                                    "pin trigger %d Initialized.",
-                                    this->mGpioTrigger.GetPin().pin);
+                LOG_COMPONENT_DEBUG("Ultrasound", "pin trigger %d Initialized.", this->mGpioTrigger.GetPin().pin);
                 return Core::Status::CORE_OK;
             }
 
@@ -30,7 +28,7 @@ namespace Component
                 (void) currentTime;
                 this->SendPulse();
                 const uint16_t distance = this->GetDistance();
-                const bool detection = (distance != 0U && distance <= this->mThreshold);
+                const bool     detection = (distance != 0U && distance <= this->mThreshold);
                 if (true == detection) {
                     this->mLed.On();
                     this->Notify({static_cast<SensorsId>(this->mSide), distance});
@@ -58,6 +56,6 @@ namespace Component
                 const uint64_t delay = this->mGpioEcho.GetInputCaptureTime();
                 return static_cast<uint16_t>(delay / 58.0F);
             }
-        }
-    }
-}
+        } // namespace Ultrasound
+    } // namespace Proximity
+} // namespace Component

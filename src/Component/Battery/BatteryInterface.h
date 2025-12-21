@@ -15,13 +15,13 @@ namespace Component
 
             virtual Core::Status Initialize(void) = 0;
 
-            virtual void Update(const uint64_t currentTime) = 0;
+            virtual void         Update(const uint64_t currentTime) = 0;
 
             virtual BatteryState GetState() = 0;
 
-            virtual uint16_t GetVoltage() = 0;
+            virtual uint16_t     GetVoltage() = 0;
 
-            virtual uint16_t GetIntensity() = 0;
+            virtual uint16_t     GetIntensity() = 0;
         };
-    }
-}
+    } // namespace Battery
+} // namespace Component

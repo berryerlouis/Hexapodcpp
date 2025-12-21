@@ -6,12 +6,14 @@ namespace Service
 {
     namespace Proximity
     {
-        ServiceProximity::ServiceProximity(
-                SensorProximityMultipleInterface &proximity,
-                Message::MessageInterface &messageListener,
-                Event::EventListenerInterface &eventListener
-        ) :
-            Service(PROXIMITY, 100U, messageListener, eventListener), mProximity(proximity) {
+        ServiceProximity::ServiceProximity(SensorProximityMultipleInterface &proximity,
+                                           Message::MessageInterface        &messageListener,
+                                           Event::EventListenerInterface    &eventListener) :
+            Service(PROXIMITY,
+                    100U,
+                    messageListener,
+                    eventListener),
+            mProximity(proximity) {
         }
 
         Core::Status ServiceProximity::Initialize(void) {
@@ -33,7 +35,7 @@ namespace Service
             this->SendMessage(response);
         }
 
-        void ServiceProximity::DispatchEvent(const Event::EventType event) const {
+        void ServiceProximity::DispatchEvent(const Event::Event &event) const {
             (void) event;
         }
     } // namespace Proximity

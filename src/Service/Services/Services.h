@@ -31,30 +31,28 @@ namespace Service
 
         class Services : public Core::CoreInterface {
         public:
-            Services(
-                    ServiceGeneral &serviceGeneral,
-                    ServiceControl &serviceControl,
-                    ServiceCommunication &serviceCommunication,
-                    ServiceProximity &serviceProximity,
-                    ServiceOrientation &serviceOrientation,
-                    ServiceBattery &serviceBattery,
-                    ServiceDisplay &serviceDisplay,
-                    ServiceBody &serviceBody,
-                    ServiceButton &serviceButton,
-                    ServiceSound &serviceSound,
-                    Message::MessageInterface &messageListener,
-                    Event::EventListenerInterface &eventListener
-            );
+            Services(ServiceGeneral                &serviceGeneral,
+                     ServiceControl                &serviceControl,
+                     ServiceCommunication          &serviceCommunication,
+                     ServiceProximity              &serviceProximity,
+                     ServiceOrientation            &serviceOrientation,
+                     ServiceBattery                &serviceBattery,
+                     ServiceDisplay                &serviceDisplay,
+                     ServiceBody                   &serviceBody,
+                     ServiceButton                 &serviceButton,
+                     ServiceSound                  &serviceSound,
+                     Message::MessageInterface     &messageListener,
+                     Event::EventListenerInterface &eventListener);
 
             ~Services() = default;
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
         private:
             std::map<EServices, Service *> mServices;
-            Message::MessageInterface &mMessageListener;
+            Message::MessageInterface     &mMessageListener;
             Event::EventListenerInterface &mEventListener;
         };
     } // namespace Services

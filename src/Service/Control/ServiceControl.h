@@ -11,22 +11,20 @@ namespace Service
 
         class ServiceControl : public Service {
         public:
-            ServiceControl(
-                    ServosInterface &servos,
-                    Message::MessageInterface &messageListener,
-                    Event::EventListenerInterface &eventListener
-            );
+            ServiceControl(ServosInterface               &servos,
+                           Message::MessageInterface     &messageListener,
+                           Event::EventListenerInterface &eventListener);
 
             ~ServiceControl() = default;
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void DispatchEvent(const Event::EventType event) const final override;
+            virtual void         DispatchEvent(const Event::Event &event) const final override;
 
         protected:
-            uint8_t mStepPca9685;
+            uint8_t          mStepPca9685;
             ServosInterface &mServosInterface;
         };
     } // namespace Control

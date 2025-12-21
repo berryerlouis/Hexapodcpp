@@ -14,8 +14,8 @@ namespace Component
         };
 
         struct SoundStruct {
-            SoundId id;
+            SoundId  id;
             uint64_t delay;
         };
-    }
-}
+    } // namespace Sound
+} // namespace Component

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../ClusterBase.h"
 #include "../../Component/Proximity/SensorProximityInterface.h"
+#include "../ClusterBase.h"
 
 namespace Cluster
 {
@@ -15,16 +15,19 @@ namespace Cluster
 
             ~ClusterProximity() = default;
 
-            virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override;
+            virtual Core::Status ExecuteFrame(const Frame &request,
+                                              Frame       &response) override;
 
-            static Core::Status BuildFrameDistance(const SensorsId sensorId, const uint16_t distance,
-                                                   Frame &response);
+            static Core::Status  BuildFrameDistance(const SensorsId sensorId,
+                                                    const uint16_t  distance,
+                                                    Frame          &response);
 
-            static Core::Status BuildFrameThreshold(const SensorsId sensorId, const uint16_t threshold,
-                                                    Frame &response);
+            static Core::Status  BuildFrameThreshold(const SensorsId sensorId,
+                                                     const uint16_t  threshold,
+                                                     Frame          &response);
 
         private:
             SensorProximityMultipleInterface &mProximity;
         };
-    }
-}
+    } // namespace Proximity
+} // namespace Cluster

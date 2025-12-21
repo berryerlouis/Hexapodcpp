@@ -1,7 +1,7 @@
 #pragma once
 
-#include <stdint.h>
 #include <math.h>
+#include <stdint.h>
 
 namespace Misc
 {
@@ -12,77 +12,67 @@ namespace Misc
             float y;
             float z;
 
-            bool
-            operator==(const Position3d &other) const {
+            bool  operator==(const Position3d &other) const {
                 return (x == other.x && y == other.y && z == other.z);
             }
 
-            Position3d
-            operator*=(const Position3d &value) {
+            Position3d operator*=(const Position3d &value) {
                 x = x * value.x;
                 y = y * value.y;
                 z = z * value.z;
                 return *this;
             }
 
-            Position3d
-            operator*(const float &value) {
+            Position3d operator*(const float &value) {
                 x = x * value;
                 y = y * value;
                 z = z * value;
                 return *this;
             }
 
-            Position3d
-            operator/=(const Position3d &value) {
+            Position3d operator/=(const Position3d &value) {
                 x = x / value.x;
                 y = y / value.y;
                 z = z / value.z;
                 return *this;
             }
 
-            Position3d
-            operator/(const float &value) {
+            Position3d operator/(const float &value) {
                 x = x / value;
                 y = y / value;
                 z = z / value;
                 return *this;
             }
 
-            Position3d
-            operator+=(const Position3d &value) {
+            Position3d operator+=(const Position3d &value) {
                 x = x + value.x;
                 y = y + value.y;
                 z = z + value.z;
                 return *this;
             }
 
-            Position3d
-            operator+(const float &value) {
+            Position3d operator+(const float &value) {
                 x = x + value;
                 y = y + value;
                 z = z + value;
                 return *this;
             }
 
-            Position3d
-            operator-=(const Position3d &value) {
+            Position3d operator-=(const Position3d &value) {
                 x = x - value.x;
                 y = y - value.y;
                 z = z - value.z;
                 return *this;
             }
 
-            Position3d
-            operator-(const float &value) {
+            Position3d operator-(const float &value) {
                 x = x - value;
                 y = y - value;
                 z = z - value;
                 return *this;
             }
 
-            Position3d
-            abs(const Position3d &value) {
+            Position3d abs(const Position3d &value) {
                 x = std::abs(x - value.x);
                 y = std::abs(y - value.y);
                 z = std::abs(z - value.z);
@@ -95,8 +85,7 @@ namespace Misc
             float angleY;
             float angleZ;
 
-            bool
-            operator==(const Rotation3d &other) const {
+            bool  operator==(const Rotation3d &other) const {
                 return (angleX == other.angleX && angleY == other.angleY && angleZ == other.angleZ);
             }
         };
@@ -119,5 +108,5 @@ namespace Misc
             float pitch;
             float roll;
         };
-    }
-}
+    } // namespace Maths
+} // namespace Misc

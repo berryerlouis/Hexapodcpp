@@ -6,20 +6,20 @@ namespace Cluster
         Reset();
     }
 
-    Frame::Frame(const uint8_t clusterId, const uint8_t commandId) :
-                                                                   clusterId(clusterId)
-                                                                   , commandId(commandId)
-                                                                   , nbParams(0U)
-                                                                   , params{0U} {
+    Frame::Frame(const uint8_t clusterId,
+                 const uint8_t commandId) :
+        clusterId(clusterId),
+        commandId(commandId),
+        nbParams(0U),
+        params{0U} {
     }
 
     bool Frame::operator==(const Frame &other) const {
-        return ((clusterId == other.clusterId)
-                && (commandId == other.commandId)
-                && (nbParams == other.nbParams));
+        return ((clusterId == other.clusterId) && (commandId == other.commandId) && (nbParams == other.nbParams));
     }
 
-    Core::Status Frame::Build(const uint8_t clusterId, const uint8_t commandId) {
+    Core::Status Frame::Build(const uint8_t clusterId,
+                              const uint8_t commandId) {
         if (nbParams > FRAME_MAX_PARAMS) {
             return (Core::Status::CORE_ERROR);
         }
@@ -30,8 +30,10 @@ namespace Cluster
         return (Core::Status::CORE_OK);
     }
 
-    Core::Status Frame::Build(const uint8_t clusterId, const uint8_t commandId, const uint8_t *params,
-                              const uint8_t nbParams) {
+    Core::Status Frame::Build(const uint8_t  clusterId,
+                              const uint8_t  commandId,
+                              const uint8_t *params,
+                              const uint8_t  nbParams) {
         Core::Status success = Core::Status::CORE_ERROR;
         if (nbParams < FRAME_MAX_PARAMS) {
             if ((params == nullptr) && (nbParams == 0U)) {
@@ -79,7 +81,8 @@ namespace Cluster
         this->SetxBytesParam(8U, (uint8_t *) &value);
     }
 
-    void Frame::SetxBytesParam(const size_t size, const uint8_t *value) {
+    void Frame::SetxBytesParam(const size_t   size,
+                               const uint8_t *value) {
         if (this->nbParams + size > FRAME_MAX_PARAMS) {
             LOG_ERROR("Frame", "Cannot set %zu bytes, max params is %d.", size, FRAME_MAX_PARAMS);
             return;
@@ -123,4 +126,4 @@ namespace Cluster
     uint8_t Frame::GetNbParams() const {
         return this->nbParams;
     }
-}
+} // namespace Cluster

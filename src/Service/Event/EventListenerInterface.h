@@ -1,15 +1,28 @@
 #pragma once
 
-#include "../../Cluster/Frame/Frame.h"
+#include "../Constants.h"
 
 namespace Service
 {
     namespace Event
     {
-        enum class EventType {
-            EVENT_INIT,
-            EVENT_INVALID
-
+        class Event {
+        public:
+            enum EventType {
+                EVENT_INIT_SUCCESS,
+                EVENT_INIT_FAILURE,
+                EVENT_BUTTON_PRESSED,
+                EVENT_BUTTON_RELEASED,
+                EVENT_NONE,
+                EVENT_INVALID
+            };
+            EventType eventType;
+            EServices serviceId;
+            Event(const EServices        serviceId,
+                  const Event::EventType eventType) {
+                this->serviceId = serviceId;
+                this->eventType = eventType;
+            }
         };
 
         class EventListenerInterface {
@@ -18,9 +31,10 @@ namespace Service
 
             ~EventListenerInterface() = default;
 
-            virtual EventType GetEvent(void) = 0;
+            virtual Event GetEvent(void) = 0;
 
-            virtual void SetEvent(const EventType event) = 0;
+            virtual void  SetEvent(const EServices        serviceId,
+                                   const Event::EventType eventType) = 0;
         };
     } // namespace Event
 } // namespace Service

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../../Driver/Twi/TwiInterface.h"
-#include "Mpu9150Interface.h"
 #include "Ahrs.h"
+#include "Mpu9150Interface.h"
 
 namespace Component
 {
@@ -112,25 +112,25 @@ namespace Component
             };
 
 
-            Mpu9150(Twi::TwiInterface &i2c, const uint8_t address = MPU9150_I2C_ADDRESS);
+            Mpu9150(Twi::TwiInterface &i2c,
+                    const uint8_t      address = MPU9150_I2C_ADDRESS);
 
             ~Mpu9150() = default;
 
-            Core::Status Initialize(void);
+            Core::Status         Initialize(void);
 
-            void Update(const uint64_t currentTime);
+            void                 Update(const uint64_t currentTime);
 
 
-            virtual Vector3 ReadAcc(void) const final override;
+            virtual Vector3      ReadAcc(void) const final override;
 
-            virtual Vector3 ReadGyr(void) const final override;
+            virtual Vector3      ReadGyr(void) const final override;
 
-            virtual Vector3 ReadMag(void) const final override;
+            virtual Vector3      ReadMag(void) const final override;
 
-            virtual int16_t ReadTemp(void) const final override;
+            virtual int16_t      ReadTemp(void) const final override;
 
-            inline virtual Imu3d
-            ReadYawPitchRoll(void) final override {
+            inline virtual Imu3d ReadYawPitchRoll(void) final override {
                 return (this->mYawPitchRoll);
             }
 
@@ -139,35 +139,35 @@ namespace Component
             virtual void StopCalibration(const SensorsImu sensor) final override;
 
         private:
-            void UpdateAll(void);
+            void    UpdateAll(void);
 
             Vector3 UpdateAcc(void);
 
             Vector3 UpdateGyr(void);
 
-            void AdjustingMag(void);
+            void    AdjustingMag(void);
 
             Vector3 UpdateMag(void);
 
             int16_t UpdateTemp(void);
 
-            bool IsDataReady(void) const;
+            bool    IsDataReady(void) const;
 
-            void UpdateCalibration(const SensorsImu sensor);
+            void    UpdateCalibration(const SensorsImu sensor);
 
             struct ERegisterAccel {
-                static constexpr uint8_t ACCEL_FS_2 = 0x00;
-                static constexpr uint8_t ACCEL_FS_4 = 0x01;
-                static constexpr uint8_t ACCEL_FS_8 = 0x02;
-                static constexpr uint8_t ACCEL_FS_16 = 0x03;
+                static constexpr uint8_t  ACCEL_FS_2 = 0x00;
+                static constexpr uint8_t  ACCEL_FS_4 = 0x01;
+                static constexpr uint8_t  ACCEL_FS_8 = 0x02;
+                static constexpr uint8_t  ACCEL_FS_16 = 0x03;
 
-                static constexpr uint8_t DLPF_BW_256 = 0x00;
-                static constexpr uint8_t DLPF_BW_188 = 0x01;
-                static constexpr uint8_t DLPF_BW_98 = 0x02;
-                static constexpr uint8_t DLPF_BW_42 = 0x03;
-                static constexpr uint8_t DLPF_BW_20 = 0x04;
-                static constexpr uint8_t DLPF_BW_10 = 0x05;
-                static constexpr uint8_t DLPF_BW_5 = 0x06;
+                static constexpr uint8_t  DLPF_BW_256 = 0x00;
+                static constexpr uint8_t  DLPF_BW_188 = 0x01;
+                static constexpr uint8_t  DLPF_BW_98 = 0x02;
+                static constexpr uint8_t  DLPF_BW_42 = 0x03;
+                static constexpr uint8_t  DLPF_BW_20 = 0x04;
+                static constexpr uint8_t  DLPF_BW_10 = 0x05;
+                static constexpr uint8_t  DLPF_BW_5 = 0x06;
 
                 static constexpr uint16_t ACCEL_1G_2G = 0x3FFF;
                 static constexpr uint16_t ACCEL_1G_4G = 0x1FFF;
@@ -207,24 +207,24 @@ namespace Component
             };
 
             Twi::TwiInterface &mI2c;
-            uint8_t mAddress;
-            uint8_t mAddressMag;
-            Vector3F mAccOffset;
-            Vector3F mGyrOffset;
-            Vector3F mMagOffset;
-            Vector3F mMagBias;
-            uint16_t mIndexCalib;
-            bool mStartCalib;
-            SensorsImu mSensorToCalib;
-            Vector3F mMagCalibMin;
-            Vector3F mMagCalibMax;
-            Vector3F mAcc;
-            Vector3F mGyr;
-            Vector3F mMag;
-            uint8_t mTmp;
-            uint64_t mLastLoopTime;
-            Ahrs mAhrs;
-            Imu3d mYawPitchRoll;
+            uint8_t            mAddress;
+            uint8_t            mAddressMag;
+            Vector3F           mAccOffset;
+            Vector3F           mGyrOffset;
+            Vector3F           mMagOffset;
+            Vector3F           mMagBias;
+            uint16_t           mIndexCalib;
+            bool               mStartCalib;
+            SensorsImu         mSensorToCalib;
+            Vector3F           mMagCalibMin;
+            Vector3F           mMagCalibMax;
+            Vector3F           mAcc;
+            Vector3F           mGyr;
+            Vector3F           mMag;
+            uint8_t            mTmp;
+            uint64_t           mLastLoopTime;
+            Ahrs               mAhrs;
+            Imu3d              mYawPitchRoll;
         };
-    }
-}
+    } // namespace Imu
+} // namespace Component

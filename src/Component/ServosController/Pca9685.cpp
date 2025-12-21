@@ -8,12 +8,13 @@ namespace Component
 {
     namespace ServosController
     {
-        Pca9685::Pca9685(Twi::TwiInterface &i2c, const uint8_t address) :
-                                                                        mI2c(i2c)
-                                                                        , mAddress(address)
-                                                                        , mInternalOscillatorFrequency(
-                                                                                EConstant::FREQUENCY_OSCILLATOR)
-                                                                        , mPwm{0U, 0U} {
+        Pca9685::Pca9685(Twi::TwiInterface &i2c,
+                         const uint8_t      address) :
+            mI2c(i2c),
+            mAddress(address),
+            mInternalOscillatorFrequency(EConstant::FREQUENCY_OSCILLATOR),
+            mPwm{0U,
+                 0U} {
 #ifdef RPI
 #ifndef GTEST
             this->mAddress = wiringPiI2CSetup(address);
@@ -29,7 +30,9 @@ namespace Component
 
         void Pca9685::Update(const uint64_t currentTime) {
             (void) currentTime;
-            this->mI2c.WriteRegisters(this->mAddress, (uint8_t) ERegister::LED0_ON_L, (uint8_t *) this->mPwm,
+            this->mI2c.WriteRegisters(this->mAddress,
+                                      (uint8_t) ERegister::LED0_ON_L,
+                                      (uint8_t *) this->mPwm,
                                       4 * EConstant::NB_LEDS);
         }
 
@@ -76,17 +79,19 @@ namespace Component
             }
             const uint8_t prescale = (uint8_t) prescaleval;
 
-            uint8_t oldmode = 0U;
+            uint8_t       oldmode = 0U;
             this->mI2c.ReadRegister(this->mAddress, (uint8_t) ERegister::MODE1, oldmode);
             const uint8_t newmode = (oldmode & ~ERegisterMode1::RESTART) | ERegisterMode1::SLEEP;
             this->mI2c.WriteRegister(this->mAddress, (uint8_t) ERegister::MODE1, newmode);
             this->mI2c.WriteRegister(this->mAddress, (uint8_t) ERegister::PRESCALE, prescale);
             this->mI2c.WriteRegister(this->mAddress, (uint8_t) ERegister::MODE1, oldmode);
-            this->mI2c.WriteRegister(this->mAddress, (uint8_t) ERegister::MODE1,
-                                     (uint8_t)(oldmode | ERegisterMode1::RESTART | ERegisterMode1::AI));
+            this->mI2c.WriteRegister(this->mAddress,
+                                     (uint8_t) ERegister::MODE1,
+                                     (uint8_t) (oldmode | ERegisterMode1::RESTART | ERegisterMode1::AI));
         }
 
-        void Pca9685::SetPwm(const uint8_t num, const uint16_t off) {
+        void Pca9685::SetPwm(const uint8_t  num,
+                             const uint16_t off) {
             this->mPwm[num].on = 0U;
 
             if (off > 100 && off < 500) {

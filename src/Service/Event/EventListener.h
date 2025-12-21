@@ -13,12 +13,13 @@ namespace Service
 
             ~EventListener() = default;
 
-            virtual EventType GetEvent(void) final override;
+            virtual Event GetEvent(void) final override;
 
-            virtual void SetEvent(const EventType event) override;
+            virtual void  SetEvent(const EServices        serviceId,
+                                   const Event::EventType eventType) override;
 
         private:
-            std::list<EventType> mEventList;
+            std::list<Event> mEventList;
         };
     } // namespace Event
 } // namespace Service

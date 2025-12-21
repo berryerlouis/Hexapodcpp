@@ -6,13 +6,14 @@ namespace Service
 {
     namespace Sound
     {
-        ServiceSound::ServiceSound(
-                SoundInterface &soundInterfaceLeft,
-                SoundInterface &soundInterfaceRight,
-                Message::MessageInterface &messageListener,
-                Event::EventListenerInterface &eventListener
-        ) :
-            Service(SOUND, 500U, messageListener, eventListener),
+        ServiceSound::ServiceSound(SoundInterface                &soundInterfaceLeft,
+                                   SoundInterface                &soundInterfaceRight,
+                                   Message::MessageInterface     &messageListener,
+                                   Event::EventListenerInterface &eventListener) :
+            Service(SOUND,
+                    500U,
+                    messageListener,
+                    eventListener),
             mSoundLeft(soundInterfaceLeft),
             mSoundRight(soundInterfaceRight) {
         }
@@ -20,7 +21,7 @@ namespace Service
         Core::Status ServiceSound::Initialize(void) {
             const Core::Status successLeft = this->mSoundLeft.Initialize();
             const Core::Status successRight = this->mSoundRight.Initialize();
-            Core::Status success = Core::Status::CORE_ERROR;
+            Core::Status       success = Core::Status::CORE_ERROR;
             if (Core::IsSuccess(successLeft) && Core::IsSuccess(successRight)) {
                 this->mInitialized = true;
                 success = Core::CORE_OK;
@@ -43,7 +44,7 @@ namespace Service
             }
         }
 
-        void ServiceSound::DispatchEvent(const Event::EventType event) const {
+        void ServiceSound::DispatchEvent(const Event::Event &event) const {
             (void) event;
         }
     } // namespace Sound

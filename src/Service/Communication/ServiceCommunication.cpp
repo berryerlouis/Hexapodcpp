@@ -4,13 +4,14 @@ namespace Service
 {
     namespace Communication
     {
-        ServiceCommunication::ServiceCommunication(
-                CommunicationInterface &communication,
-                Clusters::ClustersInterface &clusters,
-                Message::MessageInterface &messageListener,
-                Event::EventListenerInterface &eventListener
-        ) :
-            Service(COMMUNICATION, 1U, messageListener, eventListener),
+        ServiceCommunication::ServiceCommunication(CommunicationInterface        &communication,
+                                                   Clusters::ClustersInterface   &clusters,
+                                                   Message::MessageInterface     &messageListener,
+                                                   Event::EventListenerInterface &eventListener) :
+            Service(COMMUNICATION,
+                    1U,
+                    messageListener,
+                    eventListener),
             mClusters(clusters),
             mCommunication(communication) {
         }
@@ -27,7 +28,7 @@ namespace Service
             this->mCommunication.Update(currentTime);
         }
 
-        void ServiceCommunication::DispatchEvent(const Event::EventType event) const {
+        void ServiceCommunication::DispatchEvent(const Event::Event &event) const {
             (void) event;
         }
     } // namespace Communication

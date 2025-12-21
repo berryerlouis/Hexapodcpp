@@ -4,85 +4,156 @@ namespace Component
 {
     namespace Servos
     {
-        Servos::Servos(ServosController::Pca9685Interface &pca9685_0, ServosController::Pca9685Interface &pca9685_1,
-                       Gpio::GpioInterface &enablePwmPin) :
-                                                          mServos{
-                                                              {
-                                                                  SERVO_0,
-                                                                  Servo::Servo(pca9685_0, 0, 90U, 15, 60U, 120U, false)
-                                                              },
-                                                              {
-                                                                  SERVO_1,
-                                                                  Servo::Servo(pca9685_0, 1, 90U, -4, 60U, 120U, false)
-                                                              },
-                                                              {
-                                                                  SERVO_2,
-                                                                  Servo::Servo(pca9685_0, 2, 90U, 12, 60U, 120U, false)
-                                                              },
-                                                              {
-                                                                  SERVO_3,
-                                                                  Servo::Servo(pca9685_0, 3, 90U, 2, 60U, 120U, false)
-                                                              },
-                                                              {
-                                                                  SERVO_4,
-                                                                  Servo::Servo(pca9685_0, 4, 90U, 0, 60U, 120U, false)
-                                                              },
-                                                              {
-                                                                  SERVO_5,
-                                                                  Servo::Servo(pca9685_0, 5, 90U, 18, 60U, 120U, false)
-                                                              },
-                                                              {
-                                                                  SERVO_6,
-                                                                  Servo::Servo(pca9685_0, 6, 90U, 2, 60U, 120U, false)
-                                                              },
-                                                              {
-                                                                  SERVO_7,
-                                                                  Servo::Servo(pca9685_0, 7, 90U, 0, 60U, 120U, false)
-                                                              },
-                                                              {
-                                                                  SERVO_8,
-                                                                  Servo::Servo(pca9685_0, 8, 90U, 10, 60U, 120U, false)
-                                                              },
-                                                              {
-                                                                  SERVO_9,
-                                                                  Servo::Servo(pca9685_1, 0, 90U, -20, 60U, 120U, true)
-                                                              },
-                                                              {
-                                                                  SERVO_10,
-                                                                  Servo::Servo(pca9685_1, 1, 90U, -2, 60U, 120U, true)
-                                                              },
-                                                              {
-                                                                  SERVO_11,
-                                                                  Servo::Servo(pca9685_1, 2, 90U, -15, 60U, 120U, true)
-                                                              },
-                                                              {
-                                                                  SERVO_12,
-                                                                  Servo::Servo(pca9685_1, 3, 90U, 0, 60U, 120U, true)
-                                                              },
-                                                              {
-                                                                  SERVO_13,
-                                                                  Servo::Servo(pca9685_1, 4, 90U, 0, 60U, 120U, true)
-                                                              },
-                                                              {
-                                                                  SERVO_14,
-                                                                  Servo::Servo(pca9685_1, 5, 90U, -20, 60U, 120U, true)
-                                                              },
-                                                              {
-                                                                  SERVO_15,
-                                                                  Servo::Servo(pca9685_1, 6, 90U, 10, 60U, 120U, true)
-                                                              },
-                                                              {
-                                                                  SERVO_16,
-                                                                  Servo::Servo(pca9685_1, 7, 90U, 0, 60U, 120U, true)
-                                                              },
-                                                              {
-                                                                  SERVO_17,
-                                                                  Servo::Servo(pca9685_1, 8, 90U, -18, 60U, 120U, true)
-                                                              }
-                                                          }
-                                                          , mPca9685Left(pca9685_0)
-                                                          , mPca9685Right(pca9685_1)
-                                                          , mEnablePwmPin(enablePwmPin) {
+        Servos::Servos(ServosController::Pca9685Interface &pca9685_0,
+                       ServosController::Pca9685Interface &pca9685_1,
+                       Gpio::GpioInterface                &enablePwmPin) :
+            mServos{{SERVO_0,
+                     Servo::Servo(pca9685_0,
+                                  0,
+                                  90U,
+                                  15,
+                                  60U,
+                                  120U,
+                                  false)},
+                    {SERVO_1,
+                     Servo::Servo(pca9685_0,
+                                  1,
+                                  90U,
+                                  -4,
+                                  60U,
+                                  120U,
+                                  false)},
+                    {SERVO_2,
+                     Servo::Servo(pca9685_0,
+                                  2,
+                                  90U,
+                                  12,
+                                  60U,
+                                  120U,
+                                  false)},
+                    {SERVO_3,
+                     Servo::Servo(pca9685_0,
+                                  3,
+                                  90U,
+                                  2,
+                                  60U,
+                                  120U,
+                                  false)},
+                    {SERVO_4,
+                     Servo::Servo(pca9685_0,
+                                  4,
+                                  90U,
+                                  0,
+                                  60U,
+                                  120U,
+                                  false)},
+                    {SERVO_5,
+                     Servo::Servo(pca9685_0,
+                                  5,
+                                  90U,
+                                  18,
+                                  60U,
+                                  120U,
+                                  false)},
+                    {SERVO_6,
+                     Servo::Servo(pca9685_0,
+                                  6,
+                                  90U,
+                                  2,
+                                  60U,
+                                  120U,
+                                  false)},
+                    {SERVO_7,
+                     Servo::Servo(pca9685_0,
+                                  7,
+                                  90U,
+                                  0,
+                                  60U,
+                                  120U,
+                                  false)},
+                    {SERVO_8,
+                     Servo::Servo(pca9685_0,
+                                  8,
+                                  90U,
+                                  10,
+                                  60U,
+                                  120U,
+                                  false)},
+                    {SERVO_9,
+                     Servo::Servo(pca9685_1,
+                                  0,
+                                  90U,
+                                  -20,
+                                  60U,
+                                  120U,
+                                  true)},
+                    {SERVO_10,
+                     Servo::Servo(pca9685_1,
+                                  1,
+                                  90U,
+                                  -2,
+                                  60U,
+                                  120U,
+                                  true)},
+                    {SERVO_11,
+                     Servo::Servo(pca9685_1,
+                                  2,
+                                  90U,
+                                  -15,
+                                  60U,
+                                  120U,
+                                  true)},
+                    {SERVO_12,
+                     Servo::Servo(pca9685_1,
+                                  3,
+                                  90U,
+                                  0,
+                                  60U,
+                                  120U,
+                                  true)},
+                    {SERVO_13,
+                     Servo::Servo(pca9685_1,
+                                  4,
+                                  90U,
+                                  0,
+                                  60U,
+                                  120U,
+                                  true)},
+                    {SERVO_14,
+                     Servo::Servo(pca9685_1,
+                                  5,
+                                  90U,
+                                  -20,
+                                  60U,
+                                  120U,
+                                  true)},
+                    {SERVO_15,
+                     Servo::Servo(pca9685_1,
+                                  6,
+                                  90U,
+                                  10,
+                                  60U,
+                                  120U,
+                                  true)},
+                    {SERVO_16,
+                     Servo::Servo(pca9685_1,
+                                  7,
+                                  90U,
+                                  0,
+                                  60U,
+                                  120U,
+                                  true)},
+                    {SERVO_17,
+                     Servo::Servo(pca9685_1,
+                                  8,
+                                  90U,
+                                  -18,
+                                  60U,
+                                  120U,
+                                  true)}},
+            mPca9685Left(pca9685_0),
+            mPca9685Right(pca9685_1),
+            mEnablePwmPin(enablePwmPin) {
         }
 
         Core::Status Servos::Initialize(void) {
@@ -138,5 +209,5 @@ namespace Component
             }
             return (this->mPca9685Right);
         }
-    }
-}
+    } // namespace Servos
+} // namespace Component

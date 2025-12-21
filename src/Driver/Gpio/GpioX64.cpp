@@ -4,8 +4,9 @@ namespace Driver
 {
     namespace Gpio
     {
-        Gpio::Gpio(const SGpio &gpio, const EPortDirection &portDirection) :
-                                                                           mGpio(gpio) {
+        Gpio::Gpio(const SGpio          &gpio,
+                   const EPortDirection &portDirection) :
+            mGpio(gpio) {
             (void) portDirection;
         }
 

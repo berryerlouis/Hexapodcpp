@@ -7,13 +7,13 @@ namespace Move
     namespace Gait
     {
         GaitCycle::GaitCycle(Bot::Legs::LegsInterface &legs,
-                             GaitParams &gaitParams) :
-            mLegs(legs)
-            , mGaitParams(gaitParams)
-            , mLastUpdateTime(0UL)
-            , mGaitStrategy(std::move(std::make_unique<Move::Gait::GaitTripod>()))
-            , mStartTime(0UL)
-            , mStepPositionIndex(0U) {
+                             GaitParams               &gaitParams) :
+            mLegs(legs),
+            mGaitParams(gaitParams),
+            mLastUpdateTime(0UL),
+            mGaitStrategy(std::move(std::make_unique<Move::Gait::GaitTripod>())),
+            mStartTime(0UL),
+            mStepPositionIndex(0U) {
             this->mGaitParams.SetRunning(true);
         }
 
@@ -115,5 +115,5 @@ namespace Move
             this->mStartTime = currentTime;
             this->mStepPositionIndex = (this->mStepPositionIndex + 1U) % this->mPositions.size();
         }
-    }
-}
+    } // namespace Gait
+} // namespace Move

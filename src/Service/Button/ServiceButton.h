@@ -13,21 +13,19 @@ namespace Service
 
         class ServiceButton : public Service, Core::ObserverInterface<ButtonStruct> {
         public:
-            ServiceButton(
-                    ButtonInterface &ButtonInterface,
-                    Message::MessageInterface &messageListener,
-                    Event::EventListenerInterface &eventListener
-            );
+            ServiceButton(ButtonInterface               &ButtonInterface,
+                          Message::MessageInterface     &messageListener,
+                          Event::EventListenerInterface &eventListener);
 
             ~ServiceButton() = default;
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void Notified(const ButtonStruct &button) final override;
+            virtual void         Notified(const ButtonStruct &button) final override;
 
-            virtual void DispatchEvent(const Event::EventType event) const final override;
+            virtual void         DispatchEvent(const Event::Event &event) const final override;
 
         protected:
             ButtonInterface &mButtonInterface;

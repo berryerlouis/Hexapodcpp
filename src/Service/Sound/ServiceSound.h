@@ -12,23 +12,21 @@ namespace Service
 
         class ServiceSound : public Service {
         public:
-            ServiceSound(
-                    SoundInterface &soundInterfaceLeft,
-                    SoundInterface &soundInterfaceRight,
-                    Message::MessageInterface &messageListener,
-                    Event::EventListenerInterface &eventListener
-            );
+            ServiceSound(SoundInterface                &soundInterfaceLeft,
+                         SoundInterface                &soundInterfaceRight,
+                         Message::MessageInterface     &messageListener,
+                         Event::EventListenerInterface &eventListener);
 
             ~ServiceSound() = default;
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void DispatchEvent(const Event::EventType event) const final override;
+            virtual void         DispatchEvent(const Event::Event &event) const final override;
 
         private:
-            void SendMaxSound(void) const;
+            void            SendMaxSound(void) const;
 
             SoundInterface &mSoundLeft;
             SoundInterface &mSoundRight;

@@ -28,5 +28,5 @@ namespace Component
             SERVO_16,
             SERVO_17,
         };
-    }
-}
+    } // namespace Servos
+} // namespace Component

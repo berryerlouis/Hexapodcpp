@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../ClusterBase.h"
 #include "../../Component/Button/ButtonInterface.h"
+#include "../ClusterBase.h"
 
 namespace Cluster
 {
@@ -15,12 +15,14 @@ namespace Cluster
 
             ~ClusterButton() = default;
 
-            virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override;
+            virtual Core::Status ExecuteFrame(const Frame &request,
+                                              Frame       &response) override;
 
-            static Core::Status BuildFrameGetButtonState(const ButtonState state, Frame &response);
+            static Core::Status  BuildFrameGetButtonState(const ButtonState state,
+                                                          Frame            &response);
 
         private:
             ButtonInterface &mButton;
         };
-    }
-}
+    } // namespace Button
+} // namespace Cluster

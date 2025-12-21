@@ -21,5 +21,5 @@ namespace Service
         private:
             Component::Communication::CommunicationInterface &mCommunication;
         };
-    } // namespace Event
+    } // namespace Message
 } // namespace Service

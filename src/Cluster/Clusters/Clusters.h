@@ -1,15 +1,15 @@
 #pragma once
 
-#include <map>
 #include <functional>
+#include <map>
 
 #include "../Battery/ClusterBattery.h"
-#include "../General/ClusterGeneral.h"
 #include "../Body/ClusterBody.h"
+#include "../Button/ClusterButton.h"
+#include "../General/ClusterGeneral.h"
 #include "../Imu/ClusterImu.h"
 #include "../Proximity/ClusterProximity.h"
 #include "../Servo/ClusterServo.h"
-#include "../Button/ClusterButton.h"
 #include "../Sound/ClusterSound.h"
 #include "ClustersInterface.h"
 
@@ -28,21 +28,21 @@ namespace Cluster
 
         class Clusters : public ClustersInterface {
         public:
-            Clusters(ClusterGeneral &general,
-                     ClusterBattery &battery,
-                     ClusterButton &button,
-                     ClusterSound &sound,
-                     ClusterBody &body,
-                     ClusterImu &imu,
+            Clusters(ClusterGeneral   &general,
+                     ClusterBattery   &battery,
+                     ClusterButton    &button,
+                     ClusterSound     &sound,
+                     ClusterBody      &body,
+                     ClusterImu       &imu,
                      ClusterProximity &proximity,
-                     ClusterServo &servo);
+                     ClusterServo     &servo);
 
             ~Clusters() = default;
 
             ClusterBase *GetCluster(const EClusters clusterId) final override;
 
         private:
-            std::map<EClusters, std::reference_wrapper<ClusterBase> > mClusters;
+            std::map<EClusters, std::reference_wrapper<ClusterBase>> mClusters;
         };
-    }
-}
+    } // namespace Clusters
+} // namespace Cluster

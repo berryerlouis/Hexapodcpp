@@ -4,11 +4,12 @@ namespace Component
 {
     namespace Proximity
     {
-        SensorProximity::SensorProximity(SensorProximityInterface &srf05Left, SensorProximityInterface &srf05Right,
+        SensorProximity::SensorProximity(SensorProximityInterface &srf05Left,
+                                         SensorProximityInterface &srf05Right,
                                          SensorProximityInterface &Vl53l0x) :
-                                                                            mSensors{
-                                                                                &srf05Left, &srf05Right, &Vl53l0x
-                                                                            } {
+            mSensors{&srf05Left,
+                     &srf05Right,
+                     &Vl53l0x} {
         }
 
         Core::Status SensorProximity::Initialize(void) {
@@ -31,7 +32,7 @@ namespace Component
 
         size_t sensorId = 0U;
 
-        void SensorProximity::Update(const uint64_t currentTime) {
+        void   SensorProximity::Update(const uint64_t currentTime) {
             this->mSensors[sensorId++]->Update(currentTime);
             if (sensorId == NB_SENSORS) {
                 sensorId = 0U;
@@ -42,12 +43,13 @@ namespace Component
             return (this->mSensors[sensorId]->GetDistance());
         }
 
-        Core::Status SensorProximity::SetThreshold(const SensorsId &sensorId, const uint16_t threshold) {
+        Core::Status SensorProximity::SetThreshold(const SensorsId &sensorId,
+                                                   const uint16_t   threshold) {
             return (this->mSensors[sensorId]->SetThreshold(threshold));
         }
 
         uint16_t SensorProximity::GetThreshold(const SensorsId &sensorId) {
             return (this->mSensors[sensorId]->GetThreshold());
         }
-    }
-}
+    } // namespace Proximity
+} // namespace Component

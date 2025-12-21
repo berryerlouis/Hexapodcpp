@@ -4,12 +4,14 @@ namespace Service
 {
     namespace Body
     {
-        ServiceBody::ServiceBody(
-                BodyInterface &body,
-                Message::MessageInterface &messageListener,
-                Event::EventListenerInterface &eventListener
-        ) :
-            Service(BODY, 20U, messageListener, eventListener), mBody(body) {
+        ServiceBody::ServiceBody(BodyInterface                 &body,
+                                 Message::MessageInterface     &messageListener,
+                                 Event::EventListenerInterface &eventListener) :
+            Service(BODY,
+                    20U,
+                    messageListener,
+                    eventListener),
+            mBody(body) {
         }
 
         Core::Status ServiceBody::Initialize(void) {
@@ -24,7 +26,7 @@ namespace Service
             this->mBody.Update(currentTime);
         }
 
-        void ServiceBody::DispatchEvent(const Event::EventType event) const {
+        void ServiceBody::DispatchEvent(const Event::Event &event) const {
             (void) event;
         }
     } // namespace Body

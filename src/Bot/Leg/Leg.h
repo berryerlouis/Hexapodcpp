@@ -26,80 +26,80 @@ namespace Bot
 
             struct SLegIk {
                 Position3d newFootPos;
-                float coxaFootDist;
-                float iksw;
-                float ika1;
-                float ika2;
-                float tangle;
-                float coxaIk;
-                float femurIk;
-                float tibiaIk;
+                float      coxaFootDist;
+                float      iksw;
+                float      ika1;
+                float      ika2;
+                float      tangle;
+                float      coxaIk;
+                float      femurIk;
+                float      tibiaIk;
             };
 
             Leg(const Legs::ELeg legId,
-                ServoInterface &coxa,
-                ServoInterface &femur,
-                ServoInterface &tibia);
+                ServoInterface  &coxa,
+                ServoInterface  &femur,
+                ServoInterface  &tibia);
 
             ~Leg() = default;
 
-            void SetTarget(const Position3d &target) final override;
+            void         SetTarget(const Position3d &target) final override;
 
             Core::Status Update(void) final override;
 
-            Position3d &GetCurrentPosition(void) final override;
+            Position3d  &GetCurrentPosition(void) final override;
 
-            void ComputeLerpTarget(const uint64_t currentTime,
-                                   Misc::Maths::Position3d &position,
-                                   const float amplitude,
-                                   const float elevation,
-                                   const float direction,
-                                   const bool isRotated,
-                                   const float rotation,
-                                   const bool clockWize,
-                                   const uint64_t timeStamp) final override;
+            void         ComputeLerpTarget(const uint64_t           currentTime,
+                                           Misc::Maths::Position3d &position,
+                                           const float              amplitude,
+                                           const float              elevation,
+                                           const float              direction,
+                                           const bool               isRotated,
+                                           const float              rotation,
+                                           const bool               clockWize,
+                                           const uint64_t           timeStamp) final override;
 
-            Legs::ELeg GetId(void) const final override;
+            Legs::ELeg   GetId(void) const final override;
 
             Core::Status SetLegIk(const Position3d &position,
-                                  const uint16_t travelTime = 0U) final override;
+                                  const uint16_t    travelTime = 0U) final override;
 
             Core::Status SetLegBodyIk(const Position3d &position,
                                       const Position3d &bodyIk,
-                                      const uint16_t travelTime) final override;
+                                      const uint16_t    travelTime) final override;
 
-            void ComputeDirection(Position3d &position,
-                                  float angleDirection) const final override;
+            void         ComputeDirection(Position3d &position,
+                                          float       angleDirection) const final override;
 
-            void ComputeRotation(Position3d &position,
-                                 float angleRotation,
-                                 bool clockwize) const final override;
+            void         ComputeRotation(Position3d &position,
+                                         float       angleRotation,
+                                         bool        clockwize) const final override;
 
-            void ComputeAmplitude(Position3d &position,
-                                  uint8_t amplitude) final override;
+            void         ComputeAmplitude(Position3d &position,
+                                          uint8_t     amplitude) final override;
 
-            void ComputeElevation(Position3d &position,
-                                  uint8_t elevation) final override;
+            void         ComputeElevation(Position3d &position,
+                                          uint8_t     elevation) final override;
 
-            Position3d GetFootPosition(void) const final override;
+            Position3d   GetFootPosition(void) const final override;
 
-            float GetBodyCenterOffsetX(void) const final override;
+            float        GetBodyCenterOffsetX(void) const final override;
 
-            float GetBodyCenterOffsetY(void) const final override;
+            float        GetBodyCenterOffsetY(void) const final override;
 
         public:
-            float mBodyCenterOffsetX;
-            float mBodyCenterOffsetY;
+            float      mBodyCenterOffsetX;
+            float      mBodyCenterOffsetY;
             Position3d mFootPosition;
-            SLegIk mLegIk;
+            SLegIk     mLegIk;
             Position3d mStartPos;
             Position3d mCurrentPos;
 
         private:
-            Legs::ELeg mLegId;
+            Legs::ELeg      mLegId;
             ServoInterface &mCoxa;
             ServoInterface &mFemur;
             ServoInterface &mTibia;
         };
-    }
-}
+    } // namespace Leg
+} // namespace Bot

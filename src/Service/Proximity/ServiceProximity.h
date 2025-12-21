@@ -15,21 +15,19 @@ namespace Service
 
         class ServiceProximity : public Service, Core::ObserverInterface<SensorsStruct> {
         public:
-            ServiceProximity(
-                    SensorProximityMultipleInterface &proximity,
-                    Message::MessageInterface &messageListener,
-                    Event::EventListenerInterface &eventListener
-            );
+            ServiceProximity(SensorProximityMultipleInterface &proximity,
+                             Message::MessageInterface        &messageListener,
+                             Event::EventListenerInterface    &eventListener);
 
             ~ServiceProximity() = default;
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void Notified(const SensorsStruct &sensor) final override;
+            virtual void         Notified(const SensorsStruct &sensor) final override;
 
-            virtual void DispatchEvent(const Event::EventType event) const final override;
+            virtual void         DispatchEvent(const Event::Event &event) const final override;
 
         protected:
             SensorProximityMultipleInterface &mProximity;

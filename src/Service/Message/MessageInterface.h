@@ -14,5 +14,5 @@ namespace Service
 
             virtual void SendMessage(const Cluster::Frame &message) const = 0;
         };
-    }
-}
+    } // namespace Message
+} // namespace Service

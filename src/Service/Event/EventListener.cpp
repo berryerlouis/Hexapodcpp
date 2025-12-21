@@ -7,8 +7,8 @@ namespace Service
         EventListener::EventListener() : mEventList() {
         }
 
-        EventType EventListener::GetEvent(void) {
-            EventType event = EventType::EVENT_INVALID;
+        Event EventListener::GetEvent(void) {
+            Event event = Event(EServices::NONE, Event::EventType::EVENT_NONE);
             if (!this->mEventList.empty()) {
                 event = this->mEventList.front();
                 this->mEventList.pop_front();
@@ -16,8 +16,9 @@ namespace Service
             return event;
         }
 
-        void EventListener::SetEvent(const EventType event) {
-            this->mEventList.push_back(event);
+        void EventListener::SetEvent(const EServices        serviceId,
+                                     const Event::EventType eventType) {
+            this->mEventList.push_back(Event(serviceId, eventType));
         }
 
     } // namespace Event
