@@ -6,19 +6,20 @@ namespace Service
 {
     namespace Button
     {
-        ServiceButton::ServiceButton(ButtonInterface               &ButtonInterface,
-                                     Message::MessageInterface     &messageListener,
-                                     Event::EventListenerInterface &eventListener) :
+        ServiceButton::ServiceButton(ButtonInterface                 &ButtonInterface,
+                                     Message::MessageInterface       &messageListener,
+                                     Event::EventDispatcherInterface &eventDispatcher) :
             Service(BUTTON,
                     10U,
                     messageListener,
-                    eventListener),
+                    eventDispatcher),
             mButtonInterface(ButtonInterface) {
         }
 
         Core::Status ServiceButton::Initialize(void) {
             const Core::Status success = this->mButtonInterface.Initialize();
             if (Core::Status::CORE_OK == success) {
+                this->GetEventDispatcher().AddListener(this);
                 this->mButtonInterface.Attach(this);
                 this->mInitialized = true;
             }
@@ -33,11 +34,10 @@ namespace Service
             Frame response;
             Cluster::Button::ClusterButton::BuildFrameGetButtonState(button.state, response);
             this->SendMessage(response);
-            this->SetEvent((button.state == PUSH) ? Event::Event::EVENT_BUTTON_PRESSED
-                                                  : Event::Event::EVENT_BUTTON_RELEASED);
+            this->DispatchEvent<ButtonStruct>(EventType::EVENT_BUTTON_UPDATE, button);
         }
 
-        void ServiceButton::DispatchEvent(const Event::Event &event) {
+        void ServiceButton::OnEvent(const Event::Event &event) {
             (void) event;
         }
     } // namespace Button

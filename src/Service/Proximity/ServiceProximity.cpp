@@ -8,17 +8,18 @@ namespace Service
     {
         ServiceProximity::ServiceProximity(SensorProximityMultipleInterface &proximity,
                                            Message::MessageInterface        &messageListener,
-                                           Event::EventListenerInterface    &eventListener) :
+                                           Event::EventDispatcherInterface  &eventDispatcher) :
             Service(PROXIMITY,
                     100U,
                     messageListener,
-                    eventListener),
+                    eventDispatcher),
             mProximity(proximity) {
         }
 
         Core::Status ServiceProximity::Initialize(void) {
             const Core::Status success = this->mProximity.Initialize();
             if (Core::Status::CORE_OK == success) {
+                this->GetEventDispatcher().AddListener(this);
                 this->mProximity.Attach(this);
                 this->mInitialized = true;
             }
@@ -33,9 +34,10 @@ namespace Service
             Frame response;
             Cluster::Proximity::ClusterProximity::BuildFrameDistance(sensor.id, sensor.distance, response);
             this->SendMessage(response);
+            this->DispatchEvent<SensorsStruct>(EventType::EVENT_SENSOR_UPDATE, sensor);
         }
 
-        void ServiceProximity::DispatchEvent(const Event::Event &event) {
+        void ServiceProximity::OnEvent(const Event::Event &event) {
             (void) event;
         }
     } // namespace Proximity

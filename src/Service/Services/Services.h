@@ -7,7 +7,7 @@
 #include "../Constants.h"
 #include "../Control/ServiceControl.h"
 #include "../Display/ServiceDisplay.h"
-#include "../Event/EventListener.h"
+#include "../Event/EventDispatcherInterface.h"
 #include "../General/ServiceGeneral.h"
 #include "../Orientation/ServiceOrientation.h"
 #include "../Proximity/ServiceProximity.h"
@@ -31,18 +31,18 @@ namespace Service
 
         class Services : public Core::CoreInterface {
         public:
-            Services(ServiceGeneral                &serviceGeneral,
-                     ServiceControl                &serviceControl,
-                     ServiceCommunication          &serviceCommunication,
-                     ServiceProximity              &serviceProximity,
-                     ServiceOrientation            &serviceOrientation,
-                     ServiceBattery                &serviceBattery,
-                     ServiceDisplay                &serviceDisplay,
-                     ServiceBody                   &serviceBody,
-                     ServiceButton                 &serviceButton,
-                     ServiceSound                  &serviceSound,
-                     Message::MessageInterface     &messageListener,
-                     Event::EventListenerInterface &eventListener);
+            Services(ServiceGeneral                  &serviceGeneral,
+                     ServiceControl                  &serviceControl,
+                     ServiceCommunication            &serviceCommunication,
+                     ServiceProximity                &serviceProximity,
+                     ServiceOrientation              &serviceOrientation,
+                     ServiceBattery                  &serviceBattery,
+                     ServiceDisplay                  &serviceDisplay,
+                     ServiceBody                     &serviceBody,
+                     ServiceButton                   &serviceButton,
+                     ServiceSound                    &serviceSound,
+                     Message::MessageInterface       &messageListener,
+                     Event::EventDispatcherInterface &eventDispatcher);
 
             ~Services() = default;
 
@@ -51,9 +51,9 @@ namespace Service
             virtual void         Update(const uint64_t currentTime) final override;
 
         private:
-            std::map<EServices, Service *> mServices;
-            Message::MessageInterface     &mMessageListener;
-            Event::EventListenerInterface &mEventListener;
+            std::map<EServices, Service *>   mServices;
+            Message::MessageInterface       &mMessageListener;
+            Event::EventDispatcherInterface &mEventDispatcher;
         };
     } // namespace Services
 } // namespace Service

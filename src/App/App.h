@@ -32,7 +32,7 @@
 #include "../Service/Communication/ServiceCommunication.h"
 #include "../Service/Control/ServiceControl.h"
 #include "../Service/Display/ServiceDisplay.h"
-#include "../Service/Event/EventListener.h"
+#include "../Service/Event/EventDispatcher.h"
 #include "../Service/General/ServiceGeneral.h"
 #include "../Service/Message/MessageListener.h"
 #include "../Service/Orientation/ServiceOrientation.h"
@@ -103,7 +103,7 @@ namespace App
         Component::Communication::Communication      mCommunication;
 
         Service::Message::MessageListener            mMessageListener;
-        Service::Event::EventListener                mEventListener;
+        Service::Event::EventDispatcher              mEventDispatcher;
         Service::Button::ServiceButton               mServiceButton;
         Service::Sound::ServiceSound                 mServiceSound;
         Service::Control::ServiceControl             mServiceControl;

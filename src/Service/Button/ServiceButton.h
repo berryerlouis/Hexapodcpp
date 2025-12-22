@@ -11,11 +11,11 @@ namespace Service
         using namespace Component;
         using namespace Component::Button;
 
-        class ServiceButton : public Service, Core::ObserverInterface<ButtonStruct> {
+        class ServiceButton : public Service, Core::ObserverInterface<ButtonStruct>, Event::EventListenerInterface {
         public:
-            ServiceButton(ButtonInterface               &ButtonInterface,
-                          Message::MessageInterface     &messageListener,
-                          Event::EventListenerInterface &eventListener);
+            ServiceButton(ButtonInterface                 &ButtonInterface,
+                          Message::MessageInterface       &messageListener,
+                          Event::EventDispatcherInterface &eventDispatcher);
 
             ~ServiceButton() = default;
 
@@ -25,7 +25,7 @@ namespace Service
 
             virtual void         Notified(const ButtonStruct &button) final override;
 
-            virtual void         DispatchEvent(const Event::Event &event) final override;
+            virtual void         OnEvent(const Event::Event &event) final override;
 
         protected:
             ButtonInterface &mButtonInterface;

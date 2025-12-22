@@ -5,24 +5,14 @@ namespace Service
 {
     namespace Display
     {
-        ServiceDisplay::ServiceDisplay(Ssd1306Interface                 &ssd1306,
-                                       BatteryInterface                 &battery,
-                                       ButtonInterface                  &button,
-                                       SoundInterface                   &soundInterfaceLeft,
-                                       SoundInterface                   &soundInterfaceRight,
-                                       SensorProximityMultipleInterface &sensors,
-                                       Message::MessageInterface        &messageListener,
-                                       Event::EventListenerInterface    &eventListener) :
+        ServiceDisplay::ServiceDisplay(Ssd1306Interface                &ssd1306,
+                                       Message::MessageInterface       &messageListener,
+                                       Event::EventDispatcherInterface &eventDispatcher) :
             Service(DISPLAY,
                     10U,
                     messageListener,
-                    eventListener),
+                    eventDispatcher),
             mSsd1306(ssd1306),
-            mBattery(battery),
-            mButton(button),
-            mSoundLeft(soundInterfaceLeft),
-            mSoundRight(soundInterfaceRight),
-            mSensors(sensors),
             mBmpBatteryLevel{.bmp = const_cast<uint8_t *>(Bitmaps::Battery0),
                              .width = 16U,
                              .height = 7U},
@@ -51,14 +41,10 @@ namespace Service
         Core::Status ServiceDisplay::Initialize(void) {
             Core::Status success = Core::Status::CORE_ERROR;
             if (this->mSsd1306.Initialize() == Core::Status::CORE_OK) {
-                this->mButton.Attach(this);
-                this->mSoundLeft.Attach(this);
-                this->mSoundRight.Attach(this);
-                this->mSensors.Attach(this);
-                this->mBattery.Attach(this);
+                this->GetEventDispatcher().AddListener(this);
                 this->DisplayBackground();
                 this->DisplayBatteryLevel(UNKNOWN);
-                this->DisplayButtonBmp(RELEASE);
+                this->DisplayButtonBmp(Button::ButtonState::RELEASE);
                 this->mInitialized = true;
                 success = Core::Status::CORE_OK;
             }
@@ -92,22 +78,6 @@ namespace Service
             this->mSsd1306.Update(currentTime);
         }
 
-        void ServiceDisplay::Notified(const ButtonStruct &button) {
-            this->DisplayButtonBmp(button.state);
-        }
-
-        void ServiceDisplay::Notified(const SoundStruct &sound) {
-            this->DisplaySound(sound);
-        }
-
-        void ServiceDisplay::Notified(const SensorsStruct &sensor) {
-            this->DisplayProximitySensor(sensor.id, sensor.distance);
-        }
-
-        void ServiceDisplay::Notified(const BatteryStruct &state) {
-            this->DisplayBatteryLevel(state.state);
-        }
-
         void ServiceDisplay::DisplayBackground(void) const {
             this->mSsd1306.DrawLine(0U, 10U, SCREEN_WIDTH, 10U, Bitmaps::Color::COLOR_WHITE);
             this->mSsd1306.DrawLine(18U, 10U, 18U, SCREEN_HEIGHT, Bitmaps::Color::COLOR_WHITE);
@@ -118,12 +88,12 @@ namespace Service
                                     Bitmaps::Color::COLOR_WHITE);
         }
 
-        void ServiceDisplay::DisplayButtonBmp(const ButtonState &buttonState) {
+        void ServiceDisplay::DisplayButtonBmp(const Button::ButtonState &buttonState) {
             this->mSsd1306.EraseArea(SCREEN_WIDTH - this->mBmpCommunication.width - 2U - this->mBmpButton.width,
                                      0U,
                                      this->mBmpButton.width,
                                      8U);
-            if (buttonState == RELEASE) {
+            if (buttonState == Button::ButtonState::RELEASE) {
                 this->mBmpButton.bmp = const_cast<uint8_t *>(Bitmaps::ButtonRelease);
             } else {
                 this->mBmpButton.bmp = const_cast<uint8_t *>(Bitmaps::ButtonPush);
@@ -240,16 +210,51 @@ namespace Service
             }
         }
 
-        void ServiceDisplay::DispatchEvent(const Event::Event &event) {
+        void ServiceDisplay::OnEvent(const Event::Event &event) {
             if (event.serviceId == EServices::COMMUNICATION) {
-                if (event.eventType == Event::Event::EVENT_COM_DONE) {
-                    this->mState = CLIENT_CONNECTED;
-                    this->mSsd1306.DrawBitmap(&this->mBmpCommunication,
-                                              SCREEN_WIDTH - this->mBmpCommunication.width,
-                                              0U,
-                                              Bitmaps::Color::COLOR_WHITE);
-                } else {
-                    this->mState = NO_CLIENT;
+                if (event.eventType == EventType::EVENT_COM_UPDATE) {
+                    if (event.eventArg.type() == typeid(CommunicationStruct)) {
+                        const CommunicationStruct comStruct = std::any_cast<CommunicationStruct>(event.eventArg);
+                        this->mState = comStruct;
+                        if (this->mState == CLIENT_CONNECTED) {
+                            this->mSsd1306.DrawBitmap(&this->mBmpCommunication,
+                                                      SCREEN_WIDTH - this->mBmpCommunication.width,
+                                                      0U,
+                                                      Bitmaps::Color::COLOR_WHITE);
+                        }
+                    }
+                }
+            } else if (event.serviceId == EServices::BUTTON) {
+                if (event.eventType == EventType::EVENT_BUTTON_UPDATE) {
+                    if (event.eventArg.type() == typeid(Component::Button::ButtonStruct)) {
+                        const Component::Button::ButtonStruct buttonStruct =
+                                std::any_cast<Component::Button::ButtonStruct>(event.eventArg);
+                        this->DisplayButtonBmp(buttonStruct.state);
+                    }
+                }
+            } else if (event.serviceId == EServices::BATTERY) {
+                if (event.eventType == EventType::EVENT_BATTERY_UPDATE) {
+                    if (event.eventArg.type() == typeid(Component::Battery::BatteryStruct)) {
+                        const Component::Battery::BatteryStruct batteryStruct =
+                                std::any_cast<Component::Battery::BatteryStruct>(event.eventArg);
+                        this->DisplayBatteryLevel(batteryStruct.state);
+                    }
+                }
+            } else if (event.serviceId == EServices::PROXIMITY) {
+                if (event.eventType == EventType::EVENT_SENSOR_UPDATE) {
+                    if (event.eventArg.type() == typeid(Component::Proximity::SensorsStruct)) {
+                        const Component::Proximity::SensorsStruct sensorStruct =
+                                std::any_cast<Component::Proximity::SensorsStruct>(event.eventArg);
+                        this->DisplayProximitySensor(sensorStruct.id, sensorStruct.distance);
+                    }
+                }
+            } else if (event.serviceId == EServices::SOUND) {
+                if (event.eventType == EventType::EVENT_SOUND_UPDATE) {
+                    if (event.eventArg.type() == typeid(Component::Sound::SoundStruct)) {
+                        const Component::Sound::SoundStruct soundStruct =
+                                std::any_cast<Component::Sound::SoundStruct>(event.eventArg);
+                        this->DisplaySound(soundStruct);
+                    }
                 }
             }
         }

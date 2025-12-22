@@ -6,14 +6,14 @@ namespace Service
 {
     namespace Sound
     {
-        ServiceSound::ServiceSound(SoundInterface                &soundInterfaceLeft,
-                                   SoundInterface                &soundInterfaceRight,
-                                   Message::MessageInterface     &messageListener,
-                                   Event::EventListenerInterface &eventListener) :
+        ServiceSound::ServiceSound(SoundInterface                  &soundInterfaceLeft,
+                                   SoundInterface                  &soundInterfaceRight,
+                                   Message::MessageInterface       &messageListener,
+                                   Event::EventDispatcherInterface &eventDispatcher) :
             Service(SOUND,
                     500U,
                     messageListener,
-                    eventListener),
+                    eventDispatcher),
             mSoundLeft(soundInterfaceLeft),
             mSoundRight(soundInterfaceRight) {
         }
@@ -23,6 +23,7 @@ namespace Service
             const Core::Status successRight = this->mSoundRight.Initialize();
             Core::Status       success = Core::Status::CORE_ERROR;
             if (Core::IsSuccess(successLeft) && Core::IsSuccess(successRight)) {
+                this->GetEventDispatcher().AddListener(this);
                 this->mInitialized = true;
                 success = Core::CORE_OK;
             }
@@ -41,10 +42,11 @@ namespace Service
                 Frame response;
                 Cluster::Sound::ClusterSound::BuildFrameGetSoundState(maxSound.id, maxSound.delay, response);
                 this->SendMessage(response);
+                this->DispatchEvent<SoundStruct>(EventType::EVENT_SENSOR_UPDATE, maxSound);
             }
         }
 
-        void ServiceSound::DispatchEvent(const Event::Event &event) {
+        void ServiceSound::OnEvent(const Event::Event &event) {
             (void) event;
         }
     } // namespace Sound

@@ -10,12 +10,12 @@ namespace Service
         using namespace Component;
         using namespace Component::Sound;
 
-        class ServiceSound : public Service {
+        class ServiceSound : public Service, Event::EventListenerInterface {
         public:
-            ServiceSound(SoundInterface                &soundInterfaceLeft,
-                         SoundInterface                &soundInterfaceRight,
-                         Message::MessageInterface     &messageListener,
-                         Event::EventListenerInterface &eventListener);
+            ServiceSound(SoundInterface                  &soundInterfaceLeft,
+                         SoundInterface                  &soundInterfaceRight,
+                         Message::MessageInterface       &messageListener,
+                         Event::EventDispatcherInterface &eventDispatcher);
 
             ~ServiceSound() = default;
 
@@ -23,7 +23,7 @@ namespace Service
 
             virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void         DispatchEvent(const Event::Event &event) final override;
+            virtual void         OnEvent(const Event::Event &event) final override;
 
         private:
             void            SendMaxSound(void) const;

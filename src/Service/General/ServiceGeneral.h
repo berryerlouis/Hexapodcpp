@@ -9,11 +9,11 @@ namespace Service
     {
         using namespace Component::Software;
 
-        class ServiceGeneral : public Service {
+        class ServiceGeneral : public Service, Event::EventListenerInterface {
         public:
-            ServiceGeneral(SoftwareInterface             &software,
-                           Message::MessageInterface     &messageListener,
-                           Event::EventListenerInterface &eventListener);
+            ServiceGeneral(SoftwareInterface               &software,
+                           Message::MessageInterface       &messageListener,
+                           Event::EventDispatcherInterface &eventDispatcher);
 
             ~ServiceGeneral() = default;
 
@@ -21,7 +21,7 @@ namespace Service
 
             virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void         DispatchEvent(const Event::Event &event) final override;
+            virtual void         OnEvent(const Event::Event &event) final override;
 
         protected:
             SoftwareInterface &mSoftware;

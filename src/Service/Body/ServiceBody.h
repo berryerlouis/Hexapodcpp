@@ -9,11 +9,11 @@ namespace Service
     {
         using namespace Bot::Body;
 
-        class ServiceBody : public Service {
+        class ServiceBody : public Service, Event::EventListenerInterface {
         public:
-            ServiceBody(BodyInterface                 &body,
-                        Message::MessageInterface     &messageListener,
-                        Event::EventListenerInterface &eventListener);
+            ServiceBody(BodyInterface                   &body,
+                        Message::MessageInterface       &messageListener,
+                        Event::EventDispatcherInterface &eventDispatcher);
 
             ~ServiceBody() = default;
 
@@ -21,7 +21,7 @@ namespace Service
 
             virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void         DispatchEvent(const Event::Event &event) final override;
+            virtual void         OnEvent(const Event::Event &event) final override;
 
         protected:
             BodyInterface &mBody;

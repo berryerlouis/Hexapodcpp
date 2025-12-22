@@ -1,7 +1,5 @@
 #pragma once
 
-#include "stdint.h"
-
 namespace Core
 {
     template<class T>

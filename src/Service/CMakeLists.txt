@@ -6,7 +6,7 @@ set(SRC_FILES_SERVICES
         Service/Communication/ServiceCommunication.cpp
         Service/Control/ServiceControl.cpp
         Service/Display/ServiceDisplay.cpp
-        Service/Event/EventListener.cpp
+        Service/Event/EventDispatcher.cpp
         Service/General/ServiceGeneral.cpp
         Service/Orientation/ServiceOrientation.cpp
         Service/Proximity/ServiceProximity.cpp

@@ -5,18 +5,18 @@ namespace Service
 {
     namespace Services
     {
-        Services::Services(ServiceGeneral                &serviceGeneral,
-                           ServiceControl                &serviceControl,
-                           ServiceCommunication          &serviceCommunication,
-                           ServiceProximity              &serviceProximity,
-                           ServiceOrientation            &serviceOrientation,
-                           ServiceBattery                &serviceBattery,
-                           ServiceDisplay                &serviceDisplay,
-                           ServiceBody                   &serviceBody,
-                           ServiceButton                 &serviceButton,
-                           ServiceSound                  &serviceSound,
-                           Message::MessageInterface     &messageListener,
-                           Event::EventListenerInterface &eventListener) :
+        Services::Services(ServiceGeneral                  &serviceGeneral,
+                           ServiceControl                  &serviceControl,
+                           ServiceCommunication            &serviceCommunication,
+                           ServiceProximity                &serviceProximity,
+                           ServiceOrientation              &serviceOrientation,
+                           ServiceBattery                  &serviceBattery,
+                           ServiceDisplay                  &serviceDisplay,
+                           ServiceBody                     &serviceBody,
+                           ServiceButton                   &serviceButton,
+                           ServiceSound                    &serviceSound,
+                           Message::MessageInterface       &messageListener,
+                           Event::EventDispatcherInterface &eventDispatcher) :
             mServices{{GENERAL,
                        &serviceGeneral},
                       {CONTROL,
@@ -38,7 +38,7 @@ namespace Service
                       {SOUND,
                        &serviceSound}},
             mMessageListener(messageListener),
-            mEventListener(eventListener) {
+            mEventDispatcher(eventDispatcher) {
         }
 
         Core::Status Services::Initialize(void) {
@@ -47,15 +47,12 @@ namespace Service
             for (const auto &pair: this->mServices) {
                 Service *service = pair.second;
                 success = service->Initialize();
-
+                service->DispatchEvent<Core::Status>(service->GetServiceId(), EventType::EVENT_INIT_UPDATE, success);
                 if (success != Core::Status::CORE_OK) {
-                    service->SetEvent(service->GetServiceId(), Event::Event::EventType::EVENT_INIT_FAILURE);
 #ifdef DEBUG
                     LOG_SERVICE_ERROR("Service id:%s Initialization error.",
                                       EServicesStruct::ServiceIdToString(pair.first).c_str());
 #endif
-                } else {
-                    service->SetEvent(service->GetServiceId(), Event::Event::EventType::EVENT_INIT_SUCCESS);
                 }
             }
             Frame response;
@@ -65,13 +62,9 @@ namespace Service
         }
 
         void Services::Update(const uint64_t currentTime) {
-            const Event::Event event = mEventListener.GetEvent();
             for (const auto &pair: this->mServices) {
                 Service *service = pair.second;
                 service->UpdateService(currentTime);
-                if (event.eventType != Event::Event::EventType::EVENT_NONE) {
-                    service->DispatchEvent(event);
-                }
             }
         }
     } // namespace Services

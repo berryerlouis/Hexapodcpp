@@ -3,7 +3,7 @@
 #include "../Cluster/General/ClusterGeneral.h"
 #include "../Driver/Timer/Tick.h"
 #include "Constants.h"
-#include "Event/EventListener.h"
+#include "Event/EventDispatcherInterface.h"
 #include "Message/MessageInterface.h"
 #include "ServiceInterface.h"
 
@@ -11,10 +11,10 @@ namespace Service
 {
     class Service : public ServiceInterface {
     public:
-        Service(const EServices                serviceId,
-                const uint64_t                 updateTime,
-                Message::MessageInterface     &messageListener,
-                Event::EventListenerInterface &eventListener) :
+        Service(const EServices                  serviceId,
+                const uint64_t                   updateTime,
+                Message::MessageInterface       &messageListener,
+                Event::EventDispatcherInterface &eventDispatcher) :
             mUpdateTime(updateTime),
             mDeltaTime(0U),
             mInitialized(false),
@@ -23,7 +23,7 @@ namespace Service
             mMinDeltaTime(10000UL),
             mMaxDeltaTime(0UL),
             mMessageListener(messageListener),
-            mEventListener(eventListener) {
+            mEventDispatcher(eventDispatcher) {
             LOG_SERVICE_DEBUG("%s(%d) each %dms.",
                               EServicesStruct::ServiceIdToString(serviceId).c_str(),
                               serviceId,
@@ -32,18 +32,33 @@ namespace Service
 
         ~Service() = default;
 
-        void SetEvent(const EServices               serviceId,
-                      const Event::Event::EventType eventType) const {
-            this->mEventListener.SetEvent(serviceId, eventType);
+        template<typename T>
+        void DispatchEvent(const EServices eventService,
+                           const EventType eventType,
+                           const T         eventArg) const {
+            this->mEventDispatcher.DispatchEvent(Event::Event(eventService, eventType, eventArg));
         }
 
-        void SetEvent(const Event::Event::EventType eventType) const {
-            this->mEventListener.SetEvent(this->GetServiceId(), eventType);
+        void DispatchEvent(const EServices eventService,
+                           const EventType eventType) const {
+            this->mEventDispatcher.DispatchEvent(Event::Event(eventService, eventType, 0U));
         }
 
-        virtual void DispatchEvent(const Event::Event &event) = 0;
+        template<typename T>
+        void DispatchEvent(const EventType eventType,
+                           const T         eventArg) const {
+            this->mEventDispatcher.DispatchEvent(Event::Event(this->GetServiceId(), eventType, eventArg));
+        }
 
-        void         UpdateService(const uint64_t currentTime) {
+        void DispatchEvent(const EventType eventType) const {
+            this->mEventDispatcher.DispatchEvent(Event::Event(this->GetServiceId(), eventType, 0U));
+        }
+
+        Event::EventDispatcherInterface &GetEventDispatcher(void) const {
+            return this->mEventDispatcher;
+        }
+
+        void UpdateService(const uint64_t currentTime) {
             if (this->NeedUpdate(currentTime) == Core::Status::CORE_OK) {
                 this->Update(currentTime);
                 this->SetNewUpdateTime(Driver::Timer::Tick::GetInstance().GetMs());
@@ -123,10 +138,10 @@ namespace Service
         EServices         mServiceId;
 
     private:
-        volatile uint64_t              mPreviousTime;
-        volatile uint64_t              mMinDeltaTime;
-        volatile uint64_t              mMaxDeltaTime;
-        Message::MessageInterface     &mMessageListener;
-        Event::EventListenerInterface &mEventListener;
+        volatile uint64_t                mPreviousTime;
+        volatile uint64_t                mMinDeltaTime;
+        volatile uint64_t                mMaxDeltaTime;
+        Message::MessageInterface       &mMessageListener;
+        Event::EventDispatcherInterface &mEventDispatcher;
     };
 } // namespace Service

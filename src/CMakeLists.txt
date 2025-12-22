@@ -85,7 +85,6 @@ add_compile_options(
         -Wno-psabi
         -Wno-cast-align
         -fno-exceptions
-        -fno-rtti
         -ffunction-sections
         -fdata-sections
         -fno-threadsafe-statics
