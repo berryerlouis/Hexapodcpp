@@ -92,7 +92,7 @@ jobs:
                --ignore-errors mismatch \
                --ignore-errors gcov
 
-          lcov --remove coverage.info "./build/hexapod-X64-coverage/unittests/*" -o coverage.info
+          lcov --remove coverage.info -o coverage.info
 
           genhtml coverage.info --output-directory coverage-report
 
