@@ -17,6 +17,6 @@ lcov --capture --directory ./build/hexapod-X64-coverage/unittests --output-file 
           --ignore-errors gcov \
           --ignore-errors gcov
 
-lcov --remove coverage.info "./build/hexapod-X64-coverage/*/tests/*" "./build/hexapod-X64-coverage/*/build/*" -o coverage.info
+lcov --remove coverage.info "./build/hexapod-X64-coverage/*/build/*" -o coverage.info
 
 genhtml coverage.info --output-directory coverage-report
