@@ -89,12 +89,16 @@ jobs:
           lcov --capture \
                --directory build/hexapod-X64-coverage \
                --output-file coverage.info \
-               --ignore-errors mismatch \
-               --ignore-errors gcov
+               --ignore-errors gcov,mismatch,inconsistent,unused
 
-          lcov --remove coverage.info -o coverage.info
+          lcov --remove coverage.info 'build/hexapod-X64-coverage/*' 'unittests/'  -o coverage.info
 
-          genhtml coverage.info --output-directory coverage-report
+          genhtml coverage.info --output-directory coverage-report --ignore-errors mismatch
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.info
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4

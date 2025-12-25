@@ -1,10 +1,17 @@
-[![Build Status](https://github.com/berryerlouis/Hexapodcpp/actions/workflows/build.yaml/badge.svg)](https://github.com/berryerlouis/Hexapodcpp/actions/workflows/build.yaml)
+![Make Workflow](https://github.com/berryerlouis/Hexapodcpp/actions/workflows/build.yaml/badge.svg)
+![Tests](https://img.shields.io/github/actions/workflow/status/berryerlouis/Hexapodcpp/build.yaml?label=tests)
+![Cppcheck](https://img.shields.io/github/actions/workflow/status/berryerlouis/Hexapodcpp/build.yaml?label=cppcheck)
+[![codecov](https://codecov.io/gh/berryerlouis/Hexapodcpp/branch/leg/graph/badge.svg)](https://codecov.io/gh/berryerlouis/Hexapodcpp)
+![License](https://img.shields.io/github/license/berryerlouis/Hexapodcpp)
+
+# Hexapodcpp
 
 # Hexapod Robot Controller
 
 ![HMI](images/HMI2.png)
 
-A C++17 hexapod robot control system with layered architecture, supporting both X64 (development/testing) and Raspberry Pi Zero 2W (production) platforms.
+A C++17 hexapod robot control system with layered architecture, supporting both X64 (development/testing) and Raspberry
+Pi Zero 2W (production) platforms.
 
 ---
 
@@ -25,6 +32,7 @@ A C++17 hexapod robot control system with layered architecture, supporting both 
 ### Prerequisites
 
 **Host System:**
+
 ```bash
 sudo apt install build-essential gcc g++ cmake git nodejs npm
 ```
@@ -74,6 +82,7 @@ cd WiringPi
 ### 3. Enable I2C
 
 **Edit config:**
+
 ```bash
 sudo nano /boot/firmware/config.txt
 # Uncomment: dtparam=i2c_arm=on
@@ -81,6 +90,7 @@ sudo modprobe i2c-dev
 ```
 
 **Enable module at boot:**
+
 ```bash
 sudo nano /etc/modules
 # Add line: i2c-dev
@@ -89,30 +99,33 @@ sudo nano /etc/modules
 ### 4. Configure Systemd Service
 
 **Create service file:**
+
 ```bash
 sudo nano /etc/systemd/system/hexabot.service
 ```
 
 **Add configuration:**
+
 ```ini
 [Unit]
-Description=Hexabot Robot Controller
-After=network-online.target
-Wants=network-online.target
+Description = Hexabot Robot Controller
+After = network-online.target
+Wants = network-online.target
 
 [Service]
-Type=simple
-User=hexabot
-WorkingDirectory=/home/hexabot
-ExecStart=/home/hexabot/Hexapodcpp
-Restart=on-failure
-RestartSec=3s
+Type = simple
+User = hexabot
+WorkingDirectory = /home/hexabot
+ExecStart = /home/hexabot/Hexapodcpp
+Restart = on-failure
+RestartSec = 3s
 
 [Install]
-WantedBy=multi-user.target
+WantedBy = multi-user.target
 ```
 
 **Enable and manage:**
+
 ```bash
 # Enable service
 sudo systemctl daemon-reload
@@ -130,6 +143,7 @@ journalctl -u hexabot.service -e
 ### Using Build Scripts (Recommended)
 
 **X64 Platform:**
+
 ```bash
 # Arguments: <TARGET> <MODE> <BUILD_TYPE>
 bin/dev/build.sh X64 sources DEBUG
@@ -137,6 +151,7 @@ bin/dev/build.sh X64 sources RELEASE
 ```
 
 **Raspberry Pi Platform:**
+
 ```bash
 # Arguments: <TARGET> <MODE> <BUILD_TYPE> [install]
 bin/dev/build.sh RPI sources RELEASE install
@@ -158,6 +173,7 @@ bin/dev/build.sh RPI sources RELEASE install
 ### Manual CMake Configuration
 
 **X64:**
+
 ```bash
 cmake -DCMAKE_BUILD_TYPE=Debug \
       -DTARGET=X64 \
@@ -170,6 +186,7 @@ cmake --build ./build/gcc-debug --target Hexapodcpp -- -j16
 ```
 
 **Raspberry Pi:**
+
 ```bash
 cmake -DCMAKE_BUILD_TYPE=Release \
       -DTARGET=RPI \
@@ -251,6 +268,7 @@ docker run --rm -v $PWD:/ws -w /ws plantuml/plantuml -tsvg images/architecture.p
 ### Web HMI
 
 **Start development server:**
+
 ```bash
 cd HMI
 npm run dev

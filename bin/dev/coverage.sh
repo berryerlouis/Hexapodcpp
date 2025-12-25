@@ -13,10 +13,8 @@ cmake --build ./build/hexapod-X64-coverage/unittests -- -j$(nproc)
 ctest --test-dir ./build/hexapod-X64-coverage/unittests
 
 lcov --capture --directory ./build/hexapod-X64-coverage/unittests --output-file  coverage.info \
-          --ignore-errors mismatch \
-          --ignore-errors gcov \
-          --ignore-errors gcov
+          --ignore-errors gcov,mismatch,inconsistent,unused
 
-lcov --remove coverage.info -o coverage.info
+lcov --remove coverage.info '/usr/' 'build/hexapod-X64-coverage/*' 'unittests/*'  -o coverage.info
 
-genhtml coverage.info --output-directory coverage-report
+genhtml coverage.info --output-directory coverage-report --ignore-errors mismatch
