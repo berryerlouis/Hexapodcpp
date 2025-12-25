@@ -150,7 +150,7 @@ jobs:
       - name: Cross-Compile for RPi (${{ matrix.build_type }})
         run: |
           BUILD_TYPE="${{ matrix.build_type }}"
-          BUILD_DIR="build/rpi-${BUILD_TYPE,,}"
+          BUILD_DIR="build/rpi-${BUILD_TYPE}"
 
           docker run --rm \
             -v ${{ github.workspace }}:/workspace \
