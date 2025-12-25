@@ -169,4 +169,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: hexapodcpp-rpi-${{ matrix.build_type }}
-          path: build/rpi-${{ matrix.build_type,, }}/src/Hexapodcpp
+          path: build/rpi-${{ matrix.build_type }}/src/Hexapodcpp
