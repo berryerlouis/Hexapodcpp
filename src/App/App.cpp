@@ -171,6 +171,6 @@ namespace App
         const uint64_t currentTime = Driver::Timer::Tick::GetInstance().GetMs();
         this->mServices.Update(currentTime);
         this->mLedPwmStatus.Update(currentTime);
-        Driver::Timer::Tick::GetInstance().DelayUs(100U);
+        Driver::Timer::Tick::GetInstance().DelayMs(1U);
     }
 } // namespace App

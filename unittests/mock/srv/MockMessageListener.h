@@ -5,9 +5,9 @@
 
 namespace Service
 {
-    namespace Event
+    namespace Message
     {
-        class MockMessageListener : public MessageInterface {
+        class MockMessageInterface : public MessageInterface {
         public:
             MOCK_CONST_METHOD1(SendMessage, void (const Cluster::Frame &));
         };

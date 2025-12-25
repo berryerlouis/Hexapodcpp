@@ -13,7 +13,7 @@ namespace Component
     {
         class LedPwm : public LedPwmInterface {
         public:
-            LedPwm(Led::LedInterface &led);
+            explicit LedPwm(Led::LedInterface &led);
 
             ~LedPwm();
 

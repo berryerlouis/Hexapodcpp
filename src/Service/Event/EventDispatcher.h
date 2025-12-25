@@ -17,7 +17,7 @@ namespace Service
 
             virtual void RemoveListener(EventListenerInterface *listener) final override;
 
-            virtual void DispatchEvent(const Event event) const final override;
+            virtual void DispatchEvent(const Event &event) const final override;
 
         private:
             std::vector<EventListenerInterface *> mEventList;

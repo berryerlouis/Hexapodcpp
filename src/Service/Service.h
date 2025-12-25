@@ -24,6 +24,12 @@ namespace Service
             mMaxDeltaTime(0UL),
             mMessageListener(messageListener),
             mEventDispatcher(eventDispatcher) {
+            if (updateTime < 10U) {
+                LOG_SERVICE_WARNING("%s(%d) each %dms is too fast, min 10ms.",
+                                  EServicesStruct::ServiceIdToString(serviceId).c_str(),
+                                  serviceId,
+                                  updateTime);
+            }
             LOG_SERVICE_DEBUG("%s(%d) each %dms.",
                               EServicesStruct::ServiceIdToString(serviceId).c_str(),
                               serviceId,

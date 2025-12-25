@@ -18,7 +18,7 @@ namespace Service
                                    this->mEventList.end());
         }
 
-        void EventDispatcher::DispatchEvent(const Event event) const {
+        void EventDispatcher::DispatchEvent(const Event &event) const {
             LOG_EVENT_DEBUG("%s(%d) Send Event %s.",
                             EServicesStruct::ServiceIdToString(event.serviceId).c_str(),
                             event.serviceId,

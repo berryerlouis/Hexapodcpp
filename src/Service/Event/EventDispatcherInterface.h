@@ -16,7 +16,7 @@ namespace Service
 
             virtual void RemoveListener(EventListenerInterface *listener) = 0;
 
-            virtual void DispatchEvent(const Event event) const = 0;
+            virtual void DispatchEvent(const Event &event) const = 0;
         };
     } // namespace Event
 } // namespace Service

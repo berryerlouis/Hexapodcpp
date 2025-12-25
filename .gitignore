@@ -9,3 +9,4 @@ src/debug/
 node_modules/
 /HMI-copy/
 Hexapodcpp
+coverage.info

@@ -9,7 +9,7 @@ namespace Service
                                                    Message::MessageInterface       &messageListener,
                                                    Event::EventDispatcherInterface &eventDispatcher) :
             Service(COMMUNICATION,
-                    1U,
+                    10U,
                     messageListener,
                     eventDispatcher),
             mClusters(clusters),

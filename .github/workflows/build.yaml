@@ -1,6 +1,6 @@
 name: Make
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   build-release:
@@ -69,12 +69,92 @@ jobs:
           path: archive/test_results.xml
           if-no-files-found: warn
 
+  coverage:
+    name: Coverage Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install coverage tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lcov gcovr
+
+      - name: Configure (with coverage flags)
+        run: |
+          cmake -S . -B ./build/hexapod-X64-coverage \
+            -DGTEST=1 \
+            -DTARGET=X64 \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_CXX_FLAGS="--coverage" \
+            -DCMAKE_C_FLAGS="--coverage"
+
+      - name: Build
+        run: cmake --build ./build/hexapod-X64-coverage/unittests -- -j$(nproc)
+
+      - name: Run tests
+        run: |
+          ctest --test-dir ./build/hexapod-X64-coverage/unittests
+
+      - name: Generate coverage report (HTML + info)
+        run: |
+          # Capture coverage
+          lcov --capture --directory ./build/hexapod-X64-coverage/unittests --output-file  coverage.info \
+          --ignore-errors mismatch \
+          --ignore-errors gcov \
+          --ignore-errors gcov
+
+          # Remove system and external files
+          lcov --remove coverage.info "./build/hexapod-X64-coverage/*/tests/*" "./build/hexapod-X64-coverage/*/build/*" -o coverage.info
+
+          # Generate HTML report
+          genhtml coverage.info --output-directory coverage-report
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage-report
+
+
+  cppcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install cppcheck
+        run: sudo apt-get update && sudo apt-get install -y cppcheck
+
+      - name: Run cppcheck on src/ (exclude build/)
+        run: |
+          cppcheck \
+          --enable=all \
+          --inconclusive \
+          --force \
+          --inline-suppr \
+          --language=c++ \
+          --xml \
+          --xml-version=2 \
+          --suppress=build \
+          src 2> cppcheck-report.xml
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hexapodcpp-cppcheck
+          path: |
+            cppcheck-report.xml
+
   docker-cross-build-rpi:
     name: Docker Cross-Compile (RPi Zero 2 W - ARM64)
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        build_type: [Debug, Release]
+        build_type: [ Debug, Release ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -82,9 +162,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Toolchain Image
+      - name: Pull Toolchain Image
         run: |
-          docker build -f Dockerfile.rpi-zero2 --target toolchain --build-arg INSTALL_CORP_CERTS=false -t hexapodcpp:rpi-toolchain .
+          docker pull loumagrule/hexapodcpp:rpi-toolchain
 
       - name: Cross-Compile for RPi (${{ matrix.build_type }})
         run: |
@@ -94,7 +174,7 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}:/workspace \
             -w /workspace \
-            hexapodcpp:rpi-toolchain \
+            loumagrule/hexapodcpp:rpi-toolchain \
             bash -c "cmake -Wno-dev -S . -B $BUILD_DIR \
               -DCMAKE_TOOLCHAIN_FILE=/workspace/cmake/toolchain-rpi-zero-2-w.cmake \
               -DCMAKE_BUILD_TYPE=$BUILD_TYPE \

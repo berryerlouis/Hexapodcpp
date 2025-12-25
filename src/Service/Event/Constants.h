@@ -46,6 +46,10 @@ namespace Service
                     default: return "UNKNOWN";
                 }
             }
+            bool operator==(const Event &other) const {
+                return (this->serviceId == other.serviceId && this->eventType == other.eventType &&
+                        this->eventArg.type() == other.eventArg.type());
+            }
         };
     } // namespace Event
 } // namespace Service

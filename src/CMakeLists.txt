@@ -88,6 +88,8 @@ add_compile_options(
         -ffunction-sections
         -fdata-sections
         -fno-threadsafe-statics
+        -fprofile-arcs
+        -ftest-coverage
 )
 
 # Debug symbols

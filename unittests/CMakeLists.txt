@@ -84,6 +84,13 @@ add_subdirectory(src/bot/body)
 # Move tests
 add_subdirectory(src/move/gait)
 
+
+# Compiler options
+add_compile_options(
+        -fprofile-arcs
+        -ftest-coverage
+)
+
 # Create test executable
 add_executable(HexapodcppTest ${EXECUTABLES_SRC})
 

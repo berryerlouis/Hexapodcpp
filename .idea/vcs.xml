@@ -3,6 +3,5 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/build/hexapod-X64-DEBUG/_deps/tinywebsockets-src" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/build/hexapodTest/_deps/googletest-src" vcs="Git" />
   </component>
 </project>

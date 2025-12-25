@@ -8,7 +8,7 @@ namespace Service
                                        Message::MessageInterface       &messageListener,
                                        Event::EventDispatcherInterface &eventDispatcher) :
             Service(GENERAL,
-                    1U,
+                    10U,
                     messageListener,
                     eventDispatcher),
             mSoftware(software) {

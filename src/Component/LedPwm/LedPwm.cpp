@@ -107,6 +107,8 @@ namespace Component
                     this->mLed.Off();
                     std::this_thread::sleep_for(std::chrono::microseconds(5U));
                 }
+                std::this_thread::sleep_for(std::chrono::microseconds(5U));
+                std::this_thread::yield();
             }
         }
     } // namespace LedPwm

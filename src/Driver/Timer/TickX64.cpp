@@ -39,10 +39,12 @@ namespace Driver
         }
 
         void Tick::DelayMs(const uint64_t delayMs) {
+            std::this_thread::yield();
             std::this_thread::sleep_for(std::chrono::milliseconds(delayMs));
         }
 
         void Tick::DelayUs(const uint64_t delayUs) {
+            std::this_thread::yield();
             std::this_thread::sleep_for(std::chrono::microseconds(delayUs));
         }
     } // namespace Timer
