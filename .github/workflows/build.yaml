@@ -7,29 +7,26 @@ jobs:
   build-release:
     name: Build Release
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build_type: [ DEBUG, RELEASE ]
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install coverage tools
+      - name: Install build tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y lcov gcovr
+          sudo apt-get install -y build-essential gcc g++ cmake
 
-      - name: Build Release
-        run: bin/dev/build.sh RPI sources RELEASE install
+      - name: Build ${{ matrix.build_type }}
+        run: bin/dev/build.sh X64 sources ${{ matrix.build_type }} install
 
-      - name: Create Release Archive
-        run: |
-          mkdir -p archive
-          cp build/hexapod-RPI-RELEASE/src/Hexapodcpp archive/ || exit 1
-          ls -lh archive/
-
-      - name: Upload Release Binary
+      - name: Upload ${{ matrix.build_type }} Binary
         uses: actions/upload-artifact@v4
         with:
-          name: hexapodcpp-rpi-release
-          path: archive/Hexapodcpp
+          name: hexapodcpp-X64-${{ matrix.build_type }}
+          path: build/hexapod-X64-${{ matrix.build_type }}/src/Hexapodcpp
 
 
   run-tests:
@@ -112,10 +109,10 @@ jobs:
       - name: Pull Toolchain Image
         run: docker pull loumagrule/hexapodcpp:rpi-toolchain
 
-      - name: Cross-Compile for RPi (${{ matrix.build_type }})
+      - name: Cross-Compile for RPI (${{ matrix.build_type }})
         run: |
           BUILD_TYPE="${{ matrix.build_type }}"
-          BUILD_DIR="build/rpi-${BUILD_TYPE}"
+          BUILD_DIR="build/RPI-${BUILD_TYPE}"
 
           docker run --rm \
             -v ${{ github.workspace }}:/workspace \
@@ -132,5 +129,5 @@ jobs:
       - name: Upload RPi Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: hexapodcpp-rpi-${{ matrix.build_type }}
-          path: build/rpi-${{ matrix.build_type }}/src/Hexapodcpp
+          name: hexapodcpp-RPI-${{ matrix.build_type }}
+          path: build/RPI-${{ matrix.build_type }}/src/Hexapodcpp
