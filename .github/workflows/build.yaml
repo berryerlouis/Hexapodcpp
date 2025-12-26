@@ -56,7 +56,6 @@ jobs:
           path: archive/test_results.xml
           if-no-files-found: warn
 
-
   coverage:
     name: Coverage Analysis
     runs-on: ubuntu-latest
@@ -69,43 +68,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y lcov gcovr
 
-      - name: Configure (with coverage flags)
-        run: |
-          cmake -S . -B build/hexapod-X64-coverage \
-            -DGTEST=1 \
-            -DTARGET=X64 \
-            -DCMAKE_BUILD_TYPE=Debug \
-            -DCMAKE_CXX_FLAGS="--coverage" \
-            -DCMAKE_C_FLAGS="--coverage"
-
-      - name: Build
-        run: cmake --build build/hexapod-X64-coverage -- -j$(nproc)
-
-      - name: Run tests
-        run: ctest --test-dir build/hexapod-X64-coverage
-
-      - name: Generate coverage report
-        run: |
-          lcov --capture \
-               --directory build/hexapod-X64-coverage \
-               --output-file coverage.info \
-               --ignore-errors gcov,mismatch,inconsistent,unused
-
-          lcov --remove coverage.info 'build/hexapod-X64-coverage/*' 'unittests/'  -o coverage.info
-
-          genhtml coverage.info --output-directory coverage-report --ignore-errors mismatch
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          files: coverage.info
+      - name: Run Coverage
+        run: bin/dev/coverage.sh
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage-report
-
 
   cppcheck:
     name: Static Analysis (Cppcheck)
@@ -117,17 +87,8 @@ jobs:
       - name: Install cppcheck
         run: sudo apt-get update && sudo apt-get install -y cppcheck
 
-      - name: Run cppcheck on src/ (exclude build/)
-        run: |
-          cppcheck \
-            --enable=all \
-            --inconclusive \
-            --force \
-            --inline-suppr \
-            --language=c++ \
-            --xml \
-            --xml-version=2 \
-            src 2> cppcheck-report.xml
+      - name: Run cppcheck
+        run: bin/dev/cppcheck.sh
 
       - name: Upload Cppcheck Report
         uses: actions/upload-artifact@v4

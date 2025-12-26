@@ -49,9 +49,9 @@ else
 fi
 
 # Build the project
-printf "${GREEN}Building project with -j16...${NC}\n"
+printf "${GREEN}Building project with -j$(nproc)...${NC}\n"
 cd "${BUILD_DIR}" || exit 1
-CFLAGS=-fdiagnostics-color CXXFLAGS=-fdiagnostics-color CLICOLOR_FORCE=1 make -j16 -Wno-dev
+CFLAGS=-fdiagnostics-color CXXFLAGS=-fdiagnostics-color CLICOLOR_FORCE=1 make -j$(nproc) -Wno-dev
 BUILD_RESULT=$?
 cd - > /dev/null || exit 1
 
