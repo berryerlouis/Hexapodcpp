@@ -54,26 +54,4 @@ FROM toolchain AS build
 WORKDIR /workspace
 COPY . .
 
-#RUN echo "== OpenSSL preflight ==" \
-#    && echo "Listing OpenSSL libraries:" \
-#    && ls -l /usr/lib/aarch64-linux-gnu/libssl* /usr/lib/aarch64-linux-gnu/libcrypto* || true \
-#    && echo "Creating symlinks if needed:" \
-#    && if [ ! -f /usr/aarch64-linux-gnu/lib/libssl.so ]; then \
-#    mkdir -p /usr/aarch64-linux-gnu/lib && \
-#    ln -sf /usr/lib/aarch64-linux-gnu/libssl.so.3 /usr/aarch64-linux-gnu/lib/libssl.so && \
-#    ln -sf /usr/lib/aarch64-linux-gnu/libcrypto.so.3 /usr/aarch64-linux-gnu/lib/libcrypto.so && \
-#    echo "Created OpenSSL symlinks in /usr/aarch64-linux-gnu/lib"; \
-#    fi \
-#    && ls -l /usr/aarch64-linux-gnu/lib/libssl* /usr/aarch64-linux-gnu/lib/libcrypto* \
-#    && test -f /usr/include/openssl/ssl.h && echo "Found headers at /usr/include/openssl"
-#    && cmake -Wno-dev -S . -B build/rpi-release \
-#    -DCMAKE_TOOLCHAIN_FILE=/workspace/cmake/toolchain-rpi-zero-2-w.cmake \
-#    -DCMAKE_BUILD_TYPE=Release \
-#    -DTARGET=RPI \
-#    -DOPENSSL_USE_STATIC_LIBS=OFF \
-#    && cmake --build build/rpi-release --target Hexapodcpp -- -j"$(nproc)"
-
-
-
-# Keep container alive for optional inspection; binary at /workspace/build/rpi-release/src/Hexapodcpp
 CMD ["/bin/bash"]

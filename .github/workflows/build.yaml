@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        build_type: [ Debug, Release ]
+        build_type: [ DEBUG, RELEASE ]
 
     steps:
       - uses: actions/checkout@v4
@@ -95,7 +95,7 @@ jobs:
 
 
   docker-cross-build-rpi:
-    name: Docker Cross-Compile (RPi Zero 2 W - ARM64)
+    name: Docker Cross-Compile (RPI Zero 2 W - ARM64)
     runs-on: ubuntu-latest
     strategy:
       matrix:
