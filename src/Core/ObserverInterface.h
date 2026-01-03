@@ -7,8 +7,6 @@ namespace Core
     public:
         ObserverInterface() = default;
 
-        ~ObserverInterface() = default;
-
         virtual void Notified(const T &item) = 0;
     };
 } // namespace Core

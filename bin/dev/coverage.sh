@@ -2,6 +2,7 @@
 set -e  # Exit on error
 
 cmake -S . -B ./build/hexapod-X64-COVERAGE \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
   -DGTEST=1 \
   -DTARGET=X64 \
   -DCMAKE_BUILD_TYPE=Debug \

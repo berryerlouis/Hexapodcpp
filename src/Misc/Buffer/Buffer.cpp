@@ -6,11 +6,11 @@ namespace Misc
 {
     namespace Buffer
     {
-        Buffer::Buffer() :
-            mBuffer{0U},
-            mHead(0U),
-            mTail(0U),
-            mIsEmpty(true) {
+        Buffer::Buffer()
+            : mBuffer{0U}
+            , mHead(0U)
+            , mTail(0U)
+            , mIsEmpty(true) {
         }
 
         uint8_t Buffer::GetLength() const {

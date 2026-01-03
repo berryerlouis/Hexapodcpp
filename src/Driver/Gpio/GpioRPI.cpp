@@ -1,5 +1,5 @@
+#include <wiringPi/wiringPi.h>
 #include "Gpio.h"
-#include "wiringPi/wiringPi.h"
 
 namespace Driver
 {
@@ -7,14 +7,19 @@ namespace Driver
     {
         static bool once = false;
 
-        Gpio::Gpio(const SGpio          &gpio,
-                   const EPortDirection &portDirection) :
-            mGpio(gpio) {
+        Gpio::Gpio(const SGpio &gpio, const EPortDirection &portDirection)
+            : mGpio(gpio) {
             if (!once) {
                 wiringPiSetupGpio();
                 once = true;
             }
-            pinMode(this->mGpio.pin, portDirection == EPortDirection::IN ? INPUT : OUTPUT);
+            if ((portDirection == EPortDirection::IN) ||
+                (portDirection == EPortDirection::OUT)) {
+                pinMode(this->mGpio.pin,
+                        portDirection == EPortDirection::IN ? INPUT : OUTPUT);
+            } else {
+                pinMode(this->mGpio.pin, PWM_OUTPUT);
+            }
             if (portDirection == EPortDirection::IN) {
                 pullUpDnControl(this->mGpio.pin, PUD_DOWN);
             }
@@ -31,6 +36,11 @@ namespace Driver
 
         Core::Status Gpio::Reset(void) {
             digitalWrite(this->mGpio.pin, LOW);
+            return Core::Status::CORE_OK;
+        }
+
+        Core::Status Gpio::Pwm(const uint16_t delay) {
+            pwmWrite(this->mGpio.pin, delay);
             return Core::Status::CORE_OK;
         }
 

@@ -170,7 +170,7 @@ export default class Panel extends Pane {
                 }).on('change', (ev) => {
                     if (this.initDone && ev.last && this.hexapod.body.members.legs.leg[i].legData.servos[j].status) {
                         if (ev.last) {
-                            //this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_ANGLE, [servoId, ev.value]));
+                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_ANGLE, [servoId, ev.value]));
                         }
                     }
                 });

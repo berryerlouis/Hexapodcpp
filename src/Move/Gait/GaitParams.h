@@ -20,8 +20,7 @@ namespace Move
 
             bool     SetDirection(float directionAngle);
 
-            bool     SetRotation(float rotationAngle,
-                                 bool  clockWize);
+            bool     SetRotation(float rotationAngle, bool clockWize);
 
             bool     SetAmplitude(float amplitude);
 

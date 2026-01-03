@@ -20,8 +20,7 @@ namespace Driver
             (void) currentTime;
         }
 
-        bool Twi::SendCommand(const uint8_t address,
-                              const uint8_t command) {
+        bool Twi::SendCommand(const uint8_t address, const uint8_t command) {
             wiringPiI2CWrite(address, command);
             return (true);
         }
@@ -65,8 +64,7 @@ namespace Driver
             return (true);
         }
 
-        bool Twi::Write(const uint8_t address,
-                        const uint8_t reg) {
+        bool Twi::Write(const uint8_t address, const uint8_t reg) {
             wiringPiI2CWrite(address, reg);
             return (true);
         }

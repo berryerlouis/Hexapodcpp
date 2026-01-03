@@ -2,16 +2,15 @@
 #include "Core/Logger.h"
 #include "Core/Version.h"
 
-int main(const int argc,
-         char    **argv) {
+int main(const int argc, char **argv) {
     setvbuf(stdout, nullptr, _IONBF, 0U);
 
     LOG_INFO("Hexapod started.");
     LOG_INFO("Hexapod version: %d.%d", VERSION_MAJOR, VERSION_MINOR);
-    Core::Logger::SetLogLevel(Core::LogLevel::DEBUG);
+    Core::Logger::SetLogLevel(Core::LogLevel::LOG_DEBUG);
     if (argc > 1) {
         const Core::LogLevel level = Core::Logger::StringToLevel(argv[1U]);
-        if (level != Core::LogLevel::UNKNOWN) {
+        if (level != Core::LogLevel::LOG_UNKNOWN) {
             Core::Logger::SetLogLevel(level);
         }
     }

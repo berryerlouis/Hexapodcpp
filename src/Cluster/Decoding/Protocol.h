@@ -12,11 +12,9 @@ namespace Cluster
 
             ~Protocol() = default;
 
-            static Core::Status Decode(const char *frameBuffer,
-                                       Frame      &frame);
+            static Core::Status Decode(const char *frameBuffer, Frame &frame);
 
-            static uint8_t      Encode(const Frame &response,
-                                       char        *buffer);
+            static uint8_t      Encode(const Frame &response, char *buffer);
 
         private:
             static uint8_t ConvertHexCharToInt(const uint8_t byte);

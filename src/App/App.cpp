@@ -2,8 +2,9 @@
 #include "../Driver/Timer/Tick.h"
 
 using namespace Driver::Gpio;
+using namespace Driver::Timer;
 
-Gpio ledStatus = Gpio({19}, OUT);
+Gpio ledStatus = Gpio({19}, PWM);
 Gpio ledCenter = Gpio({12}, OUT);
 Gpio ledLeft = Gpio({13}, OUT);
 Gpio ledMiddleLeft = Gpio({6}, OUT);
@@ -20,128 +21,107 @@ Gpio buttonPin = Gpio({4}, IN);
 
 namespace App
 {
-    App::App(void) :
-        mUart(),
-        mSocket(),
-        mTwi(Driver::Twi::EI2cFreq::FREQ_400_KHZ),
-        mEnablePwm(enablePwm),
-        mGpioButton(buttonPin),
-        mGpioSoundLeft(soundLeftPin),
-        mGpioSoundRight(soundRightPin),
-        mGpioTriggerUsLeft(triggerLeftPin),
-        mGpioTriggerUsRight(triggerRightPin),
-        mLedStatus(ledStatus),
-        mLedCenter(ledCenter),
-        mLedLeft(ledLeft),
-        mLedMiddleLeft(ledMiddleLeft),
-        mLedRight(ledRight),
-        mLedMiddleRight(ledMiddleRight),
-        mLedPwmStatus(mLedStatus),
-        mAds1115(mTwi),
-        mBattery(mAds1115),
-        mButton(mGpioButton),
-        mSoundLeft(Component::Sound::SoundId::SOUND_LEFT,
-                   mGpioSoundLeft,
-                   mLedMiddleLeft),
-        mSoundRight(Component::Sound::SoundId::SOUND_RIGHT,
-                    mGpioSoundRight,
-                    mLedMiddleRight),
-        mInputCaptureLeft(echoLeftPin),
-        mInputCaptureRight(echoRightPin),
-        mMpu9150(mTwi),
-        mBarometer(mTwi),
-        mSrf05Left(Cluster::EProximityCommands::US_LEFT,
-                   mGpioTriggerUsLeft,
-                   mInputCaptureLeft,
-                   mLedLeft),
-        mSrf05Right(Cluster::EProximityCommands::US_RIGHT,
-                    mGpioTriggerUsRight,
-                    mInputCaptureRight,
-                    mLedRight),
-        mVl53l0x(mTwi,
-                 mLedCenter),
-        mSensorProximity(mSrf05Left,
-                         mSrf05Right,
-                         mVl53l0x),
-        mSsd1306(mTwi),
-        mPca9685Left(mTwi,
-                     0x41U),
-        mPca9685Right(mTwi,
-                      0x40U),
-        mServos(mPca9685Left,
-                mPca9685Right,
-                mEnablePwm),
-        mSoftware(),
-        mLegs(mServos),
-        mBody(mLegs),
-        mClusterGeneral(mSoftware),
-        mClusterBattery(mBattery),
-        mClusterButton(mButton),
-        mClusterSound(mSoundLeft,
-                      mSoundRight),
-        mClusterBody(mBody),
-        mClusterImu(mMpu9150,
-                    mBarometer),
-        mClusterProximity(mSensorProximity),
-        mClusterServo(mServos),
-        mClusters(mClusterGeneral,
-                  mClusterBattery,
-                  mClusterButton,
-                  mClusterSound,
-                  mClusterBody,
-                  mClusterImu,
-                  mClusterProximity,
-                  mClusterServo),
-        mCommunication(mSocket,
-                       mClusters,
-                       mLedStatus),
-        mMessageListener(mCommunication),
-        mEventDispatcher(),
-        mServiceButton(mButton,
-                       mMessageListener,
-                       mEventDispatcher),
-        mServiceSound(mSoundLeft,
-                      mSoundRight,
-                      mMessageListener,
-                      mEventDispatcher),
-        mServiceControl(mServos,
+    App::App(void)
+        : mSocket()
+        , mTwi(Driver::Twi::EI2cFreq::FREQ_400_KHZ)
+        , mEnablePwm(enablePwm)
+        , mGpioButton(buttonPin)
+        , mGpioSoundLeft(soundLeftPin)
+        , mGpioSoundRight(soundRightPin)
+        , mGpioTriggerUsLeft(triggerLeftPin)
+        , mGpioTriggerUsRight(triggerRightPin)
+        , mLedStatus(ledStatus)
+        , mLedCenter(ledCenter)
+        , mLedLeft(ledLeft)
+        , mLedMiddleLeft(ledMiddleLeft)
+        , mLedRight(ledRight)
+        , mLedMiddleRight(ledMiddleRight)
+        , mLedPwmStatus(mLedStatus)
+        , mAds1115(mTwi)
+        , mBattery(mAds1115)
+        , mButton(mGpioButton)
+        , mSoundLeft(Component::Sound::SoundId::SOUND_LEFT,
+                     mGpioSoundLeft,
+                     mLedMiddleLeft)
+        , mSoundRight(Component::Sound::SoundId::SOUND_RIGHT,
+                      mGpioSoundRight,
+                      mLedMiddleRight)
+        , mInputCaptureLeft(echoLeftPin)
+        , mInputCaptureRight(echoRightPin)
+        , mMpu9150(mTwi)
+        , mBarometer(mTwi)
+        , mSrf05Left(Cluster::EProximityCommands::US_LEFT,
+                     mGpioTriggerUsLeft,
+                     mInputCaptureLeft,
+                     mLedLeft)
+        , mSrf05Right(Cluster::EProximityCommands::US_RIGHT,
+                      mGpioTriggerUsRight,
+                      mInputCaptureRight,
+                      mLedRight)
+        , mVl53l0x(mTwi, mLedCenter)
+        , mSensorProximity(mSrf05Left, mSrf05Right, mVl53l0x)
+        , mSsd1306(mTwi)
+        , mPca9685Left(mTwi, 0x41U)
+        , mPca9685Right(mTwi, 0x40U)
+        , mServos(mPca9685Left, mPca9685Right, mEnablePwm)
+        , mSoftware()
+        , mLegs(mServos)
+        , mBody(mLegs)
+        , mClusterGeneral(mSoftware)
+        , mClusterBattery(mBattery)
+        , mClusterButton(mButton)
+        , mClusterSound(mSoundLeft, mSoundRight)
+        , mClusterBody(mBody)
+        , mClusterImu(mMpu9150, mBarometer)
+        , mClusterProximity(mSensorProximity)
+        , mClusterServo(mServos)
+        , mClusters(mClusterGeneral,
+                    mClusterBattery,
+                    mClusterButton,
+                    mClusterSound,
+                    mClusterBody,
+                    mClusterImu,
+                    mClusterProximity,
+                    mClusterServo)
+        , mCommunication(mSocket, mClusters, mLedStatus)
+        , mMessageListener(mCommunication)
+        , mEventDispatcher()
+        , mServiceButton(mButton, mMessageListener, mEventDispatcher)
+        , mServiceSound(mSoundLeft,
+                        mSoundRight,
                         mMessageListener,
-                        mEventDispatcher),
-        mServiceCommunication(mCommunication,
-                              mClusters,
-                              mMessageListener,
-                              mEventDispatcher),
-        mServiceProximity(mSensorProximity,
-                          mMessageListener,
-                          mEventDispatcher),
-        mServiceOrientation(mMpu9150,
-                            mBarometer,
+                        mEventDispatcher)
+        , mServiceControl(mServos, mMessageListener, mEventDispatcher)
+        , mServiceCommunication(mCommunication,
+                                mClusters,
+                                mMessageListener,
+                                mEventDispatcher)
+        , mServiceProximity(mSensorProximity,
                             mMessageListener,
-                            mEventDispatcher),
-        mServiceBattery(mBattery,
-                        mMessageListener,
-                        mEventDispatcher),
-        mServiceBody(mBody,
-                     mMessageListener,
-                     mEventDispatcher),
-        mServiceDisplay(mSsd1306,
-                        mMessageListener,
-                        mEventDispatcher),
-        mServiceGeneral(mSoftware,
-                        mMessageListener,
-                        mEventDispatcher),
-        mServices(mServiceGeneral,
-                  mServiceControl,
-                  mServiceCommunication,
-                  mServiceProximity,
-                  mServiceOrientation,
-                  mServiceBattery,
-                  mServiceDisplay,
-                  mServiceBody,
-                  mServiceButton,
-                  mServiceSound,
-                  mMessageListener,
-                  mEventDispatcher) {
+                            mEventDispatcher)
+        , mServiceOrientation(mMpu9150,
+                              mBarometer,
+                              mMessageListener,
+                              mEventDispatcher)
+        , mServiceBattery(mBattery, mMessageListener, mEventDispatcher)
+        , mServiceBody(mBody, mMessageListener, mEventDispatcher)
+        , mServiceDisplay(mSsd1306, mMessageListener, mEventDispatcher)
+        , mServiceGeneral(mLedPwmStatus,
+                          mSoftware,
+                          mMessageListener,
+                          mEventDispatcher)
+        , mServices(mServiceGeneral,
+                    mServiceControl,
+                    mServiceCommunication,
+                    mServiceProximity,
+                    mServiceOrientation,
+                    mServiceBattery,
+                    mServiceDisplay,
+                    mServiceBody,
+                    mServiceButton,
+                    mServiceSound,
+                    mMessageListener,
+                    mEventDispatcher) {
     }
 
 #define LOG_RESULT_INIT(name)             \
@@ -152,7 +132,7 @@ namespace App
     LOG_RESULT_INIT(name);
 
     Core::Status App::Initialize(void) {
-        Driver::Timer::Tick::GetInstance();
+        Tick::GetInstance();
         Core::Status success = Core::CORE_OK;
         INIT("Socket", this->mSocket.Initialize());
         if (success == Core::CORE_OK) {
@@ -161,16 +141,12 @@ namespace App
         if (success == Core::CORE_OK) {
             INIT("Services", this->mServices.Initialize());
         }
-        if (success == Core::CORE_OK) {
-            INIT("Led", this->mLedPwmStatus.Initialize());
-        }
         return success;
     }
 
     void App::Update(void) {
-        const uint64_t currentTime = Driver::Timer::Tick::GetInstance().GetMs();
+        const uint64_t currentTime = Tick::GetInstance().GetMs();
         this->mServices.Update(currentTime);
-        this->mLedPwmStatus.Update(currentTime);
-        Driver::Timer::Tick::GetInstance().DelayMs(1U);
+        Tick::GetInstance().DelayMs(1U);
     }
 } // namespace App

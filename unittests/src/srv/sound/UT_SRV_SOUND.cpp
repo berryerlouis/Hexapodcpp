@@ -18,15 +18,15 @@ namespace Service
     {
         class UT_SRV_SOUND : public ::testing::Test {
         protected:
-            UT_SRV_SOUND() :
-                mMockEventDispatcherInterface(),
-                mMockMessageInterface(),
-                mMockSoundLeft(),
-                mMockSoundRight(),
-                mServiceSound(mMockSoundLeft,
-                              mMockSoundRight,
-                              mMockMessageInterface,
-                              mMockEventDispatcherInterface) {
+            UT_SRV_SOUND()
+                : mMockEventDispatcherInterface()
+                , mMockMessageInterface()
+                , mMockSoundLeft()
+                , mMockSoundRight()
+                , mServiceSound(mMockSoundLeft,
+                                mMockSoundRight,
+                                mMockMessageInterface,
+                                mMockEventDispatcherInterface) {
             }
 
             virtual void SetUp() {
@@ -39,19 +39,21 @@ namespace Service
             virtual ~UT_SRV_SOUND() = default;
 
             /* Mocks */
-            StrictMock<Event::MockEventDispatcherInterface> mMockEventDispatcherInterface;
-            StrictMock<Message::MockMessageInterface>       mMockMessageInterface;
-            StrictMock<Component::Sound::MockSound>         mMockSoundLeft;
-            StrictMock<Component::Sound::MockSound>         mMockSoundRight;
+            StrictMock<Event::MockEventDispatcherInterface>
+                    mMockEventDispatcherInterface;
+            StrictMock<Message::MockMessageInterface> mMockMessageInterface;
+            StrictMock<Component::Sound::MockSound>   mMockSoundLeft;
+            StrictMock<Component::Sound::MockSound>   mMockSoundRight;
 
             /* Test class */
             ServiceSound mServiceSound;
         };
 
-        TEST_F(UT_SRV_SOUND,
-               Initialize) {
-            EXPECT_CALL(mMockSoundLeft, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
-            EXPECT_CALL(mMockSoundRight, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+        TEST_F(UT_SRV_SOUND, Initialize) {
+            EXPECT_CALL(mMockSoundLeft, Initialize())
+                    .WillOnce(Return(Core::Status::CORE_OK));
+            EXPECT_CALL(mMockSoundRight, Initialize())
+                    .WillOnce(Return(Core::Status::CORE_OK));
             EXPECT_EQ(Core::Status::CORE_OK, mServiceSound.Initialize());
         }
     } // namespace Sound

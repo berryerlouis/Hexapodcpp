@@ -3,7 +3,9 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/src/**",
+                "${workspaceFolder}/build/rpi-cross-release/_deps/tinywebsockets-src/tiny_websockets_lib/include/**",
+                "${workspaceFolder}/build/rpi-cross-release/_deps/wiringpi-src/**"
             ],
             "defines": [
                 "_DEBUG",
@@ -14,7 +16,7 @@
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "gcc-x64",
-            "compilerPath": "/usr/bin/gcc"
+            "compilerPath": "/usr/bin/g++"
         }
     ],
     "version": 4

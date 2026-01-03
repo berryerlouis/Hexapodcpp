@@ -2,10 +2,10 @@
 
 namespace Cluster
 {
-    ClusterCommand::ClusterCommand(const uint8_t size) :
-        mClusterCommands{},
-        mClusterCommandSize(0U),
-        mSize(size < NB_COMMANDS_MAX ? size : NB_COMMANDS_MAX) {
+    ClusterCommand::ClusterCommand(const uint8_t size)
+        : mClusterCommands{}
+        , mClusterCommandSize(0U)
+        , mSize(size < NB_COMMANDS_MAX ? size : NB_COMMANDS_MAX) {
     }
 
     bool ClusterCommand::AddClusterItem(const ClusterItem clusterItem) {
@@ -29,7 +29,8 @@ namespace Cluster
         }
 
         // Validate expected parameter size
-        if (this->mClusterCommands[cmdId].expectedSize != request.GetNbParams()) {
+        if (this->mClusterCommands[cmdId].expectedSize !=
+            request.GetNbParams()) {
             return Core::Status::CORE_ERROR;
         }
 

@@ -12,16 +12,14 @@ namespace Cluster
 {
     class UT_CLU_FRAME : public ::testing::Test {
     protected:
-        UT_CLU_FRAME() :
-                       mFrame() {
+        UT_CLU_FRAME()
+            : mFrame() {
         }
 
-        virtual void
-        SetUp() {
+        virtual void SetUp() {
         }
 
-        virtual void
-        TearDown() {
+        virtual void TearDown() {
         }
 
         virtual ~UT_CLU_FRAME() = default;
@@ -35,9 +33,7 @@ namespace Cluster
     TEST_F(UT_CLU_FRAME, BuildNoArg_Ok) {
         Core::Status success = Core::Status::CORE_ERROR;
 
-        success = mFrame.Build(
-                BATTERY,
-                EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(BATTERY, EBatteryCommands::GET_VOLTAGE);
 
         EXPECT_EQ(mFrame.GetClusterId(), BATTERY);
         EXPECT_EQ(mFrame.GetCommandId(), EBatteryCommands::GET_VOLTAGE);
@@ -50,10 +46,7 @@ namespace Cluster
         Core::Status success = Core::Status::CORE_ERROR;
 
         success = mFrame.Build(
-                BATTERY,
-                EBatteryCommands::GET_VOLTAGE,
-                nullptr,
-                0U);
+                BATTERY, EBatteryCommands::GET_VOLTAGE, nullptr, 0U);
 
         EXPECT_EQ(mFrame.GetClusterId(), BATTERY);
         EXPECT_EQ(mFrame.GetCommandId(), EBatteryCommands::GET_VOLTAGE);
@@ -63,14 +56,11 @@ namespace Cluster
     }
 
     TEST_F(UT_CLU_FRAME, Build1ByteArg_Ok) {
-        Core::Status success = Core::Status::CORE_ERROR;
+        Core::Status      success = Core::Status::CORE_ERROR;
 
         constexpr uint8_t params = 42;
         success = mFrame.Build(
-                BATTERY,
-                EBatteryCommands::GET_VOLTAGE,
-                &params,
-                1U);
+                BATTERY, EBatteryCommands::GET_VOLTAGE, &params, 1U);
 
         EXPECT_EQ(mFrame.GetClusterId(), BATTERY);
         EXPECT_EQ(mFrame.GetCommandId(), EBatteryCommands::GET_VOLTAGE);
@@ -83,9 +73,7 @@ namespace Cluster
     TEST_F(UT_CLU_FRAME, BuildAndAdd1ByteArg_Ok) {
         Core::Status success = Core::Status::CORE_ERROR;
 
-        success = mFrame.Build(
-                BATTERY,
-                EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(BATTERY, EBatteryCommands::GET_VOLTAGE);
         mFrame.Set1ByteParam(42U);
 
         EXPECT_EQ(mFrame.GetClusterId(), BATTERY);
@@ -99,9 +87,7 @@ namespace Cluster
     TEST_F(UT_CLU_FRAME, BuildAndAddMultiple1ByteArg_Ok) {
         Core::Status success = Core::Status::CORE_ERROR;
 
-        success = mFrame.Build(
-                BATTERY,
-                EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(BATTERY, EBatteryCommands::GET_VOLTAGE);
         mFrame.Set1ByteParam(42U);
         mFrame.Set1ByteParam(24U);
         mFrame.Set1ByteParam(55U);
@@ -125,14 +111,13 @@ namespace Cluster
     }
 
     TEST_F(UT_CLU_FRAME, Build2BytesArg_Ok) {
-        Core::Status success = Core::Status::CORE_ERROR;
+        Core::Status       success = Core::Status::CORE_ERROR;
 
         constexpr uint16_t params = 42;
-        success = mFrame.Build(
-                BATTERY,
-                EBatteryCommands::GET_VOLTAGE,
-                (uint8_t *) &params,
-                2U);
+        success = mFrame.Build(BATTERY,
+                               EBatteryCommands::GET_VOLTAGE,
+                               (uint8_t *) &params,
+                               2U);
 
         EXPECT_EQ(mFrame.GetClusterId(), BATTERY);
         EXPECT_EQ(mFrame.GetCommandId(), EBatteryCommands::GET_VOLTAGE);
@@ -146,9 +131,7 @@ namespace Cluster
     TEST_F(UT_CLU_FRAME, BuildAndAdd2BytesArg_Ok) {
         Core::Status success = Core::Status::CORE_ERROR;
 
-        success = mFrame.Build(
-                BATTERY,
-                EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(BATTERY, EBatteryCommands::GET_VOLTAGE);
         mFrame.Set2BytesParam(42U);
 
         EXPECT_EQ(mFrame.GetClusterId(), BATTERY);
@@ -163,9 +146,7 @@ namespace Cluster
     TEST_F(UT_CLU_FRAME, BuildAndAddMultiple2BytesArg_Ok) {
         Core::Status success = Core::Status::CORE_ERROR;
 
-        success = mFrame.Build(
-                BATTERY,
-                EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(BATTERY, EBatteryCommands::GET_VOLTAGE);
         mFrame.Set2BytesParam(42U);
         mFrame.Set2BytesParam(24U);
         mFrame.Set2BytesParam(55U);
@@ -194,12 +175,10 @@ namespace Cluster
     }
 
     TEST_F(UT_CLU_FRAME, BuildAndAdd3BytesArg_Ok) {
-        Core::Status success = Core::Status::CORE_ERROR;
+        Core::Status       success = Core::Status::CORE_ERROR;
 
         constexpr uint32_t params = 0x424140;
-        success = mFrame.Build(
-                BATTERY,
-                EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(BATTERY, EBatteryCommands::GET_VOLTAGE);
         mFrame.Set3BytesParam(params);
 
         EXPECT_EQ(mFrame.GetClusterId(), BATTERY);
@@ -213,14 +192,12 @@ namespace Cluster
     }
 
     TEST_F(UT_CLU_FRAME, BuildAndAddMultiple3BytesArg_Ok) {
-        Core::Status success = Core::Status::CORE_ERROR;
+        Core::Status       success = Core::Status::CORE_ERROR;
 
         constexpr uint32_t params24 = 0x424140U;
         constexpr uint16_t params16 = 0x5533U;
-        constexpr uint8_t params8 = 0xAAU;
-        success = mFrame.Build(
-                BATTERY,
-                EBatteryCommands::GET_VOLTAGE);
+        constexpr uint8_t  params8 = 0xAAU;
+        success = mFrame.Build(BATTERY, EBatteryCommands::GET_VOLTAGE);
         mFrame.Set3BytesParam(params24);
         mFrame.Set2BytesParam(params16);
         mFrame.Set1ByteParam(params8);
@@ -241,12 +218,10 @@ namespace Cluster
     }
 
     TEST_F(UT_CLU_FRAME, BuildAndAdd4BytesArg_Ok) {
-        Core::Status success = Core::Status::CORE_ERROR;
+        Core::Status       success = Core::Status::CORE_ERROR;
 
         constexpr uint32_t params = 0x42414039;
-        success = mFrame.Build(
-                BATTERY,
-                EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(BATTERY, EBatteryCommands::GET_VOLTAGE);
         mFrame.Set4BytesParam(params);
 
         EXPECT_EQ(mFrame.GetClusterId(), BATTERY);
@@ -261,15 +236,13 @@ namespace Cluster
     }
 
     TEST_F(UT_CLU_FRAME, BuildAndAddMultiple4BytesArg_Ok) {
-        Core::Status success = Core::Status::CORE_ERROR;
+        Core::Status       success = Core::Status::CORE_ERROR;
 
         constexpr uint32_t params32 = 0x42414039U;
         constexpr uint32_t params24 = 0x424140U;
         constexpr uint16_t params16 = 0x5533U;
-        constexpr uint8_t params8 = 0xAAU;
-        success = mFrame.Build(
-                BATTERY,
-                EBatteryCommands::GET_VOLTAGE);
+        constexpr uint8_t  params8 = 0xAAU;
+        success = mFrame.Build(BATTERY, EBatteryCommands::GET_VOLTAGE);
         mFrame.Set3BytesParam(params24);
         mFrame.Set2BytesParam(params16);
         mFrame.Set1ByteParam(params8);
@@ -296,12 +269,10 @@ namespace Cluster
     }
 
     TEST_F(UT_CLU_FRAME, BuildAndAdd6BytesArg_Ok) {
-        Core::Status success = Core::Status::CORE_ERROR;
+        Core::Status       success = Core::Status::CORE_ERROR;
 
         constexpr uint64_t params = 0x424140394241U;
-        success = mFrame.Build(
-                BATTERY,
-                EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(BATTERY, EBatteryCommands::GET_VOLTAGE);
         mFrame.Set6BytesParam(params);
 
         EXPECT_EQ(mFrame.GetClusterId(), BATTERY);
@@ -318,12 +289,10 @@ namespace Cluster
     }
 
     TEST_F(UT_CLU_FRAME, BuildAndAdd8BytesArg_Ok) {
-        Core::Status success = Core::Status::CORE_ERROR;
+        Core::Status       success = Core::Status::CORE_ERROR;
 
         constexpr uint64_t params = 0x4241403942414039U;
-        success = mFrame.Build(
-                BATTERY,
-                EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(BATTERY, EBatteryCommands::GET_VOLTAGE);
         mFrame.Set8BytesParam(params);
 
         EXPECT_EQ(mFrame.GetClusterId(), BATTERY);
@@ -340,4 +309,4 @@ namespace Cluster
         EXPECT_EQ(mFrame.Get8BytesParam(0U), 0x4241403942414039U);
         EXPECT_EQ(success, Core::Status::CORE_OK);
     }
-}
+} // namespace Cluster

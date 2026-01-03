@@ -32,7 +32,7 @@ export default class Hexapod extends Object3D {
         amplitude: 30,
         elevation: 10,
         direction: 0,
-        duration: 3000,
+        duration: 1000,
         rotation: 0,
         clockwise: false,
         gait: 'TRIPOD',
@@ -57,9 +57,9 @@ export default class Hexapod extends Object3D {
         this.head = new Head(this.socket);
         this.directionArrow = new DirectionArrow(this.socket, this.hexapodStruct);
         this.body = new Body(0, 1, 0, this.socket, 100);
-        this.imu = new Imu(this.socket, 5000);
-        this.battery = new Battery(this.socket, 10000);
-        this.loopTime = new LoopTime(this.socket, 10000);
+        this.imu = new Imu(this.socket, 1000);
+        this.battery = new Battery(this.socket, 1000);
+        this.loopTime = new LoopTime(this.socket, 1000);
         this.isMoving = false;
         this.listOfCallbackMove = [];
 
@@ -118,6 +118,7 @@ export default class Hexapod extends Object3D {
     }
 
     update(deltaTime: number = 1 / 60) {
+        deltaTime;
         this.body.update();
         this.head.update();
 

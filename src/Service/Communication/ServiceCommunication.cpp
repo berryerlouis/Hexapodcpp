@@ -4,16 +4,14 @@ namespace Service
 {
     namespace Communication
     {
-        ServiceCommunication::ServiceCommunication(CommunicationInterface          &communication,
-                                                   Clusters::ClustersInterface     &clusters,
-                                                   Message::MessageInterface       &messageListener,
-                                                   Event::EventDispatcherInterface &eventDispatcher) :
-            Service(COMMUNICATION,
-                    10U,
-                    messageListener,
-                    eventDispatcher),
-            mClusters(clusters),
-            mCommunication(communication) {
+        ServiceCommunication::ServiceCommunication(
+                CommunicationInterface          &communication,
+                Clusters::ClustersInterface     &clusters,
+                Message::MessageInterface       &messageListener,
+                Event::EventDispatcherInterface &eventDispatcher)
+            : Service(COMMUNICATION, 1U, messageListener, eventDispatcher)
+            , mClusters(clusters)
+            , mCommunication(communication) {
         }
 
         Core::Status ServiceCommunication::Initialize(void) {
@@ -31,7 +29,8 @@ namespace Service
         }
 
         void ServiceCommunication::Notified(const CommunicationStruct &state) {
-            this->DispatchEvent<CommunicationStruct>(EventType::EVENT_COM_UPDATE, state);
+            this->DispatchEvent<CommunicationStruct>(
+                    EventType::EVENT_COM_UPDATE, state);
         }
 
         void ServiceCommunication::OnEvent(const Event::Event &event) {

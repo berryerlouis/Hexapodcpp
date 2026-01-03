@@ -1,7 +1,7 @@
-![Make Workflow](https://github.com/berryerlouis/Hexapodcpp/actions/workflows/build.yaml/badge.svg)
-![Tests](https://img.shields.io/github/actions/workflow/status/berryerlouis/Hexapodcpp/build.yaml?label=tests)
+[![Make](https://github.com/berryerlouis/Hexapodcpp/actions/workflows/build.yaml/badge.svg)](https://github.com/berryerlouis/Hexapodcpp/actions/workflows/build.yaml)
+![GTests](https://img.shields.io/github/actions/workflow/status/berryerlouis/Hexapodcpp/build.yaml?label=run-tests)
 ![Cppcheck](https://img.shields.io/github/actions/workflow/status/berryerlouis/Hexapodcpp/build.yaml?label=cppcheck)
-[![codecov](https://codecov.io/gh/berryerlouis/Hexapodcpp/branch/leg/graph/badge.svg)](https://codecov.io/gh/berryerlouis/Hexapodcpp)
+![Coverage](https://img.shields.io/github/actions/workflow/status/berryerlouis/Hexapodcpp/build.yaml?label=coverage)
 ![License](https://img.shields.io/github/license/berryerlouis/Hexapodcpp)
 
 # Hexapodcpp
@@ -114,7 +114,7 @@ Wants = network-online.target
 
 [Service]
 Type = simple
-User = hexabot
+User = root
 WorkingDirectory = /home/hexabot
 ExecStart = /home/hexabot/Hexapodcpp
 Restart = on-failure
@@ -153,6 +153,12 @@ bin/dev/build.sh X64 sources RELEASE
 **Raspberry Pi Platform:**
 
 ```bash
+# Arguments: <TARGET> <MODE> <BUILD_TYPE>
+bin/dev/build.sh RPI sources RELEASE
+```
+
+```bash
+# If you want to install wiringPI, add install keywork
 # Arguments: <TARGET> <MODE> <BUILD_TYPE> [install]
 bin/dev/build.sh RPI sources RELEASE install
 ```
@@ -164,10 +170,23 @@ bin/dev/build.sh RPI sources RELEASE install
 ./bin/dev/docker-build-rpi.sh
 
 # Debug build
-./bin/dev/docker-build-rpi.sh debug
+./bin/dev/docker-build-rpi.sh DEBUG
 
 # Clean + rebuild
-./bin/dev/docker-build-rpi.sh release clean
+./bin/dev/docker-build-rpi.sh RELEASE CLEAN
+```
+
+### Debug on Rpi
+
+```bash
+# Release build (default)
+./bin/dev/docker-build-rpi.sh DEBUG
+
+# Debug build
+./bin/dev/deploy-to-rpi.sh
+
+# Clean + rebuild
+./bin/dev/start-gdb-rpi.sh
 ```
 
 ### Manual CMake Configuration
@@ -175,27 +194,27 @@ bin/dev/build.sh RPI sources RELEASE install
 **X64:**
 
 ```bash
-cmake -DCMAKE_BUILD_TYPE=Debug \
+cmake -DCMAKE_BUILD_TYPE=DEBUG \
       -DTARGET=X64 \
       -Wno-dev \
       -G "Unix Makefiles" \
       -S . \
       -B ./build/gcc-debug
 
-cmake --build ./build/gcc-debug --target Hexapodcpp -- -j16
+cmake --build ./build/gcc-debug --target Hexapodcpp -- -j$(nproc)
 ```
 
 **Raspberry Pi:**
 
 ```bash
-cmake -DCMAKE_BUILD_TYPE=Release \
+cmake -DCMAKE_BUILD_TYPE=RELEASE \
       -DTARGET=RPI \
       -Wno-dev \
       -G "Unix Makefiles" \
       -S . \
       -B ./build/gcc-release
 
-cmake --build ./build/gcc-release --target Hexapodcpp -- -j16
+cmake --build ./build/gcc-release --target Hexapodcpp -- -j$(nproc)
 ```
 
 ### Production Release
@@ -224,7 +243,7 @@ bin/dev/test.sh UT_MOVE_GAIT_CYCLE
 
 ```bash
 # Configure (X64 only)
-cmake -DCMAKE_BUILD_TYPE=Debug \
+cmake -DCMAKE_BUILD_TYPE=DEBUG \
       -DGTEST=1 \
       -Wno-dev \
       -G "Unix Makefiles" \
@@ -232,7 +251,7 @@ cmake -DCMAKE_BUILD_TYPE=Debug \
       -B ./build/hexapodTest
 
 # Build
-cmake --build ./build/hexapodTest --target HexapodcppTest -- -j16
+cmake --build ./build/hexapodTest --target HexapodcppTest -- -$(nproc)
 
 # Execute
 ./build/hexapodTest/unittests/HexapodcppTest
@@ -263,9 +282,14 @@ docker run --rm -v $PWD:/ws -w /ws plantuml/plantuml -tsvg images/architecture.p
 
 ---
 
-## Communication
 
-### Web HMI
+## Web HMI
+
+**Node Package installation :**
+
+```bash
+npm install .
+```
 
 **Start development server:**
 

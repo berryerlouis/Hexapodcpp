@@ -4,9 +4,8 @@ namespace Driver
 {
     namespace Gpio
     {
-        Gpio::Gpio(const SGpio          &gpio,
-                   const EPortDirection &portDirection) :
-            mGpio(gpio) {
+        Gpio::Gpio(const SGpio &gpio, const EPortDirection &portDirection)
+            : mGpio(gpio) {
             (void) portDirection;
         }
 
@@ -19,6 +18,11 @@ namespace Driver
         }
 
         Core::Status Gpio::Reset(void) {
+            return (Core::Status::CORE_OK);
+        }
+
+        Core::Status Gpio::Pwm(const uint16_t delay) {
+            (void) delay;
             return (Core::Status::CORE_OK);
         }
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifdef RPI
-#include "TickRPI.h"
-#elif X64
+#ifdef X64
 #include "TickX64.h"
+#else
+#include "TickRPI.h"
 #endif

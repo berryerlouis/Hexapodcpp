@@ -7,13 +7,13 @@ namespace Component
     {
         static constexpr uint16_t NOMINAL_LEVEL = 800U;
         static constexpr uint16_t WARNING_LEVEL = 750U;
-        static constexpr float    RPI_CURRENT_CONSUMPTION = 270.0;
+        static constexpr float    RPI_CURRENT_CONSUMPTION = 130.0;
 
-        Battery::Battery(Adc::Ads1115Interface &adc) :
-            mVoltage(0U),
-            mIntensity(0U),
-            mState(BatteryState::UNKNOWN),
-            mAdc(adc) {
+        Battery::Battery(Adc::Ads1115Interface &adc)
+            : mVoltage(0U)
+            , mIntensity(0U)
+            , mState(BatteryState::UNKNOWN)
+            , mAdc(adc) {
         }
 
         Core::Status Battery::Initialize(void) {
@@ -23,9 +23,12 @@ namespace Component
 
         void Battery::Update(const uint64_t currentTime) {
             (void) currentTime;
-            this->mVoltage = static_cast<uint16_t>(this->mAdc.ReadADC(Adc::PIN_1) * 0.46F);
-            this->mIntensity =
-                    static_cast<uint16_t>((this->mAdc.ReadADC(Adc::PIN_0) - 250.0F) * 0.066F) + RPI_CURRENT_CONSUMPTION;
+            this->mVoltage = static_cast<uint16_t>(
+                    this->mAdc.ReadADC(Adc::PIN_1) * 0.46F);
+            float intens = this->mAdc.ReadADC(Adc::PIN_0);
+            this->mIntensity = static_cast<uint16_t>((intens) * 0.066F);
+            // static_cast<uint16_t>((intens - 250.0F) *
+            // 0.066F) + RPI_CURRENT_CONSUMPTION;
             const BatteryState prevState = this->mState;
             if (this->mVoltage >= NOMINAL_LEVEL) {
                 this->mState = NOMINAL;

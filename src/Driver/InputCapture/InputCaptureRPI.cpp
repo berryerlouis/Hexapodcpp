@@ -14,18 +14,22 @@ namespace Driver
             }
         }
 
-        InputCapture::InputCapture(Gpio::GpioInterface &gpio) :
-            mGpio(gpio),
-            mState(false),
-            mStartTime(0UL),
-            mDelay(0UL) {
+        InputCapture::InputCapture(Gpio::GpioInterface &gpio)
+            : mGpio(gpio)
+            , mState(false)
+            , mStartTime(0UL)
+            , mDelay(0UL) {
             inputCapture[inputCaptureIndex] = this;
             inputCaptureIndex++;
-            wiringPiISR(this->mGpio.GetPin().pin, INT_EDGE_BOTH, &InterruptInputCapture);
+            wiringPiISR(this->mGpio.GetPin().pin,
+                        INT_EDGE_BOTH,
+                        &InterruptInputCapture);
         }
 
         Core::Status InputCapture::Initialize(void) {
-            LOG_DRIVER_DEBUG("InputCapture", "pin %d Initialized.", this->mGpio.GetPin().pin);
+            LOG_DRIVER_DEBUG("InputCapture",
+                             "pin %d Initialized.",
+                             this->mGpio.GetPin().pin);
             return Core::Status::CORE_OK;
         }
 
@@ -47,7 +51,8 @@ namespace Driver
             if (state != this->mState && state == true) {
                 this->mStartTime = Timer::Tick::GetInstance().GetUs();
             } else if (state != this->mState && state == false) {
-                this->mDelay = Timer::Tick::GetInstance().GetUs() - this->mStartTime;
+                this->mDelay =
+                        Timer::Tick::GetInstance().GetUs() - this->mStartTime;
             }
             this->mState = state;
         }

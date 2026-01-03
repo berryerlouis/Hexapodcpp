@@ -1,9 +1,9 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "../../../mock/bot/MockBody.h"
-#include "../../../../src/Cluster/Constants.h"
 #include "../../../../src/Cluster/Body/ClusterBody.h"
+#include "../../../../src/Cluster/Constants.h"
+#include "../../../mock/bot/MockBody.h"
 
 using ::testing::_;
 using ::testing::Return;
@@ -15,17 +15,15 @@ namespace Cluster
     {
         class UT_CLU_BODY : public ::testing::Test {
         protected:
-            UT_CLU_BODY() :
-                          mBodyMock()
-                          , mClusterBody(mBodyMock) {
+            UT_CLU_BODY()
+                : mBodyMock()
+                , mClusterBody(mBodyMock) {
             }
 
-            virtual void
-            SetUp() {
+            virtual void SetUp() {
             }
 
-            virtual void
-            TearDown() {
+            virtual void TearDown() {
             }
 
             virtual ~UT_CLU_BODY() = default;
@@ -39,8 +37,8 @@ namespace Cluster
 
         TEST_F(UT_CLU_BODY, Execute_WrongCommand_Ko) {
             Core::Status success = Core::Status::CORE_ERROR;
-            Frame request;
-            Frame response;
+            Frame        request;
+            Frame        response;
 
             request.Build(BODY, 0x5FU);
             success = mClusterBody.ExecuteFrame(request, response);
@@ -52,9 +50,9 @@ namespace Cluster
         }
 
         TEST_F(UT_CLU_BODY, Execute_SET_LEG_X_Y_Z_Ok) {
-            Core::Status success = Core::Status::CORE_ERROR;
-            Frame request;
-            Frame response;
+            Core::Status  success = Core::Status::CORE_ERROR;
+            Frame         request;
+            Frame         response;
             const uint8_t params[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
             EXPECT_CALL(mBodyMock, SetBodyPositionRotation(_, _, _)).Times(1U);
@@ -74,5 +72,5 @@ namespace Cluster
             EXPECT_EQ(response.GetCommandId(), EBodyCommands::SET_BODY_POS_ROT);
             EXPECT_EQ(response.GetNbParams(), 4U);
         }
-    }
-}
+    } // namespace Body
+} // namespace Cluster

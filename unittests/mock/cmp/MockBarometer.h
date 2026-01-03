@@ -8,15 +8,15 @@ namespace Component
     {
         class MockBarometer : public BarometerInterface {
         public:
-            MOCK_METHOD0(Initialize, Core::Status (void));
+            MOCK_METHOD0(Initialize, Core::Status(void));
 
-            MOCK_METHOD1(Update, void (const uint64_t));
+            MOCK_METHOD1(Update, void(const uint64_t));
 
-            MOCK_METHOD0(GetTemp, int16_t (void));
+            MOCK_METHOD0(GetTemp, int16_t(void));
 
-            MOCK_METHOD0(GetPressure, int32_t (void));
+            MOCK_METHOD0(GetPressure, int32_t(void));
 
-            MOCK_METHOD0(GetAltitude, uint16_t (void));
+            MOCK_METHOD0(GetAltitude, uint16_t(void));
         };
-    }
-}
+    } // namespace Barometer
+} // namespace Component

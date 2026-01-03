@@ -4,15 +4,13 @@ namespace Service
 {
     namespace Control
     {
-        ServiceControl::ServiceControl(ServosInterface                 &servos,
-                                       Message::MessageInterface       &messageListener,
-                                       Event::EventDispatcherInterface &eventDispatcher) :
-            Service(CONTROL,
-                    20U,
-                    messageListener,
-                    eventDispatcher),
-            mStepPca9685(0U),
-            mServosInterface(servos) {
+        ServiceControl::ServiceControl(
+                ServosInterface                 &servos,
+                Message::MessageInterface       &messageListener,
+                Event::EventDispatcherInterface &eventDispatcher)
+            : Service(CONTROL, 20U, messageListener, eventDispatcher)
+            , mStepPca9685(0U)
+            , mServosInterface(servos) {
         }
 
         Core::Status ServiceControl::Initialize(void) {
@@ -26,7 +24,8 @@ namespace Service
 
         void ServiceControl::Update(const uint64_t currentTime) {
             this->mServosInterface.Update(currentTime);
-            this->mServosInterface.GetServosController(this->mStepPca9685).Update(currentTime);
+            this->mServosInterface.GetServosController(this->mStepPca9685)
+                    .Update(currentTime);
             this->mStepPca9685++;
             if (this->mStepPca9685 == 2U) {
                 this->mStepPca9685 = 0U;

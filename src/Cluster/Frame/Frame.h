@@ -14,8 +14,7 @@ namespace Cluster
     public:
         Frame(void);
 
-        Frame(const uint8_t clusterId,
-              const uint8_t commandId);
+        Frame(const uint8_t clusterId, const uint8_t commandId);
 
         ~Frame(void) = default;
 
@@ -23,8 +22,7 @@ namespace Cluster
 
         void         Reset(void);
 
-        Core::Status Build(const uint8_t clusterId,
-                           const uint8_t commandId);
+        Core::Status Build(const uint8_t clusterId, const uint8_t commandId);
 
         Core::Status Build(const uint8_t  clusterId,
                            const uint8_t  commandId,
@@ -43,8 +41,7 @@ namespace Cluster
 
         void         Set8BytesParam(const uint64_t value);
 
-        void         SetxBytesParam(const size_t   size,
-                                    const uint8_t *value);
+        void         SetxBytesParam(const size_t size, const uint8_t *value);
 
         uint8_t      Get1ByteParam(const uint8_t index) const;
 

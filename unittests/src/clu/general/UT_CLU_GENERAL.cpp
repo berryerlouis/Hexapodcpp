@@ -2,8 +2,8 @@
 #include <gtest/gtest.h>
 
 
-#include "../../../mock/cmp/MockSoftware.h"
 #include "../../../../src/Cluster/General/ClusterGeneral.h"
+#include "../../../mock/cmp/MockSoftware.h"
 
 using ::testing::_;
 using ::testing::Return;
@@ -15,17 +15,15 @@ namespace Cluster
     {
         class UT_CLU_GENERAL : public ::testing::Test {
         protected:
-            UT_CLU_GENERAL() :
-                             mMockSoftware()
-                             , mClusterGeneral(mMockSoftware) {
+            UT_CLU_GENERAL()
+                : mMockSoftware()
+                , mClusterGeneral(mMockSoftware) {
             }
 
-            virtual void
-            SetUp() {
+            virtual void SetUp() {
             }
 
-            virtual void
-            TearDown() {
+            virtual void TearDown() {
             }
 
             virtual ~UT_CLU_GENERAL() = default;
@@ -39,8 +37,8 @@ namespace Cluster
 
         TEST_F(UT_CLU_GENERAL, Execute_WrongCommand_Ko) {
             Core::Status success = Core::Status::CORE_ERROR;
-            Frame request;
-            Frame response;
+            Frame        request;
+            Frame        response;
 
             request.Build(GENERAL, 0x5FU);
             success = mClusterGeneral.ExecuteFrame(request, response);
@@ -53,10 +51,11 @@ namespace Cluster
 
         TEST_F(UT_CLU_GENERAL, Execute_VERSION_Ok) {
             Core::Status success = Core::Status::CORE_ERROR;
-            Frame request;
-            Frame response;
+            Frame        request;
+            Frame        response;
 
-            EXPECT_CALL(mMockSoftware, GetVersion()).WillOnce(Return(SoftwareInterface::Version{1, 0}));
+            EXPECT_CALL(mMockSoftware, GetVersion())
+                    .WillOnce(Return(SoftwareInterface::Version{1, 0}));
             request.Build(GENERAL, EGeneralCommands::VERSION);
             success = mClusterGeneral.ExecuteFrame(request, response);
 
@@ -65,5 +64,5 @@ namespace Cluster
             EXPECT_EQ(response.GetNbParams(), 2U);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
-    }
-}
+    } // namespace General
+} // namespace Cluster

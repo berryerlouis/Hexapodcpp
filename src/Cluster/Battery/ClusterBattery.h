@@ -11,7 +11,7 @@ namespace Cluster
 
         class ClusterBattery : public ClusterBase, ClusterCommand {
         public:
-            ClusterBattery(BatteryInterface &battery);
+            explicit ClusterBattery(BatteryInterface &battery);
 
             ~ClusterBattery() = default;
 

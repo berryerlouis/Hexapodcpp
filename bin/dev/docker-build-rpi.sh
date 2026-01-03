@@ -29,8 +29,7 @@ for arg in "$@"; do
     esac
 done
 
-BUILD_DIR="build/hexapod-RPI-$($BUILD_TYPE)"
-
+BUILD_DIR="build/hexapod-RPI-$BUILD_TYPE"
 cd "$PROJECT_ROOT"
 
 echo "============================================="
@@ -90,11 +89,3 @@ echo ""
 echo "============================================="
 echo "Build complete! Binary: ./$OUTPUT_BINARY"
 echo "============================================="
-echo ""
-echo "Deploy to Raspberry Pi:"
-echo "  Stopping running process on hexabot..."
-ssh hexabot "sudo systemctl stop hexabot.service 2>/dev/null; sudo pkill -9 gdbserver 2>/dev/null; sudo killall -9 Hexapodcpp 2>/dev/null; sleep 0.5; true"
-echo "  Copying binary..."
-scp $OUTPUT_BINARY hexabot:/home/hexabot/
-echo "  Deployment complete!"
-echo ""

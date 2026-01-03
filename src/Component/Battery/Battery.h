@@ -11,13 +11,13 @@ namespace Component
 
         class Battery : public BatteryInterface {
         public:
-            Battery(Adc::Ads1115Interface &adc);
+            explicit Battery(Adc::Ads1115Interface &adc);
 
             ~Battery() = default;
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void         Update(const uint64_t currentTime) final override;
+            virtual void Update(const uint64_t currentTime) final override;
 
             virtual BatteryState GetState(void) final override;
 

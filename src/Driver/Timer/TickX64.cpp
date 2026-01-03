@@ -24,7 +24,10 @@ namespace Driver
 #else
             const auto duration = now.time_since_epoch();
             now = std::chrono::system_clock::now();
-            return std::chrono::duration_cast<std::chrono::microseconds>(duration).count() - start;
+            return std::chrono::duration_cast<std::chrono::microseconds>(
+                           duration)
+                           .count() -
+                   start;
 #endif
         }
 
@@ -34,7 +37,10 @@ namespace Driver
 #else
             const auto duration = now.time_since_epoch();
             now = std::chrono::system_clock::now();
-            return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() - start;
+            return std::chrono::duration_cast<std::chrono::milliseconds>(
+                           duration)
+                           .count() -
+                   start;
 #endif
         }
 

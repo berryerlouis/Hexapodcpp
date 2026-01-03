@@ -6,9 +6,9 @@
 
 #include "../../../../src/Component/Servos/Servos.h"
 
-using ::testing::StrictMock;
 using ::testing::_;
 using ::testing::Return;
+using ::testing::StrictMock;
 
 namespace Component
 {
@@ -16,34 +16,36 @@ namespace Component
     {
         class UT_CMP_SERVOS : public ::testing::Test {
         protected:
-            UT_CMP_SERVOS() :
-                            mMockGpio()
-                            , mMockPca9685_0()
-                            , mMockPca9685_1()
-                            , mServos(mMockPca9685_0, mMockPca9685_1, mMockGpio) {
+            UT_CMP_SERVOS()
+                : mMockGpio()
+                , mMockPca9685_0()
+                , mMockPca9685_1()
+                , mServos(mMockPca9685_0, mMockPca9685_1, mMockGpio) {
             }
 
-            virtual void
-            SetUp() {
+            virtual void SetUp() {
                 Core::Status success = Core::Status::CORE_ERROR;
 
-                EXPECT_CALL(mMockPca9685_0, GetAddress()).WillRepeatedly(Return(0U));
-                EXPECT_CALL(mMockPca9685_1, GetAddress()).WillRepeatedly(Return(1U));
-                EXPECT_CALL(mMockPca9685_0, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockPca9685_1, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockPca9685_0, GetAddress())
+                        .WillRepeatedly(Return(0U));
+                EXPECT_CALL(mMockPca9685_1, GetAddress())
+                        .WillRepeatedly(Return(1U));
+                EXPECT_CALL(mMockPca9685_0, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockPca9685_1, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockGpio, Set()).Times(1U);
                 success = mServos.Initialize();
                 EXPECT_EQ(success, Core::Status::CORE_OK);
             }
 
-            virtual void
-            TearDown() {
+            virtual void TearDown() {
             }
 
             virtual ~UT_CMP_SERVOS() = default;
 
             /* Mocks */
-            StrictMock<Driver::Gpio::MockGpio> mMockGpio;
+            StrictMock<Driver::Gpio::MockGpio>                   mMockGpio;
             StrictMock<Component::ServosController::MockPca9685> mMockPca9685_0;
             StrictMock<Component::ServosController::MockPca9685> mMockPca9685_1;
 
@@ -61,5 +63,5 @@ namespace Component
 
             mServos.Update(0UL);
         }
-    }
-}
+    } // namespace Servos
+} // namespace Component

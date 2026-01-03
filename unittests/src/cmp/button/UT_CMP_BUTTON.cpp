@@ -1,8 +1,8 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "../../../mock/drv/MockGpio.h"
 #include "../../../../src/Component/Button/Button.h"
+#include "../../../mock/drv/MockGpio.h"
 
 using ::testing::_;
 using ::testing::Return;
@@ -14,13 +14,12 @@ namespace Component
     {
         class UT_CMP_BUTTON : public ::testing::Test {
         protected:
-            UT_CMP_BUTTON() :
-                            mMockGpio()
-                            , mButton(mMockGpio) {
+            UT_CMP_BUTTON()
+                : mMockGpio()
+                , mButton(mMockGpio) {
             }
 
-            virtual void
-            SetUp() {
+            virtual void SetUp() {
                 Core::Status success = Core::Status::CORE_ERROR;
                 EXPECT_CALL(mMockGpio, SetInterruptPin(_)).Times(1U);
                 success = mButton.Initialize();
@@ -29,8 +28,7 @@ namespace Component
                 EXPECT_EQ(status, RELEASE);
             }
 
-            virtual void
-            TearDown() {
+            virtual void TearDown() {
             }
 
             virtual ~UT_CMP_BUTTON() = default;
@@ -41,5 +39,5 @@ namespace Component
             /* Test class */
             Button mButton;
         };
-    }
-}
+    } // namespace Button
+} // namespace Component

@@ -21,30 +21,39 @@ namespace Service
     {
         class UT_SRV_ORIENTATION : public ::testing::Test {
         protected:
-            UT_SRV_ORIENTATION() :
-                mMockMpu9150(),
-                mMockBarometer(),
-                mMockEventDispatcherInterface(),
-                mMockMessageInterface(),
-                mServiceOrientation(mMockMpu9150,
-                                    mMockBarometer,
-                                    mMockMessageInterface,
-                                    mMockEventDispatcherInterface) {
+            UT_SRV_ORIENTATION()
+                : mMockMpu9150()
+                , mMockBarometer()
+                , mMockEventDispatcherInterface()
+                , mMockMessageInterface()
+                , mServiceOrientation(mMockMpu9150,
+                                      mMockBarometer,
+                                      mMockMessageInterface,
+                                      mMockEventDispatcherInterface) {
             }
 
             virtual void SetUp() {
-                EXPECT_CALL(mMockMpu9150, Initialize()).WillOnce(Return(Core::Status::CORE_ERROR));
-                EXPECT_CALL(mMockBarometer, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_EQ(Core::Status::CORE_ERROR, mServiceOrientation.Initialize());
+                EXPECT_CALL(mMockMpu9150, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_ERROR));
+                EXPECT_CALL(mMockBarometer, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_EQ(Core::Status::CORE_ERROR,
+                          mServiceOrientation.Initialize());
 
-                EXPECT_CALL(mMockMpu9150, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockBarometer, Initialize()).WillOnce(Return(Core::Status::CORE_ERROR));
-                EXPECT_EQ(Core::Status::CORE_ERROR, mServiceOrientation.Initialize());
+                EXPECT_CALL(mMockMpu9150, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockBarometer, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_ERROR));
+                EXPECT_EQ(Core::Status::CORE_ERROR,
+                          mServiceOrientation.Initialize());
 
-                EXPECT_CALL(mMockMpu9150, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockBarometer, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockMpu9150, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockBarometer, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockEventDispatcherInterface, AddListener(_));
-                EXPECT_EQ(Core::Status::CORE_OK, mServiceOrientation.Initialize());
+                EXPECT_EQ(Core::Status::CORE_OK,
+                          mServiceOrientation.Initialize());
             }
 
             virtual void TearDown() {
@@ -55,15 +64,15 @@ namespace Service
             /* Mocks */
             StrictMock<Component::Imu::MockMpu9150>         mMockMpu9150;
             StrictMock<Component::Barometer::MockBarometer> mMockBarometer;
-            StrictMock<Event::MockEventDispatcherInterface> mMockEventDispatcherInterface;
-            StrictMock<Message::MockMessageInterface>       mMockMessageInterface;
+            StrictMock<Event::MockEventDispatcherInterface>
+                    mMockEventDispatcherInterface;
+            StrictMock<Message::MockMessageInterface> mMockMessageInterface;
 
             /* Test class */
             ServiceOrientation mServiceOrientation;
         };
 
-        TEST_F(UT_SRV_ORIENTATION,
-               Update_Ok) {
+        TEST_F(UT_SRV_ORIENTATION, Update_Ok) {
             EXPECT_CALL(mMockMpu9150, Update(_)).Times(1U);
             EXPECT_CALL(mMockBarometer, Update(_)).Times(1U);
 

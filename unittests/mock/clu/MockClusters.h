@@ -10,5 +10,5 @@ namespace Cluster
         public:
             MOCK_METHOD1(GetCluster, ClusterBase *(const EClusters));
         };
-    }
-}
+    } // namespace Clusters
+} // namespace Cluster

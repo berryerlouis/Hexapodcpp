@@ -16,12 +16,10 @@ namespace Cluster
             UT_CLU_PROTOCOL() {
             }
 
-            virtual void
-            SetUp() {
+            virtual void SetUp() {
             }
 
-            virtual void
-            TearDown() {
+            virtual void TearDown() {
             }
 
             virtual ~UT_CLU_PROTOCOL() = default;
@@ -32,9 +30,10 @@ namespace Cluster
         };
 
         TEST_F(UT_CLU_PROTOCOL, Decode_NullPtrBufferData) {
-            Frame request;
+            Frame              request;
 
-            const Core::Status parsedStatus = Protocol::Decode(nullptr, request);
+            const Core::Status parsedStatus =
+                    Protocol::Decode(nullptr, request);
 
             EXPECT_EQ(parsedStatus, Core::Status::CORE_ERROR_NULLPTR);
             EXPECT_EQ(request.GetClusterId(), 0U);
@@ -46,9 +45,10 @@ namespace Cluster
         }
 
         TEST_F(UT_CLU_PROTOCOL, Decode_NoBufferData) {
-            Frame request;
-            constexpr char bufferRx[] = "";
-            const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
+            Frame              request;
+            constexpr char     bufferRx[] = "";
+            const Core::Status parsedStatus =
+                    Protocol::Decode(bufferRx, request);
 
             EXPECT_NE(parsedStatus, Core::Status::CORE_OK);
             EXPECT_EQ(request.GetClusterId(), 0U);
@@ -60,9 +60,10 @@ namespace Cluster
         }
 
         TEST_F(UT_CLU_PROTOCOL, Decode_BufferDataWhitoutParam) {
-            Frame request;
-            constexpr char bufferRx[] = "010400";
-            const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
+            Frame              request;
+            constexpr char     bufferRx[] = "010400";
+            const Core::Status parsedStatus =
+                    Protocol::Decode(bufferRx, request);
 
             EXPECT_EQ(parsedStatus, Core::Status::CORE_OK);
             EXPECT_EQ(request.GetClusterId(), 1U);
@@ -74,9 +75,10 @@ namespace Cluster
         }
 
         TEST_F(UT_CLU_PROTOCOL, Decode_BufferDataWhitParam) {
-            Frame request;
-            constexpr char bufferRx[] = "0608020102";
-            const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
+            Frame              request;
+            constexpr char     bufferRx[] = "0608020102";
+            const Core::Status parsedStatus =
+                    Protocol::Decode(bufferRx, request);
 
             EXPECT_EQ(parsedStatus, Core::Status::CORE_OK);
             EXPECT_EQ(request.GetClusterId(), 6U);
@@ -91,9 +93,10 @@ namespace Cluster
         }
 
         TEST_F(UT_CLU_PROTOCOL, Decode_BufferDataTooSmall) {
-            Frame request;
-            constexpr char bufferRx[] = "00000";
-            const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
+            Frame              request;
+            constexpr char     bufferRx[] = "00000";
+            const Core::Status parsedStatus =
+                    Protocol::Decode(bufferRx, request);
 
             EXPECT_EQ(parsedStatus, Core::Status::CORE_ERROR_SIZE);
             EXPECT_EQ(request.GetClusterId(), 0U);
@@ -105,9 +108,10 @@ namespace Cluster
         }
 
         TEST_F(UT_CLU_PROTOCOL, Decode_BufferDataTooBig) {
-            Frame request;
-            constexpr char bufferRx[] = "0000000";
-            const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
+            Frame              request;
+            constexpr char     bufferRx[] = "0000000";
+            const Core::Status parsedStatus =
+                    Protocol::Decode(bufferRx, request);
 
             EXPECT_EQ(parsedStatus, Core::Status::CORE_ERROR_SIZE);
             EXPECT_EQ(request.GetClusterId(), 0U);
@@ -119,9 +123,10 @@ namespace Cluster
         }
 
         TEST_F(UT_CLU_PROTOCOL, Decode_BufferDataSizeError) {
-            Frame request;
-            constexpr char bufferRx[] = "000001";
-            const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
+            Frame              request;
+            constexpr char     bufferRx[] = "000001";
+            const Core::Status parsedStatus =
+                    Protocol::Decode(bufferRx, request);
 
             EXPECT_EQ(parsedStatus, Core::Status::CORE_ERROR_OVERLOAD);
             EXPECT_EQ(request.GetClusterId(), 0U);
@@ -133,19 +138,15 @@ namespace Cluster
         }
 
         TEST_F(UT_CLU_PROTOCOL, Encode_Frame) {
-            Frame response;
+            Frame             response;
             constexpr uint8_t params[] = {1U, 2U};
-            response.Build(
-                    4U,
-                    1U,
-                    params,
-                    2U);
-            char bufferTx[100U];
+            response.Build(4U, 1U, params, 2U);
+            char         bufferTx[100U];
             const size_t size = Protocol::Encode(response, bufferTx);
 
             EXPECT_EQ(size, 12U);
 
             EXPECT_TRUE(0U == strcmp(bufferTx, "<0401020102>"));
         }
-    }
-}
+    } // namespace Decoding
+} // namespace Cluster

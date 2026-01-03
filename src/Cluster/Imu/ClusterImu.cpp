@@ -8,22 +8,33 @@ namespace Cluster
         using namespace Component::Barometer;
 
         ClusterImu::ClusterImu(Mpu9150Interface   &imu,
-                               BarometerInterface &barometer) :
-            ClusterBase(IMU,
-                        *this),
-            ClusterCommand(NB_COMMANDS_IMU),
-            mImu(imu),
-            mBarometer(barometer) {
-            this->AddClusterItem((ClusterItem) {.commandId = EImuCommands::ALL, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem) {.commandId = EImuCommands::ACC, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem) {.commandId = EImuCommands::GYR, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem) {.commandId = EImuCommands::MAG, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem) {.commandId = EImuCommands::TMP, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem) {.commandId = EImuCommands::YAW_PITCH_ROLL, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem) {.commandId = EImuCommands::PRESSURE, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem) {.commandId = EImuCommands::ALTITUDE, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem) {.commandId = EImuCommands::TMP_BAR, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem) {.commandId = EImuCommands::CALIB_SENSOR, .expectedSize = 2U});
+                               BarometerInterface &barometer)
+            : ClusterBase(IMU, *this)
+            , ClusterCommand(NB_COMMANDS_IMU)
+            , mImu(imu)
+            , mBarometer(barometer) {
+            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::ALL,
+                                               .expectedSize = 0U});
+            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::ACC,
+                                               .expectedSize = 0U});
+            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::GYR,
+                                               .expectedSize = 0U});
+            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::MAG,
+                                               .expectedSize = 0U});
+            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::TMP,
+                                               .expectedSize = 0U});
+            this->AddClusterItem(
+                    (ClusterItem){.commandId = EImuCommands::YAW_PITCH_ROLL,
+                                  .expectedSize = 0U});
+            this->AddClusterItem((ClusterItem){
+                    .commandId = EImuCommands::PRESSURE, .expectedSize = 0U});
+            this->AddClusterItem((ClusterItem){
+                    .commandId = EImuCommands::ALTITUDE, .expectedSize = 0U});
+            this->AddClusterItem((ClusterItem){
+                    .commandId = EImuCommands::TMP_BAR, .expectedSize = 0U});
+            this->AddClusterItem(
+                    (ClusterItem){.commandId = EImuCommands::CALIB_SENSOR,
+                                  .expectedSize = 2U});
             LOG_CLUSTER_DEBUG("Imu", "(%d) Initialized.", IMU);
         }
 
@@ -61,8 +72,9 @@ namespace Cluster
                 const int16_t temp = this->mBarometer.GetTemp();
                 success = this->BuildFrameTmpBar(temp, response);
             } else if (request.GetCommandId() == EImuCommands::CALIB_SENSOR) {
-                const SensorsImu sensor = static_cast<SensorsImu>(request.Get1ByteParam(0U));
-                const bool       enable = request.Get1ByteParam(1U);
+                const SensorsImu sensor =
+                        static_cast<SensorsImu>(request.Get1ByteParam(0U));
+                const bool enable = request.Get1ByteParam(1U);
                 if (enable == true) {
                     this->mImu.StartCalibration(sensor);
                 } else {
@@ -78,11 +90,15 @@ namespace Cluster
                                                const Vector3 &mag,
                                                const uint16_t temp,
                                                Frame         &response) {
-            const Core::Status success = response.Build(EClusters::IMU, EImuCommands::ALL);
+            const Core::Status success =
+                    response.Build(EClusters::IMU, EImuCommands::ALL);
             if (success == Core::Status::CORE_OK) {
-                response.SetxBytesParam(6U, (uint8_t *) &acc);
-                response.SetxBytesParam(6U, (uint8_t *) &gyr);
-                response.SetxBytesParam(6U, (uint8_t *) &mag);
+                response.SetxBytesParam(
+                        6U, reinterpret_cast<const uint8_t *>(&acc));
+                response.SetxBytesParam(
+                        6U, reinterpret_cast<const uint8_t *>(&gyr));
+                response.SetxBytesParam(
+                        6U, reinterpret_cast<const uint8_t *>(&mag));
                 response.Set2BytesParam(temp);
             }
             return (success);
@@ -90,34 +106,41 @@ namespace Cluster
 
         Core::Status ClusterImu::BuildFrameAcc(const Vector3 &acc,
                                                Frame         &response) {
-            const Core::Status success = response.Build(EClusters::IMU, EImuCommands::ACC);
+            const Core::Status success =
+                    response.Build(EClusters::IMU, EImuCommands::ACC);
             if (success == Core::Status::CORE_OK) {
-                response.SetxBytesParam(6U, (uint8_t *) &acc);
+                response.SetxBytesParam(
+                        6U, reinterpret_cast<const uint8_t *>(&acc));
             }
             return (success);
         }
 
         Core::Status ClusterImu::BuildFrameGyr(const Vector3 &gyr,
                                                Frame         &response) {
-            const Core::Status success = response.Build(EClusters::IMU, EImuCommands::GYR);
+            const Core::Status success =
+                    response.Build(EClusters::IMU, EImuCommands::GYR);
             if (success == Core::Status::CORE_OK) {
-                response.SetxBytesParam(6U, (uint8_t *) &gyr);
+                response.SetxBytesParam(
+                        6U, reinterpret_cast<const uint8_t *>(&gyr));
             }
             return (success);
         }
 
         Core::Status ClusterImu::BuildFrameMag(const Vector3 &mag,
                                                Frame         &response) {
-            const Core::Status success = response.Build(EClusters::IMU, EImuCommands::MAG);
+            const Core::Status success =
+                    response.Build(EClusters::IMU, EImuCommands::MAG);
             if (success == Core::Status::CORE_OK) {
-                response.SetxBytesParam(6U, (uint8_t *) &mag);
+                response.SetxBytesParam(
+                        6U, reinterpret_cast<const uint8_t *>(&mag));
             }
             return (success);
         }
 
         Core::Status ClusterImu::BuildFrameTmp(const uint16_t temp,
                                                Frame         &response) {
-            const Core::Status success = response.Build(EClusters::IMU, EImuCommands::TMP);
+            const Core::Status success =
+                    response.Build(EClusters::IMU, EImuCommands::TMP);
             if (success == Core::Status::CORE_OK) {
                 response.Set2BytesParam(temp);
             }
@@ -130,16 +153,19 @@ namespace Cluster
             cmp.x = static_cast<int16_t>(ypr.roll * 100U);
             cmp.y = static_cast<int16_t>(ypr.pitch * 100U);
             cmp.z = static_cast<int16_t>(ypr.yaw * 100U);
-            const Core::Status success = response.Build(EClusters::IMU, EImuCommands::YAW_PITCH_ROLL);
+            const Core::Status success = response.Build(
+                    EClusters::IMU, EImuCommands::YAW_PITCH_ROLL);
             if (success == Core::Status::CORE_OK) {
-                response.SetxBytesParam(6U, (uint8_t *) &cmp);
+                response.SetxBytesParam(
+                        6U, reinterpret_cast<const uint8_t *>(&cmp));
             }
             return (success);
         }
 
         Core::Status ClusterImu::BuildFramePressure(const int32_t pressure,
                                                     Frame        &response) {
-            const Core::Status success = response.Build(EClusters::IMU, EImuCommands::PRESSURE);
+            const Core::Status success =
+                    response.Build(EClusters::IMU, EImuCommands::PRESSURE);
             if (success == Core::Status::CORE_OK) {
                 response.Set4BytesParam(pressure);
             }
@@ -148,7 +174,8 @@ namespace Cluster
 
         Core::Status ClusterImu::BuildFrameSeaLevel(const uint16_t seaLevel,
                                                     Frame         &response) {
-            const Core::Status success = response.Build(EClusters::IMU, EImuCommands::ALTITUDE);
+            const Core::Status success =
+                    response.Build(EClusters::IMU, EImuCommands::ALTITUDE);
             if (success == Core::Status::CORE_OK) {
                 response.Set2BytesParam(seaLevel);
             }
@@ -157,20 +184,10 @@ namespace Cluster
 
         Core::Status ClusterImu::BuildFrameTmpBar(const int16_t temp,
                                                   Frame        &response) {
-            const Core::Status success = response.Build(EClusters::IMU, EImuCommands::TMP_BAR);
+            const Core::Status success =
+                    response.Build(EClusters::IMU, EImuCommands::TMP_BAR);
             if (success == Core::Status::CORE_OK) {
                 response.Set2BytesParam(temp);
-            }
-            return (success);
-        }
-
-        Core::Status ClusterImu::BuildFrameCalibMag(const bool      min,
-                                                    const Vector3F &calib,
-                                                    Frame          &response) {
-            const Core::Status success = response.Build(EClusters::IMU, EImuCommands::YAW_PITCH_ROLL);
-            if (success == Core::Status::CORE_OK) {
-                response.Set1ByteParam(min);
-                response.SetxBytesParam(12U, (uint8_t *) &calib);
             }
             return (success);
         }

@@ -5,40 +5,30 @@ namespace Service
 {
     namespace Services
     {
-        Services::Services(ServiceGeneral                  &serviceGeneral,
-                           ServiceControl                  &serviceControl,
-                           ServiceCommunication            &serviceCommunication,
-                           ServiceProximity                &serviceProximity,
-                           ServiceOrientation              &serviceOrientation,
-                           ServiceBattery                  &serviceBattery,
-                           ServiceDisplay                  &serviceDisplay,
-                           ServiceBody                     &serviceBody,
-                           ServiceButton                   &serviceButton,
-                           ServiceSound                    &serviceSound,
-                           Message::MessageInterface       &messageListener,
-                           Event::EventDispatcherInterface &eventDispatcher) :
-            mServices{{GENERAL,
-                       &serviceGeneral},
-                      {CONTROL,
-                       &serviceControl},
-                      {COMMUNICATION,
-                       &serviceCommunication},
-                      {PROXIMITY,
-                       &serviceProximity},
-                      {ORIENTATION,
-                       &serviceOrientation},
-                      {BATTERY,
-                       &serviceBattery},
-                      {DISPLAY,
-                       &serviceDisplay},
-                      {BODY,
-                       &serviceBody},
-                      {BUTTON,
-                       &serviceButton},
-                      {SOUND,
-                       &serviceSound}},
-            mMessageListener(messageListener),
-            mEventDispatcher(eventDispatcher) {
+        Services::Services(ServiceGeneral            &serviceGeneral,
+                           ServiceControl            &serviceControl,
+                           ServiceCommunication      &serviceCommunication,
+                           ServiceProximity          &serviceProximity,
+                           ServiceOrientation        &serviceOrientation,
+                           ServiceBattery            &serviceBattery,
+                           ServiceDisplay            &serviceDisplay,
+                           ServiceBody               &serviceBody,
+                           ServiceButton             &serviceButton,
+                           ServiceSound              &serviceSound,
+                           Message::MessageInterface &messageListener,
+                           Event::EventDispatcherInterface &eventDispatcher)
+            : mServices{{GENERAL, &serviceGeneral},
+                        {CONTROL, &serviceControl},
+                        {COMMUNICATION, &serviceCommunication},
+                        {PROXIMITY, &serviceProximity},
+                        {ORIENTATION, &serviceOrientation},
+                        {BATTERY, &serviceBattery},
+                        {DISPLAY, &serviceDisplay},
+                        {BODY, &serviceBody},
+                        {BUTTON, &serviceButton},
+                        {SOUND, &serviceSound}}
+            , mMessageListener(messageListener)
+            , mEventDispatcher(eventDispatcher) {
         }
 
         Core::Status Services::Initialize(void) {
@@ -47,16 +37,23 @@ namespace Service
             for (const auto &pair: this->mServices) {
                 Service *service = pair.second;
                 success = service->Initialize();
-                service->DispatchEvent<Core::Status>(service->GetServiceId(), EventType::EVENT_INIT_UPDATE, success);
+                service->DispatchEvent<Core::Status>(
+                        service->GetServiceId(),
+                        EventType::EVENT_INIT_UPDATE,
+                        success);
                 if (success != Core::Status::CORE_OK) {
 #ifdef DEBUG
-                    LOG_SERVICE_ERROR("Service id:%s Initialization error.",
-                                      EServicesStruct::ServiceIdToString(pair.first).c_str());
+                    LOG_SERVICE_ERROR(
+                            "Service id:%s Initialization "
+                            "error.",
+                            EServicesStruct::ServiceIdToString(pair.first)
+                                    .c_str());
 #endif
                 }
             }
             Frame response;
-            Cluster::General::ClusterGeneral::BuildFrameReset(response, success);
+            Cluster::General::ClusterGeneral::BuildFrameReset(response,
+                                                              success);
             this->mMessageListener.SendMessage(response);
             return (success);
         }

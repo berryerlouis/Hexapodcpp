@@ -18,25 +18,29 @@ namespace Service
     {
         class UT_SRV_COMMUNICATION : public ::testing::Test {
         protected:
-            UT_SRV_COMMUNICATION() :
-                mMockCommunication(),
-                mMockClusters(),
-                mMockEventDispatcherInterface(),
-                mMockMessageInterface(),
-                mServiceCommunication(mMockCommunication,
-                                      mMockClusters,
+            UT_SRV_COMMUNICATION()
+                : mMockCommunication()
+                , mMockClusters()
+                , mMockEventDispatcherInterface()
+                , mMockMessageInterface()
+                , mServiceCommunication(mMockCommunication,
+                                        mMockClusters,
 
-                                      mMockMessageInterface,
-                                      mMockEventDispatcherInterface) {
+                                        mMockMessageInterface,
+                                        mMockEventDispatcherInterface) {
             }
 
             virtual void SetUp() {
-                EXPECT_CALL(mMockCommunication, Initialize()).WillOnce(Return(Core::Status::CORE_ERROR));
-                EXPECT_EQ(Core::Status::CORE_ERROR, mServiceCommunication.Initialize());
+                EXPECT_CALL(mMockCommunication, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_ERROR));
+                EXPECT_EQ(Core::Status::CORE_ERROR,
+                          mServiceCommunication.Initialize());
 
-                EXPECT_CALL(mMockCommunication, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockCommunication, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockEventDispatcherInterface, AddListener(_));
-                EXPECT_EQ(Core::Status::CORE_OK, mServiceCommunication.Initialize());
+                EXPECT_EQ(Core::Status::CORE_OK,
+                          mServiceCommunication.Initialize());
             }
 
             virtual void TearDown() {
@@ -46,17 +50,18 @@ namespace Service
 
 
             /* Mocks */
-            StrictMock<Component::Communication::MockCommunication> mMockCommunication;
-            StrictMock<Cluster::Clusters::MockClusters>             mMockClusters;
-            StrictMock<Event::MockEventDispatcherInterface>         mMockEventDispatcherInterface;
-            StrictMock<Message::MockMessageInterface>               mMockMessageInterface;
+            StrictMock<Component::Communication::MockCommunication>
+                                                        mMockCommunication;
+            StrictMock<Cluster::Clusters::MockClusters> mMockClusters;
+            StrictMock<Event::MockEventDispatcherInterface>
+                    mMockEventDispatcherInterface;
+            StrictMock<Message::MockMessageInterface> mMockMessageInterface;
 
             /* Test class */
             ServiceCommunication mServiceCommunication;
         };
 
-        TEST_F(UT_SRV_COMMUNICATION,
-               Initialize_Update) {
+        TEST_F(UT_SRV_COMMUNICATION, Initialize_Update) {
             EXPECT_CALL(mMockCommunication, Update(12450UL)).Times(1U);
             mServiceCommunication.Update(12450UL);
         }

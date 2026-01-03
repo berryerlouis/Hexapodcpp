@@ -2,8 +2,8 @@
 #include <gtest/gtest.h>
 
 
-#include "../../../mock/cmp/MockAds1115.h"
 #include "../../../../src/Component/Battery/Battery.h"
+#include "../../../mock/cmp/MockAds1115.h"
 
 using ::testing::_;
 using ::testing::Return;
@@ -15,19 +15,18 @@ namespace Component
     {
         class UT_CMP_BATTERY : public ::testing::Test {
         protected:
-            UT_CMP_BATTERY() :
-                             mMockAdc()
-                             , mBattery(mMockAdc) {
+            UT_CMP_BATTERY()
+                : mMockAdc()
+                , mBattery(mMockAdc) {
             }
 
-            virtual void
-            SetUp() {
-                EXPECT_CALL(mMockAdc, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+            virtual void SetUp() {
+                EXPECT_CALL(mMockAdc, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_EQ(mBattery.Initialize(), Core::Status::CORE_OK);
             }
 
-            virtual void
-            TearDown() {
+            virtual void TearDown() {
             }
 
             virtual ~UT_CMP_BATTERY() = default;
@@ -56,8 +55,10 @@ namespace Component
         }
 
         TEST_F(UT_CMP_BATTERY, GetStateAfterUpdateWarning) {
-            EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_0)).WillOnce(Return(799U / 0.46F));
-            EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_1)).WillOnce(Return(799U / 0.46F));
+            EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_0))
+                    .WillOnce(Return(799U / 0.46F));
+            EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_1))
+                    .WillOnce(Return(799U / 0.46F));
 
             mBattery.Update(0UL);
             const BatteryState state = mBattery.GetState();
@@ -65,8 +66,10 @@ namespace Component
         }
 
         TEST_F(UT_CMP_BATTERY, GetStateAfterUpdateNominal) {
-            EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_0)).WillOnce(Return(900U / 0.46F));
-            EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_1)).WillOnce(Return(900U / 0.46F));
+            EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_0))
+                    .WillOnce(Return(900U / 0.46F));
+            EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_1))
+                    .WillOnce(Return(900U / 0.46F));
 
             mBattery.Update(0UL);
 
@@ -75,8 +78,10 @@ namespace Component
         }
 
         TEST_F(UT_CMP_BATTERY, GetStateAfterUpdateNominalTwice) {
-            EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_0)).WillRepeatedly(Return(900U / 0.46F));
-            EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_1)).WillRepeatedly(Return(900U / 0.46F));
+            EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_0))
+                    .WillRepeatedly(Return(900U / 0.46F));
+            EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_1))
+                    .WillRepeatedly(Return(900U / 0.46F));
 
             mBattery.Update(0UL);
             mBattery.Update(0UL);
@@ -84,5 +89,5 @@ namespace Component
 
             EXPECT_EQ(state, BatteryState::NOMINAL);
         }
-    }
-}
+    } // namespace Battery
+} // namespace Component

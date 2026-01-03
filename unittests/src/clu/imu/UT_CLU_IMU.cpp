@@ -1,10 +1,10 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "../../../mock/cmp/MockBarometer.h"
-#include "../../../mock/cmp/MockMpu9150.h"
 #include "../../../../src/Cluster/Imu/ClusterImu.h"
 #include "../../../../src/Misc/Maths/Geometry.h"
+#include "../../../mock/cmp/MockBarometer.h"
+#include "../../../mock/cmp/MockMpu9150.h"
 
 using ::testing::_;
 using ::testing::Return;
@@ -16,24 +16,22 @@ namespace Cluster
     {
         class UT_CLU_IMU : public ::testing::Test {
         protected:
-            UT_CLU_IMU() :
-                         mMockMpu9150()
-                         , mMockBarometer()
-                         , mClusterImu(mMockMpu9150, mMockBarometer) {
+            UT_CLU_IMU()
+                : mMockMpu9150()
+                , mMockBarometer()
+                , mClusterImu(mMockMpu9150, mMockBarometer) {
             }
 
-            virtual void
-            SetUp() {
+            virtual void SetUp() {
             }
 
-            virtual void
-            TearDown() {
+            virtual void TearDown() {
             }
 
             virtual ~UT_CLU_IMU() = default;
 
             /* Mocks */
-            StrictMock<Component::Imu::MockMpu9150> mMockMpu9150;
+            StrictMock<Component::Imu::MockMpu9150>         mMockMpu9150;
             StrictMock<Component::Barometer::MockBarometer> mMockBarometer;
 
             /* Test class */
@@ -42,8 +40,8 @@ namespace Cluster
 
         TEST_F(UT_CLU_IMU, Execute_WrongCommand_Ko) {
             Core::Status success = Core::Status::CORE_ERROR;
-            Frame response;
-            Frame request;
+            Frame        response;
+            Frame        request;
 
             request.Build(IMU, 0x5FU);
             success = mClusterImu.ExecuteFrame(request, response);
@@ -57,13 +55,16 @@ namespace Cluster
 
         TEST_F(UT_CLU_IMU, Execute_ALL_Ok) {
             Core::Status success = Core::Status::CORE_ERROR;
-            Frame response;
-            Frame request;
+            Frame        response;
+            Frame        request;
 
             request.Build(IMU, EImuCommands::ALL);
-            EXPECT_CALL(mMockMpu9150, ReadAcc()).WillOnce(Return(Vector3{5, 5, 5}));
-            EXPECT_CALL(mMockMpu9150, ReadGyr()).WillOnce(Return(Vector3{5, 5, 5}));
-            EXPECT_CALL(mMockMpu9150, ReadMag()).WillOnce(Return(Vector3{5, 5, 5}));
+            EXPECT_CALL(mMockMpu9150, ReadAcc())
+                    .WillOnce(Return(Vector3{5, 5, 5}));
+            EXPECT_CALL(mMockMpu9150, ReadGyr())
+                    .WillOnce(Return(Vector3{5, 5, 5}));
+            EXPECT_CALL(mMockMpu9150, ReadMag())
+                    .WillOnce(Return(Vector3{5, 5, 5}));
             EXPECT_CALL(mMockMpu9150, ReadTemp()).WillOnce(Return(25));
 
             success = mClusterImu.ExecuteFrame(request, response);
@@ -76,11 +77,12 @@ namespace Cluster
 
         TEST_F(UT_CLU_IMU, Execute_ACC_Ok) {
             Core::Status success = Core::Status::CORE_ERROR;
-            Frame response;
-            Frame request;
+            Frame        response;
+            Frame        request;
 
             request.Build(IMU, EImuCommands::ACC);
-            EXPECT_CALL(mMockMpu9150, ReadAcc()).WillOnce(Return(Vector3{5, 5, 5}));
+            EXPECT_CALL(mMockMpu9150, ReadAcc())
+                    .WillOnce(Return(Vector3{5, 5, 5}));
 
             success = mClusterImu.ExecuteFrame(request, response);
 
@@ -92,11 +94,12 @@ namespace Cluster
 
         TEST_F(UT_CLU_IMU, Execute_GYR_Ok) {
             Core::Status success = Core::Status::CORE_ERROR;
-            Frame response;
-            Frame request;
+            Frame        response;
+            Frame        request;
 
             request.Build(IMU, EImuCommands::GYR);
-            EXPECT_CALL(mMockMpu9150, ReadGyr()).WillOnce(Return(Vector3{5, 5, 5}));
+            EXPECT_CALL(mMockMpu9150, ReadGyr())
+                    .WillOnce(Return(Vector3{5, 5, 5}));
 
             success = mClusterImu.ExecuteFrame(request, response);
 
@@ -108,11 +111,12 @@ namespace Cluster
 
         TEST_F(UT_CLU_IMU, Execute_MAG_Ok) {
             Core::Status success = Core::Status::CORE_ERROR;
-            Frame response;
-            Frame request;
+            Frame        response;
+            Frame        request;
 
             request.Build(IMU, EImuCommands::MAG);
-            EXPECT_CALL(mMockMpu9150, ReadMag()).WillOnce(Return(Vector3{5, 5, 5}));
+            EXPECT_CALL(mMockMpu9150, ReadMag())
+                    .WillOnce(Return(Vector3{5, 5, 5}));
 
             success = mClusterImu.ExecuteFrame(request, response);
 
@@ -124,8 +128,8 @@ namespace Cluster
 
         TEST_F(UT_CLU_IMU, Execute_TMP_Ok) {
             Core::Status success = Core::Status::CORE_ERROR;
-            Frame response;
-            Frame request;
+            Frame        response;
+            Frame        request;
 
             request.Build(IMU, EImuCommands::TMP);
             EXPECT_CALL(mMockMpu9150, ReadTemp()).WillOnce(Return(10U));
@@ -137,5 +141,5 @@ namespace Cluster
             EXPECT_EQ(response.GetNbParams(), 2U);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
-    }
-}
+    } // namespace Imu
+} // namespace Cluster

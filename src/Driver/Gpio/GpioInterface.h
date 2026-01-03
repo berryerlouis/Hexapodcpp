@@ -10,7 +10,8 @@ namespace Driver
     {
         enum EPortDirection {
             IN = 0U,
-            OUT = 1U
+            OUT = 1U,
+            PWM = 2U,
         };
 
         enum EPort {
@@ -32,11 +33,11 @@ namespace Driver
 
             GpioInterface() = default;
 
-            ~GpioInterface() = default;
-
             virtual Core::Status Set(void) = 0;
 
             virtual Core::Status Reset(void) = 0;
+
+            virtual Core::Status Pwm(const uint16_t delay) = 0;
 
             virtual SGpio       &GetPin(void) = 0;
 
@@ -44,9 +45,9 @@ namespace Driver
 
             virtual void         SetInterruptPin(void) = 0;
 
-            virtual void         SetInterruptPin(const InterruptCallback callback) = 0;
+            virtual void SetInterruptPin(const InterruptCallback callback) = 0;
 
-            virtual void         ResetInterruptPin(void) = 0;
+            virtual void ResetInterruptPin(void) = 0;
         };
     } // namespace Gpio
 } // namespace Driver

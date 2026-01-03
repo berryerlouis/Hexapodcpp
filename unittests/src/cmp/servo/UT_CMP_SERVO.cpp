@@ -5,9 +5,9 @@
 
 #include "../../../../src/Component/Servo/Servo.h"
 
-using ::testing::StrictMock;
 using ::testing::_;
 using ::testing::Return;
+using ::testing::StrictMock;
 
 namespace Component
 {
@@ -15,21 +15,19 @@ namespace Component
     {
         class UT_CMP_SERVO : public ::testing::Test {
         protected:
-            UT_CMP_SERVO() :
-                           mMockPca9685()
-                           , mServo(mMockPca9685, 0U, 90U, 0, 0U, 180U, false) {
+            UT_CMP_SERVO()
+                : mMockPca9685()
+                , mServo(mMockPca9685, 0U, 90U, 0, 0U, 180U, false) {
             }
 
-            virtual void
-            SetUp() {
+            virtual void SetUp() {
                 EXPECT_CALL(mMockPca9685, GetAddress()).WillOnce(Return(0U));
                 const Core::Status success = mServo.Initialize();
                 mServo.SetEnable(true);
                 EXPECT_EQ(success, Core::Status::CORE_OK);
             }
 
-            virtual void
-            TearDown() {
+            virtual void TearDown() {
             }
 
             virtual ~UT_CMP_SERVO() = default;
@@ -108,5 +106,5 @@ namespace Component
             EXPECT_TRUE(mServo.SetMax(90U));
             EXPECT_EQ(mServo.GetMax(), 90U);
         }
-    }
-}
+    } // namespace Servo
+} // namespace Component

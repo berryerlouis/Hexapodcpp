@@ -11,8 +11,6 @@ namespace Cluster
         public:
             ClustersInterface() = default;
 
-            ~ClustersInterface() = default;
-
             virtual ClusterBase *GetCluster(const EClusters clusterId) = 0;
         };
     } // namespace Clusters

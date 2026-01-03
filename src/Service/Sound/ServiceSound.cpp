@@ -6,16 +6,14 @@ namespace Service
 {
     namespace Sound
     {
-        ServiceSound::ServiceSound(SoundInterface                  &soundInterfaceLeft,
-                                   SoundInterface                  &soundInterfaceRight,
-                                   Message::MessageInterface       &messageListener,
-                                   Event::EventDispatcherInterface &eventDispatcher) :
-            Service(SOUND,
-                    500U,
-                    messageListener,
-                    eventDispatcher),
-            mSoundLeft(soundInterfaceLeft),
-            mSoundRight(soundInterfaceRight) {
+        ServiceSound::ServiceSound(
+                SoundInterface                  &soundInterfaceLeft,
+                SoundInterface                  &soundInterfaceRight,
+                Message::MessageInterface       &messageListener,
+                Event::EventDispatcherInterface &eventDispatcher)
+            : Service(SOUND, 500U, messageListener, eventDispatcher)
+            , mSoundLeft(soundInterfaceLeft)
+            , mSoundRight(soundInterfaceRight) {
         }
 
         Core::Status ServiceSound::Initialize(void) {
@@ -37,12 +35,15 @@ namespace Service
         }
 
         void ServiceSound::SendMaxSound(void) const {
-            const SoundStruct maxSound = Component::Sound::Sound::ComputeAndNotifyMaxSound();
+            const SoundStruct maxSound =
+                    Component::Sound::Sound::ComputeAndNotifyMaxSound();
             if (maxSound.id != SOUND_NONE) {
                 Frame response;
-                Cluster::Sound::ClusterSound::BuildFrameGetSoundState(maxSound.id, maxSound.delay, response);
+                Cluster::Sound::ClusterSound::BuildFrameGetSoundState(
+                        maxSound.id, maxSound.delay, response);
                 this->SendMessage(response);
-                this->DispatchEvent<SoundStruct>(EventType::EVENT_SENSOR_UPDATE, maxSound);
+                this->DispatchEvent<SoundStruct>(EventType::EVENT_SENSOR_UPDATE,
+                                                 maxSound);
             }
         }
 

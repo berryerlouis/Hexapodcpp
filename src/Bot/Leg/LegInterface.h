@@ -28,12 +28,12 @@ namespace Bot
                                                    const bool               isRotated,
                                                    const float              rotation,
                                                    const bool               clockWize,
-                                                   const uint64_t           timeStamp) = 0;
+                                                   const uint64_t timeStamp) = 0;
 
             virtual Legs::ELeg   GetId(void) const = 0;
 
             virtual Core::Status SetLegIk(const Position3d &position,
-                                          const uint16_t    travelTime = 0U) = 0;
+                                          const uint16_t travelTime = 0U) = 0;
 
             virtual Core::Status SetLegBodyIk(const Position3d &position,
                                               const Position3d &bodyIk,

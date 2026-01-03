@@ -11,15 +11,15 @@ namespace Cluster
 
         class ClusterButton : public ClusterBase, ClusterCommand {
         public:
-            ClusterButton(ButtonInterface &button);
+            explicit ClusterButton(ButtonInterface &button);
 
             ~ClusterButton() = default;
 
             virtual Core::Status ExecuteFrame(const Frame &request,
                                               Frame       &response) override;
 
-            static Core::Status  BuildFrameGetButtonState(const ButtonState state,
-                                                          Frame            &response);
+            static Core::Status
+            BuildFrameGetButtonState(const ButtonState state, Frame &response);
 
         private:
             ButtonInterface &mButton;

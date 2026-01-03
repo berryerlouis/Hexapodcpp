@@ -11,7 +11,8 @@ namespace Cluster
 
         class ClusterProximity : public ClusterBase, ClusterCommand {
         public:
-            ClusterProximity(SensorProximityMultipleInterface &proximity);
+            explicit ClusterProximity(
+                    SensorProximityMultipleInterface &proximity);
 
             ~ClusterProximity() = default;
 

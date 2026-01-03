@@ -5,13 +5,11 @@ using namespace Move::Gait;
 
 class UT_MOVE_GAIT_PARAMS : public ::testing::Test {
 protected:
-    void
-    SetUp() override {
+    void SetUp() override {
         gaitParams = new GaitParams();
     }
 
-    void
-    TearDown() override {
+    void TearDown() override {
         delete gaitParams;
     }
 
@@ -26,7 +24,8 @@ TEST_F(UT_MOVE_GAIT_PARAMS, TestDefaultValues) {
     EXPECT_FLOAT_EQ(gaitParams->GetRotation(), 0.0F);
     EXPECT_FALSE(gaitParams->IsRotated());
     EXPECT_FLOAT_EQ(gaitParams->GetAmplitude(), 3.0F);
-    EXPECT_FLOAT_EQ(gaitParams->GetElevation(), 3.0F); // Default is ELEVATION_MAX = 3.0F
+    EXPECT_FLOAT_EQ(gaitParams->GetElevation(),
+                    3.0F); // Default is ELEVATION_MAX = 3.0F
     EXPECT_EQ(gaitParams->GetCycleDuration(), 1000U);
 }
 
@@ -55,17 +54,20 @@ TEST_F(UT_MOVE_GAIT_PARAMS, TestSetDirection) {
 // Test SetRotation
 TEST_F(UT_MOVE_GAIT_PARAMS, TestSetRotation) {
     // Valid: 0 < angle <= 2*PI
-    EXPECT_TRUE(gaitParams->SetRotation(1.57F, true)); // PI/2 radians
+    EXPECT_TRUE(gaitParams->SetRotation(1.57F,
+                                        true)); // PI/2 radians
     EXPECT_FLOAT_EQ(gaitParams->GetRotation(), 1.57F);
     EXPECT_TRUE(gaitParams->IsRotated());
     EXPECT_TRUE(gaitParams->GetRotationClockWize());
 
-    EXPECT_TRUE(gaitParams->SetRotation(0.78F, false)); // PI/4 radians
+    EXPECT_TRUE(gaitParams->SetRotation(0.78F,
+                                        false)); // PI/4 radians
     EXPECT_FLOAT_EQ(gaitParams->GetRotation(), 0.78F);
     EXPECT_TRUE(gaitParams->IsRotated());
     EXPECT_FALSE(gaitParams->GetRotationClockWize());
 
-    // Setting rotation to 0 should succeed and disable rotation
+    // Setting rotation to 0 should succeed and disable
+    // rotation
     EXPECT_TRUE(gaitParams->SetRotation(0.0F, true));
     EXPECT_FLOAT_EQ(gaitParams->GetRotation(), 0.0F);
     EXPECT_FALSE(gaitParams->IsRotated());

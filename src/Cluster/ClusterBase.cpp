@@ -3,13 +3,12 @@
 namespace Cluster
 {
     ClusterBase::ClusterBase(const EClusters clusterId,
-                             ClusterCommand &strategyCluster) :
-        mClusterId(clusterId),
-        mClusterCommand(strategyCluster) {
+                             ClusterCommand &strategyCluster)
+        : mClusterId(clusterId)
+        , mClusterCommand(strategyCluster) {
     }
 
-    Core::Status ClusterBase::Execute(Frame &request,
-                                      Frame &response) {
+    Core::Status ClusterBase::Execute(Frame &request, Frame &response) {
         if (request.GetClusterId() != this->GetClusterId()) {
             return Core::Status::CORE_ERROR;
         }

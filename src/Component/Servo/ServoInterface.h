@@ -6,15 +6,11 @@ namespace Component
 {
     namespace Servo
     {
-        class ServoInterface : public ComponentInterface<0U, nullptr_t> {
+        class ServoInterface : public ComponentInterface<0U, std::nullptr_t> {
         public:
             ServoInterface() = default;
 
             ~ServoInterface() = default;
-
-            virtual Core::Status Initialize(void) = 0;
-
-            virtual void         Update(const uint64_t currentTime) = 0;
 
             virtual Core::Status SetAngle(const uint8_t  angle,
                                           const uint16_t travelTime = 0U) = 0;

@@ -9,19 +9,21 @@ namespace Component
     {
         class Led : public LedInterface {
         public:
-            Led(Driver::Gpio::GpioInterface &gpio);
+            explicit Led(Driver::Gpio::GpioInterface &gpio);
 
             ~Led() = default;
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void         Update(const uint64_t currentTime) final override;
+            virtual void Update(const uint64_t currentTime) final override;
 
             virtual Core::Status On() final override;
 
             virtual Core::Status Off() final override;
 
             virtual Core::Status Toggle() final override;
+
+            virtual Core::Status Pwm(const uint16_t delay) final override;
 
             virtual LedState     Get() const final override;
 

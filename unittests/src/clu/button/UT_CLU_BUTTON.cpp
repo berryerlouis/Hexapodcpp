@@ -1,9 +1,9 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "../../../mock/cmp/MockButton.h"
-#include "../../../../src/Cluster/Constants.h"
 #include "../../../../src/Cluster/Button/ClusterButton.h"
+#include "../../../../src/Cluster/Constants.h"
+#include "../../../mock/cmp/MockButton.h"
 
 using ::testing::_;
 using ::testing::Return;
@@ -15,17 +15,15 @@ namespace Cluster
     {
         class UT_CLU_BUTTON : public ::testing::Test {
         protected:
-            UT_CLU_BUTTON() :
-                            mMockButton()
-                            , mClusterButton(mMockButton) {
+            UT_CLU_BUTTON()
+                : mMockButton()
+                , mClusterButton(mMockButton) {
             }
 
-            virtual void
-            SetUp() {
+            virtual void SetUp() {
             }
 
-            virtual void
-            TearDown() {
+            virtual void TearDown() {
             }
 
             virtual ~UT_CLU_BUTTON() = default;
@@ -39,8 +37,8 @@ namespace Cluster
 
         TEST_F(UT_CLU_BUTTON, Execute_Command_status_Ok) {
             Core::Status success = Core::Status::CORE_ERROR;
-            const Frame request(BUTTON, GET_BP_STATUS);
-            Frame response;
+            const Frame  request(BUTTON, GET_BP_STATUS);
+            Frame        response;
 
             EXPECT_CALL(mMockButton, Get()).WillOnce(Return(RELEASE));
 
@@ -55,8 +53,8 @@ namespace Cluster
 
         TEST_F(UT_CLU_BUTTON, Execute_WrongCommand_Ko) {
             Core::Status success = Core::Status::CORE_ERROR;
-            Frame request;
-            Frame response;
+            Frame        request;
+            Frame        response;
 
             request.Build(BUTTON, 0x5FU);
             success = mClusterButton.ExecuteFrame(request, response);
@@ -66,5 +64,5 @@ namespace Cluster
             EXPECT_EQ(response.GetNbParams(), 0U);
             EXPECT_EQ(success, Core::Status::CORE_ERROR);
         }
-    }
-}
+    } // namespace Button
+} // namespace Cluster

@@ -1,10 +1,10 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "../../../mock/bot/MockLeg.h"
-#include "../../../mock/bot/MockLegs.h"
 #include "../../../../src/Bot/Body/Body.h"
 #include "../../../../src/Cluster/Battery/ClusterBattery.h"
+#include "../../../mock/bot/MockLeg.h"
+#include "../../../mock/bot/MockLegs.h"
 
 using ::testing::_;
 using ::testing::Return;
@@ -16,8 +16,8 @@ namespace Bot
     {
         class UT_BOT_BODY : public ::testing::Test {
         protected:
-            UT_BOT_BODY() :
-                mMockLeg0()
+            UT_BOT_BODY()
+                : mMockLeg0()
                 , mMockLeg1()
                 , mMockLeg2()
                 , mMockLeg3()
@@ -27,23 +27,21 @@ namespace Bot
                 , mBody(mMockLegs) {
             }
 
-            virtual void
-            SetUp() {
+            virtual void SetUp() {
             }
 
-            virtual void
-            TearDown() {
+            virtual void TearDown() {
             }
 
             virtual ~UT_BOT_BODY() = default;
 
             /* Mocks */
-            StrictMock<Leg::MockLeg> mMockLeg0;
-            StrictMock<Leg::MockLeg> mMockLeg1;
-            StrictMock<Leg::MockLeg> mMockLeg2;
-            StrictMock<Leg::MockLeg> mMockLeg3;
-            StrictMock<Leg::MockLeg> mMockLeg4;
-            StrictMock<Leg::MockLeg> mMockLeg5;
+            StrictMock<Leg::MockLeg>   mMockLeg0;
+            StrictMock<Leg::MockLeg>   mMockLeg1;
+            StrictMock<Leg::MockLeg>   mMockLeg2;
+            StrictMock<Leg::MockLeg>   mMockLeg3;
+            StrictMock<Leg::MockLeg>   mMockLeg4;
+            StrictMock<Leg::MockLeg>   mMockLeg5;
             StrictMock<Legs::MockLegs> mMockLegs;
             /* Test class */
             Body mBody;
@@ -125,5 +123,5 @@ namespace Bot
 
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
-    }
-}
+    } // namespace Body
+} // namespace Bot

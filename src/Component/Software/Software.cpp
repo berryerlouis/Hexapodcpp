@@ -5,11 +5,11 @@ namespace Component
 {
     namespace Software
     {
-        Software::Software() :
-            mLastLoopTime(0UL),
-            mMinLoopTime(0xFFFFFFFFUL),
-            mMaxLoopTime(0UL),
-            mPrevTime(0UL) {
+        Software::Software()
+            : mLastLoopTime(0UL)
+            , mMinLoopTime(0xFFFFFFFFUL)
+            , mMaxLoopTime(0UL)
+            , mPrevTime(0UL) {
         }
 
         Core::Status Software::Initialize(void) {
@@ -44,7 +44,8 @@ namespace Component
         }
 
         SoftwareInterface::Version Software::GetVersion(void) {
-            constexpr Version version = {.major = VERSION_MAJOR, .minor = VERSION_MINOR};
+            constexpr Version version = {.major = VERSION_MAJOR,
+                                         .minor = VERSION_MINOR};
             return (version);
         }
 

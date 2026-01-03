@@ -10,8 +10,6 @@ namespace Service
         public:
             EventListenerInterface() = default;
 
-            ~EventListenerInterface() = default;
-
             virtual void OnEvent(const Event &event) = 0;
         };
     } // namespace Event

@@ -67,5 +67,8 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp"
-    }
+    },
+    "editor.formatOnSave": true,
+    "clang-format.executable": "/usr/bin/clang-format",
+    "C_Cpp.dimInactiveRegions": false
 }

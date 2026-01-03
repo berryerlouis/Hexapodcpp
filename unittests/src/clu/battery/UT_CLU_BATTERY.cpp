@@ -1,9 +1,9 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "../../../mock/cmp/MockBattery.h"
-#include "../../../../src/Cluster/Constants.h"
 #include "../../../../src/Cluster/Battery/ClusterBattery.h"
+#include "../../../../src/Cluster/Constants.h"
+#include "../../../mock/cmp/MockBattery.h"
 
 using ::testing::_;
 using ::testing::Return;
@@ -15,17 +15,15 @@ namespace Cluster
     {
         class UT_CLU_BATTERY : public ::testing::Test {
         protected:
-            UT_CLU_BATTERY() :
-                             mMockBattery()
-                             , mClusterBattery(mMockBattery) {
+            UT_CLU_BATTERY()
+                : mMockBattery()
+                , mClusterBattery(mMockBattery) {
             }
 
-            virtual void
-            SetUp() {
+            virtual void SetUp() {
             }
 
-            virtual void
-            TearDown() {
+            virtual void TearDown() {
             }
 
             virtual ~UT_CLU_BATTERY() = default;
@@ -40,8 +38,8 @@ namespace Cluster
 
         TEST_F(UT_CLU_BATTERY, Execute_Command_Voltage_Ok) {
             Core::Status success = Core::Status::CORE_ERROR;
-            const Frame request(BATTERY, GET_VOLTAGE);
-            Frame response;
+            const Frame  request(BATTERY, GET_VOLTAGE);
+            Frame        response;
 
             EXPECT_CALL(mMockBattery, GetVoltage()).WillOnce(Return(10U));
 
@@ -57,8 +55,8 @@ namespace Cluster
 
         TEST_F(UT_CLU_BATTERY, Execute_Command_status_Ok) {
             Core::Status success = Core::Status::CORE_ERROR;
-            const Frame request(BATTERY, GET_BAT_STATUS);
-            Frame response;
+            const Frame  request(BATTERY, GET_BAT_STATUS);
+            Frame        response;
 
             EXPECT_CALL(mMockBattery, GetVoltage()).WillOnce(Return(10U));
             EXPECT_CALL(mMockBattery, GetIntensity()).WillOnce(Return(10U));
@@ -79,8 +77,8 @@ namespace Cluster
 
         TEST_F(UT_CLU_BATTERY, Execute_WrongCommand_Ko) {
             Core::Status success = Core::Status::CORE_ERROR;
-            Frame request;
-            Frame response;
+            Frame        request;
+            Frame        response;
 
             request.Build(BATTERY, 0x5FU);
             success = mClusterBattery.ExecuteFrame(request, response);
@@ -90,5 +88,5 @@ namespace Cluster
             EXPECT_EQ(response.GetNbParams(), 0U);
             EXPECT_EQ(success, Core::Status::CORE_ERROR);
         }
-    }
-}
+    } // namespace Battery
+} // namespace Cluster

@@ -28,7 +28,6 @@ jobs:
           name: hexapodcpp-X64-${{ matrix.build_type }}
           path: build/hexapod-X64-${{ matrix.build_type }}/src/Hexapodcpp
 
-
   run-tests:
     name: Run Google Tests
     runs-on: ubuntu-latest
@@ -91,8 +90,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cppcheck-report
-          path: cppcheck-report.xml
-
+          path: |
+            cppcheck-report.xml
+            cppcheck_html
 
   docker-cross-build-rpi:
     name: Docker Cross-Compile (RPI Zero 2 W - ARM64)

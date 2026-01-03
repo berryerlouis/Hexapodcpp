@@ -10,15 +10,15 @@ namespace Driver
         static websockets::WSInterfaceString bufferMessage;
         static bool                          once = false;
 
-        void                                 Socket::onMessage(websockets::WebsocketsClient &client,
-                               websockets::WebsocketsMessage message) {
+        void Socket::onMessage(const websockets::WebsocketsClient &client,
+                               websockets::WebsocketsMessage       message) {
             (void) client;
             bufferMessage += message.data();
         }
 
-        void Socket::onEvent(websockets::WebsocketsClient &client,
-                             websockets::WebsocketsEvent   event,
-                             websockets::WSInterfaceString data) {
+        void Socket::onEvent(const websockets::WebsocketsClient &client,
+                             websockets::WebsocketsEvent         event,
+                             websockets::WSInterfaceString       data) {
             (void) client;
             (void) data;
             if (event == websockets::WebsocketsEvent::ConnectionOpened ||
@@ -42,8 +42,8 @@ namespace Driver
             if (server.available()) {
                 if (server.poll()) {
                     client = server.accept();
-                    client.onMessage(onMessage);
-                    client.onEvent(onEvent);
+                    client.onMessage((websockets::MessageCallback) onMessage);
+                    client.onEvent((websockets::EventCallback) onEvent);
                     this->Notify(CLIENT_CONNECTED);
                 }
                 if (client.available() == false) {
@@ -56,8 +56,7 @@ namespace Driver
             }
         }
 
-        void Socket::Send(const char  *data,
-                          const size_t len) {
+        void Socket::Send(const char *data, const size_t len) {
             if (client.available() == true) {
                 client.send(data, len);
             }

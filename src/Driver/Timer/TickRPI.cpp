@@ -20,15 +20,17 @@ namespace Driver
         }
 
         uint64_t Tick::GetUs(void) {
-            const auto now = std::chrono::steady_clock::now();
-            const auto duration = now - start_time;
-            return std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
+            const auto duration = std::chrono::steady_clock::now() - start_time;
+            return std::chrono::duration_cast<std::chrono::microseconds>(
+                           duration)
+                    .count();
         }
 
         uint64_t Tick::GetMs(void) {
-            const auto now = std::chrono::steady_clock::now();
-            const auto duration = now - start_time;
-            return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+            const auto duration = std::chrono::steady_clock::now() - start_time;
+            return std::chrono::duration_cast<std::chrono::milliseconds>(
+                           duration)
+                    .count();
         }
 
         void Tick::DelayMs(const uint64_t delayMs) {

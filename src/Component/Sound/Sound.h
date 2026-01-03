@@ -22,19 +22,19 @@ namespace Component
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void         Update(const uint64_t currentTime) final override;
+            virtual void     Update(const uint64_t currentTime) final override;
 
-            virtual uint64_t     GetIntervalSoundHit(void) const;
+            virtual uint64_t GetIntervalSoundHit(void) const override;
 
-            void                 Hit(void);
+            void             Hit(void);
 
-            static SoundStruct   ComputeAndNotifyMaxSound(void);
+            static SoundStruct ComputeAndNotifyMaxSound(void);
 
-            static uint8_t       soundIndex;
-            static SoundId       soundNotificationOff;
-            static bool          soundNotificationDone;
-            uint64_t             startSoundTime;
-            uint64_t             stopSoundTime;
+            static uint8_t     soundIndex;
+            static SoundId     soundNotificationOff;
+            static bool        soundNotificationDone;
+            uint64_t           mStartSoundTime;
+            uint64_t           mStopSoundTime;
 
         private:
             static void              InterruptGpioSoundHit(void);
@@ -43,9 +43,9 @@ namespace Component
             SoundId                  mSoundId;
             Gpio::GpioInterface     &mGpioSound;
             Led::LedInterface       &mLed;
-            uint64_t                 mIntervalSoundTimeArray[NB_MAX_INTERVAL_SOUND_TIME];
-            uint8_t                  mIntervalSoundTimeArrayIndex;
-            uint64_t                 mAverageIntervalSoundTime;
+            uint64_t mIntervalSoundTimeArray[NB_MAX_INTERVAL_SOUND_TIME];
+            uint8_t  mIntervalSoundTimeArrayIndex;
+            uint64_t mAverageIntervalSoundTime;
         };
     } // namespace Sound
 } // namespace Component

@@ -6,6 +6,6 @@ namespace Core
 {
     class MockEventMediatorInterface : public EventMediatorInterface {
     public:
-        MOCK_CONST_METHOD1(SendMessage, void (Event));
+        MOCK_CONST_METHOD1(SendMessage, void(Event));
     };
-}
+} // namespace Core

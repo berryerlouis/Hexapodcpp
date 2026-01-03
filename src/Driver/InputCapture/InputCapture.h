@@ -1,8 +1,7 @@
 #pragma once
-#pragma once
 
-#ifdef RPI
-#include "InputCaptureRPI.h"
-#elif X64
+#ifdef X64
 #include "InputCaptureX64.h"
+#else
+#include "InputCaptureRPI.h"
 #endif

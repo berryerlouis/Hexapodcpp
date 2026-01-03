@@ -11,22 +11,22 @@ namespace Component
 
         class Button : public ButtonInterface {
         public:
-            Button(Gpio::GpioInterface &gpio);
+            explicit Button(Driver::Gpio::GpioInterface &gpio);
 
             ~Button() = default;
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void         Update(const uint64_t currentTime) final override;
+            virtual void Update(const uint64_t currentTime) final override;
 
-            virtual ButtonState  Get(void) const final override;
+            virtual ButtonState Get(void) const final override;
 
 
-            void                 Hit(void);
+            void                Hit(void);
 
         private:
-            Gpio::GpioInterface &mGpioButton;
-            uint64_t             mPushTime;
+            Driver::Gpio::GpioInterface &mGpioButton;
+            uint64_t                     mPushTime;
 
         public:
             ButtonState mState;

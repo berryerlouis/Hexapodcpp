@@ -6,6 +6,5 @@ set(SRC_FILES_DRIVER
         Driver/Socket/Socket${TARGET}.cpp
         Driver/Timer/Tick${TARGET}.cpp
         Driver/Twi/Twi${TARGET}.cpp
-        Driver/Uart/Uart${TARGET}.cpp
         PARENT_SCOPE
 )

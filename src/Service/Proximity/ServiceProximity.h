@@ -13,7 +13,9 @@ namespace Service
 
         constexpr uint8_t MAX_TIMEOUT_DETECTION = 10U;
 
-        class ServiceProximity : public Service, Core::ObserverInterface<SensorsStruct>, Event::EventListenerInterface {
+        class ServiceProximity : public Service,
+                                 Core::ObserverInterface<SensorsStruct>,
+                                 Event::EventListenerInterface {
         public:
             ServiceProximity(SensorProximityMultipleInterface &proximity,
                              Message::MessageInterface        &messageListener,
@@ -23,11 +25,11 @@ namespace Service
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void         Update(const uint64_t currentTime) final override;
+            virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void         Notified(const SensorsStruct &sensor) final override;
+            virtual void Notified(const SensorsStruct &sensor) final override;
 
-            virtual void         OnEvent(const Event::Event &event) final override;
+            virtual void OnEvent(const Event::Event &event) final override;
 
         protected:
             SensorProximityMultipleInterface &mProximity;

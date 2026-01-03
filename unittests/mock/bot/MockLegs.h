@@ -8,14 +8,11 @@ namespace Bot
     {
         class MockLegs : public LegsInterface {
         public:
-            MOCK_METHOD0(GetLegs,
-                         std::map<ELeg, Leg::Leg> &(void));
+            MOCK_METHOD0(GetLegs, std::map<ELeg, Leg::Leg> &(void) );
 
-            MOCK_METHOD1(GetLeg,
-                         Leg::LegInterface *(const ELeg));
+            MOCK_METHOD1(GetLeg, Leg::LegInterface *(const ELeg));
 
-            MOCK_METHOD0(Update,
-                         Core::Status (void));
+            MOCK_METHOD0(Update, Core::Status(void));
         };
-    }
-}
+    } // namespace Legs
+} // namespace Bot

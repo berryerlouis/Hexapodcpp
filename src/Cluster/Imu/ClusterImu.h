@@ -14,8 +14,7 @@ namespace Cluster
 
         class ClusterImu : public ClusterBase, ClusterCommand {
         public:
-            ClusterImu(Mpu9150Interface   &imu,
-                       BarometerInterface &barometer);
+            ClusterImu(Mpu9150Interface &imu, BarometerInterface &barometer);
 
             ~ClusterImu() = default;
 
@@ -51,10 +50,6 @@ namespace Cluster
 
             static Core::Status  BuildFrameTmpBar(const int16_t temp,
                                                   Frame        &response);
-
-            static Core::Status  BuildFrameCalibMag(const bool      min,
-                                                    const Vector3F &calib,
-                                                    Frame          &response);
 
             static Core::Status  BuildFrameStartCalibMag(Frame &response);
 

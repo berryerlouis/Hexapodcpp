@@ -10,8 +10,6 @@ namespace Service
         public:
             EventDispatcherInterface() = default;
 
-            ~EventDispatcherInterface() = default;
-
             virtual void AddListener(EventListenerInterface *listener) = 0;
 
             virtual void RemoveListener(EventListenerInterface *listener) = 0;

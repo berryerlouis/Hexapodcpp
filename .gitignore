@@ -5,10 +5,10 @@ HMI/coverage
 *.o
 *.d
 *.atsuo
-src/debug/
 node_modules/
 /HMI-copy/
 Hexapodcpp
 coverage-report/
 coverage.info
 /cppcheck-report.xml
+cppcheck_html

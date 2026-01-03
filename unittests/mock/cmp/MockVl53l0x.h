@@ -11,6 +11,6 @@ namespace Component
             class MockVl53l0x : public MockProximity {
             public:
             };
-        }
-    }
-}
+        } // namespace Laser
+    } // namespace Proximity
+} // namespace Component

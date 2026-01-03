@@ -2,6 +2,33 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Prod Build",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/prod/build.sh"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/prod/build.sh"
+                ]
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
             "label": "Build X64 Debug",
             "type": "shell",
             "options": {
@@ -32,15 +59,6 @@
             "group": {
                 "kind": "build",
                 "isDefault": true
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false,
-                "revealProblems": "onProblem"
             }
         },
         {
@@ -74,15 +92,6 @@
             "group": {
                 "kind": "build",
                 "isDefault": true
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false,
-                "revealProblems": "onProblem"
             }
         },
         {
@@ -110,17 +119,62 @@
                 "$gcc"
             ],
             "group": {
-                "kind": "test",
+                "kind": "build",
                 "isDefault": true
+            }
+        },
+        {
+            "label": "Coverage",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
             },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false,
-                "revealProblems": "onProblem"
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/coverage.sh"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/coverage.sh"
+                ]
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Cppcheck",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/cppcheck.sh"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/cppcheck.sh"
+                ]
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
             }
         },
         {
@@ -148,17 +202,61 @@
                 "$gcc"
             ],
             "group": {
-                "kind": "build"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false,
-                "revealProblems": "onProblem"
+                "kind": "build",
+                "isDefault": true
             }
+        },
+        {
+            "label": "Reformat all",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/clang-format-all.sh"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/clang-format-all.sh"
+                ]
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Build RPI Debug (Docker Cross-Compile)",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/docker-build-rpi.sh",
+                    "DEBUG"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/docker-build-rpi.sh",
+                    "DEBUG"
+                ]
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
         },
         {
             "label": "Deploy to RPi",
@@ -167,21 +265,18 @@
                 "cwd": "${workspaceFolder}"
             },
             "linux": {
-                "command": "scp",
+                "command": "bash",
                 "args": [
-                    "Hexapodcpp",
-                    "hexabot:/home/hexabot/"
+                    "bin/dev/deploy-to-rpi.sh"
                 ]
             },
             "windows": {
                 "command": "wsl",
                 "args": [
-                    "scp",
-                    "Hexapodcpp",
-                    "hexabot:/home/hexabot/"
+                    "bash",
+                    "bin/dev/deploy-to-rpi.sh"
                 ]
-            },
-            "problemMatcher": []
+            }
         },
         {
             "label": "Run RPi",
@@ -190,21 +285,18 @@
                 "cwd": "${workspaceFolder}"
             },
             "linux": {
-                "command": "ssh",
+                "command": "bash",
                 "args": [
-                    "hexabot",
-                    "sudo systemctl start hexabot.service"
+                    "bin/dev/run-rpi.sh"
                 ]
             },
             "windows": {
                 "command": "wsl",
                 "args": [
-                    "ssh",
-                    "hexabot",
-                    "sudo systemctl start hexabot.service"
+                    "bash",
+                    "bin/dev/run-rpi.sh"
                 ]
-            },
-            "problemMatcher": []
+            }
         },
         {
             "label": "Start GDB Server on RPi",
@@ -213,31 +305,19 @@
                 "cwd": "${workspaceFolder}"
             },
             "linux": {
-                "command": "ssh",
+                "command": "bash",
                 "args": [
-                    "hexabot",
-                    "command -v gdbserver >/dev/null || sudo apt-get install -y gdbserver; pkill gdbserver 2>/dev/null || true; gdbserver :2345 /home/hexabot/Hexapodcpp"
+                    "bin/dev/start-gdb-rpi.sh"
                 ]
             },
             "windows": {
                 "command": "wsl",
                 "args": [
-                    "ssh",
-                    "hexabot",
-                    "command -v gdbserver >/dev/null || sudo apt-get install -y gdbserver; pkill gdbserver 2>/dev/null || true; gdbserver :2345 /home/hexabot/Hexapodcpp"
+                    "bash",
+                    "bin/dev/start-gdb-rpi.sh"
                 ]
             },
-            "isBackground": true,
-            "problemMatcher": {
-                "pattern": {
-                    "regexp": "."
-                },
-                "background": {
-                    "activeOnStart": true,
-                    "beginsPattern": ".",
-                    "endsPattern": "Listening on port 2345"
-                }
-            }
+            "isBackground": true
         },
         {
             "label": "Build & Deploy to RPi",
@@ -246,41 +326,16 @@
                 "Deploy to RPi",
                 "Run RPi"
             ],
-            "dependsOrder": "sequence",
-            "problemMatcher": []
+            "dependsOrder": "sequence"
         },
         {
             "label": "Build, Deploy & Debug RPi",
             "dependsOn": [
-                "Build RPI (Docker Cross-Compile)",
+                "Build RPI Debug (Docker Cross-Compile)",
                 "Deploy to RPi",
                 "Start GDB Server on RPi"
             ],
-            "dependsOrder": "sequence",
-            "problemMatcher": []
-        },
-        {
-            "label": "Debug RPi (Interactive GDB)",
-            "type": "shell",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "command": "pwsh.exe",
-            "args": [
-                "-NoExit",
-                "-File",
-                ".vscode/debug-rpi.ps1"
-            ],
-            "problemMatcher": [],
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "dedicated",
-                "showReuseMessage": false,
-                "clear": true
-            },
-            "dependsOn": "Start GDB Server on RPi"
+            "dependsOrder": "sequence"
         }
     ],
     "inputs": [

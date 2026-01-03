@@ -1,9 +1,9 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "../../../mock/cmp/MockSound.h"
 #include "../../../../src/Cluster/Constants.h"
 #include "../../../../src/Cluster/Sound/ClusterSound.h"
+#include "../../../mock/cmp/MockSound.h"
 
 using ::testing::_;
 using ::testing::Return;
@@ -15,18 +15,16 @@ namespace Cluster
     {
         class UT_CLU_SOUND : public ::testing::Test {
         protected:
-            UT_CLU_SOUND() :
-                           mMockSoundLeft()
-                           , mMockSoundRight()
-                           , mClusterSound(mMockSoundLeft, mMockSoundRight) {
+            UT_CLU_SOUND()
+                : mMockSoundLeft()
+                , mMockSoundRight()
+                , mClusterSound(mMockSoundLeft, mMockSoundRight) {
             }
 
-            virtual void
-            SetUp() {
+            virtual void SetUp() {
             }
 
-            virtual void
-            TearDown() {
+            virtual void TearDown() {
             }
 
             virtual ~UT_CLU_SOUND() = default;
@@ -41,11 +39,12 @@ namespace Cluster
 
         TEST_F(UT_CLU_SOUND, Execute_Command_status_Left_Ok) {
             Core::Status success = Core::Status::CORE_ERROR;
-            Frame request(SOUND, GET_SOUND_STATUS);
+            Frame        request(SOUND, GET_SOUND_STATUS);
             request.Set1ByteParam(SOUND_LEFT);
             Frame response;
 
-            EXPECT_CALL(mMockSoundLeft, GetIntervalSoundHit()).WillOnce(Return(1110U));
+            EXPECT_CALL(mMockSoundLeft, GetIntervalSoundHit())
+                    .WillOnce(Return(1110U));
 
             success = mClusterSound.ExecuteFrame(request, response);
 
@@ -67,11 +66,12 @@ namespace Cluster
 
         TEST_F(UT_CLU_SOUND, Execute_Command_status_Right_Ok) {
             Core::Status success = Core::Status::CORE_ERROR;
-            Frame request(SOUND, GET_SOUND_STATUS);
+            Frame        request(SOUND, GET_SOUND_STATUS);
             request.Set1ByteParam(SOUND_RIGHT);
             Frame response;
 
-            EXPECT_CALL(mMockSoundRight, GetIntervalSoundHit()).WillOnce(Return(1110U));
+            EXPECT_CALL(mMockSoundRight, GetIntervalSoundHit())
+                    .WillOnce(Return(1110U));
 
             success = mClusterSound.ExecuteFrame(request, response);
 
@@ -93,8 +93,8 @@ namespace Cluster
 
         TEST_F(UT_CLU_SOUND, Execute_WrongCommand_Ko) {
             Core::Status success = Core::Status::CORE_ERROR;
-            Frame request;
-            Frame response;
+            Frame        request;
+            Frame        response;
 
             request.Build(SOUND, 0x5FU);
             success = mClusterSound.ExecuteFrame(request, response);
@@ -104,5 +104,5 @@ namespace Cluster
             EXPECT_EQ(response.GetNbParams(), 0U);
             EXPECT_EQ(success, Core::Status::CORE_ERROR);
         }
-    }
-}
+    } // namespace Sound
+} // namespace Cluster

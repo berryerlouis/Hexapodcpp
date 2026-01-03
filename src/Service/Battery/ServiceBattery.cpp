@@ -6,14 +6,12 @@ namespace Service
 {
     namespace Battery
     {
-        ServiceBattery::ServiceBattery(BatteryInterface                &batteryInterface,
-                                       Message::MessageInterface       &messageListener,
-                                       Event::EventDispatcherInterface &eventDispatcher) :
-            Service(BATTERY,
-                    100U,
-                    messageListener,
-                    eventDispatcher),
-            mBatteryInterface(batteryInterface) {
+        ServiceBattery::ServiceBattery(
+                BatteryInterface                &batteryInterface,
+                Message::MessageInterface       &messageListener,
+                Event::EventDispatcherInterface &eventDispatcher)
+            : Service(BATTERY, 100U, messageListener, eventDispatcher)
+            , mBatteryInterface(batteryInterface) {
         }
 
         Core::Status ServiceBattery::Initialize(void) {
@@ -37,7 +35,8 @@ namespace Service
                                                               battery.intensity,
                                                               response);
             this->SendMessage(response);
-            this->DispatchEvent<BatteryStruct>(EventType::EVENT_BATTERY_UPDATE, battery);
+            this->DispatchEvent<BatteryStruct>(EventType::EVENT_BATTERY_UPDATE,
+                                               battery);
         }
 
         void ServiceBattery::OnEvent(const Event::Event &event) {

@@ -10,12 +10,12 @@
 namespace Core
 {
     enum class LogLevel {
-        DEBUG,
-        INFO,
-        WARNING,
-        ERROR,
-        NONE,
-        UNKNOWN
+        LOG_DEBUG,
+        LOG_INFO,
+        LOG_WARNING,
+        LOG_ERROR,
+        LOG_NONE,
+        LOG_UNKNOWN
     };
 
     // ANSI color codes
@@ -29,9 +29,7 @@ namespace Core
 
     class Logger {
     public:
-        static void     Log(const LogLevel level,
-                            const char    *format,
-                            ...);
+        static void     Log(const LogLevel level, const char *format, ...);
 
         static LogLevel GetLogLevel();
 
@@ -42,8 +40,7 @@ namespace Core
     private:
         static LogLevel    currentLogLevel;
 
-        static std::string FormatString(const char *format,
-                                        va_list     args);
+        static std::string FormatString(const char *format, va_list args);
 
         static std::string LevelToString(const LogLevel level);
 
@@ -53,10 +50,12 @@ namespace Core
     };
 
 #define LOG(level, ...) Core::Logger::Log(level, __VA_ARGS__)
-#define LOG_DEBUG(...) Core::Logger::Log(Core::LogLevel::DEBUG, __VA_ARGS__)
-#define LOG_INFO(...) Core::Logger::Log(Core::LogLevel::INFO, __VA_ARGS__)
-#define LOG_WARNING(...) Core::Logger::Log(Core::LogLevel::WARNING, __VA_ARGS__)
-#define LOG_ERROR(...) Core::Logger::Log(Core::LogLevel::ERROR, __VA_ARGS__)
+#define LOG_DEBUG(...) Core::Logger::Log(Core::LogLevel::LOG_DEBUG, __VA_ARGS__)
+#define LOG_INFO(...) Core::Logger::Log(Core::LogLevel::LOG_INFO, __VA_ARGS__)
+#define LOG_WARNING(...) \
+    Core::Logger::Log(Core::LogLevel::LOG_WARNING, __VA_ARGS__)
+#define LOG_ERROR(...) Core::Logger::Log(Core::LogLevel::LOG_ERROR, __VA_ARGS__)
 
-#define LOG_GENERIC(level, component, ...) LOG_##level("[" #component "] " __VA_ARGS__)
+#define LOG_GENERIC(level, component, ...) \
+    LOG_##level("[" #component "] " __VA_ARGS__)
 } // namespace Core

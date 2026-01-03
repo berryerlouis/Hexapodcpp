@@ -56,57 +56,60 @@ namespace Component
 #define BUFFER_DISPLAY_LENGTH SCREEN_WIDTH *((SCREEN_HEIGHT + 7U) / 8U)
 
 
-            Ssd1306(Twi::TwiInterface &twi,
-                    const uint8_t      address = SSD1306_ADDRESS);
+            explicit Ssd1306(Twi::TwiInterface &twi,
+                             const uint8_t      address = SSD1306_ADDRESS);
 
             ~Ssd1306() = default;
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void         Update(const uint64_t currentTime) final override;
+            virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void         DrawPixel(const uint16_t x,
-                                           const uint16_t y,
-                                           const uint16_t color) final override;
+            virtual void DrawPixel(const uint16_t x,
+                                   const uint16_t y,
+                                   const uint16_t color) final override;
 
-            virtual void         DrawLine(const uint16_t x1,
-                                          const uint16_t y1,
-                                          const uint16_t x2,
-                                          const uint16_t y2,
-                                          const uint16_t color) final override;
+            virtual void DrawLine(const uint16_t x1,
+                                  const uint16_t y1,
+                                  const uint16_t x2,
+                                  const uint16_t y2,
+                                  const uint16_t color) final override;
 
-            virtual void         DrawRectangle(const uint16_t x1,
-                                               const uint16_t y1,
-                                               const uint16_t x2,
-                                               const uint16_t y2,
-                                               const uint16_t color) final override;
+            virtual void DrawRectangle(const uint16_t x1,
+                                       const uint16_t y1,
+                                       const uint16_t x2,
+                                       const uint16_t y2,
+                                       const uint16_t color) final override;
 
-            virtual void         DrawCircle(const uint16_t xc,
-                                            const uint16_t yc,
-                                            const uint16_t r,
-                                            const uint16_t color) final override;
+            virtual void DrawCircle(const uint16_t xc,
+                                    const uint16_t yc,
+                                    const uint16_t r,
+                                    const uint16_t color) final override;
 
-            virtual void         DrawChar(char                         c,
-                                          uint16_t                     x,
-                                          const uint16_t               y,
-                                          const Bitmap::Bitmaps::Color color) final override;
+            virtual void
+            DrawChar(char                         c,
+                     uint16_t                     x,
+                     const uint16_t               y,
+                     const Bitmap::Bitmaps::Color color) final override;
 
-            virtual void         DrawString(const char                  *str,
-                                            uint16_t                     x,
-                                            const uint16_t               y,
-                                            const Bitmap::Bitmaps::Color color) final override;
+            virtual void
+            DrawString(const char                  *str,
+                       uint16_t                     x,
+                       const uint16_t               y,
+                       const Bitmap::Bitmaps::Color color) final override;
 
-            virtual void         DrawBitmap(const Bitmap::Bitmaps::SBitmap *bmp,
-                                            uint16_t                        x,
-                                            uint16_t                        y,
-                                            Bitmap::Bitmaps::Color          color) final override;
+            virtual void
+                         DrawBitmap(const Bitmap::Bitmaps::SBitmap *bmp,
+                                    uint16_t                        x,
+                                    uint16_t                        y,
+                                    Bitmap::Bitmaps::Color          color) final override;
 
-            virtual void         ClearBuffer(void) final override;
+            virtual void ClearBuffer(void) final override;
 
-            virtual void         EraseArea(const uint16_t x,
-                                           const uint16_t y,
-                                           const uint16_t width,
-                                           const uint16_t height) final override;
+            virtual void EraseArea(const uint16_t x,
+                                   const uint16_t y,
+                                   const uint16_t width,
+                                   const uint16_t height) final override;
 
         private:
             Twi::TwiInterface &mTwi;

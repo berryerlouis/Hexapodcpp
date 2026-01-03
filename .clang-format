@@ -6,8 +6,9 @@ AlignConsecutiveAssignments: false
 AlignOperands: true
 AlignTrailingComments: false
 AllowShortFunctionsOnASingleLine: None
-AllowShortIfStatementsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: Never
 AlwaysBreakTemplateDeclarations: Yes
+BreakBeforeBraces: Custom
 BraceWrapping:
   AfterCaseLabel: false
   AfterClass: false
@@ -25,7 +26,7 @@ BraceWrapping:
   SplitEmptyFunction: true
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
-AllowAllArgumentsOnNextLine: false
+AllowAllArgumentsOnNextLine: true
 AllowShortEnumsOnASingleLine: false
 AlignConsecutiveDeclarations:
   Enabled: true
@@ -33,15 +34,15 @@ AlignConsecutiveDeclarations:
   AcrossComments: false
 AlignAfterOpenBracket: Align
 BinPackArguments: false
-BinPackParameters: AlwaysOnePerLine
+BinPackParameters: false
 AllowAllParametersOfDeclarationOnNextLine: false
-BreakBeforeBraces: Custom
-BreakConstructorInitializers: AfterColon
+BreakConstructorInitializers: BeforeComma
 BreakConstructorInitializersBeforeComma: false
-AllowShortBlocksOnASingleLine: Never
-AllowShortCaseLabelsOnASingleLine: true
-ColumnLimit: 120
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
+AllowAllConstructorInitializersOnNextLine: false
+AllowShortBlocksOnASingleLine: Never
+AllowShortCaseLabelsOnASingleLine: false
+ColumnLimit: 80
 ContinuationIndentWidth: 8
 IncludeCategories:
   - Regex: '^<.*'
@@ -68,4 +69,6 @@ SpacesInCStyleCastParentheses: false
 SpacesInParentheses: false
 TabWidth: 4
 AlignEscapedNewlines: Left
-...
+ReflowComments: true
+SortIncludes: CaseSensitive
+PackConstructorInitializers: Never

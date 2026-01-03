@@ -15,10 +15,13 @@ namespace Bot
             static constexpr float BODY_SIDE_X_MIDDLE_LENGTH = 130.0;
             static constexpr float BODY_SIDE_Y_LENGTH = 150.0;
 
-            static constexpr float BODY_LEG_MIDDLE_FROM_CENTER_X_LENGTH = BODY_SIDE_X_MIDDLE_LENGTH / 2.0;
+            static constexpr float BODY_LEG_MIDDLE_FROM_CENTER_X_LENGTH =
+                    BODY_SIDE_X_MIDDLE_LENGTH / 2.0;
             static constexpr float BODY_LEG_MIDDLE_FROM_CENTER_Y_LENGTH = 0.0;
-            static constexpr float BODY_LEG_FRONT_REAR_FROM_CENTER_X_LENGTH = BODY_SIDE_X_LENGTH / 2.0;
-            static constexpr float BODY_LEG_FRONT_REAR_FROM_CENTER_Y_LENGTH = BODY_SIDE_Y_LENGTH / 2.0;
+            static constexpr float BODY_LEG_FRONT_REAR_FROM_CENTER_X_LENGTH =
+                    BODY_SIDE_X_LENGTH / 2.0;
+            static constexpr float BODY_LEG_FRONT_REAR_FROM_CENTER_Y_LENGTH =
+                    BODY_SIDE_Y_LENGTH / 2.0;
 
             static constexpr float COXA_LENGTH = 2.8;
             static constexpr float FEMUR_LENGTH = 8.40;
@@ -57,19 +60,20 @@ namespace Bot
                                            const bool               isRotated,
                                            const float              rotation,
                                            const bool               clockWize,
-                                           const uint64_t           timeStamp) final override;
+                                           const uint64_t timeStamp) final override;
 
             Legs::ELeg   GetId(void) const final override;
 
-            Core::Status SetLegIk(const Position3d &position,
+            Core::Status
+                         SetLegIk(const Position3d &position,
                                   const uint16_t    travelTime = 0U) final override;
 
             Core::Status SetLegBodyIk(const Position3d &position,
                                       const Position3d &bodyIk,
-                                      const uint16_t    travelTime) final override;
+                                      const uint16_t travelTime) final override;
 
             void         ComputeDirection(Position3d &position,
-                                          float       angleDirection) const final override;
+                                          float angleDirection) const final override;
 
             void         ComputeRotation(Position3d &position,
                                          float       angleRotation,

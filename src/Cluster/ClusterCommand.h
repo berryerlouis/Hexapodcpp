@@ -9,15 +9,12 @@ namespace Cluster
     public:
         ClusterCommand(const uint8_t size);
 
-        ~ClusterCommand() = default;
-
         bool                 AddClusterItem(const ClusterItem clusterItem);
 
         virtual Core::Status ExecuteFrame(const Frame &request,
                                           Frame       &response) = 0;
 
-        Core::Status         Execute(const Frame &request,
-                                     Frame       &response);
+        Core::Status         Execute(const Frame &request, Frame &response);
 
     private:
         static constexpr uint8_t NB_COMMANDS_MAX = 20U;

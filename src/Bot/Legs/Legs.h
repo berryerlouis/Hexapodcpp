@@ -13,17 +13,15 @@ namespace Bot
 
         class Legs : public LegsInterface {
         public:
-            Legs(ServosInterface &servos);
+            explicit Legs(ServosInterface &servos);
 
             ~Legs() = default;
 
-            std::map<ELeg,
-                     Leg::Leg>                    &
-            GetLegs(void) final override;
+            std::map<ELeg, Leg::Leg> &GetLegs(void) final override;
 
-            Leg::LegInterface *GetLeg(const ELeg legId) final override;
+            Leg::LegInterface        *GetLeg(const ELeg legId) final override;
 
-            Core::Status       Update(void) final override;
+            Core::Status              Update(void) final override;
 
         private:
             std::map<ELeg, Leg::Leg> mLegs;

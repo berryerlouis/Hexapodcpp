@@ -1,5 +1,5 @@
-#!/bin/sh
-set -e  # Exit on error
+#!/usr/bin/env bash
+set -euo pipefail
 
 # Build script for Hexapodcpp
 # Arguments:

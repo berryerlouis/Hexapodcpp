@@ -4,11 +4,10 @@ namespace Move
 {
     namespace Walk
     {
-        Walk::Walk(Bot::Legs::LegsInterface &legs) :
-            mGaitParams(),
-            mGaitCycle(legs,
-                       mGaitParams),
-            mStatus(EWalkStatus::STOPPED) {
+        Walk::Walk(Bot::Legs::LegsInterface &legs)
+            : mGaitParams()
+            , mGaitCycle(legs, mGaitParams)
+            , mStatus(EWalkStatus::STOPPED) {
         }
 
         void Walk::Update(const uint64_t currentTime) {

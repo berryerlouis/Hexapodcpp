@@ -11,29 +11,30 @@ namespace Cluster
 
         class ClusterGeneral : public ClusterBase, ClusterCommand {
         public:
-            ClusterGeneral(SoftwareInterface &software);
+            explicit ClusterGeneral(SoftwareInterface &software);
 
             ~ClusterGeneral() = default;
 
             virtual Core::Status ExecuteFrame(const Frame &request,
-                                              Frame       &response) final override;
+                                              Frame &response) final override;
 
-            static Core::Status  BuildFrameReset(Frame             &response,
-                                                 const Core::Status successReset);
+            static Core::Status
+            BuildFrameReset(Frame &response, const Core::Status successReset);
 
-            static Core::Status  BuildFrameGetVersion(const SoftwareInterface::Version version,
-                                                      Frame                           &response);
+            static Core::Status
+            BuildFrameGetVersion(const SoftwareInterface::Version version,
+                                 Frame                           &response);
 
-            static Core::Status  BuildFrameGetMinTime(const uint8_t  serviceId,
-                                                      const uint64_t deltaTime,
-                                                      Frame         &response);
+            static Core::Status BuildFrameGetMinTime(const uint8_t  serviceId,
+                                                     const uint64_t deltaTime,
+                                                     Frame         &response);
 
-            static Core::Status  BuildFrameGetMaxTime(const uint8_t  serviceId,
-                                                      const uint64_t deltaTime,
-                                                      Frame         &response);
+            static Core::Status BuildFrameGetMaxTime(const uint8_t  serviceId,
+                                                     const uint64_t deltaTime,
+                                                     Frame         &response);
 
-            static Core::Status  BuildFrameResetTime(const uint8_t serviceId,
-                                                     Frame        &response);
+            static Core::Status BuildFrameResetTime(const uint8_t serviceId,
+                                                    Frame        &response);
 
         private:
             SoftwareInterface &mSoftware;

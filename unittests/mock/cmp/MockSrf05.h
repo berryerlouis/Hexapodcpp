@@ -11,6 +11,6 @@ namespace Component
             class MockSrf05 : public MockProximity {
             public:
             };
-        }
-    }
-}
+        } // namespace Ultrasound
+    } // namespace Proximity
+} // namespace Component

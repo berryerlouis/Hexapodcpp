@@ -9,4 +9,4 @@ namespace Service
     public:
         MockService() = default;
     };
-}
+} // namespace Service

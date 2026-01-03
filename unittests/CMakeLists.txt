@@ -106,6 +106,8 @@ target_compile_options(HexapodcppTest
         PRIVATE
         -Wall
         -Wextra
+        -O0
+        -g3
 )
 
 # Discover and register tests

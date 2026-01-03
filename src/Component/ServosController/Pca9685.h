@@ -65,8 +65,8 @@ namespace Component
                 uint16_t off;
             };
 
-            Pca9685(Twi::TwiInterface &i2c,
-                    const uint8_t      address = PCA9685_I2C_ADDRESS);
+            explicit Pca9685(Twi::TwiInterface &i2c,
+                             const uint8_t      address = PCA9685_I2C_ADDRESS);
 
             ~Pca9685() = default;
 
@@ -76,19 +76,20 @@ namespace Component
 
             virtual void WakeUp(void) final override;
 
-            virtual void
-            setOscillatorFrequency(const uint32_t frequency = EConstant::FREQUENCY_OSCILLATOR) final override;
+            virtual void setOscillatorFrequency(
+                    const uint32_t frequency =
+                            EConstant::FREQUENCY_OSCILLATOR) final override;
 
-            virtual void    SetFrequency(const uint32_t frequency) final override;
+            virtual void SetFrequency(const uint32_t frequency) final override;
 
-            virtual void    SetPwm(const uint8_t  num,
-                                   const uint16_t off) final override;
+            virtual void SetPwm(const uint8_t  num,
+                                const uint16_t off) final override;
 
             virtual uint8_t GetAddress(void) final override;
 
-            Core::Status    Initialize(void);
+            Core::Status    Initialize(void) override;
 
-            void            Update(const uint64_t currentTime);
+            void            Update(const uint64_t currentTime) override;
 
         private:
             Twi::TwiInterface &mI2c;

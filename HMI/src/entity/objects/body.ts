@@ -26,7 +26,7 @@ interface BodyStruct {
 
 export default class Body extends Object3D {
 
-    interval: NodeJS.Timeout | null = null;
+    interval: number | null = null;
     params: BodyStruct = {
         width: 1.4,
         widthMiddle: 1.8,

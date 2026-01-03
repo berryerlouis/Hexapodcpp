@@ -35,22 +35,23 @@ namespace Service
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void         Update(const uint64_t currentTime) final override;
+            virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void         OnEvent(const Event::Event &event) final override;
+            virtual void OnEvent(const Event::Event &event) final override;
 
-            void                 DisplayBackground(void) const;
+            void         DisplayBackground(void) const;
 
-            void                 DisplayCommunicationBmp(void);
+            void         DisplayCommunicationBmp(void);
 
-            void                 DisplayButtonBmp(const Button::ButtonState &buttonState);
+            void DisplayButtonBmp(const Button::ButtonState &buttonState);
 
-            void                 DisplayBatteryLevel(const Battery::BatteryState state);
+            void DisplayBatteryLevel(const Battery::BatteryState state);
 
-            void                 DisplayProximitySensor(const Component::Proximity::SensorsId sensorId,
-                                                        const uint16_t                        distance);
+            void DisplayProximitySensor(
+                    const Component::Proximity::SensorsId sensorId,
+                    const uint16_t                        distance);
 
-            void                 DisplaySound(const SoundStruct &soundStruct);
+            void DisplaySound(const SoundStruct &soundStruct);
 
         private:
             Ssd1306Interface   &mSsd1306;

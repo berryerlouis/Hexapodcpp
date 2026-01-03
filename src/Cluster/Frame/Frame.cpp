@@ -6,16 +6,16 @@ namespace Cluster
         Reset();
     }
 
-    Frame::Frame(const uint8_t clusterId,
-                 const uint8_t commandId) :
-        clusterId(clusterId),
-        commandId(commandId),
-        nbParams(0U),
-        params{0U} {
+    Frame::Frame(const uint8_t clusterId, const uint8_t commandId)
+        : clusterId(clusterId)
+        , commandId(commandId)
+        , nbParams(0U)
+        , params{0U} {
     }
 
     bool Frame::operator==(const Frame &other) const {
-        return ((clusterId == other.clusterId) && (commandId == other.commandId) && (nbParams == other.nbParams));
+        return ((clusterId == other.clusterId) &&
+                (commandId == other.commandId) && (nbParams == other.nbParams));
     }
 
     Core::Status Frame::Build(const uint8_t clusterId,
@@ -43,7 +43,9 @@ namespace Cluster
                 this->commandId = commandId;
                 this->nbParams = nbParams;
 
-                memcpy((void *) this->params, params, nbParams);
+                memcpy(reinterpret_cast<void *>(this->params),
+                       params,
+                       nbParams);
                 success = Core::Status::CORE_OK;
             }
         }
@@ -62,29 +64,32 @@ namespace Cluster
     }
 
     void Frame::Set2BytesParam(const uint16_t value) {
-        this->SetxBytesParam(2U, (uint8_t *) &value);
+        this->SetxBytesParam(2U, reinterpret_cast<const uint8_t *>(&value));
     }
 
     void Frame::Set3BytesParam(const uint32_t value) {
-        this->SetxBytesParam(3U, (uint8_t *) &value);
+        this->SetxBytesParam(3U, reinterpret_cast<const uint8_t *>(&value));
     }
 
     void Frame::Set4BytesParam(const uint32_t value) {
-        this->SetxBytesParam(4U, (uint8_t *) &value);
+        this->SetxBytesParam(4U, reinterpret_cast<const uint8_t *>(&value));
     }
 
     void Frame::Set6BytesParam(const uint64_t value) {
-        this->SetxBytesParam(6U, (uint8_t *) &value);
+        this->SetxBytesParam(6U, reinterpret_cast<const uint8_t *>(&value));
     }
 
     void Frame::Set8BytesParam(const uint64_t value) {
-        this->SetxBytesParam(8U, (uint8_t *) &value);
+        this->SetxBytesParam(8U, reinterpret_cast<const uint8_t *>(&value));
     }
 
-    void Frame::SetxBytesParam(const size_t   size,
-                               const uint8_t *value) {
+    void Frame::SetxBytesParam(const size_t size, const uint8_t *value) {
         if (this->nbParams + size > FRAME_MAX_PARAMS) {
-            LOG_ERROR("Frame", "Cannot set %zu bytes, max params is %d.", size, FRAME_MAX_PARAMS);
+            LOG_ERROR("Frame",
+                      "Cannot set %zu bytes, max params is "
+                      "%d.",
+                      size,
+                      FRAME_MAX_PARAMS);
             return;
         }
         memcpy(&this->params[this->nbParams], value, size);

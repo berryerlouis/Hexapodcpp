@@ -15,18 +15,16 @@ namespace Component
     {
         class UT_CMP_ADS1115 : public ::testing::Test {
         protected:
-            UT_CMP_ADS1115() :
-                             mMockTwi()
-                             , mAds1115(mMockTwi) {
+            UT_CMP_ADS1115()
+                : mMockTwi()
+                , mAds1115(mMockTwi) {
             }
 
-            virtual void
-            SetUp() {
+            virtual void SetUp() {
                 EXPECT_EQ(mAds1115.Initialize(), Core::Status::CORE_OK);
             }
 
-            virtual void
-            TearDown() {
+            virtual void TearDown() {
             }
 
             virtual ~UT_CMP_ADS1115() = default;
@@ -42,12 +40,14 @@ namespace Component
             mAds1115.Update(0UL);
         }
 
-        /*TEST_F(UT_CMP_ADS1115, GetStateAfterUpdateNominalTwice) {
-            EXPECT_CALL(mMockTwi, GetVoltage()).WillRepeatedly(Return(900U));
+        /*TEST_F(UT_CMP_ADS1115,
+        GetStateAfterUpdateNominalTwice) {
+            EXPECT_CALL(mMockTwi,
+        GetVoltage()).WillRepeatedly(Return(900U));
 
             mAds1115.Update(0UL);
 
             EXPECT_EQ(state, BatteryState::NOMINAL);
         }*/
-    }
-}
+    } // namespace Adc
+} // namespace Component

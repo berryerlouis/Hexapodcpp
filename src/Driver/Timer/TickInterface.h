@@ -9,8 +9,6 @@ namespace Driver
         public:
             TickInterface() = default;
 
-            ~TickInterface() = default;
-
             virtual uint64_t GetUs(void) = 0;
 
             virtual uint64_t GetMs(void) = 0;

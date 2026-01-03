@@ -8,25 +8,22 @@ namespace Component
 {
     namespace Servos
     {
-        class ServosInterface : public ComponentInterface<0U, nullptr_t> {
+        class ServosInterface : public ComponentInterface<0U, std::nullptr_t> {
         public:
             ServosInterface() = default;
 
             ~ServosInterface() = default;
 
-            virtual Core::Status                        Initialize(void) = 0;
+            virtual void          Enable(void) = 0;
 
-            virtual void                                Update(const uint64_t currentTime) = 0;
+            virtual void          Disable(void) = 0;
 
-            virtual void                                Enable(void) = 0;
+            virtual bool          GetState(void) = 0;
 
-            virtual void                                Disable(void) = 0;
+            virtual Servo::Servo *GetServo(const EServos servoId) = 0;
 
-            virtual bool                                GetState(void) = 0;
-
-            virtual Servo::Servo                       *GetServo(const EServos servoId) = 0;
-
-            virtual ServosController::Pca9685Interface &GetServosController(const uint8_t pca9685Id) = 0;
+            virtual ServosController::Pca9685Interface &
+            GetServosController(const uint8_t pca9685Id) = 0;
         };
     } // namespace Servos
 } // namespace Component

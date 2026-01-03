@@ -10,7 +10,7 @@ set -e  # Exit on error
 # Validate arguments
 if [ $# -eq 0 ]; then
     printf "No arguments provided, using defaults: DEBUG build\n"
-    cmake -DCMAKE_BUILD_TYPE=Debug -S . -B build
+    cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Debug -S . -B build
     exit 0
 fi
 
@@ -36,6 +36,7 @@ if [ "$2" = "sources" ]; then
     else
         printf "Configuring ${BUILD_TYPE} build for ${1}...\n"
         cmake \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
             -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" \
             -DTARGET="${1}" \
             -DGTEST=0 \

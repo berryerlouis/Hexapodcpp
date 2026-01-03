@@ -70,11 +70,11 @@ export default class Servo extends Object3D {
 
     setAngle(angle: number) {
         if (this.getStatus()) {
-            this.servoData.angle = angle;
+            this.servoData.angle = (((angle - 90) * -1) + 90);
         }
     }
 
     getAngle(): number {
-        return this.servoData.angle;
+        return  (((this.servoData.angle - 90) * -1) + 90);
     }
 }

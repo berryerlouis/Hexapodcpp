@@ -112,31 +112,33 @@ namespace Component
             };
 
 
-            Mpu9150(Twi::TwiInterface &i2c,
-                    const uint8_t      address = MPU9150_I2C_ADDRESS);
+            explicit Mpu9150(Twi::TwiInterface &i2c,
+                             const uint8_t      address = MPU9150_I2C_ADDRESS);
 
             ~Mpu9150() = default;
 
-            Core::Status         Initialize(void);
+            Core::Status    Initialize(void) final override;
 
-            void                 Update(const uint64_t currentTime);
+            void            Update(const uint64_t currentTime) final override;
 
 
-            virtual Vector3      ReadAcc(void) const final override;
+            virtual Vector3 ReadAcc(void) const final override;
 
-            virtual Vector3      ReadGyr(void) const final override;
+            virtual Vector3 ReadGyr(void) const final override;
 
-            virtual Vector3      ReadMag(void) const final override;
+            virtual Vector3 ReadMag(void) const final override;
 
-            virtual int16_t      ReadTemp(void) const final override;
+            virtual int16_t ReadTemp(void) const final override;
 
             inline virtual Imu3d ReadYawPitchRoll(void) final override {
                 return (this->mYawPitchRoll);
             }
 
-            virtual void StartCalibration(const SensorsImu sensor) final override;
+            virtual void
+            StartCalibration(const SensorsImu sensor) final override;
 
-            virtual void StopCalibration(const SensorsImu sensor) final override;
+            virtual void
+            StopCalibration(const SensorsImu sensor) final override;
 
         private:
             void    UpdateAll(void);

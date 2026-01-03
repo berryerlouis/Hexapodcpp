@@ -1,23 +1,20 @@
 #include "LedPwm.h"
+#include <algorithm>
+#include <math.h>
 
 namespace Component
 {
     namespace LedPwm
     {
-        LedPwm::LedPwm(Led::LedInterface &led) :
-            mLed(led),
-            mDutyCycle(50U),
-            mLastTime(0U),
-            mIndexInterval(0U),
-            mInterval{200,
-                      100,
-                      100,
-                      500},
-            mSpeedInterval(2U),
-            mToggleFade(false),
-            mRunning(false),
-            mFadeDuration(0),
-            mFadeStep(0) {
+        LedPwm::LedPwm(Led::LedInterface &led)
+            : mLed(led)
+            , mDutyCycle(0U)
+            , mPhase(0.0F)
+            , mLastUpdate(0U)
+            , mRunning(false)
+            , mFadeStepMs(5U)
+            , mFrequency(2.0F)
+            , mAmplitude(1000U) {
         }
 
         LedPwm::~LedPwm() {
@@ -26,90 +23,65 @@ namespace Component
 
         Core::Status LedPwm::Initialize(void) {
             this->mRunning = true;
-            this->mPwmThread = std::thread(&LedPwm::PwmControl, this);
-            LOG_COMPONENT_DEBUG("Led PWM", "Initialized.");
+            this->mLastUpdate = 0U;
+            this->mDutyCycle = 0U;
+            this->mPhase = 0.0F;
+            LOG_COMPONENT_DEBUG("LedPwm", "Initialized.");
             return Core::CORE_OK;
         }
 
-
         void LedPwm::Update(const uint64_t currentTime) {
-            if (currentTime > this->mLastTime + this->mInterval[this->mIndexInterval] * this->mSpeedInterval) {
-                this->mLastTime = currentTime;
-                if (this->mToggleFade == true) {
-                    this->mToggleFade = false;
-                    this->FadeIn(this->mInterval[this->mIndexInterval] * this->mSpeedInterval);
-                } else {
-                    this->mToggleFade = true;
-                    this->FadeOut(this->mInterval[this->mIndexInterval] * this->mSpeedInterval);
-                }
-                this->mIndexInterval++;
-                if (this->mIndexInterval == NB_INTERVAL) {
-                    this->mIndexInterval = 0U;
-                }
+            if (!this->mRunning)
+                return;
+
+            // Update sine wave every 5ms for smooth
+            // animation
+            if (currentTime >= this->mLastUpdate + this->mFadeStepMs) {
+                this->UpdateSineWave();
+                this->mLastUpdate = currentTime;
             }
+
+            // Apply current sine duty cycle to LED
+            this->mLed.Pwm(this->mDutyCycle);
         }
 
         void LedPwm::Stop() {
             this->mRunning = false;
-            if (this->mPwmThread.joinable()) {
-                this->mPwmThread.join();
+            this->mDutyCycle = 0U;
+            this->mLed.Off();
+        }
+
+        void LedPwm::UpdateFrequency(const float frequency) {
+            this->mFrequency = frequency;
+            this->mPhase = 0.0F;
+        }
+
+        void LedPwm::UpdateSineWave(void) {
+            // Phase advance: angular frequency = 2πf, time
+            // step = 5ms
+            const float timeStep = 0.005f; // 5ms in seconds
+            this->mPhase += 2.0F * M_PI * this->mFrequency * timeStep;
+
+            // Wrap phase to [0, 2π]
+            if (this->mPhase >= M_PI * 2.0F) {
+                this->mPhase -= M_PI * 2.0F;
             }
+
+            // Compute sine wave: sin(φ) ∈ [-1,1] → [0,1000]
+            // scaled by amplitude
+            float    sineValue = sinf(this->mPhase);
+            uint16_t targetDuty = static_cast<uint16_t>(
+                    (sineValue + 1.0F) * 0.5f * this->mAmplitude);
+            this->mDutyCycle = targetDuty;
+            // Smooth transition to prevent flicker
+            /*if (this->mDutyCycle < targetDuty) {
+                this->mDutyCycle = std::min(targetDuty,
+            static_cast<uint16_t>(this->mDutyCycle + 20U));
+            } else if (this->mDutyCycle > targetDuty) {
+            this->mDutyCycle = std::max(targetDuty,
+            static_cast<uint16_t>(this->mDutyCycle - 20U));
+            }*/
         }
 
-        void LedPwm::SetDutyCycle(const uint16_t duty) {
-            this->mDutyCycle = duty;
-        }
-
-        void LedPwm::FadeIn(const uint16_t duration) {
-            this->mFadeDuration = duration;
-            this->mFadeStep = 1;
-        }
-
-        void LedPwm::FadeOut(const uint16_t duration) {
-            this->mFadeDuration = duration;
-            this->mFadeStep = -1;
-        }
-
-        void LedPwm::PwmControl() {
-            const auto startTime = std::chrono::steady_clock::now();
-            while (this->mRunning) {
-                auto       currentTime = std::chrono::steady_clock::now();
-                const auto elapsedTime =
-                        std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count();
-
-                if (this->mFadeDuration > 0) {
-                    const uint16_t steps = this->mFadeDuration / 100U;
-                    if (elapsedTime % steps == 0U) {
-                        const uint16_t newDutyCycle = this->mDutyCycle + this->mFadeStep;
-                        if (newDutyCycle <= 100U) {
-                            this->mDutyCycle = newDutyCycle;
-                        } else {
-                            this->mFadeDuration = 0U;
-                        }
-                    }
-                }
-
-                const int onTime = this->mDutyCycle * 10U; // Assuming 1000us period
-                const int offTime = 1000U - onTime;
-
-                auto      pwmStartTime = std::chrono::steady_clock::now();
-                while (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() -
-                                                                             pwmStartTime)
-                               .count() < onTime) {
-                    this->mLed.On();
-                    std::this_thread::sleep_for(std::chrono::microseconds(5U));
-                }
-
-                pwmStartTime = std::chrono::steady_clock::now();
-                while (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() -
-                                                                             pwmStartTime)
-                               .count() < offTime) {
-                    this->mLed.Off();
-                    std::this_thread::sleep_for(std::chrono::microseconds(5U));
-                }
-                std::this_thread::sleep_for(std::chrono::microseconds(5U));
-                std::this_thread::yield();
-            }
-        }
     } // namespace LedPwm
 } // namespace Component

@@ -7,11 +7,9 @@ namespace Cluster
 {
     class ClusterBase : public ClusterInterface {
     public:
-        ClusterBase(const EClusters clusterId,
-                    ClusterCommand &strategyCluster);
+        ClusterBase(const EClusters clusterId, ClusterCommand &strategyCluster);
 
-        Core::Status Execute(Frame &request,
-                             Frame &response) final override;
+        Core::Status Execute(Frame &request, Frame &response) final override;
 
         EClusters    GetClusterId() const final override;
 

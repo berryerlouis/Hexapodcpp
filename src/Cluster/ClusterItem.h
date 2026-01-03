@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stdint.h"
+#include <stdint.h>
 
 namespace Cluster
 {
@@ -9,7 +9,7 @@ namespace Cluster
 
         ~ClusterItem() = default;
 
-        uint8_t commandId;
-        uint8_t expectedSize;
+        uint8_t commandId = 0U;
+        uint8_t expectedSize = 0U;
     };
 } // namespace Cluster

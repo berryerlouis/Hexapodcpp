@@ -37,17 +37,25 @@ namespace Service
             }
             static std::string EventTypeToString(const EventType eventType) {
                 switch (eventType) {
-                    case EVENT_INIT_UPDATE: return "EVENT_INIT_UPDATE";
-                    case EVENT_BUTTON_UPDATE: return "EVENT_BUTTON_UPDATE";
-                    case EVENT_COM_UPDATE: return "EVENT_COM_UPDATE";
-                    case EVENT_BATTERY_UPDATE: return "EVENT_BATTERY_UPDATE";
-                    case EVENT_SENSOR_UPDATE: return "EVENT_SENSOR_UPDATE";
-                    case EVENT_SOUND_UPDATE: return "EVENT_SOUND_UPDATE";
-                    default: return "UNKNOWN";
+                    case EVENT_INIT_UPDATE:
+                        return "EVENT_INIT_UPDATE";
+                    case EVENT_BUTTON_UPDATE:
+                        return "EVENT_BUTTON_UPDATE";
+                    case EVENT_COM_UPDATE:
+                        return "EVENT_COM_UPDATE";
+                    case EVENT_BATTERY_UPDATE:
+                        return "EVENT_BATTERY_UPDATE";
+                    case EVENT_SENSOR_UPDATE:
+                        return "EVENT_SENSOR_UPDATE";
+                    case EVENT_SOUND_UPDATE:
+                        return "EVENT_SOUND_UPDATE";
+                    default:
+                        return "UNKNOWN";
                 }
             }
             bool operator==(const Event &other) const {
-                return (this->serviceId == other.serviceId && this->eventType == other.eventType &&
+                return (this->serviceId == other.serviceId &&
+                        this->eventType == other.eventType &&
                         this->eventArg.type() == other.eventArg.type());
             }
         };

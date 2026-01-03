@@ -18,8 +18,7 @@ namespace Driver
             (void) currentTime;
         }
 
-        bool Twi::SendCommand(const uint8_t address,
-                              const uint8_t command) {
+        bool Twi::SendCommand(const uint8_t address, const uint8_t command) {
             (void) address;
             (void) command;
             return (true);
@@ -73,8 +72,7 @@ namespace Driver
             return (true);
         }
 
-        bool Twi::Write(const uint8_t address,
-                        const uint8_t reg) {
+        bool Twi::Write(const uint8_t address, const uint8_t reg) {
             (void) address;
             (void) reg;
             return (true);

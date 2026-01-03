@@ -13,13 +13,11 @@ namespace Bot
         public:
             virtual ~LegsInterface() = default;
 
-            virtual std::map<ELeg,
-                             Leg::Leg>                            &
-            GetLegs(void) = 0;
+            virtual std::map<ELeg, Leg::Leg> &GetLegs(void) = 0;
 
-            virtual Leg::LegInterface *GetLeg(const ELeg legId) = 0;
+            virtual Leg::LegInterface        *GetLeg(const ELeg legId) = 0;
 
-            virtual Core::Status       Update(void) = 0;
+            virtual Core::Status              Update(void) = 0;
         };
     } // namespace Legs
 } // namespace Bot

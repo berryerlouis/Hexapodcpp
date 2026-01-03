@@ -25,7 +25,6 @@
 #include "../Driver/InputCapture/InputCapture.h"
 #include "../Driver/Socket/Socket.h"
 #include "../Driver/Twi/Twi.h"
-#include "../Driver/Uart/Uart.h"
 #include "../Service/Battery/ServiceBattery.h"
 #include "../Service/Body/ServiceBody.h"
 #include "../Service/Button/ServiceButton.h"
@@ -46,14 +45,11 @@ namespace App
     public:
         App(void);
 
-        ~App(void) = default;
-
         virtual Core::Status Initialize(void);
 
         virtual void         Update(void);
 
     private:
-        Driver::Uart::Uart                           mUart;
         Driver::Socket::Socket                       mSocket;
         Driver::Twi::Twi                             mTwi;
         Driver::Gpio::Gpio                           mEnablePwm;

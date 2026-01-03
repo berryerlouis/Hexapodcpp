@@ -13,6 +13,7 @@ import { ClusterGeneralCommands } from "./communication/clusters/clusterGeneral.
 import Message from "./communication/message.ts";
 import { ClusterBodyCommands } from "./communication/clusters/clusterBody.ts";
 import { ClusterServoCommands } from "./communication/clusters/clusterServo.ts";
+import { ClusterBatteryCommands } from './communication/clusters/clusterBattery.ts';
 
 
 export default class Ui {
@@ -60,6 +61,7 @@ export default class Ui {
 
     initCom() {
 
+        this.socket.write(new Message(ClusterName.BATTERY, ClusterBatteryCommands.STATUS));
         this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.SET_STATE, [0, 1]));
         this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS));
         this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.GET_STATE_PCA));

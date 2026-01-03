@@ -1,7 +1,7 @@
 #pragma once
 
-#ifdef RPI
-#include "AdcRPI.h"
-#elif X64
+#ifdef X64
 #include "AdcX64.h"
+#else
+#include "AdcRPI.h"
 #endif
