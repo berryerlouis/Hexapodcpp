@@ -18,17 +18,4 @@ namespace Cluster
     EClusters ClusterBase::GetClusterId() const {
         return this->mClusterId;
     }
-
-    Core::Status ClusterBase::BuildFrameNack(Frame &response) {
-        const Core::Status success = response.Build(this->mClusterId, GENERIC);
-        response.Set1ByteParam(false);
-        return success;
-    }
-
-    Core::Status ClusterBase::BuildFrameNack(Frame             &response,
-                                             const Core::Status error) {
-        const Core::Status success = response.Build(this->mClusterId, GENERIC);
-        response.Set1ByteParam(error);
-        return success;
-    }
 } // namespace Cluster

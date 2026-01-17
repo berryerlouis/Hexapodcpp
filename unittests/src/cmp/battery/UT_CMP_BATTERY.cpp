@@ -44,7 +44,6 @@ namespace Component
             EXPECT_EQ(state, BatteryState::UNKNOWN);
         }
 
-
         TEST_F(UT_CMP_BATTERY, GetStateAfterUpdateCritical) {
             EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_0)).WillOnce(Return(740U));
             EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_1)).WillOnce(Return(740U));
@@ -52,6 +51,24 @@ namespace Component
             mBattery.Update(0UL);
             const BatteryState state = mBattery.GetState();
             EXPECT_EQ(state, BatteryState::CRITICAL);
+        }
+
+        TEST_F(UT_CMP_BATTERY, GetVoltageNominal) {
+            EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_0)).WillOnce(Return(740U));
+            EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_1)).WillOnce(Return(740U));
+
+            mBattery.Update(0UL);
+            const uint16_t voltage = mBattery.GetVoltage();
+            EXPECT_EQ(voltage, (uint16_t) (740U * 0.46F));
+        }
+
+        TEST_F(UT_CMP_BATTERY, GetIntensityNominal) {
+            EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_0)).WillOnce(Return(740U));
+            EXPECT_CALL(mMockAdc, ReadADC(Adc::PIN_1)).WillOnce(Return(740U));
+
+            mBattery.Update(0UL);
+            const uint16_t intensity = mBattery.GetIntensity();
+            EXPECT_EQ(intensity, (uint16_t) (740U * 0.066F));
         }
 
         TEST_F(UT_CMP_BATTERY, GetStateAfterUpdateWarning) {

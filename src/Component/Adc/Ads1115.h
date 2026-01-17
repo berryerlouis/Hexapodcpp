@@ -116,8 +116,6 @@ namespace Component
         private:
             bool IsReady(void) const;
 
-            void SetGain(const Ads1115Gain gain);
-
         private:
             Driver::Twi::TwiInterface &mTwi;
             uint8_t                    mAddress;

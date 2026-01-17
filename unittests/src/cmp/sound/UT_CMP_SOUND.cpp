@@ -221,5 +221,15 @@ namespace Component
             EXPECT_EQ(mSoundLeft.GetIntervalSoundHit(), 40U);
             EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 30U);
         }
+
+
+        TEST_F(UT_CMP_SOUND, ComputeAndNotifyMaxSound_Ok) {
+
+            HitTest(SOUND_RIGHT, LOUD, 4120U);
+            HitTest(SOUND_LEFT, LOUD, 4130U);
+            mSoundRight.ComputeAndNotifyMaxSound();
+        }
+
+
     } // namespace Sound
 } // namespace Component

@@ -96,6 +96,7 @@ namespace Component
             sound[SOUND_RIGHT]->mStartSoundTime = 0U;
             sound[SOUND_LEFT]->mAverageIntervalSoundTime = 0U;
             sound[SOUND_RIGHT]->mAverageIntervalSoundTime = 0U;
+
             for (uint8_t indexInterval = 0U; indexInterval < 100U;
                  indexInterval++) {
                 sound[SOUND_LEFT]->mIntervalSoundTimeArray[indexInterval] = 0U;

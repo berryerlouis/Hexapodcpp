@@ -20,9 +20,6 @@ namespace Cluster
 
     Core::Status Frame::Build(const uint8_t clusterId,
                               const uint8_t commandId) {
-        if (nbParams > FRAME_MAX_PARAMS) {
-            return (Core::Status::CORE_ERROR);
-        }
         this->clusterId = clusterId;
         this->commandId = commandId;
         this->nbParams = 0U;

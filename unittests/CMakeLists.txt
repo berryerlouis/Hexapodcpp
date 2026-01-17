@@ -68,6 +68,7 @@ add_subdirectory(src/cmp/vl53l0x)
 
 # Service tests
 add_subdirectory(src/srv/battery)
+add_subdirectory(src/srv/body)
 add_subdirectory(src/srv/button)
 add_subdirectory(src/srv/communication)
 add_subdirectory(src/srv/control)
@@ -83,6 +84,10 @@ add_subdirectory(src/bot/body)
 
 # Move tests
 add_subdirectory(src/move/gait)
+
+# Core tests
+add_subdirectory(src/cor/status)
+add_subdirectory(src/cor/logger)
 
 # Create test executable
 add_executable(HexapodcppTest ${EXECUTABLES_SRC})

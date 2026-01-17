@@ -148,5 +148,13 @@ namespace Cluster
 
             EXPECT_TRUE(0U == strcmp(bufferTx, "<0401020102>"));
         }
+
+        TEST_F(UT_CLU_PROTOCOL, Encode_NullBuffer) {
+            Frame             response;
+            constexpr uint8_t params[] = {1U, 2U};
+            response.Build(4U, 1U, params, 2U);
+            const size_t size = Protocol::Encode(response, nullptr);
+            EXPECT_EQ(size, 0U);
+        }
     } // namespace Decoding
 } // namespace Cluster

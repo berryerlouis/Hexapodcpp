@@ -6,6 +6,7 @@
 #include "../../../mock/srv/MockEventDispatcherInterface.h"
 #include "../../../mock/srv/MockMessageListener.h"
 
+#include "../../../../src/Component/Button/ButtonState.h"
 #include "../../../../src/Service/Communication/ServiceCommunication.h"
 
 using ::testing::_;
@@ -64,6 +65,22 @@ namespace Service
         TEST_F(UT_SRV_COMMUNICATION, Initialize_Update) {
             EXPECT_CALL(mMockCommunication, Update(12450UL)).Times(1U);
             mServiceCommunication.Update(12450UL);
+        }
+
+        TEST_F(UT_SRV_COMMUNICATION, Notified) {
+            const CommunicationStruct state = NO_CLIENT;
+            EXPECT_CALL(mMockEventDispatcherInterface, DispatchEvent(_))
+                    .Times(1U);
+            mServiceCommunication.Notified({state});
+        }
+
+        TEST_F(UT_SRV_COMMUNICATION, OnEvent) {
+            const Component::Button::ButtonStruct button(
+                    {.state = Component::Button::ButtonState::PUSH,
+                     .delayMs = 10U});
+            const Event::Event event = Event::Event(
+                    BUTTON, EventType::EVENT_BUTTON_UPDATE, button);
+            mServiceCommunication.OnEvent(event);
         }
     } // namespace Communication
 } // namespace Service

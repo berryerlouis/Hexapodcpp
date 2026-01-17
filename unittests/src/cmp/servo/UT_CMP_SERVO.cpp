@@ -44,10 +44,30 @@ namespace Component
             mServo.Update(0UL);
         }
 
+        TEST_F(UT_CMP_SERVO, UpdateSpeed_Ok) {
+            mServo.SetAngle(10U, 1000U);
+            EXPECT_CALL(mMockPca9685, SetPwm(0U, _)).Times(1U);
+            mServo.Update(0UL);
+            EXPECT_TRUE(mServo.IsMoving());
+        }
+
+        TEST_F(UT_CMP_SERVO, UpdateSpeedEnd_Ok) {
+            mServo.SetAngle(10U, 1000U);
+            EXPECT_CALL(mMockPca9685, SetPwm(0U, _)).Times(1U);
+            mServo.Update(1000UL);
+            EXPECT_FALSE(mServo.IsMoving());
+        }
+
         TEST_F(UT_CMP_SERVO, SetAngle_Ok) {
             EXPECT_EQ(Core::Status::CORE_OK, mServo.SetAngle(10U));
             EXPECT_TRUE(mServo.IsMoving());
             EXPECT_EQ(mServo.GetAngle(), 10U);
+        }
+
+        TEST_F(UT_CMP_SERVO, SetAngleSpeed_Ok) {
+            EXPECT_EQ(Core::Status::CORE_OK, mServo.SetAngle(10U, 1000U));
+            EXPECT_TRUE(mServo.IsMoving());
+            EXPECT_EQ(mServo.GetAngle(), 90U);
         }
 
         TEST_F(UT_CMP_SERVO, SetAngle_Reverse_Ok) {
@@ -105,6 +125,30 @@ namespace Component
         TEST_F(UT_CMP_SERVO, SetMax_Ok) {
             EXPECT_TRUE(mServo.SetMax(90U));
             EXPECT_EQ(mServo.GetMax(), 90U);
+        }
+
+        TEST_F(UT_CMP_SERVO, SetMin_Nok) {
+            mServo.SetMax(90U);
+            EXPECT_FALSE(mServo.SetMin(200U));
+        }
+
+        TEST_F(UT_CMP_SERVO, SetMax_Nok) {
+            EXPECT_FALSE(mServo.SetMax(200U));
+        }
+
+        TEST_F(UT_CMP_SERVO, IsEnable_Ok) {
+            mServo.SetEnable(true);
+            EXPECT_TRUE(mServo.IsEnable());
+        }
+
+        TEST_F(UT_CMP_SERVO, GetReverse_Ok) {
+            mServo.SetReverse(true);
+            EXPECT_TRUE(mServo.GetReverse());
+        }
+
+        TEST_F(UT_CMP_SERVO, SetEnableFalse_Ok) {
+            EXPECT_CALL(mMockPca9685, SetPwm(0U, 4096U)).Times(1U);
+            mServo.SetEnable(false);
         }
     } // namespace Servo
 } // namespace Component

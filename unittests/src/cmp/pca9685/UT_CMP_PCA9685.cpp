@@ -7,9 +7,10 @@
 #include "../../../../src/Component/ServosController/Pca9685.h"
 
 using ::testing::_;
+using ::testing::DoAll;
 using ::testing::Return;
+using ::testing::SetArgReferee;
 using ::testing::StrictMock;
-
 
 namespace Component
 {
@@ -79,6 +80,31 @@ namespace Component
             mPca9685.Update(0U);
 
             EXPECT_EQ(success, Core::Status::CORE_OK);
+        }
+
+        TEST_F(UT_CMP_PCA9685, Sleep_Ok) {
+            EXPECT_CALL(mMockTwi,
+                        ReadRegister(_, (uint8_t) Pca9685::ERegister::MODE1, _))
+                    .WillOnce(DoAll(SetArgReferee<2U>(0U), Return(true)));
+
+            EXPECT_CALL(mMockTwi,
+                        WriteRegister(_,
+                                      (uint8_t) Pca9685::ERegister::MODE1,
+                                      Pca9685::ERegisterMode1::SLEEP))
+                    .WillOnce(Return(true));
+            mPca9685.Sleep();
+        }
+
+        TEST_F(UT_CMP_PCA9685, WakeUp_Ok) {
+            EXPECT_CALL(mMockTwi,
+                        ReadRegister(_, (uint8_t) Pca9685::ERegister::MODE1, _))
+                    .WillOnce(DoAll(SetArgReferee<2U>(0U), Return(true)));
+
+            EXPECT_CALL(
+                    mMockTwi,
+                    WriteRegister(_, (uint8_t) Pca9685::ERegister::MODE1, 0U))
+                    .WillOnce(Return(true));
+            mPca9685.WakeUp();
         }
     } // namespace ServosController
 } // namespace Component

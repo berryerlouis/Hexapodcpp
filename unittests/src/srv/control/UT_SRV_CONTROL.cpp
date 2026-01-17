@@ -6,6 +6,7 @@
 #include "../../../mock/srv/MockEventDispatcherInterface.h"
 #include "../../../mock/srv/MockMessageListener.h"
 
+#include "../../../../src/Component/Button/ButtonState.h"
 #include "../../../../src/Service/Control/ServiceControl.h"
 
 using ::testing::_;
@@ -75,6 +76,15 @@ namespace Service
 
             mServiceControl.Update(0UL);
             mServiceControl.Update(0UL);
+        }
+
+        TEST_F(UT_SRV_CONTROL, OnEvent) {
+            const Component::Button::ButtonStruct button(
+                    {.state = Component::Button::ButtonState::PUSH,
+                     .delayMs = 10U});
+            const Event::Event event = Event::Event(
+                    BUTTON, EventType::EVENT_BUTTON_UPDATE, button);
+            mServiceControl.OnEvent(event);
         }
     } // namespace Control
 } // namespace Service

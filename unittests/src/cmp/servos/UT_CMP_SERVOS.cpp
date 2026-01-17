@@ -63,5 +63,43 @@ namespace Component
 
             mServos.Update(0UL);
         }
+
+        TEST_F(UT_CMP_SERVOS, Enable_Ok) {
+            EXPECT_CALL(mMockGpio, Reset()).Times(1U);
+            mServos.Enable();
+        }
+
+        TEST_F(UT_CMP_SERVOS, Disable_Ok) {
+            EXPECT_CALL(mMockGpio, Set()).Times(1U);
+            mServos.Disable();
+        }
+
+        TEST_F(UT_CMP_SERVOS, GetState_Ok) {
+            EXPECT_CALL(mMockGpio, Get()).WillOnce(Return(false));
+            EXPECT_TRUE(mServos.GetState());
+        }
+
+        TEST_F(UT_CMP_SERVOS, GetServosController0_Ok) {
+            EXPECT_EQ(0U, mServos.GetServosController(0U).GetAddress());
+        }
+
+        TEST_F(UT_CMP_SERVOS, GetServosController1_Ok) {
+            EXPECT_EQ(1U, mServos.GetServosController(1U).GetAddress());
+        }
+
+        TEST_F(UT_CMP_SERVOS, GetServo_Ok) {
+            for (size_t i = 0; i < EServos::SERVO_17; i++) {
+                Servo::ServoInterface *servos =
+                        mServos.GetServo(static_cast<EServos>(i));
+                EXPECT_NE(servos, nullptr);
+            }
+        }
+
+        TEST_F(UT_CMP_SERVOS, GetServo_Nok) {
+            Servo::ServoInterface *servos =
+                    mServos.GetServo(static_cast<EServos>(20U));
+            EXPECT_EQ(servos, nullptr);
+        }
     } // namespace Servos
+
 } // namespace Component

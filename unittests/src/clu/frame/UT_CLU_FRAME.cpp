@@ -42,6 +42,15 @@ namespace Cluster
         EXPECT_EQ(success, Core::Status::CORE_OK);
     }
 
+    TEST_F(UT_CLU_FRAME, BuildTooMuchArgs_Error) {
+        Core::Status      success = Core::Status::CORE_ERROR;
+        constexpr uint8_t params[FRAME_MAX_PARAMS + 1U] = {0U};
+        success = mFrame.Build(BATTERY, EBatteryCommands::GET_VOLTAGE);
+        mFrame.SetxBytesParam(FRAME_MAX_PARAMS + 1U, params);
+        EXPECT_EQ(success, Core::Status::CORE_OK);
+    }
+
+
     TEST_F(UT_CLU_FRAME, BuildNoArgNullptr_Ok) {
         Core::Status success = Core::Status::CORE_ERROR;
 

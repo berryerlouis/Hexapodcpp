@@ -141,5 +141,114 @@ namespace Cluster
             EXPECT_EQ(response.GetNbParams(), 2U);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
+
+        TEST_F(UT_CLU_IMU, Execute_YAW_PITCH_ROLL_Ok) {
+            Core::Status success = Core::Status::CORE_ERROR;
+            Frame        response;
+            Frame        request;
+            Imu3d        imu3d;
+
+            request.Build(IMU, EImuCommands::YAW_PITCH_ROLL);
+            EXPECT_CALL(mMockMpu9150, ReadYawPitchRoll())
+                    .WillOnce(Return(imu3d));
+
+            success = mClusterImu.ExecuteFrame(request, response);
+
+            EXPECT_EQ(response.GetClusterId(), IMU);
+            EXPECT_EQ(response.GetCommandId(), EImuCommands::YAW_PITCH_ROLL);
+            EXPECT_EQ(response.GetNbParams(), 6U);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+        }
+
+        TEST_F(UT_CLU_IMU, Execute_PRESSURE_Ok) {
+            Core::Status success = Core::Status::CORE_ERROR;
+            Frame        response;
+            Frame        request;
+            int32_t      pressure = 10U;
+
+            request.Build(IMU, EImuCommands::PRESSURE);
+            EXPECT_CALL(mMockBarometer, GetPressure())
+                    .WillOnce(Return(pressure));
+
+            success = mClusterImu.ExecuteFrame(request, response);
+
+            EXPECT_EQ(response.GetClusterId(), IMU);
+            EXPECT_EQ(response.GetCommandId(), EImuCommands::PRESSURE);
+            EXPECT_EQ(response.GetNbParams(), 4U);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+        }
+
+        TEST_F(UT_CLU_IMU, Execute_ALTITUDE_Ok) {
+            Core::Status success = Core::Status::CORE_ERROR;
+            Frame        response;
+            Frame        request;
+            uint16_t     seaLevel = 10U;
+
+            request.Build(IMU, EImuCommands::ALTITUDE);
+            EXPECT_CALL(mMockBarometer, GetAltitude())
+                    .WillOnce(Return(seaLevel));
+
+            success = mClusterImu.ExecuteFrame(request, response);
+
+            EXPECT_EQ(response.GetClusterId(), IMU);
+            EXPECT_EQ(response.GetCommandId(), EImuCommands::ALTITUDE);
+            EXPECT_EQ(response.GetNbParams(), 2U);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+        }
+
+        TEST_F(UT_CLU_IMU, Execute_TMP_BAR_Ok) {
+            Core::Status success = Core::Status::CORE_ERROR;
+            Frame        response;
+            Frame        request;
+            uint16_t     temp = 10U;
+
+            request.Build(IMU, EImuCommands::TMP_BAR);
+            EXPECT_CALL(mMockBarometer, GetTemp()).WillOnce(Return(temp));
+
+            success = mClusterImu.ExecuteFrame(request, response);
+
+            EXPECT_EQ(response.GetClusterId(), IMU);
+            EXPECT_EQ(response.GetCommandId(), EImuCommands::TMP_BAR);
+            EXPECT_EQ(response.GetNbParams(), 2U);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+        }
+
+        TEST_F(UT_CLU_IMU, Execute_CALIB_SENSOR_Start_Ok) {
+            Core::Status success = Core::Status::CORE_ERROR;
+            Frame        response;
+            Frame        request;
+
+            request.Build(IMU, EImuCommands::CALIB_SENSOR);
+            request.Set1ByteParam((uint8_t) SensorsImu::ACCEL);
+            request.Set1ByteParam(true);
+            EXPECT_CALL(mMockMpu9150, StartCalibration(SensorsImu::ACCEL))
+                    .Times(1U);
+
+            success = mClusterImu.ExecuteFrame(request, response);
+
+            EXPECT_EQ(response.GetClusterId(), IMU);
+            EXPECT_EQ(response.GetCommandId(), EImuCommands::CALIB_SENSOR);
+            EXPECT_EQ(response.GetNbParams(), 0U);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+        }
+
+        TEST_F(UT_CLU_IMU, Execute_CALIB_SENSOR_Stop_Ok) {
+            Core::Status success = Core::Status::CORE_ERROR;
+            Frame        response;
+            Frame        request;
+
+            request.Build(IMU, EImuCommands::CALIB_SENSOR);
+            request.Set1ByteParam((uint8_t) SensorsImu::ACCEL);
+            request.Set1ByteParam(false);
+            EXPECT_CALL(mMockMpu9150, StopCalibration(SensorsImu::ACCEL))
+                    .Times(1U);
+
+            success = mClusterImu.ExecuteFrame(request, response);
+
+            EXPECT_EQ(response.GetClusterId(), IMU);
+            EXPECT_EQ(response.GetCommandId(), EImuCommands::CALIB_SENSOR);
+            EXPECT_EQ(response.GetNbParams(), 0U);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+        }
     } // namespace Imu
 } // namespace Cluster

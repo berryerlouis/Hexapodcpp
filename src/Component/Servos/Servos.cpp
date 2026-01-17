@@ -56,8 +56,6 @@ namespace Component
             for (auto &pair: this->mServos) {
                 if (pair.second.Initialize() == Core::Status::CORE_OK) {
                     success++;
-                } else {
-                    break;
                 }
             }
 
@@ -87,7 +85,7 @@ namespace Component
         }
 
 
-        Servo::Servo *Servos::GetServo(const EServos servoId) {
+        Servo::ServoInterface *Servos::GetServo(const EServos servoId) {
             const auto it = mServos.find(servoId);
             if (it != mServos.end()) {
                 return &(it->second);

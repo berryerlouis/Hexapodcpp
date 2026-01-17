@@ -4,9 +4,6 @@ namespace Cluster
 {
     namespace Decoding
     {
-        Protocol::Protocol() {
-        }
-
         Core::Status Protocol::Decode(const char *frameBuffer, Frame &frame) {
             if (frameBuffer == nullptr) {
                 return (Core::Status::CORE_ERROR_NULLPTR);
@@ -69,16 +66,6 @@ namespace Cluster
             buffer[length] = '>';
             buffer[length + 1U] = '\0';
             return (length + 1U);
-        }
-
-        uint8_t Protocol::ConvertHexCharToInt(const uint8_t byte) {
-            if ((byte >= '0') && (byte <= '9')) {
-                return (byte - '0');
-            }
-            if ((byte >= 'A') && (byte <= 'F')) {
-                return (byte + 10U - 'A');
-            }
-            return (0xFFU);
         }
     } // namespace Decoding
 } // namespace Cluster

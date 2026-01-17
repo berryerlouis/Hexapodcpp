@@ -37,6 +37,7 @@ namespace Service
         void ServiceSound::SendMaxSound(void) const {
             const SoundStruct maxSound =
                     Component::Sound::Sound::ComputeAndNotifyMaxSound();
+
             if (maxSound.id != SOUND_NONE) {
                 Frame response;
                 Cluster::Sound::ClusterSound::BuildFrameGetSoundState(

@@ -373,6 +373,7 @@
                 "UT_CMP_SRF05",
                 "UT_CMP_VL53L0X",
                 "UT_SRV_BATTERY",
+                "UT_SRV_BODY",
                 "UT_SRV_BUTTON",
                 "UT_SRV_COMMUNICATION",
                 "UT_SRV_CONTROL",
@@ -382,7 +383,9 @@
                 "UT_SRV_PROXIMITY",
                 "UT_SRV_SOUND",
                 "UT_MOVE_GAIT_CYCLE",
-                "UT_MOVE_GAIT_PARAMS"
+                "UT_MOVE_GAIT_PARAMS",
+                "UT_COR_STATUS",
+                "UT_COR_LOGGER"
             ],
             "default": "all"
         },

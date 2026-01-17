@@ -70,5 +70,24 @@
     },
     "editor.formatOnSave": true,
     "clang-format.executable": "/usr/bin/clang-format",
-    "C_Cpp.dimInactiveRegions": false
+    "C_Cpp.dimInactiveRegions": false,
+    "clangd.fallbackFlags": [
+        "-std=c++11",
+        "-I${workspaceFolder}/src",
+        "-I${workspaceFolder}/build/rpi-cross-release/_deps/tinywebsockets-src/tiny_websockets_lib/include",
+        "-I${workspaceFolder}/build/rpi-cross-release/_deps/wiringpi-src",
+        "-I${workspaceFolder}/build/hexapod-X64-TEST/_deps/googletest-src/googletest/include",
+        "-I${workspaceFolder}/build/hexapod-X64-TEST/_deps/googletest-src/googletest/include/gtest",
+        "-I${workspaceFolder}/build/hexapod-X64-TEST/_deps/googletest-src/googletest/include/gtest/internal",
+        "-I${workspaceFolder}/build/hexapod-X64-TEST/_deps/googletest-src/googlemock/include",
+        "-I${workspaceFolder}/build/hexapod-X64-TEST/_deps/googletest-src/googlemock/include/gmock",
+        "-I${workspaceFolder}/build/hexapod-X64-TEST/_deps/googletest-src/googlemock/include/gmock/internal",
+        "-Wall"
+    ],
+    "clangd.arguments": [
+        "--log=verbose",
+        "--header-insertion=never",
+        "--completion-style=detailed",
+        "--compile-commands-dir=${workspaceFolder}/build"
+    ]
 }

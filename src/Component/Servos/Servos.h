@@ -30,7 +30,7 @@ namespace Component
 
             virtual bool GetState(void) final override;
 
-            virtual Servo::Servo *
+            virtual Servo::ServoInterface *
             GetServo(const EServos servoId) final override;
 
             virtual ServosController::Pca9685Interface &

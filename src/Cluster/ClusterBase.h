@@ -13,11 +13,6 @@ namespace Cluster
 
         EClusters    GetClusterId() const final override;
 
-        Core::Status BuildFrameNack(Frame &response) final override;
-
-        Core::Status BuildFrameNack(Frame             &response,
-                                    const Core::Status error) final override;
-
     protected:
         const EClusters mClusterId;
         ClusterCommand &mClusterCommand;

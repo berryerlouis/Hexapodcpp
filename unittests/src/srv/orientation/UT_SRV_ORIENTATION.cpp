@@ -9,6 +9,7 @@
 #include "../../../mock/srv/MockService.h"
 
 #include "../../../../src/Cluster/Imu/ClusterImu.h"
+#include "../../../../src/Component/Button/ButtonState.h"
 #include "../../../../src/Service/Orientation/ServiceOrientation.h"
 
 using ::testing::_;
@@ -77,6 +78,15 @@ namespace Service
             EXPECT_CALL(mMockBarometer, Update(_)).Times(1U);
 
             mServiceOrientation.Update(0UL);
+        }
+
+        TEST_F(UT_SRV_ORIENTATION, OnEvent) {
+            const Component::Button::ButtonStruct button(
+                    {.state = Component::Button::ButtonState::PUSH,
+                     .delayMs = 10U});
+            const Event::Event event = Event::Event(
+                    BUTTON, EventType::EVENT_BUTTON_UPDATE, button);
+            mServiceOrientation.OnEvent(event);
         }
     } // namespace Orientation
 } // namespace Service

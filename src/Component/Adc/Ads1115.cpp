@@ -93,9 +93,5 @@ namespace Component
             }
             return 0.0F;
         }
-
-        void Ads1115::SetGain(const Ads1115Gain gain) {
-            this->mGain = gain;
-        }
     } // namespace Adc
 } // namespace Component

@@ -53,6 +53,23 @@ namespace Cluster
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
 
+        TEST_F(UT_CLU_BATTERY, Execute_Command_Current_Ok) {
+            Core::Status success = Core::Status::CORE_ERROR;
+            const Frame  request(BATTERY, GET_CURRENT);
+            Frame        response;
+
+            EXPECT_CALL(mMockBattery, GetIntensity()).WillOnce(Return(10U));
+
+            success = mClusterBattery.ExecuteFrame(request, response);
+
+            EXPECT_EQ(response.GetClusterId(), BATTERY);
+            EXPECT_EQ(response.GetCommandId(), GET_CURRENT);
+            EXPECT_EQ(response.GetNbParams(), 2U);
+            EXPECT_EQ(response.Get1ByteParam(0U), 10U);
+            EXPECT_EQ(response.Get1ByteParam(1U), 0U);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+        }
+
         TEST_F(UT_CLU_BATTERY, Execute_Command_status_Ok) {
             Core::Status success = Core::Status::CORE_ERROR;
             const Frame  request(BATTERY, GET_BAT_STATUS);

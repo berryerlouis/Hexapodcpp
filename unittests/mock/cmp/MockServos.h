@@ -18,7 +18,7 @@ namespace Component
 
             MOCK_METHOD0(GetState, bool(void));
 
-            MOCK_METHOD1(GetServo, Servo::Servo *(const EServos));
+            MOCK_METHOD1(GetServo, Servo::ServoInterface *(const EServos));
 
             MOCK_METHOD1(GetServosController,
                          ServosController::Pca9685Interface &(const uint8_t));

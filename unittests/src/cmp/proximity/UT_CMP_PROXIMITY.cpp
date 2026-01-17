@@ -98,5 +98,31 @@ namespace Component
                                   static_cast<SensorsId>(sensorId), threshold));
             }
         }
+
+        TEST_F(UT_CMP_PROXIMITY, GetThreshold_Ok) {
+            const uint16_t threshold = 10U;
+
+            EXPECT_CALL(mMockSrf05Left, GetThreshold())
+                    .Times(1U)
+                    .WillOnce(Return(threshold));
+            EXPECT_CALL(mMockSrf05Right, GetThreshold())
+                    .Times(1U)
+                    .WillOnce(Return(threshold));
+            EXPECT_CALL(mMockVl53l0x, GetThreshold())
+                    .Times(1U)
+                    .WillOnce(Return(threshold));
+
+            for (size_t sensorId = 0U; sensorId < SensorProximity::NB_SENSORS;
+                 sensorId++) {
+                EXPECT_EQ(threshold,
+                          mSensorProximity.GetThreshold(
+                                  static_cast<SensorsId>(sensorId)));
+            }
+        }
+
+        TEST_F(UT_CMP_PROXIMITY, Notified_Ok) {
+            const SensorsStruct sensor({.id = SRF_LEFT, .distance = 10U});
+            mSensorProximity.Notified(sensor);
+        }
     } // namespace Proximity
 } // namespace Component

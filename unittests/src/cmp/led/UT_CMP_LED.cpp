@@ -42,6 +42,9 @@ namespace Component
             Led mLed;
         };
 
+        TEST_F(UT_CMP_LED, Update) {
+            mLed.Update(123456U);
+        }
 
         TEST_F(UT_CMP_LED, On) {
             Core::Status success = Core::Status::CORE_ERROR;
@@ -72,23 +75,41 @@ namespace Component
         }
 
         TEST_F(UT_CMP_LED, Toggle) {
-            Core::Status success = Core::Status::CORE_ERROR;
+            Core::Status  success = Core::Status::CORE_ERROR;
+            Led::LedState status;
 
             EXPECT_CALL(mMockGpio, Set())
                     .WillOnce(Return(Core::Status::CORE_OK));
 
             success = mLed.Toggle();
-
-            const Led::LedState status = mLed.Get();
+            status = mLed.Get();
 
             EXPECT_EQ(success, Core::Status::CORE_OK);
             EXPECT_EQ(status, Led::LedState::ON);
+
+            EXPECT_CALL(mMockGpio, Reset())
+                    .WillOnce(Return(Core::Status::CORE_OK));
+
+            success = mLed.Toggle();
+            status = mLed.Get();
+
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+            EXPECT_EQ(status, Led::LedState::OFF);
         }
 
         TEST_F(UT_CMP_LED, Get) {
             const Led::LedState status = mLed.Get();
 
             EXPECT_EQ(status, Led::LedState::OFF);
+        }
+
+        TEST_F(UT_CMP_LED, Pwm) {
+
+            EXPECT_CALL(mMockGpio, Pwm(10U))
+                    .WillOnce(Return(Core::Status::CORE_OK));
+            const Core::Status success = mLed.Pwm(10U);
+
+            EXPECT_EQ(success, Core::Status::CORE_OK);
         }
     } // namespace Led
 } // namespace Component

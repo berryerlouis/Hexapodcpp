@@ -131,6 +131,7 @@ namespace Component
                     static float deltaTime;
                     this->UpdateAll();
                     this->UpdateMag();
+                    this->UpdateTemp();
                     const uint64_t now = Timer::Tick::GetInstance().GetUs();
                     deltaTime = ((now - this->mLastLoopTime) / 1000000.0F);
                     Vector3F gyr = this->mGyr;
@@ -178,7 +179,6 @@ namespace Component
             if (++this->mIndexCalib == (this->mSensorToCalib == MAG
                                                 ? NB_SAMPLES_MAG
                                                 : NB_SAMPLES_ACC_GYR)) {
-                this->mStartCalib = false;
                 this->StopCalibration(this->mSensorToCalib);
                 this->mSensorToCalib = NONE;
             }
@@ -222,7 +222,7 @@ namespace Component
         }
 
         void Mpu9150::UpdateAll(void) {
-            uint8_t data[14U] = {0};
+            uint8_t data[14U] = {0U};
             if (this->mI2c.ReadRegisters(this->mAddress,
                                          ERegister::ACCEL_XOUT_H,
                                          reinterpret_cast<uint8_t *>(&data),
@@ -338,7 +338,7 @@ namespace Component
                     this->mMag.z = magRaw.z;
                 }
 
-                this->mI2c.WriteRegister(this->mAddressMag, 0x0A, 0x01);
+                this->mI2c.WriteRegister(this->mAddressMag, 0x0AU, 0x01U);
             }
             return magRaw;
         }

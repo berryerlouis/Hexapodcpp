@@ -8,16 +8,13 @@ namespace Cluster
     {
         class Protocol {
         public:
-            Protocol(void);
+            Protocol(void) = default;
 
             ~Protocol() = default;
 
             static Core::Status Decode(const char *frameBuffer, Frame &frame);
 
             static uint8_t      Encode(const Frame &response, char *buffer);
-
-        private:
-            static uint8_t ConvertHexCharToInt(const uint8_t byte);
         };
     } // namespace Decoding
 } // namespace Cluster

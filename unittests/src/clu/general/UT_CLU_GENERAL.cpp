@@ -49,6 +49,20 @@ namespace Cluster
             EXPECT_EQ(success, Core::Status::CORE_ERROR);
         }
 
+        TEST_F(UT_CLU_GENERAL, Execute_RESET_Ok) {
+            Core::Status success = Core::Status::CORE_ERROR;
+            Frame        request;
+            Frame        response;
+
+            request.Build(GENERAL, EGeneralCommands::RESET);
+            success = mClusterGeneral.ExecuteFrame(request, response);
+
+            EXPECT_EQ(response.GetClusterId(), GENERAL);
+            EXPECT_EQ(response.GetCommandId(), EGeneralCommands::RESET);
+            EXPECT_EQ(response.GetNbParams(), 1U);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+        }
+
         TEST_F(UT_CLU_GENERAL, Execute_VERSION_Ok) {
             Core::Status success = Core::Status::CORE_ERROR;
             Frame        request;
@@ -62,6 +76,53 @@ namespace Cluster
             EXPECT_EQ(response.GetClusterId(), GENERAL);
             EXPECT_EQ(response.GetCommandId(), EGeneralCommands::VERSION);
             EXPECT_EQ(response.GetNbParams(), 2U);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+        }
+
+        TEST_F(UT_CLU_GENERAL, Execute_MIN_EXECUTION_TIME_Ok) {
+            Core::Status success = Core::Status::CORE_ERROR;
+            Frame        request;
+            Frame        response;
+
+            EXPECT_CALL(mMockSoftware, GetMinTime()).WillOnce(Return(10UL));
+            request.Build(GENERAL, EGeneralCommands::MIN_EXECUTION_TIME);
+            success = mClusterGeneral.ExecuteFrame(request, response);
+
+            EXPECT_EQ(response.GetClusterId(), GENERAL);
+            EXPECT_EQ(response.GetCommandId(),
+                      EGeneralCommands::MIN_EXECUTION_TIME);
+            EXPECT_EQ(response.GetNbParams(), 9U);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+        }
+
+        TEST_F(UT_CLU_GENERAL, Execute_MAX_EXECUTION_TIME_Ok) {
+            Core::Status success = Core::Status::CORE_ERROR;
+            Frame        request;
+            Frame        response;
+
+            EXPECT_CALL(mMockSoftware, GetMaxTime()).WillOnce(Return(10UL));
+            request.Build(GENERAL, EGeneralCommands::MAX_EXECUTION_TIME);
+            success = mClusterGeneral.ExecuteFrame(request, response);
+
+            EXPECT_EQ(response.GetClusterId(), GENERAL);
+            EXPECT_EQ(response.GetCommandId(),
+                      EGeneralCommands::MAX_EXECUTION_TIME);
+            EXPECT_EQ(response.GetNbParams(), 9U);
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+        }
+
+        TEST_F(UT_CLU_GENERAL, Execute_RESET_EXECUTION_TIME_Ok) {
+            Core::Status success = Core::Status::CORE_ERROR;
+            Frame        request;
+            Frame        response;
+
+            request.Build(GENERAL, EGeneralCommands::RESET_EXECUTION_TIME);
+            success = mClusterGeneral.ExecuteFrame(request, response);
+
+            EXPECT_EQ(response.GetClusterId(), GENERAL);
+            EXPECT_EQ(response.GetCommandId(),
+                      EGeneralCommands::RESET_EXECUTION_TIME);
+            EXPECT_EQ(response.GetNbParams(), 1U);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
     } // namespace General

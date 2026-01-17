@@ -1,5 +1,6 @@
 set(
         SRC_FILES
+        ../src/Component/Sound/Sound.cpp
         ../src/Service/Sound/ServiceSound.cpp
 )
 set(

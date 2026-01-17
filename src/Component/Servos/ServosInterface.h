@@ -14,13 +14,13 @@ namespace Component
 
             ~ServosInterface() = default;
 
-            virtual void          Enable(void) = 0;
+            virtual void                   Enable(void) = 0;
 
-            virtual void          Disable(void) = 0;
+            virtual void                   Disable(void) = 0;
 
-            virtual bool          GetState(void) = 0;
+            virtual bool                   GetState(void) = 0;
 
-            virtual Servo::Servo *GetServo(const EServos servoId) = 0;
+            virtual Servo::ServoInterface *GetServo(const EServos servoId) = 0;
 
             virtual ServosController::Pca9685Interface &
             GetServosController(const uint8_t pca9685Id) = 0;

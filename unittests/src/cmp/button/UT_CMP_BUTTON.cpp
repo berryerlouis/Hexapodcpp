@@ -39,5 +39,21 @@ namespace Component
             /* Test class */
             Button mButton;
         };
+
+        TEST_F(UT_CMP_BUTTON, Hit) {
+            EXPECT_CALL(mMockGpio, Get()).WillOnce(Return(true));
+            mButton.Hit();
+            EXPECT_CALL(mMockGpio, Get()).WillOnce(Return(false));
+            mButton.Hit();
+        }
+
+        TEST_F(UT_CMP_BUTTON, Update) {
+            mButton.Update(0UL);
+        }
+
+        TEST_F(UT_CMP_BUTTON, Get) {
+            const ButtonState state = mButton.Get();
+            EXPECT_EQ(RELEASE, state);
+        }
     } // namespace Button
 } // namespace Component

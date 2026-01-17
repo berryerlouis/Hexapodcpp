@@ -54,10 +54,19 @@ namespace Service
             ServiceBattery mServiceBattery;
         };
 
-        TEST_F(UT_SRV_BATTERY, Updated) {
+        TEST_F(UT_SRV_BATTERY, Update) {
             EXPECT_CALL(mMockBattery, Update(12340UL)).Times(1U);
 
             mServiceBattery.Update(12340UL);
+        }
+
+        TEST_F(UT_SRV_BATTERY, OnEvent) {
+            const BatteryStruct battery = {.state = BatteryState::WARNING,
+                                           .voltage = 10U,
+                                           .intensity = 10U};
+            const Event::Event  event = Event::Event(
+                    BATTERY, EventType::EVENT_BATTERY_UPDATE, battery);
+            mServiceBattery.OnEvent(event);
         }
 
         TEST_F(UT_SRV_BATTERY, UpdatedBatteryState) {

@@ -59,7 +59,7 @@ namespace Service
             mServiceButton.Update(12340UL);
         }
 
-        TEST_F(UT_SRV_BUTTON, UpdatedButtonState) {
+        TEST_F(UT_SRV_BUTTON, Notified) {
             constexpr ButtonState ButtonState = ButtonState::RELEASE;
 
             Frame                 response;
@@ -69,6 +69,15 @@ namespace Service
             EXPECT_CALL(mMockEventDispatcherInterface, DispatchEvent(_))
                     .Times(1U);
             mServiceButton.Notified({ButtonState, 10U});
+        }
+
+        TEST_F(UT_SRV_BUTTON, OnEvent) {
+            const Component::Button::ButtonStruct button(
+                    {.state = Component::Button::ButtonState::PUSH,
+                     .delayMs = 10U});
+            const Event::Event event = Event::Event(
+                    BUTTON, EventType::EVENT_BUTTON_UPDATE, button);
+            mServiceButton.OnEvent(event);
         }
     } // namespace Button
 } // namespace Service

@@ -1,0 +1,9 @@
+set(
+        SRC_FILES
+)
+set(
+        TEST_FILE
+        src/cor/status/UT_COR_STATUS.cpp
+)
+set(UT_COR_STATUS ${SRC_FILES} ${TEST_FILE})
+set(EXECUTABLES_SRC ${EXECUTABLES_SRC} ${UT_COR_STATUS} PARENT_SCOPE)
