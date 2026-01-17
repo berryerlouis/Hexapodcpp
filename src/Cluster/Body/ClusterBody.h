@@ -1,7 +1,9 @@
 #pragma once
 
-#include "../ClusterBase.h"
 #include "../../Bot/Body/BodyInterface.h"
+#include "../ClusterBase.h"
+
+#include "../../Move/Gait/Constants.h"
 
 namespace Cluster
 {
@@ -9,50 +11,56 @@ namespace Cluster
     {
         using namespace Bot::Body;
 
-        class ClusterBody : public ClusterBase, StrategyCluster {
+        class ClusterBody : public ClusterBase, ClusterCommand {
         public:
-            ClusterBody(BodyInterface &body)
-                : ClusterBase(BODY, this)
-                  , mBody(body) {
-                this->AddClusterItem((ClusterItem){.commandId = EBodyCommands::SET_LEG_X_Y_Z, .expectedSize = 14U});
-            }
+            explicit ClusterBody(BodyInterface &body);
 
             ~ClusterBody() = default;
 
-            virtual Core::CoreStatus ExecuteFrame(const Frame &request, Frame &response) override {
-                Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-                if (request.commandId == EBodyCommands::SET_LEG_X_Y_Z) {
-                    const Position3d position =
-                    {
-                        .x = static_cast<int16_t>(request.Get2BytesParam(0U)) / 10.0f,
-                        .y = static_cast<int16_t>(request.Get2BytesParam(2U)) / 10.0f,
-                        .z = static_cast<int16_t>(request.Get2BytesParam(4U)) / 10.0f
-                    };
-                    const Rotation3d rotation =
-                    {
-                        .angleX = static_cast<int16_t>(request.Get2BytesParam(6U)) / 10.0f,
-                        .angleY = static_cast<int16_t>(request.Get2BytesParam(8U)) / 10.0f,
-                        .angleZ = static_cast<int16_t>(request.Get2BytesParam(10U)) / 10.0f
-                    };
-                    const uint16_t travelTime = request.Get2BytesParam(12U);
-                    this->mBody.SetPositionRotation(position, rotation, travelTime);
-                    success = this->BuildFrameSetPosition(response);
-                }
-                return success;
-            }
+            virtual Core::Status ExecuteFrame(const Frame &request,
+                                              Frame       &response) override;
 
-            inline Core::CoreStatus BuildFrameSetPosition(Frame &response) const {
-                const Core::CoreStatus success = response.Build(
-                    EClusters::BODY,
-                    EBodyCommands::SET_LEG_X_Y_Z);
-                if (success) {
-                    response.Set1ByteParam(true);
-                }
-                return (success);
-            }
+            static Core::Status
+            BuildFrameSetBodyPosition(Frame         &response,
+                                      const uint32_t successMove);
+
+            static Core::Status
+                                BuildFrameSetLegPosition(Frame         &response,
+                                                         const uint32_t successMove);
+
+            static Core::Status BuildFrameUpdateWalkStatus(Frame  &response,
+                                                           uint8_t walkStatus);
+
+            static Core::Status
+                                BuildFrameUpdateDirection(Frame         &response,
+                                                          const uint16_t direction);
+
+            static Core::Status BuildFrameUpdateRotation(Frame   &response,
+                                                         uint16_t rotation,
+                                                         bool     clockWize);
+
+            static Core::Status
+            BuildFrameUpdateAmplitude(Frame &response, const uint8_t amplitude);
+
+            static Core::Status
+            BuildFrameUpdateElevation(Frame &response, const uint8_t elevation);
+
+            static Core::Status BuildFrameUpdateAll(Frame         &response,
+                                                    const uint8_t  amplitude,
+                                                    const uint8_t  elevation,
+                                                    const uint16_t direction,
+                                                    const uint16_t rotation,
+                                                    const bool     clockWize,
+                                                    const uint16_t duration);
+
+            static Core::Status
+            BuildFrameUpdateDuration(Frame &response, const uint16_t duration);
+
+            static Core::Status BuildFrameUpdateGait(Frame &response,
+                                                     Move::Gait::GaitType gait);
 
         private:
             BodyInterface &mBody;
         };
-    }
-}
+    } // namespace Body
+} // namespace Cluster

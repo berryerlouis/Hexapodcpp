@@ -1,0 +1,661 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment center
+skinparam linetype ortho
+title Hexapodcpp - Complete Architecture
+
+'===================================================================
+' CORE PACKAGE
+'===================================================================
+package Core <<Rectangle>> {
+  interface CoreInterface
+  
+  class Logger {
+    + {static} Log(level, domain, fmt, ...)
+    + {static} SetLogLevel(level)
+  }
+  
+  abstract class Observable<MAX_OBSERVERS, T> {
+    # Attach(observer: ObserverInterface<T>*)
+    # Detach(observer: ObserverInterface<T>*)
+    # Notify(event: T)
+    - mObservers: ObserverInterface<T>*[MAX_OBSERVERS]
+    - mObserverCount: uint8_t
+  }
+  
+  interface ObservableInterface<T>
+  interface ObserverInterface<T> {
+    + OnNotify(event: T)
+  }
+  
+  enum Status {
+    CORE_OK
+    CORE_ERROR
+    CORE_ERROR_NULL_PTR
+    ..
+  }
+  
+  class Version {
+    + {static} MAJOR: uint8_t
+    + {static} MINOR: uint8_t
+    + {static} PATCH: uint8_t
+  }
+  
+  Observable --|> ObservableInterface
+  Observable --> ObserverInterface : notifies
+}
+
+'===================================================================
+' DRIVER PACKAGE
+'===================================================================
+package Driver <<Rectangle>> {
+  interface DriverInterface {
+    + Initialize(): Status
+    + Update(currentTime: uint64_t)
+  }
+  
+  ' ADC Driver
+  interface AdcInterface
+  class Adc
+  class AdcX64
+  class AdcRPI
+  
+  Adc --|> DriverInterface
+  Adc ..|> AdcInterface
+  AdcX64 --|> Adc
+  AdcRPI --|> Adc
+  
+  ' GPIO Driver
+  interface GpioInterface
+  class Gpio
+  class GpioX64
+  class GpioRPI
+  
+  Gpio --|> DriverInterface
+  Gpio ..|> GpioInterface
+  GpioX64 --|> Gpio
+  GpioRPI --|> Gpio
+  
+  ' TWI/I2C Driver
+  interface TwiInterface
+  class Twi
+  class TwiX64
+  class TwiRPI
+  
+  Twi --|> DriverInterface
+  Twi ..|> TwiInterface
+  TwiX64 --|> Twi
+  TwiRPI --|> Twi
+  
+  ' UART Driver
+  interface UartInterface
+  class Uart
+  class UartX64
+  class UartRPI
+  
+  Uart --|> DriverInterface
+  Uart ..|> UartInterface
+  UartX64 --|> Uart
+  UartRPI --|> Uart
+  
+  ' Socket Driver
+  interface SocketInterface
+  class Socket
+  class SocketX64
+  class SocketRPI
+  
+  Socket --|> DriverInterface
+  Socket ..|> SocketInterface
+  SocketX64 --|> Socket
+  SocketRPI --|> Socket
+  
+  ' Tick Driver
+  interface TickInterface
+  class Tick
+  class TickX64
+  class TickRPI
+  
+  Tick --|> DriverInterface
+  Tick ..|> TickInterface
+  TickX64 --|> Tick
+  TickRPI --|> Tick
+  
+  ' InputCapture Driver
+  interface InputCaptureInterface
+  class InputCapture
+  class InputCaptureX64
+  class InputCaptureRPI
+  
+  InputCapture --|> DriverInterface
+  InputCapture ..|> InputCaptureInterface
+  InputCaptureX64 --|> InputCapture
+  InputCaptureRPI --|> InputCapture
+}
+
+'===================================================================
+' COMPONENT PACKAGE
+'===================================================================
+package Component <<Rectangle>> {
+  interface ComponentInterface<MAX_OBSERVERS, T>
+  
+  ' ADC Component
+  interface Ads1115Interface
+  class Ads1115
+  enum Ads1115Id
+  
+  Ads1115 ..|> Ads1115Interface
+  Ads1115 --> TwiInterface
+  
+  ' Battery Component
+  interface BatteryInterface
+  class Battery
+  enum BatteryState
+  
+  Battery ..|> BatteryInterface
+  Battery --|> Observable
+  Battery --> Ads1115Interface
+  
+  ' Button Component
+  interface ButtonInterface
+  class Button
+  enum ButtonState
+  
+  Button ..|> ButtonInterface
+  Button --|> Observable
+  Button --> GpioInterface
+  
+  ' LED Component
+  interface LedInterface
+  class Led
+  
+  Led ..|> LedInterface
+  Led --> GpioInterface
+  
+  ' LED PWM Component
+  interface LedPwmInterface
+  class LedPwm
+  
+  LedPwm ..|> LedPwmInterface
+  
+  ' Sound Component
+  interface SoundInterface
+  class Sound
+  enum SoundState
+  
+  Sound ..|> SoundInterface
+  Sound --> GpioInterface
+  
+  ' Software Component
+  interface SoftwareInterface
+  class Software
+  
+  Software ..|> SoftwareInterface
+  
+  ' IMU Component
+  interface Mpu9150Interface
+  class Mpu9150
+  class Ahrs
+  
+  Mpu9150 ..|> Mpu9150Interface
+  Mpu9150 --> TwiInterface
+  Ahrs --> Mpu9150Interface
+  
+  ' Barometer Component
+  interface BarometerInterface
+  class Barometer
+  
+  Barometer ..|> BarometerInterface
+  Barometer --> TwiInterface
+  
+  ' Display Component
+  interface Ssd1306Interface
+  class Ssd1306
+  
+  Ssd1306 ..|> Ssd1306Interface
+  Ssd1306 --> TwiInterface
+  
+  ' Proximity Components
+  interface SensorProximityInterface
+  class SensorProximity
+  enum SensorsId
+  
+  namespace Ultrasound {
+    class Srf05
+  }
+  
+  namespace Laser {
+    class Vl53l0x
+  }
+  
+  SensorProximity ..|> SensorProximityInterface
+  Ultrasound.Srf05 --> GpioInterface
+  Ultrasound.Srf05 --> InputCaptureInterface
+  Laser.Vl53l0x --> TwiInterface
+  
+  ' Servo Components
+  interface Pca9685Interface
+  class Pca9685
+  
+  Pca9685 ..|> Pca9685Interface
+  Pca9685 --> TwiInterface
+  
+  interface ServoInterface
+  class Servo
+  
+  Servo ..|> ServoInterface
+  Servo --> Pca9685Interface
+  
+  interface ServosInterface
+  class Servos
+  
+  Servos ..|> ServosInterface
+  Servos *--> "18" Servo
+  
+  ' Communication Component
+  interface CommunicationInterface
+  class Communication
+  
+  Communication ..|> CommunicationInterface
+  Communication --> SocketInterface
+}
+
+'===================================================================
+' MISC PACKAGE
+'===================================================================
+package Misc <<Rectangle>> {
+  namespace Maths {
+    class Position3d {
+      + x: float
+      + y: float
+      + z: float
+    }
+    
+    class Vector3d {
+      + x: float
+      + y: float
+      + z: float
+    }
+    
+    class Geometry
+    
+    class Utils {
+      + {static} QuadraticLerp(t, p0, p1, p2): float
+      + {static} Clamp(val, min, max): float
+    }
+  }
+  
+  namespace Buffer {
+    class Buffer<SIZE>
+  }
+  
+  namespace Bitmap {
+    class Pixel
+    class Font
+    class Bitmaps
+  }
+}
+
+'===================================================================
+' BOT PACKAGE
+'===================================================================
+package Bot <<Rectangle>> {
+  interface BodyInterface {
+    + SetPosition(pos: Position3d)
+    + SetRotation(rot: Vector3d)
+    + GetPosition(): Position3d
+    + GetRotation(): Vector3d
+  }
+  
+  class Body {
+    + SetPosition(pos: Position3d)
+    + SetRotation(rot: Vector3d)
+    + GetPosition(): Position3d
+    + GetRotation(): Vector3d
+    - mPosition: Position3d
+    - mRotation: Vector3d
+  }
+  
+  Body ..|> BodyInterface
+  Body --> LegsInterface
+  
+  interface LegInterface {
+    + SetTarget(pos: Position3d)
+    + GetTarget(): Position3d
+    + Update()
+  }
+  
+  class Leg {
+    + SetTarget(pos: Position3d)
+    + GetTarget(): Position3d
+    + Update()
+    - mId: uint8_t
+    - mTarget: Position3d
+    - mServoIds[3]: uint8_t
+  }
+  
+  Leg ..|> LegInterface
+  Leg --> ServosInterface
+  
+  interface LegsInterface {
+    + GetLeg(id): Leg&
+    + SetTarget(id, pos)
+    + Update(time)
+  }
+  
+  class Legs {
+    + GetLeg(id): Leg&
+    + SetTarget(id, pos)
+    + Update(time)
+  }
+  
+  Legs ..|> LegsInterface
+  Legs *--> "6" Leg
+  
+  class Constants <<static>>
+}
+
+'===================================================================
+' MOVE PACKAGE
+'===================================================================
+package Move <<Rectangle>> {
+  namespace Gait {
+    enum GaitType {
+      TRIPOD
+      RIPPLE
+      WAVE
+    }
+    
+    class GaitParams {
+      + SetGaitType(type): bool
+      + GetGaitType(): GaitType
+      + SetDirection(angle): bool
+      + SetRotation(angle, clockwise): bool
+      + SetAmplitude(amp): bool
+      + SetElevation(elev): bool
+      + SetCycleDuration(dur): bool
+      + GetDirection(): float
+      + GetRotation(): float
+      + GetAmplitude(): float
+      + GetElevation(): float
+      + GetCycleDuration(): uint16_t
+      + IsRunning(): bool
+      + SetRunning(running): bool
+      - mCurrentGait: GaitType
+      - mIsRunning: bool
+      - mDirection: float
+      - mRotation: float
+      - mAmplitude: float
+      - mElevation: float
+      - mCycleDuration: uint16_t
+    }
+    
+    class GaitCycle {
+      + Start(): bool
+      + Pause(): bool
+      + Stop(): bool
+      + Update(currentTime)
+      - GetNormalizedTime(currentTime): float
+      - IsCycleComplete(currentTime): bool
+      - AdvanceToNextCycle(currentTime)
+      - mLegs: LegsInterface&
+      - mGaitParams: GaitParams&
+      - mStartTime: uint64_t
+      - mStepPositionIndex: uint8_t
+      - mPositionsLift: Position3d[]
+      - mPositionsDown: Position3d[]
+    }
+    
+    GaitCycle --> LegsInterface : updates
+    GaitCycle --> GaitParams : reads
+    GaitCycle ..> Utils : QuadraticLerp
+  }
+  
+  namespace Walk {
+    class Walk
+    
+    Walk --> Gait.GaitCycle
+  }
+}
+
+'===================================================================
+' CLUSTER PACKAGE
+'===================================================================
+package Cluster <<Rectangle>> {
+  interface ClusterInterface {
+    + Execute(request: Frame&, response: Frame&): Status
+    + GetClusterId(): uint8_t
+  }
+  
+  class ClusterCommand {
+    + Execute(request: Frame&, response: Frame&): Status
+    - mCommandId: uint8_t
+  }
+  
+  abstract class ClusterBase {
+    + Execute(request: Frame&, response: Frame&): Status
+    + GetClusterId(): uint8_t
+    # BuildFrameAck(response: Frame&)
+    # BuildFrameNack(response: Frame&, error)
+    - mClusterId: uint8_t
+    - mCommand: ClusterCommand
+  }
+  
+  ClusterBase ..|> ClusterInterface
+  ClusterBase --> ClusterCommand
+  
+  class ClusterItem {
+    + clusterId: uint8_t
+    + cluster: ClusterInterface*
+  }
+  
+  interface ClustersInterface {
+    + Execute(request: Frame&, response: Frame&): Status
+  }
+  
+  class Clusters {
+    + Execute(request: Frame&, response: Frame&): Status
+  }
+  
+  Clusters ..|> ClustersInterface
+  Clusters *--> "*" ClusterItem
+  
+  class Frame {
+    + GetClusterId(): uint8_t
+    + GetCommandId(): uint8_t
+    + GetData(): uint8_t*
+    + GetDataLength(): uint8_t
+    + SetData(data, len)
+  }
+  
+  class Protocol {
+    + Decode(buffer, frame): Status
+    + Encode(frame, buffer): Status
+  }
+  
+  Protocol ..> Frame : encodes/decodes
+  
+  ' Specific Clusters
+  class ClusterBattery
+  class ClusterButton
+  class ClusterBody
+  class ClusterGeneral
+  class ClusterImu
+  class ClusterProximity
+  class ClusterServo
+  class ClusterSound
+  
+  ClusterBattery --|> ClusterBase
+  ClusterButton --|> ClusterBase
+  ClusterBody --|> ClusterBase
+  ClusterGeneral --|> ClusterBase
+  ClusterImu --|> ClusterBase
+  ClusterProximity --|> ClusterBase
+  ClusterServo --|> ClusterBase
+  ClusterSound --|> ClusterBase
+}
+
+'===================================================================
+' SERVICE PACKAGE
+'===================================================================
+package Service <<Rectangle>> {
+  interface ServiceInterface {
+    + Initialize(): Status
+    + Update(currentTime: uint64_t)
+  }
+  
+  class Service {
+    # mIsInitialized: bool
+  }
+  
+  Service ..|> ServiceInterface
+  
+  ' Event System
+  namespace Event {
+    interface MessageInterface
+    class EventListener
+    
+    EventListener ..|> MessageInterface
+  }
+  
+  ' Specific Services
+  class ServiceBattery
+  class ServiceButton
+  class ServiceBody
+  class ServiceCommunication
+  class ServiceControl
+  class ServiceDisplay
+  class ServiceGeneral
+  class ServiceOrientation
+  class ServiceProximity
+  class ServiceSound
+  
+  ServiceBattery --|> Service
+  ServiceButton --|> Service
+  ServiceBody --|> Service
+  ServiceCommunication --|> Service
+  ServiceControl --|> Service
+  ServiceDisplay --|> Service
+  ServiceGeneral --|> Service
+  ServiceOrientation --|> Service
+  ServiceProximity --|> Service
+  ServiceSound --|> Service
+  
+  ServiceBattery --> BatteryInterface
+  ServiceButton --> ButtonInterface
+  ServiceBody --> BodyInterface
+  ServiceCommunication --> CommunicationInterface
+  ServiceDisplay --> Ssd1306Interface
+  ServiceOrientation --> Mpu9150Interface
+  ServiceOrientation --> Ahrs
+  ServiceProximity --> SensorProximityInterface
+  
+  namespace Services {
+    class Services {
+      + Initialize(): Status
+      + Update(currentTime)
+    }
+    
+    Services --|> ServiceInterface
+    Services *--> ServiceBattery
+    Services *--> ServiceButton
+    Services *--> ServiceBody
+    Services *--> ServiceCommunication
+    Services *--> ServiceControl
+    Services *--> ServiceDisplay
+    Services *--> ServiceGeneral
+    Services *--> ServiceOrientation
+    Services *--> ServiceProximity
+    Services *--> ServiceSound
+  }
+}
+
+'===================================================================
+' APP PACKAGE (Composition Root)
+'===================================================================
+package App <<Rectangle>> {
+  class App {
+    + Initialize(): Status
+    + Update()
+    ' Drivers
+    - mUart: Uart
+    - mSocket: Socket
+    - mTwi: Twi
+    - mGpio*: Gpio
+    - mInputCapture*: InputCapture
+    ' Components
+    - mLed*: Led
+    - mLedPwm*: LedPwm
+    - mAds1115: Ads1115
+    - mBattery: Battery
+    - mButton: Button
+    - mSound*: Sound
+    - mMpu9150: Mpu9150
+    - mBarometer: Barometer
+    - mSrf05*: Srf05
+    - mVl53l0x: Vl53l0x
+    - mSensorProximity: SensorProximity
+    - mSsd1306: Ssd1306
+    - mPca9685*: Pca9685
+    - mServos: Servos
+    - mSoftware: Software
+    - mCommunication: Communication
+    ' Bot
+    - mLegs: Legs
+    - mBody: Body
+    ' Clusters
+    - mCluster*: Cluster*
+    - mClusters: Clusters
+    ' Services
+    - mMessageListener: EventListener
+    - mService*: Service*
+    - mServices: Services
+  }
+  
+  App *--> Driver
+  App *--> Component
+  App *--> Bot
+  App *--> Cluster
+  App *--> Service
+}
+
+'===================================================================
+' KEY ARCHITECTURAL RELATIONSHIPS
+'===================================================================
+Service::Services ..> Cluster.Clusters : processes frames
+Service::ServiceCommunication ..> Cluster.Protocol : uses
+Service::ServiceBody ..> Move.Gait.GaitCycle : uses
+Component::Communication ..> Cluster.Frame : sends/receives
+
+note right of App
+  **Composition Root**
+  Wires all dependencies
+  
+  **Initialize() chain:**
+  1. Drivers
+  2. Components
+  3. Clusters
+  4. Services
+  
+  **Update() loop:**
+  - Services.Update()
+  - LED PWM update
+  - Tick delay
+end note
+
+note right of Move.Gait
+  **GaitCycle recently refactored:**
+  - GetNormalizedTime()
+  - IsCycleComplete()
+  - AdvanceToNextCycle()
+  
+  Uses QuadraticLerp for
+  smooth trajectories
+end note
+
+note bottom of Core
+  **Observer pattern**
+  Fixed-size array
+  No dynamic allocation
+end note
+
+@enduml

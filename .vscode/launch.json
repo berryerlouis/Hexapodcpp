@@ -2,11 +2,112 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debug X64",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/hexapod-X64-DEBUG/src/Hexapodcpp",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "linux": {
+                "miDebuggerPath": "/usr/bin/gdb"
+            },
+            "windows": {
+                "miDebuggerPath": "/usr/bin/gdb",
+                "pipeTransport": {
+                    "debuggerPath": "/usr/bin/gdb",
+                    "pipeProgram": "C:\\Windows\\System32\\wsl.exe",
+                    "pipeArgs": [],
+                    "pipeCwd": ""
+                },
+                "sourceFileMap": {
+                    "/mnt/c": "C:\\"
+                }
+            },
+            "preLaunchTask": "Build X64 Debug"
+        },
+        {
             "name": "Launch TU",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/unittests/build/HexapodcppTest",
-            "cwd": "${workspaceFolder}"
+            "program": "${workspaceFolder}/build/hexapod-X64-TEST/unittests/HexapodcppTest",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "linux": {
+                "miDebuggerPath": "/usr/bin/gdb"
+            },
+            "windows": {
+                "miDebuggerPath": "/usr/bin/gdb",
+                "pipeTransport": {
+                    "debuggerPath": "/usr/bin/gdb",
+                    "pipeProgram": "C:\\Windows\\System32\\wsl.exe",
+                    "pipeArgs": [],
+                    "pipeCwd": ""
+                },
+                "sourceFileMap": {
+                    "/mnt/c": "C:\\"
+                }
+            },
+            "preLaunchTask": "Test X64"
+        },
+        {
+            "name": "Remote Debug RPi",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/hexapod-RPI-DEBUG/src/Hexapodcpp",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": true,
+            "MIMode": "gdb",
+            "miDebuggerServerAddress": "192.168.1.170:2345",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "linux": {
+                "miDebuggerPath": "/usr/bin/gdb-multiarch",
+                "sourceFileMap": {
+                    "/workspace": "${workspaceFolder}"
+                }
+            },
+            "windows": {
+                "miDebuggerPath": "/usr/bin/gdb-multiarch",
+                "pipeTransport": {
+                    "debuggerPath": "/usr/bin/gdb-multiarch",
+                    "pipeProgram": "C:\\Windows\\System32\\wsl.exe",
+                    "pipeArgs": [],
+                    "pipeCwd": ""
+                },
+                "sourceFileMap": {
+                    "/mnt/c": "C:\\",
+                    "/workspace": "${workspaceFolder}"
+                }
+            },
+            "preLaunchTask": "Build, Deploy & Debug RPi"
         }
     ]
 }

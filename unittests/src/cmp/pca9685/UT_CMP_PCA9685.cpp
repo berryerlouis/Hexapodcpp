@@ -7,65 +7,104 @@
 #include "../../../../src/Component/ServosController/Pca9685.h"
 
 using ::testing::_;
-using ::testing::StrictMock;
+using ::testing::DoAll;
 using ::testing::Return;
+using ::testing::SetArgReferee;
+using ::testing::StrictMock;
 
-
-namespace Component {
-namespace ServosController {
-class UT_CMP_PCA9685 : public ::testing::Test {
-protected:
-	UT_CMP_PCA9685() :
-		mMockTwi(),
-		mPca9685( mMockTwi )
-	{
-	}
-
-	virtual void SetUp ()
-	{
-	}
-
-	virtual void TearDown ()
-	{
-	}
-
-	virtual ~UT_CMP_PCA9685() = default;
-
-	/* Mocks */
-	StrictMock <Driver::Twi::MockTwi> mMockTwi;
-
-	/* Test class */
-	Pca9685 mPca9685;
-};
-
-TEST_F( UT_CMP_PCA9685, Initialize_Ok )
+namespace Component
 {
-	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+    namespace ServosController
+    {
+        class UT_CMP_PCA9685 : public ::testing::Test {
+        protected:
+            UT_CMP_PCA9685()
+                : mMockTwi()
+                , mPca9685(mMockTwi) {
+            }
 
-	EXPECT_CALL( mMockTwi, WriteRegister( _, Pca9685::ERegister::MODE1, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( mMockTwi, ReadRegister( _, Pca9685::ERegister::MODE1, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( mMockTwi, WriteRegister( _, (uint8_t) Pca9685::ERegister::PRESCALE, _ ) ).WillOnce( Return( true ) );
+            virtual void SetUp() {
+            }
 
-	success = mPca9685.Initialize();
+            virtual void TearDown() {
+            }
 
-	EXPECT_TRUE( success );
-}
+            virtual ~UT_CMP_PCA9685() = default;
 
-TEST_F( UT_CMP_PCA9685, Update_Ok )
-{
-	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            /* Mocks */
+            StrictMock<Driver::Twi::MockTwi> mMockTwi;
 
-	EXPECT_CALL( mMockTwi, WriteRegister( _, Pca9685::ERegister::MODE1, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( mMockTwi, ReadRegister( _, Pca9685::ERegister::MODE1, _ ) ).WillRepeatedly( Return( true ) );
-	EXPECT_CALL( mMockTwi, WriteRegister( _, (uint8_t) Pca9685::ERegister::PRESCALE, _ ) ).WillOnce( Return( true ) );
+            /* Test class */
+            Pca9685 mPca9685;
+        };
+
+        TEST_F(UT_CMP_PCA9685, Initialize_Ok) {
+            Core::Status success = Core::Status::CORE_ERROR;
+
+            EXPECT_CALL(mMockTwi,
+                        WriteRegister(_, Pca9685::ERegister::MODE1, _))
+                    .WillRepeatedly(Return(true));
+            EXPECT_CALL(mMockTwi, ReadRegister(_, Pca9685::ERegister::MODE1, _))
+                    .WillRepeatedly(Return(true));
+            EXPECT_CALL(
+                    mMockTwi,
+                    WriteRegister(_, (uint8_t) Pca9685::ERegister::PRESCALE, _))
+                    .WillOnce(Return(true));
+
+            success = mPca9685.Initialize();
+
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+        }
+
+        TEST_F(UT_CMP_PCA9685, Update_Ok) {
+            Core::Status success = Core::Status::CORE_ERROR;
+
+            EXPECT_CALL(mMockTwi,
+                        WriteRegister(_, Pca9685::ERegister::MODE1, _))
+                    .WillRepeatedly(Return(true));
+            EXPECT_CALL(mMockTwi, ReadRegister(_, Pca9685::ERegister::MODE1, _))
+                    .WillRepeatedly(Return(true));
+            EXPECT_CALL(
+                    mMockTwi,
+                    WriteRegister(_, (uint8_t) Pca9685::ERegister::PRESCALE, _))
+                    .WillOnce(Return(true));
 
 
-	EXPECT_CALL( mMockTwi, WriteRegisters( _, (uint8_t) Pca9685::ERegister::LED0_ON_L, _, _ ) ).WillOnce( Return( true ) );
+            EXPECT_CALL(
+                    mMockTwi,
+                    WriteRegisters(
+                            _, (uint8_t) Pca9685::ERegister::LED0_ON_L, _, _))
+                    .WillOnce(Return(true));
 
-	success = mPca9685.Initialize();
-	mPca9685.Update( 0U );
+            success = mPca9685.Initialize();
+            mPca9685.Update(0U);
 
-	EXPECT_TRUE( success );
-}
-}
-}
+            EXPECT_EQ(success, Core::Status::CORE_OK);
+        }
+
+        TEST_F(UT_CMP_PCA9685, Sleep_Ok) {
+            EXPECT_CALL(mMockTwi,
+                        ReadRegister(_, (uint8_t) Pca9685::ERegister::MODE1, _))
+                    .WillOnce(DoAll(SetArgReferee<2U>(0U), Return(true)));
+
+            EXPECT_CALL(mMockTwi,
+                        WriteRegister(_,
+                                      (uint8_t) Pca9685::ERegister::MODE1,
+                                      Pca9685::ERegisterMode1::SLEEP))
+                    .WillOnce(Return(true));
+            mPca9685.Sleep();
+        }
+
+        TEST_F(UT_CMP_PCA9685, WakeUp_Ok) {
+            EXPECT_CALL(mMockTwi,
+                        ReadRegister(_, (uint8_t) Pca9685::ERegister::MODE1, _))
+                    .WillOnce(DoAll(SetArgReferee<2U>(0U), Return(true)));
+
+            EXPECT_CALL(
+                    mMockTwi,
+                    WriteRegister(_, (uint8_t) Pca9685::ERegister::MODE1, 0U))
+                    .WillOnce(Return(true));
+            mPca9685.WakeUp();
+        }
+    } // namespace ServosController
+} // namespace Component

@@ -8,25 +8,30 @@ namespace Cluster
 
     Frame::Frame(const uint8_t clusterId, const uint8_t commandId)
         : clusterId(clusterId)
-          , commandId(commandId)
-          , nbParams(0U)
-          , params{} {
+        , commandId(commandId)
+        , nbParams(0U)
+        , params{0U} {
     }
 
-    Core::CoreStatus Frame::Build(const uint8_t clusterId, const uint8_t commandId) {
-        if (nbParams > FRAME_MAX_PARAMS) {
-            return (Core::CoreStatus::CORE_ERROR);
-        }
+    bool Frame::operator==(const Frame &other) const {
+        return ((clusterId == other.clusterId) &&
+                (commandId == other.commandId) && (nbParams == other.nbParams));
+    }
+
+    Core::Status Frame::Build(const uint8_t clusterId,
+                              const uint8_t commandId) {
         this->clusterId = clusterId;
         this->commandId = commandId;
         this->nbParams = 0U;
 
-        return (Core::CoreStatus::CORE_OK);
+        return (Core::Status::CORE_OK);
     }
 
-    Core::CoreStatus Frame::Build(const uint8_t clusterId, const uint8_t commandId, const uint8_t *params,
-                                  const uint8_t nbParams) {
-        Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+    Core::Status Frame::Build(const uint8_t  clusterId,
+                              const uint8_t  commandId,
+                              const uint8_t *params,
+                              const uint8_t  nbParams) {
+        Core::Status success = Core::Status::CORE_ERROR;
         if (nbParams < FRAME_MAX_PARAMS) {
             if ((params == nullptr) && (nbParams == 0U)) {
                 success = this->Build(clusterId, commandId);
@@ -35,9 +40,10 @@ namespace Cluster
                 this->commandId = commandId;
                 this->nbParams = nbParams;
 
-                memset((void *) this->params, 0U, FRAME_MAX_PARAMS);
-                memcpy((void *) this->params, params, nbParams);
-                success = Core::CoreStatus::CORE_OK;
+                memcpy(reinterpret_cast<void *>(this->params),
+                       params,
+                       nbParams);
+                success = Core::Status::CORE_OK;
             }
         }
         return (success);
@@ -55,27 +61,35 @@ namespace Cluster
     }
 
     void Frame::Set2BytesParam(const uint16_t value) {
-        this->SetxBytesParam(2U, (uint8_t *) &value);
+        this->SetxBytesParam(2U, reinterpret_cast<const uint8_t *>(&value));
     }
 
     void Frame::Set3BytesParam(const uint32_t value) {
-        this->SetxBytesParam(3U, (uint8_t *) &value);
+        this->SetxBytesParam(3U, reinterpret_cast<const uint8_t *>(&value));
     }
 
     void Frame::Set4BytesParam(const uint32_t value) {
-        this->SetxBytesParam(4U, (uint8_t *) &value);
+        this->SetxBytesParam(4U, reinterpret_cast<const uint8_t *>(&value));
     }
 
     void Frame::Set6BytesParam(const uint64_t value) {
-        this->SetxBytesParam(6U, (uint8_t *) &value);
+        this->SetxBytesParam(6U, reinterpret_cast<const uint8_t *>(&value));
     }
 
     void Frame::Set8BytesParam(const uint64_t value) {
-        this->SetxBytesParam(8U, (uint8_t *) &value);
+        this->SetxBytesParam(8U, reinterpret_cast<const uint8_t *>(&value));
     }
 
     void Frame::SetxBytesParam(const size_t size, const uint8_t *value) {
-        memcpy((void *) &this->params[this->nbParams], value, size);
+        if (this->nbParams + size > FRAME_MAX_PARAMS) {
+            LOG_ERROR("Frame",
+                      "Cannot set %zu bytes, max params is "
+                      "%d.",
+                      size,
+                      FRAME_MAX_PARAMS);
+            return;
+        }
+        memcpy(&this->params[this->nbParams], value, size);
         this->nbParams += size;
     }
 
@@ -102,4 +116,16 @@ namespace Cluster
     uint64_t Frame::Get8BytesParam(const uint8_t index) const {
         return PTR_TO_UINT64(&this->params[index]);
     }
-}
+
+    uint8_t Frame::GetCommandId(void) const {
+        return this->commandId;
+    }
+
+    uint8_t Frame::GetClusterId(void) const {
+        return this->clusterId;
+    }
+
+    uint8_t Frame::GetNbParams() const {
+        return this->nbParams;
+    }
+} // namespace Cluster

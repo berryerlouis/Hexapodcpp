@@ -4,16 +4,18 @@ namespace Driver
 {
     namespace InputCapture
     {
-        InputCapture::InputCapture(Gpio::GpioInterface &gpio, Tick::TickInterface &tick)
+        InputCapture::InputCapture(Gpio::GpioInterface &gpio)
             : mGpio(gpio)
-              , mTick(tick)
-              , mState(false)
-              , mStartTime(0UL)
-              , mDelay(0UL) {
+            , mState(false)
+            , mStartTime(0UL)
+            , mDelay(0UL) {
         }
 
-        Core::CoreStatus InputCapture::Initialize(void) {
-            return (Core::CoreStatus::CORE_OK);
+        Core::Status InputCapture::Initialize(void) {
+            LOG_DRIVER_DEBUG("InputCapture",
+                             "pin %d Initialized.",
+                             this->mGpio.GetPin().pin);
+            return Core::Status::CORE_OK;
         }
 
         void InputCapture::Update(const uint64_t currentTime) {
@@ -21,10 +23,23 @@ namespace Driver
         }
 
         uint64_t InputCapture::GetInputCaptureTime(void) {
-            return (this->mDelay);
+            return this->mDelay;
+        }
+
+        void InputCapture::ResetInputCaptureTime(void) {
+            this->mDelay = 0U;
         }
 
         void InputCapture::EdgeChange(void) {
+            const int state = this->mGpio.Get();
+
+            if (state != this->mState && state == true) {
+                this->mStartTime = Driver::Timer::Tick::GetInstance().GetUs();
+            } else if (state != this->mState && state == false) {
+                this->mDelay = Driver::Timer::Tick::GetInstance().GetUs() -
+                               this->mStartTime;
+            }
+            this->mState = state;
         }
-    }
-}
+    } // namespace InputCapture
+} // namespace Driver

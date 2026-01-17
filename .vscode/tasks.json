@@ -2,95 +2,340 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "type": "shell",
-            "label": "Upload",
-            "command": "bin/stack/avrdude.exe",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "args": [
-                "-c",
-                "arduino",
-                "-P",
-                "COM4",
-                "-b",
-                "500000",
-                "-p",
-                "m1284p",
-                "-U",
-                "flash:w:build/Hexapodcpp.elf"
-            ],
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            }
-        },
-        {
-            "label": "Build",
+            "label": "Prod Build",
             "type": "shell",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
-            "command": "bin/dev/build.sh",
-            "args": [
-                "${input:configuration}"
-            ],
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/prod/build.sh"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/prod/build.sh"
+                ]
+            },
             "problemMatcher": [
                 "$gcc"
             ],
             "group": {
                 "kind": "build",
-                "isDefault": false
+                "isDefault": true
             }
         },
         {
-            "label": "Test Cpp",
+            "label": "Build X64 Debug",
             "type": "shell",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
-            "args": [
-                "${input:makeTarget}"
-            ],
-            "command": "bin/dev/test.sh",
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/build.sh",
+                    "X64",
+                    "sources",
+                    "DEBUG"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/build.sh",
+                    "X64",
+                    "sources",
+                    "DEBUG"
+                ]
+            },
             "problemMatcher": [
                 "$gcc"
             ],
             "group": {
                 "kind": "build",
-                "isDefault": false
+                "isDefault": true
             }
         },
         {
-            "label": "Test Js",
+            "label": "Build X64",
             "type": "shell",
             "options": {
-                "cwd": "${workspaceFolder}/HMI/"
+                "cwd": "${workspaceFolder}"
             },
-            "command": "npm run test",
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/build.sh",
+                    "X64",
+                    "sources",
+                    "${input:buildType}"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/build.sh",
+                    "X64",
+                    "sources",
+                    "${input:buildType}"
+                ]
+            },
             "problemMatcher": [
-                "$jshint"
+                "$gcc"
             ],
             "group": {
                 "kind": "build",
-                "isDefault": false
+                "isDefault": true
             }
         },
         {
-            "label": "Test and cover Js",
+            "label": "Test X64",
             "type": "shell",
             "options": {
-                "cwd": "${workspaceFolder}/HMI/"
+                "cwd": "${workspaceFolder}"
             },
-            "command": "npm run testcov",
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/test.sh",
+                    "${input:makeTarget}"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/test.sh",
+                    "${input:makeTarget}"
+                ]
+            },
             "problemMatcher": [
-                "$jshint"
+                "$gcc"
             ],
             "group": {
                 "kind": "build",
-                "isDefault": false
+                "isDefault": true
             }
+        },
+        {
+            "label": "Coverage",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/coverage.sh"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/coverage.sh"
+                ]
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Cppcheck",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/cppcheck.sh"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/cppcheck.sh"
+                ]
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Build RPI (Docker Cross-Compile)",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/docker-build-rpi.sh",
+                    "${input:buildType}"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/docker-build-rpi.sh",
+                    "${input:buildType}"
+                ]
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Reformat all",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/clang-format-all.sh"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/clang-format-all.sh"
+                ]
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Build RPI Debug (Docker Cross-Compile)",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/docker-build-rpi.sh",
+                    "DEBUG"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/docker-build-rpi.sh",
+                    "DEBUG"
+                ]
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "Deploy to RPi",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/deploy-to-rpi.sh"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/deploy-to-rpi.sh"
+                ]
+            }
+        },
+        {
+            "label": "Run RPi",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/run-rpi.sh"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/run-rpi.sh"
+                ]
+            }
+        },
+        {
+            "label": "Start GDB Server on RPi",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/start-gdb-rpi.sh"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/start-gdb-rpi.sh"
+                ]
+            },
+            "isBackground": true
+        },
+        {
+            "label": "Build & Deploy to RPi",
+            "dependsOn": [
+                "Build RPI (Docker Cross-Compile)",
+                "Deploy to RPi",
+                "Run RPi"
+            ],
+            "dependsOrder": "sequence"
+        },
+        {
+            "label": "Build, Deploy & Debug RPi",
+            "dependsOn": [
+                "Build RPI Debug (Docker Cross-Compile)",
+                "Deploy to RPi",
+                "Start GDB Server on RPi"
+            ],
+            "dependsOrder": "sequence"
         }
     ],
     "inputs": [
@@ -102,15 +347,21 @@
                 "all",
                 "clean",
                 "help",
+                "UT_BOT_BODY",
                 "UT_CLU_BATTERY",
                 "UT_CLU_BODY",
+                "UT_CLU_BUTTON",
                 "UT_CLU_FRAME",
                 "UT_CLU_GENERAL",
                 "UT_CLU_IMU",
                 "UT_CLU_PROTOCOL",
                 "UT_CLU_PROXIMITY",
                 "UT_CLU_SERVO",
+                "UT_CLU_SOUND",
+                "UT_CMP_ADS1115",
+                "UT_CMP_AHRS",
                 "UT_CMP_BATTERY",
+                "UT_CMP_BUTTON",
                 "UT_CMP_COMMUNICATION",
                 "UT_CMP_LED",
                 "UT_CMP_MPU9150",
@@ -118,25 +369,33 @@
                 "UT_CMP_PROXIMITY",
                 "UT_CMP_SERVO",
                 "UT_CMP_SERVOS",
+                "UT_CMP_SOUND",
                 "UT_CMP_SRF05",
                 "UT_CMP_VL53L0X",
                 "UT_SRV_BATTERY",
-                "UT_SRV_CONTROL",
+                "UT_SRV_BODY",
+                "UT_SRV_BUTTON",
                 "UT_SRV_COMMUNICATION",
+                "UT_SRV_CONTROL",
                 "UT_SRV_DISPLAY",
                 "UT_SRV_GENERAL",
                 "UT_SRV_ORIENTATION",
-                "UT_SRV_PROXIMITY"
+                "UT_SRV_PROXIMITY",
+                "UT_SRV_SOUND",
+                "UT_MOVE_GAIT_CYCLE",
+                "UT_MOVE_GAIT_PARAMS",
+                "UT_COR_STATUS",
+                "UT_COR_LOGGER"
             ],
             "default": "all"
         },
         {
             "type": "pickString",
-            "id": "configuration",
-            "description": "Which configuration to build ?",
+            "id": "buildType",
+            "description": "Which build type?",
             "options": [
-                "RELEASE",
                 "DEBUG",
+                "RELEASE",
                 "CLEAN"
             ],
             "default": "DEBUG"

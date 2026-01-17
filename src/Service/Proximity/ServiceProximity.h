@@ -1,34 +1,38 @@
 #pragma once
 
 #include "../../Component/Proximity/SensorProximityInterface.h"
+#include "../../Core/ObserverInterface.h"
 #include "../Service.h"
 
 namespace Service
 {
     namespace Proximity
     {
+        using namespace Component;
         using namespace Component::Proximity;
 
         constexpr uint8_t MAX_TIMEOUT_DETECTION = 10U;
 
-        class ServiceProximity : public Service, public SensorProximityObserverInterface {
+        class ServiceProximity : public Service,
+                                 Core::ObserverInterface<SensorsStruct>,
+                                 Event::EventListenerInterface {
         public:
             ServiceProximity(SensorProximityMultipleInterface &proximity,
-                             Event::EventListenerInterface &eventListener);
+                             Message::MessageInterface        &messageListener,
+                             Event::EventDispatcherInterface  &eventDispatcher);
 
             ~ServiceProximity() = default;
 
-            virtual Core::CoreStatus Initialize(void) final override;
+            virtual Core::Status Initialize(void) final override;
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void DispatchEvent(const SEvent &event) final override;
+            virtual void Notified(const SensorsStruct &sensor) final override;
 
-            virtual void Detect(const SensorsId &sensorId, const uint16_t distance) final override;
+            virtual void OnEvent(const Event::Event &event) final override;
 
         protected:
             SensorProximityMultipleInterface &mProximity;
-            uint8_t mTimeoutDetection[NB_SENSORS];
         };
-    }
-}
+    } // namespace Proximity
+} // namespace Service

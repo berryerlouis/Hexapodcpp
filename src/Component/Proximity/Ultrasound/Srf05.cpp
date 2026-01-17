@@ -6,54 +6,60 @@ namespace Component
     {
         namespace Ultrasound
         {
-            Srf05::Srf05(const Cluster::EProximityCommands side, Driver::Gpio::GpioInterface &gpioTrigger,
-                         Driver::InputCapture::InputCaptureInterface &gpioEcho, Led::LedInterface &led,
-                         Driver::Tick::TickInterface &tick)
+            Srf05::Srf05(const Cluster::EProximityCommands side,
+                         Driver::Gpio::GpioInterface      &gpioTrigger,
+                         Driver::InputCapture::InputCaptureInterface &gpioEcho,
+                         Led::LedInterface                           &led)
                 : mSide(side)
-                  , mGpioTrigger(gpioTrigger)
-                  , mGpioEcho(gpioEcho)
-                  , mTick(tick)
-                  , mLed(led)
-                  , mThreshold(DISTANCE_THRESHOLD) {
+                , mGpioTrigger(gpioTrigger)
+                , mGpioEcho(gpioEcho)
+                , mLed(led)
+                , mThreshold(DISTANCE_THRESHOLD) {
             }
 
-            Core::CoreStatus Srf05::Initialize(void) {
+            Core::Status Srf05::Initialize(void) {
                 this->mGpioEcho.Initialize();
                 this->mLed.Initialize();
-                return (Core::CoreStatus::CORE_OK);
+                LOG_COMPONENT_DEBUG("Ultrasound",
+                                    "pin trigger %d Initialized.",
+                                    this->mGpioTrigger.GetPin().pin);
+                return Core::Status::CORE_OK;
             }
 
             void Srf05::Update(const uint64_t currentTime) {
                 (void) currentTime;
                 this->SendPulse();
                 const uint16_t distance = this->GetDistance();
-                const bool detection = (distance != 0U && distance <= this->mThreshold);
+                const bool     detection =
+                        (distance != 0U && distance <= this->mThreshold);
                 if (true == detection) {
                     this->mLed.On();
-                    this->Notify(static_cast<SensorsId>(mSide), distance);
+                    this->Notify(
+                            {static_cast<SensorsId>(this->mSide), distance});
                 } else {
                     this->mLed.Off();
                 }
             }
 
             uint16_t Srf05::GetThreshold(void) {
-                return (this->mThreshold);
+                return this->mThreshold;
             }
 
-            Core::CoreStatus Srf05::SetThreshold(uint16_t mThreshold) {
-                this->mThreshold = mThreshold;
-                return (Core::CoreStatus::CORE_OK);
+            Core::Status Srf05::SetThreshold(const uint16_t threshold) {
+                this->mThreshold = threshold;
+                return Core::Status::CORE_OK;
             }
 
-            void Srf05::SendPulse(void) {
+            void Srf05::SendPulse(void) const {
                 this->mGpioTrigger.Set();
-                this->mTick.DelayUs(10U);
+                Driver::Timer::Tick::GetInstance().DelayUs(10U);
                 this->mGpioTrigger.Reset();
             }
 
             uint16_t Srf05::GetDistance(void) {
-                return static_cast<uint16_t>((this->mGpioEcho.GetInputCaptureTime() / 58.0F));
+                const uint64_t delay = this->mGpioEcho.GetInputCaptureTime();
+                return static_cast<uint16_t>(delay / 58.0F);
             }
-        }
-    }
-}
+        } // namespace Ultrasound
+    } // namespace Proximity
+} // namespace Component

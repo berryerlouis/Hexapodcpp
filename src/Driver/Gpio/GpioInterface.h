@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include "../../Core/Status.h"
+#include "../DriverInterface.h"
 
 namespace Driver
 {
@@ -9,7 +10,8 @@ namespace Driver
     {
         enum EPortDirection {
             IN = 0U,
-            OUT = 1U
+            OUT = 1U,
+            PWM = 2U,
         };
 
         enum EPort {
@@ -19,42 +21,33 @@ namespace Driver
             PORT_D
         };
 
-#define NB_PORT    4U
-
-        enum EPin {
-            PIN_0,
-            PIN_1,
-            PIN_2,
-            PIN_3,
-            PIN_4,
-            PIN_5,
-            PIN_6,
-            PIN_7,
-        };
+#define NB_PORT 4U
 
         struct SGpio {
-            EPort port;
-            EPin pin;
+            uint8_t pin;
         };
-
 
         class GpioInterface {
         public:
+            typedef void (*InterruptCallback)(void);
+
             GpioInterface() = default;
 
-            ~GpioInterface() = default;
+            virtual Core::Status Set(void) = 0;
 
-            virtual Core::CoreStatus Set(void) = 0;
+            virtual Core::Status Reset(void) = 0;
 
-            virtual Core::CoreStatus Reset(void) = 0;
+            virtual Core::Status Pwm(const uint16_t delay) = 0;
 
-            virtual EPin &GetPin(void) = 0;
+            virtual SGpio       &GetPin(void) = 0;
 
-            virtual bool Get(void) = 0;
+            virtual bool         Get(void) = 0;
 
-            virtual void SetInterruptPin(void) = 0;
+            virtual void         SetInterruptPin(void) = 0;
+
+            virtual void SetInterruptPin(const InterruptCallback callback) = 0;
 
             virtual void ResetInterruptPin(void) = 0;
         };
-    }
-}
+    } // namespace Gpio
+} // namespace Driver

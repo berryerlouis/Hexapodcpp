@@ -1,83 +1,68 @@
-#ifndef GTEST
-#include <avr/interrupt.h>
-#endif
 #include "Services.h"
-#include "../../Misc/Logger/Logger.h"
+
 
 namespace Service
 {
     namespace Services
     {
-        Services::Services(
-            Tick::TickInterface &tick,
-            ServiceGeneral &serviceGeneral,
-            ServiceControl &serviceControl,
-            ServiceCommunication &serviceCommunication,
-            ServiceProximity &serviceProximity,
-            ServiceOrientation &serviceOrientation,
-            ServiceBattery &serviceBattery,
-            ServiceDisplay &serviceDisplay,
-            Event::EventListenerInterface &eventListener)
-            : mTick(tick)
-              , mServices{
-                  {GENERAL, &serviceGeneral},
-                  {PROXIMITY, &serviceProximity},
-                  {CONTROL, &serviceControl},
-                  {COMMUNICATION, &serviceCommunication},
-                  {ORIENTATION, &serviceOrientation},
-                  {BATTERY, &serviceBattery},
-                  {DISPLAY, &serviceDisplay}
-              }
-              , mEventListener(eventListener) {
+        Services::Services(ServiceGeneral            &serviceGeneral,
+                           ServiceControl            &serviceControl,
+                           ServiceCommunication      &serviceCommunication,
+                           ServiceProximity          &serviceProximity,
+                           ServiceOrientation        &serviceOrientation,
+                           ServiceBattery            &serviceBattery,
+                           ServiceDisplay            &serviceDisplay,
+                           ServiceBody               &serviceBody,
+                           ServiceButton             &serviceButton,
+                           ServiceSound              &serviceSound,
+                           Message::MessageInterface &messageListener,
+                           Event::EventDispatcherInterface &eventDispatcher)
+            : mServices{{GENERAL, &serviceGeneral},
+                        {CONTROL, &serviceControl},
+                        {COMMUNICATION, &serviceCommunication},
+                        {PROXIMITY, &serviceProximity},
+                        {ORIENTATION, &serviceOrientation},
+                        {BATTERY, &serviceBattery},
+                        {DISPLAY, &serviceDisplay},
+                        {BODY, &serviceBody},
+                        {BUTTON, &serviceButton},
+                        {SOUND, &serviceSound}}
+            , mMessageListener(messageListener)
+            , mEventDispatcher(eventDispatcher) {
         }
 
-        Core::CoreStatus Services::Initialize(void) {
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-            for (const ServiceItem item: this->mServices) {
-                success = item.service->Initialize();
-                if (!success) {
+        Core::Status Services::Initialize(void) {
+            Core::Status success = Core::Status::CORE_ERROR;
+
+            for (const auto &pair: this->mServices) {
+                Service *service = pair.second;
+                success = service->Initialize();
+                service->DispatchEvent<Core::Status>(
+                        service->GetServiceId(),
+                        EventType::EVENT_INIT_UPDATE,
+                        success);
+                if (success != Core::Status::CORE_OK) {
 #ifdef DEBUG
-                    const char serviceId[2U] = {static_cast<const char>(item.serviceId + 0x30U), ' '};
-                    LOG("error");
-                    LOG(serviceId);
-#endif
-#ifndef GTEST
-                    sei();
+                    LOG_SERVICE_ERROR(
+                            "Service id:%s Initialization "
+                            "error.",
+                            EServicesStruct::ServiceIdToString(pair.first)
+                                    .c_str());
 #endif
                 }
             }
+            Frame response;
+            Cluster::General::ClusterGeneral::BuildFrameReset(response,
+                                                              success);
+            this->mMessageListener.SendMessage(response);
             return (success);
         }
 
         void Services::Update(const uint64_t currentTime) {
-            (void) currentTime;
-
-            for (const ServiceItem item: this->mServices) {
-                const uint64_t currentMillis = this->mTick.GetMs();
-                if (item.service->NeedUpdate(currentMillis)) {
-                    item.service->Update(currentMillis);
-                    item.service->SetNewUpdateTime(currentMillis, item.serviceId);
-                }
-            }
-            this->DispatchEvent();
-        }
-
-        Service *Services::Get(const EServices serviceId) {
-            for (const ServiceItem &item: this->mServices) {
-                if (item.serviceId == serviceId) {
-                    return (item.service);
-                }
-            }
-            return (nullptr);
-        }
-
-        void Services::DispatchEvent(void) {
-            SEvent ev;
-            if (this->mEventListener.GetLastEvent(ev)) {
-                for (const ServiceItem &item: this->mServices) {
-                    item.service->DispatchEvent(ev);
-                }
+            for (const auto &pair: this->mServices) {
+                Service *service = pair.second;
+                service->UpdateService(currentTime);
             }
         }
-    }
-}
+    } // namespace Services
+} // namespace Service

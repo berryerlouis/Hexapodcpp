@@ -2,3 +2,13 @@
 build
 HMI/node_modules
 HMI/coverage
+*.o
+*.d
+*.atsuo
+node_modules/
+/HMI-copy/
+Hexapodcpp
+coverage-report/
+coverage.info
+/cppcheck-report.xml
+cppcheck_html

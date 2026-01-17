@@ -6,15 +6,11 @@ namespace Component
 {
     namespace ServosController
     {
-        class Pca9685Interface : public ComponentInterface {
+        class Pca9685Interface : public ComponentInterface<0U, std::nullptr_t> {
         public:
             Pca9685Interface(void) = default;
 
             ~Pca9685Interface() = default;
-
-            virtual Core::CoreStatus Initialize(void) = 0;
-
-            virtual void Update(const uint64_t currentTime) = 0;
 
             virtual void Reset(void) = 0;
 
@@ -26,7 +22,9 @@ namespace Component
 
             virtual void SetFrequency(const uint32_t frequency) = 0;
 
-            virtual void SetPwm(uint8_t num, uint16_t off) = 0;
+            virtual void SetPwm(const uint8_t num, const uint16_t off) = 0;
+
+            virtual uint8_t GetAddress(void) = 0;
         };
-    }
-}
+    } // namespace ServosController
+} // namespace Component

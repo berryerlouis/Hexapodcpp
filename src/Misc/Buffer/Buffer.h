@@ -16,7 +16,7 @@ namespace Misc
 
             uint8_t GetLength(void) const;
 
-            void Push(const volatile uint8_t &item);
+            void    Push(const volatile uint8_t &item);
 
             uint8_t Pop(void);
 
@@ -24,7 +24,7 @@ namespace Misc
             volatile uint8_t mBuffer[BUFFER_MAX_SIZE];
             volatile uint8_t mHead;
             volatile uint8_t mTail;
-            volatile bool mIsEmpty;
+            volatile bool    mIsEmpty;
         };
-    }
-}
+    } // namespace Buffer
+} // namespace Misc

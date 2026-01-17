@@ -1,28 +1,35 @@
 #pragma once
 
+#include "../../Component/LedPwm/LedPwmInterface.h"
 #include "../../Component/Software/SoftwareInterface.h"
 #include "../Service.h"
+
 
 namespace Service
 {
     namespace General
     {
         using namespace Component::Software;
+        using namespace Component::LedPwm;
 
-        class ServiceGeneral : public Service {
+        class ServiceGeneral : public Service, Event::EventListenerInterface {
         public:
-            ServiceGeneral(SoftwareInterface &software, Event::EventListenerInterface &eventListener);
+            ServiceGeneral(LedPwmInterface                 &ledPwm,
+                           SoftwareInterface               &software,
+                           Message::MessageInterface       &messageListener,
+                           Event::EventDispatcherInterface &eventDispatcher);
 
             ~ServiceGeneral() = default;
 
-            virtual Core::CoreStatus Initialize(void) final override;
+            virtual Core::Status Initialize(void) final override;
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void DispatchEvent(const SEvent &event) final override;
+            virtual void OnEvent(const Event::Event &event) final override;
 
         protected:
+            LedPwmInterface   &mLedPwm;
             SoftwareInterface &mSoftware;
         };
-    }
-}
+    } // namespace General
+} // namespace Service

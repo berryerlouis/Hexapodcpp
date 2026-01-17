@@ -1,36 +1,94 @@
 #pragma once
 
-#include "ServiceInterface.h"
-#include "../Cluster/Constants.h"
-#include "../Misc/Logger/Logger.h"
-#include "Event/EventDispatcherInterface.h"
-#include "Event/EventListenerInterface.h"
+#include "../Cluster/General/ClusterGeneral.h"
+#include "../Driver/Timer/Tick.h"
 #include "Constants.h"
-#include "string.h"
+#include "Event/EventDispatcherInterface.h"
+#include "Message/MessageInterface.h"
+#include "ServiceInterface.h"
 
 namespace Service
 {
-    class Service : public ServiceInterface, public Event::EventDispatcherInterface {
+    class Service : public ServiceInterface {
     public:
-        Service(const uint64_t updateTime, Event::EventListenerInterface &eventListener)
+        Service(const EServices                  serviceId,
+                const uint64_t                   updateTime,
+                Message::MessageInterface       &messageListener,
+                Event::EventDispatcherInterface &eventDispatcher)
             : mUpdateTime(updateTime)
-              , mDeltaTime(0U)
-              , mPreviousTime(0UL)
-              , mMinDeltaTime(1000UL)
-              , mMaxDeltaTime(0UL)
-              , mEventListener(eventListener) {
+            , mDeltaTime(0U)
+            , mInitialized(false)
+            , mServiceId(serviceId)
+            , mPreviousTime(0UL)
+            , mMinDeltaTime(10000UL)
+            , mMaxDeltaTime(0UL)
+            , mMessageListener(messageListener)
+            , mEventDispatcher(eventDispatcher) {
+            if (updateTime < 10U) {
+                LOG_SERVICE_WARNING(
+                        "%s(%d) each %dms is too fast, min "
+                        "10ms.",
+                        EServicesStruct::ServiceIdToString(serviceId).c_str(),
+                        serviceId,
+                        updateTime);
+            }
+            LOG_SERVICE_DEBUG(
+                    "%s(%d) each %dms.",
+                    EServicesStruct::ServiceIdToString(serviceId).c_str(),
+                    serviceId,
+                    updateTime);
         }
 
         ~Service() = default;
 
-        Core::CoreStatus NeedUpdate(const uint64_t currentTime) const {
-            return (((currentTime - this->mPreviousTime) >= this->mUpdateTime)
-                        ? Core::CoreStatus::CORE_OK
-                        : Core::CoreStatus::CORE_ERROR);
+        template<typename T>
+        void DispatchEvent(const EServices eventService,
+                           const EventType eventType,
+                           const T         eventArg) const {
+            this->mEventDispatcher.DispatchEvent(
+                    Event::Event(eventService, eventType, eventArg));
         }
 
-        void SetNewUpdateTime(const uint64_t currentTime, const EServices serviceId) {
-            this->mDeltaTime = abs(static_cast<uint16_t>(currentTime - this->mPreviousTime - this->mUpdateTime));
+        void DispatchEvent(const EServices eventService,
+                           const EventType eventType) const {
+            this->mEventDispatcher.DispatchEvent(
+                    Event::Event(eventService, eventType, 0U));
+        }
+
+        template<typename T>
+        void DispatchEvent(const EventType eventType, const T eventArg) const {
+            this->mEventDispatcher.DispatchEvent(
+                    Event::Event(this->GetServiceId(), eventType, eventArg));
+        }
+
+        void DispatchEvent(const EventType eventType) const {
+            this->mEventDispatcher.DispatchEvent(
+                    Event::Event(this->GetServiceId(), eventType, 0U));
+        }
+
+        Event::EventDispatcherInterface &GetEventDispatcher(void) const {
+            return this->mEventDispatcher;
+        }
+
+        void UpdateService(const uint64_t currentTime) {
+            if (this->NeedUpdate(currentTime) == Core::Status::CORE_OK) {
+                this->Update(currentTime);
+                this->SetNewUpdateTime(
+                        Driver::Timer::Tick::GetInstance().GetMs());
+            }
+        }
+
+        Core::Status NeedUpdate(const uint64_t currentTime) const {
+            return ((currentTime - this->mPreviousTime) >= this->mUpdateTime &&
+                    this->mInitialized)
+                           ? Core::Status::CORE_OK
+                           : Core::Status::CORE_ERROR;
+        }
+
+        void SetNewUpdateTime(const uint64_t currentTime) {
+            this->mDeltaTime = abs(static_cast<int64_t>(currentTime) -
+                                   static_cast<int64_t>(this->mPreviousTime) -
+                                   static_cast<int64_t>(this->mUpdateTime));
 
             if (this->mPreviousTime == 0U) {
                 this->mDeltaTime = 0U;
@@ -40,68 +98,67 @@ namespace Service
             this->mPreviousTime = currentTime;
             if (this->mDeltaTime < this->mMinDeltaTime) {
                 this->SetMinTime(this->mDeltaTime);
-                const uint8_t arg[3U] = {
-                    static_cast<uint8_t>(serviceId),
-                    static_cast<uint8_t>(this->mDeltaTime & 0xFFU),
-                    static_cast<uint8_t>(this->mDeltaTime >> 8U)
-                };
-                const SEvent ev(EServices::GENERAL, MIN_EXECUTION_TIME, arg, 3U);
-                this->AddEvent(ev);
+                Frame response;
+                Cluster::General::ClusterGeneral::BuildFrameGetMinTime(
+                        this->mServiceId, this->mDeltaTime, response);
+                this->SendMessage(response);
             } else if (this->mDeltaTime > this->mMaxDeltaTime) {
                 this->SetMaxTime(this->mDeltaTime);
-                const uint8_t arg[3U] = {
-                    static_cast<uint8_t>(serviceId),
-                    static_cast<uint8_t>(this->mDeltaTime & 0xFFU),
-                    static_cast<uint8_t>(this->mDeltaTime >> 8U)
-                };
-                const SEvent ev(EServices::GENERAL, MAX_EXECUTION_TIME, arg, 3U);
-                this->AddEvent(ev);
+                Frame response;
+                Cluster::General::ClusterGeneral::BuildFrameGetMaxTime(
+                        this->mServiceId, this->mDeltaTime, response);
+                this->SendMessage(response);
             }
         }
 
         uint64_t GetPreviousTime(void) const {
-            return (this->mPreviousTime);
+            return this->mPreviousTime;
         }
 
         uint16_t GetDeltaTime(void) const {
-            return (this->mDeltaTime);
+            return this->mDeltaTime;
         }
 
         uint16_t GetMinTime(void) const {
-            return (this->mMinDeltaTime);
+            return this->mMinDeltaTime;
         }
 
         uint16_t GetMaxTime(void) const {
-            return (this->mMaxDeltaTime);
+            return this->mMaxDeltaTime;
         }
 
         void ResetTiming(void) {
-            this->mMinDeltaTime = 0U;
+            this->mMinDeltaTime = 10000UL;
             this->mMaxDeltaTime = 0U;
         }
 
-        void SetMinTime(const uint16_t time) {
+        void SetMinTime(const uint64_t time) {
             this->mMinDeltaTime = time;
         }
 
-        void SetMaxTime(const uint16_t time) {
+        void SetMaxTime(const uint64_t time) {
             this->mMaxDeltaTime = time;
         }
 
-        void AddEvent(const SEvent &event) const {
-            this->mEventListener.AddEvent(event);
+        EServices GetServiceId(void) const {
+            return this->mServiceId;
         }
 
-        virtual void DispatchEvent(const SEvent &event) = 0;
-
     protected:
-        uint64_t mUpdateTime;
-        uint16_t mDeltaTime;
+        void SendMessage(const Frame &message) const {
+            this->mMessageListener.SendMessage(message);
+        }
+
+        volatile uint64_t mUpdateTime;
+        volatile uint64_t mDeltaTime;
+        bool              mInitialized;
+        EServices         mServiceId;
 
     private:
-        uint64_t mPreviousTime;
-        uint16_t mMinDeltaTime;
-        uint16_t mMaxDeltaTime;
-        Event::EventListenerInterface &mEventListener;
+        volatile uint64_t                mPreviousTime;
+        volatile uint64_t                mMinDeltaTime;
+        volatile uint64_t                mMaxDeltaTime;
+        Message::MessageInterface       &mMessageListener;
+        Event::EventDispatcherInterface &mEventDispatcher;
     };
-}
+} // namespace Service

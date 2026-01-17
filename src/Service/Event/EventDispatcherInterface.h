@@ -1,20 +1,20 @@
 #pragma once
 
-#include "SEvent.h"
+#include "EventListenerInterface.h"
 
 namespace Service
 {
     namespace Event
     {
-#define MAX_EVENTS 10U
-
         class EventDispatcherInterface {
         public:
             EventDispatcherInterface() = default;
 
-            ~EventDispatcherInterface() = default;
+            virtual void AddListener(EventListenerInterface *listener) = 0;
 
-            virtual void DispatchEvent(const SEvent &event) = 0;
+            virtual void RemoveListener(EventListenerInterface *listener) = 0;
+
+            virtual void DispatchEvent(const Event &event) const = 0;
         };
-    }
-}
+    } // namespace Event
+} // namespace Service

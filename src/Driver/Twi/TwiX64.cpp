@@ -1,73 +1,70 @@
 #include "Twi.h"
 
+
 namespace Driver
 {
     namespace Twi
     {
-        Twi::Twi(const EI2cFreq &freq)
-            : mFreq(freq)
-              , mTimeout(0U) {
+        Twi::Twi(const EI2cFreq &freq) {
+            (void) freq;
         }
 
-        Core::CoreStatus Twi::Initialize(void) {
-            return (Core::CoreStatus::CORE_OK);
+        Core::Status Twi::Initialize(void) {
+            LOG_DRIVER_DEBUG("Twi", "Initialized.");
+            return (Core::Status::CORE_OK);
         }
 
         void Twi::Update(const uint64_t currentTime) {
             (void) currentTime;
         }
 
-        bool Twi::ReadRegister(const uint8_t address, const uint8_t reg, uint8_t &data) {
+        bool Twi::SendCommand(const uint8_t address, const uint8_t command) {
+            (void) address;
+            (void) command;
+            return (true);
+        }
+
+
+        bool Twi::ReadRegister(const uint8_t address,
+                               const uint8_t reg,
+                               uint8_t      &data) {
             (void) address;
             (void) reg;
             (void) data;
             return (true);
         }
 
-        bool Twi::ReadRegister16Bits(const uint8_t address, const uint8_t reg, uint16_t &data) {
+        bool Twi::ReadRegister16Bits(const uint8_t address,
+                                     const uint8_t reg,
+                                     uint16_t     &data) {
             (void) address;
             (void) reg;
             (void) data;
             return (true);
         }
 
-        bool Twi::ReadRegister32Bits(const uint8_t address, const uint8_t reg, uint32_t &data) {
+        bool Twi::ReadRegister24Bits(const uint8_t address,
+                                     const uint8_t reg,
+                                     uint32_t     &data) {
             (void) address;
             (void) reg;
             (void) data;
-            return (true);
+            return true;
         }
 
-        bool Twi::ReadRegisters(const uint8_t address, const uint8_t reg, uint8_t *data, const uint8_t length) {
+        bool Twi::ReadRegister32Bits(const uint8_t address,
+                                     const uint8_t reg,
+                                     uint32_t     &data) {
             (void) address;
             (void) reg;
             (void) data;
-            (void) length;
-            return (true);
+            return true;
         }
 
-        bool Twi::WriteRegister(const uint8_t address, const uint8_t reg, uint8_t data) {
-            (void) address;
-            (void) reg;
-            (void) data;
-            return (true);
-        }
-
-        bool Twi::WriteRegister16Bits(const uint8_t address, const uint8_t reg, uint16_t &data) {
-            (void) address;
-            (void) reg;
-            (void) data;
-            return (true);
-        }
-
-        bool Twi::WriteRegister32Bits(const uint8_t address, const uint8_t reg, uint32_t &data) {
-            (void) address;
-            (void) reg;
-            (void) data;
-            return (true);
-        }
-
-        bool Twi::WriteRegisters(const uint8_t address, const uint8_t reg, uint8_t *data, const uint8_t length) {
+        bool Twi::ReadRegisters(const uint8_t address,
+                                const uint8_t reg,
+                                uint8_t      *data,
+                                const uint8_t length) {
             (void) address;
             (void) reg;
             (void) data;
@@ -75,31 +72,48 @@ namespace Driver
             return (true);
         }
 
-        Twi::EI2cStatus Twi::Start(const uint8_t slave) {
-            (void) slave;
-            return (EI2cStatus::ACK);
+        bool Twi::Write(const uint8_t address, const uint8_t reg) {
+            (void) address;
+            (void) reg;
+            return (true);
         }
 
-        Twi::EI2cStatus Twi::RepeatedStart(const uint8_t slave) {
-            (void) slave;
-            return (EI2cStatus::ACK);
-        }
-
-        Twi::EI2cStatus Twi::Write(const uint8_t data) {
+        bool Twi::WriteRegister(const uint8_t address,
+                                const uint8_t reg,
+                                uint8_t       data) {
+            (void) address;
+            (void) reg;
             (void) data;
-            return (EI2cStatus::ACK);
+            return (true);
         }
 
-        uint8_t Twi::ReadAck(void) {
-            return (0U);
+        bool Twi::WriteRegister16Bits(const uint8_t address,
+                                      const uint8_t reg,
+                                      uint16_t     &data) {
+            (void) address;
+            (void) reg;
+            (void) data;
+            return (true);
         }
 
-        uint8_t Twi::ReadNack(void) {
-            return (0U);
+        bool Twi::WriteRegister32Bits(const uint8_t address,
+                                      const uint8_t reg,
+                                      uint32_t     &data) {
+            (void) address;
+            (void) reg;
+            (void) data;
+            return (true);
         }
 
-        Twi::EI2cStatus Twi::Stop(void) {
-            return (EI2cStatus::ACK);
+        bool Twi::WriteRegisters(const uint8_t address,
+                                 const uint8_t reg,
+                                 uint8_t      *data,
+                                 const uint8_t length) {
+            (void) address;
+            (void) reg;
+            (void) data;
+            (void) length;
+            return (true);
         }
-    }
-}
+    } // namespace Twi
+} // namespace Driver

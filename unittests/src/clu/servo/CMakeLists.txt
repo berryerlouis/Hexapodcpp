@@ -1,6 +1,6 @@
 set(
         SRC_FILES
-        ../src/Cluster/Frame/Frame.cpp
+        ../src/Cluster/Servo/ClusterServo.cpp
         ../src/Component/Servo/Servo.cpp
 )
 set(

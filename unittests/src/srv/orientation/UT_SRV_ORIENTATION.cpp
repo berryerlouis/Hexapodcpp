@@ -2,10 +2,14 @@
 #include <gtest/gtest.h>
 
 
-#include "../../../mock/srv/MockService.h"
+#include "../../../mock/cmp/MockBarometer.h"
 #include "../../../mock/cmp/MockMpu9150.h"
-#include "../../../mock/srv/MockEventListener.h"
+#include "../../../mock/srv/MockEventDispatcherInterface.h"
+#include "../../../mock/srv/MockMessageListener.h"
+#include "../../../mock/srv/MockService.h"
 
+#include "../../../../src/Cluster/Imu/ClusterImu.h"
+#include "../../../../src/Component/Button/ButtonState.h"
 #include "../../../../src/Service/Orientation/ServiceOrientation.h"
 
 using ::testing::_;
@@ -14,48 +18,75 @@ using ::testing::StrictMock;
 
 namespace Service
 {
-	namespace Orientation
-	{
-		class UT_SRV_ORIENTATION : public ::testing::Test {
-		protected:
-			UT_SRV_ORIENTATION() : mMockMpu9150(),
-			                       mMockEventListener(),
-			                       mServiceOrientation(mMockMpu9150, mMockEventListener) {
-			}
+    namespace Orientation
+    {
+        class UT_SRV_ORIENTATION : public ::testing::Test {
+        protected:
+            UT_SRV_ORIENTATION()
+                : mMockMpu9150()
+                , mMockBarometer()
+                , mMockEventDispatcherInterface()
+                , mMockMessageInterface()
+                , mServiceOrientation(mMockMpu9150,
+                                      mMockBarometer,
+                                      mMockMessageInterface,
+                                      mMockEventDispatcherInterface) {
+            }
 
-			virtual void SetUp() {
-				EXPECT_CALL(mMockMpu9150, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_ERROR));
-				EXPECT_FALSE(mServiceOrientation.Initialize());
+            virtual void SetUp() {
+                EXPECT_CALL(mMockMpu9150, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_ERROR));
+                EXPECT_CALL(mMockBarometer, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_EQ(Core::Status::CORE_ERROR,
+                          mServiceOrientation.Initialize());
 
-				EXPECT_CALL(mMockMpu9150, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-				EXPECT_TRUE(mServiceOrientation.Initialize());
-			}
+                EXPECT_CALL(mMockMpu9150, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockBarometer, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_ERROR));
+                EXPECT_EQ(Core::Status::CORE_ERROR,
+                          mServiceOrientation.Initialize());
 
-			virtual void TearDown() {
-			}
+                EXPECT_CALL(mMockMpu9150, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockBarometer, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockEventDispatcherInterface, AddListener(_));
+                EXPECT_EQ(Core::Status::CORE_OK,
+                          mServiceOrientation.Initialize());
+            }
 
-			virtual ~UT_SRV_ORIENTATION() = default;
+            virtual void TearDown() {
+            }
 
-			/* Mocks */
-			StrictMock<Component::Imu::MockMpu9150> mMockMpu9150;
-			StrictMock<Event::MockEventListener> mMockEventListener;
+            virtual ~UT_SRV_ORIENTATION() = default;
 
-			/* Test class */
-			ServiceOrientation mServiceOrientation;
-		};
+            /* Mocks */
+            StrictMock<Component::Imu::MockMpu9150>         mMockMpu9150;
+            StrictMock<Component::Barometer::MockBarometer> mMockBarometer;
+            StrictMock<Event::MockEventDispatcherInterface>
+                    mMockEventDispatcherInterface;
+            StrictMock<Message::MockMessageInterface> mMockMessageInterface;
 
-		TEST_F(UT_SRV_ORIENTATION, Update_Ok) {
-			Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+            /* Test class */
+            ServiceOrientation mServiceOrientation;
+        };
 
-			EXPECT_CALL(mMockMpu9150, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
+        TEST_F(UT_SRV_ORIENTATION, Update_Ok) {
+            EXPECT_CALL(mMockMpu9150, Update(_)).Times(1U);
+            EXPECT_CALL(mMockBarometer, Update(_)).Times(1U);
 
-			success = mServiceOrientation.Initialize();
+            mServiceOrientation.Update(0UL);
+        }
 
-			EXPECT_CALL(mMockMpu9150, Update( _ )).Times(1U);
-
-			mServiceOrientation.Update(0UL);
-
-			EXPECT_TRUE(success);
-		}
-	}
-}
+        TEST_F(UT_SRV_ORIENTATION, OnEvent) {
+            const Component::Button::ButtonStruct button(
+                    {.state = Component::Button::ButtonState::PUSH,
+                     .delayMs = 10U});
+            const Event::Event event = Event::Event(
+                    BUTTON, EventType::EVENT_BUTTON_UPDATE, button);
+            mServiceOrientation.OnEvent(event);
+        }
+    } // namespace Orientation
+} // namespace Service

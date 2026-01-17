@@ -1,8 +1,10 @@
 #pragma once
+#include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <stddef.h>
 
+#include "../Driver/Timer/Tick.h"
+#include "Logger.h"
 #include "Status.h"
 
 namespace Core
@@ -11,10 +13,8 @@ namespace Core
     public:
         CoreInterface() = default;
 
-        ~CoreInterface() = default;
+        virtual Status Initialize(void) = 0;
 
-        virtual Core::CoreStatus Initialize(void) = 0;
-
-        virtual void Update(const uint64_t currentTime) = 0;
+        virtual void   Update(const uint64_t currentTime) = 0;
     };
-}
+} // namespace Core

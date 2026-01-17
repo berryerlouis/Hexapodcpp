@@ -1,9 +1,8 @@
 #pragma once
 
 #include "../../../Cluster/Constants.h"
-#include "../../../Driver/InputCapture/InputCaptureInterface.h"
 #include "../../../Driver/Gpio/GpioInterface.h"
-#include "../../../Driver/Tick/TickInterface.h"
+#include "../../../Driver/InputCapture/InputCaptureInterface.h"
 #include "../../Led/LedInterface.h"
 #include "../SensorProximityInterface.h"
 
@@ -18,32 +17,33 @@ namespace Component
                 static constexpr uint64_t ECHO_TIMEOUT = 30000U;
                 static constexpr uint16_t DISTANCE_THRESHOLD = 30U;
 
-                Srf05(const Cluster::EProximityCommands side, Driver::Gpio::GpioInterface &gpioTrigger,
-                      Driver::InputCapture::InputCaptureInterface &gpioEcho, Led::LedInterface &led,
-                      Driver::Tick::TickInterface &tick);
+                Srf05(const Cluster::EProximityCommands            side,
+                      Driver::Gpio::GpioInterface                 &gpioTrigger,
+                      Driver::InputCapture::InputCaptureInterface &gpioEcho,
+                      Led::LedInterface                           &led);
 
                 ~Srf05() = default;
 
-                Core::CoreStatus Initialize(void) final override;
+                Core::Status Initialize(void) final override;
 
-                void Update(const uint64_t currentTime) final override;
+                void         Update(const uint64_t currentTime) final override;
 
-                void SendPulse(void);
+                void         SendPulse(void) const;
 
                 virtual uint16_t GetDistance(void) final override;
 
                 virtual uint16_t GetThreshold(void) final override;
 
-                virtual Core::CoreStatus SetThreshold(const uint16_t threshold) final override;
+                virtual Core::Status
+                SetThreshold(const uint16_t threshold) final override;
 
             private:
-                Cluster::EProximityCommands mSide;
-                Driver::Gpio::GpioInterface &mGpioTrigger;
+                Cluster::EProximityCommands                  mSide;
+                Driver::Gpio::GpioInterface                 &mGpioTrigger;
                 Driver::InputCapture::InputCaptureInterface &mGpioEcho;
-                Driver::Tick::TickInterface &mTick;
-                Led::LedInterface &mLed;
-                uint16_t mThreshold;
+                Led::LedInterface                           &mLed;
+                uint16_t                                     mThreshold;
             };
-        }
-    }
-}
+        } // namespace Ultrasound
+    } // namespace Proximity
+} // namespace Component

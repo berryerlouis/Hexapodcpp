@@ -1,7 +1,7 @@
 #pragma once
 
+#include "../ClusterBase.h"
 #include "../Constants.h"
-#include "../ClusterInterface.h"
 
 namespace Cluster
 {
@@ -11,9 +11,7 @@ namespace Cluster
         public:
             ClustersInterface() = default;
 
-            ~ClustersInterface() = default;
-
-            virtual ClusterInterface *GetCluster(const EClusters clusterId) const = 0;
+            virtual ClusterBase *GetCluster(const EClusters clusterId) = 0;
         };
-    }
-}
+    } // namespace Clusters
+} // namespace Cluster

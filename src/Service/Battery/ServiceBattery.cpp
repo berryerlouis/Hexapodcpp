@@ -1,20 +1,26 @@
 #include "ServiceBattery.h"
 
+#include "../../Cluster/Battery/ClusterBattery.h"
+
 namespace Service
 {
     namespace Battery
     {
-        ServiceBattery::ServiceBattery(BatteryInterface &batteryInterface,
-                                       Event::EventListenerInterface &eventListener)
-            : Service(100U, eventListener), mBatteryInterface(batteryInterface) {
+        ServiceBattery::ServiceBattery(
+                BatteryInterface                &batteryInterface,
+                Message::MessageInterface       &messageListener,
+                Event::EventDispatcherInterface &eventDispatcher)
+            : Service(BATTERY, 100U, messageListener, eventDispatcher)
+            , mBatteryInterface(batteryInterface) {
         }
 
-        Core::CoreStatus ServiceBattery::Initialize(void) {
-            Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-            if (this->mBatteryInterface.Initialize()) {
-                success = Core::CoreStatus::CORE_OK;
+        Core::Status ServiceBattery::Initialize(void) {
+            const Core::Status success = this->mBatteryInterface.Initialize();
+            if (Core::Status::CORE_OK == success) {
+                this->GetEventDispatcher().AddListener(this);
+                this->mBatteryInterface.Attach(this);
+                this->mInitialized = true;
             }
-            this->mBatteryInterface.Attach(this);
             return (success);
         }
 
@@ -22,14 +28,21 @@ namespace Service
             this->mBatteryInterface.Update(currentTime);
         }
 
-        void ServiceBattery::DispatchEvent(const SEvent &event) {
+        void ServiceBattery::Notified(const BatteryStruct &battery) {
+            Frame response;
+            Cluster::Battery::ClusterBattery::BuildFrameState(battery.state,
+                                                              battery.voltage,
+                                                              battery.intensity,
+                                                              response);
+            this->SendMessage(response);
+            this->DispatchEvent<BatteryStruct>(EventType::EVENT_BATTERY_UPDATE,
+                                               battery);
+        }
+
+        void ServiceBattery::OnEvent(const Event::Event &event) {
             (void) event;
         }
 
-        void ServiceBattery::UpdatedBatteryState(const BatteryState &batteryState, const uint16_t voltage) {
-            const uint8_t arg[2U] = UINT16_TO_ARRAY(voltage);
-            const SEvent ev(EServices::BATTERY, static_cast<uint8_t>(batteryState), arg, 2U);
-            this->AddEvent(ev);
-        }
-    }
-}
+
+    } // namespace Battery
+} // namespace Service

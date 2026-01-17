@@ -1,74 +1,40 @@
 #include "ServiceCommunication.h"
-#include "../../Cluster/Battery/ClusterBattery.h"
-#include "../../Cluster/General/ClusterGeneral.h"
-#include "../../Cluster/Body/ClusterBody.h"
-#include "../../Cluster/Imu/ClusterImu.h"
-#include "../../Cluster/Proximity/ClusterProximity.h"
-#include "../../Cluster/Servo/ClusterServo.h"
 
 namespace Service
 {
     namespace Communication
     {
-        ServiceCommunication::ServiceCommunication(CommunicationInterface &communication,
-                                                   Clusters::ClustersInterface &clusters,
-                                                   Event::EventListenerInterface &eventListener)
-            : Service(1U, eventListener), mClusters(clusters), mCommunication(communication) {
+        ServiceCommunication::ServiceCommunication(
+                CommunicationInterface          &communication,
+                Clusters::ClustersInterface     &clusters,
+                Message::MessageInterface       &messageListener,
+                Event::EventDispatcherInterface &eventDispatcher)
+            : Service(COMMUNICATION, 1U, messageListener, eventDispatcher)
+            , mClusters(clusters)
+            , mCommunication(communication) {
         }
 
-        Core::CoreStatus ServiceCommunication::Initialize(void) {
-            return (this->mCommunication.Initialize());
+        Core::Status ServiceCommunication::Initialize(void) {
+            const Core::Status success = this->mCommunication.Initialize();
+            if (Core::Status::CORE_OK == success) {
+                this->GetEventDispatcher().AddListener(this);
+                this->mCommunication.Attach(this);
+                this->mInitialized = true;
+            }
+            return (success);
         }
 
         void ServiceCommunication::Update(const uint64_t currentTime) {
             this->mCommunication.Update(currentTime);
         }
 
-        void ServiceCommunication::DispatchEvent(const SEvent &event) {
-            Frame response;
-            bool success = false;
-            switch (event.id) {
-                case EServices::GENERAL: {
-                    const General::ClusterGeneral *clusterGeneral =
-                            static_cast<General::ClusterGeneral *>(this->mClusters.GetCluster(EClusters::GENERAL));
-                    const uint8_t serviceId = event.params[0U];
-                    const uint16_t deltaTime = PTR_TO_UINT16(&event.params[1U]);
-                    if (event.value == MIN_EXECUTION_TIME) {
-                        clusterGeneral->BuildFrameGetMinTime(serviceId, deltaTime, response);
-                    } else if (event.value == MAX_EXECUTION_TIME) {
-                        clusterGeneral->BuildFrameGetMaxTime(serviceId, deltaTime, response);
-                    }
-                    success = true;
-                    break;
-                }
-
-                case EServices::PROXIMITY: {
-                    const Proximity::ClusterProximity *clusterProximity =
-                            static_cast<Proximity::ClusterProximity *>(
-                                this->mClusters.GetCluster(EClusters::PROXIMITY));
-                    const Proximity::SensorsId sensorId = static_cast<Proximity::SensorsId>(event.value);
-                    const uint16_t distance = PTR_TO_UINT16(&event.params[0U]);
-                    clusterProximity->BuildFrameDistance(sensorId, distance, response);
-                    success = true;
-                    break;
-                }
-
-                case EServices::BATTERY: {
-                    const Battery::ClusterBattery *clusterBattery =
-                            static_cast<Battery::ClusterBattery *>(this->mClusters.GetCluster(EClusters::BATTERY));
-                    const uint16_t voltage = PTR_TO_UINT16(&event.params[0U]);
-                    clusterBattery->BuildFrameState(event.value, voltage, response);
-                    success = true;
-                    break;
-                }
-
-                default:
-                    break;
-            }
-
-            if (true == success) {
-                this->mCommunication.SendMessage(response);
-            }
+        void ServiceCommunication::Notified(const CommunicationStruct &state) {
+            this->DispatchEvent<CommunicationStruct>(
+                    EventType::EVENT_COM_UPDATE, state);
         }
-    }
-}
+
+        void ServiceCommunication::OnEvent(const Event::Event &event) {
+            (void) event;
+        }
+    } // namespace Communication
+} // namespace Service

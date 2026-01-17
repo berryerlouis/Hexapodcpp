@@ -1,14 +1,18 @@
 #pragma once
 
-#include "../Constants.h"
-#include "../Service.h"
 #include "../Battery/ServiceBattery.h"
+#include "../Body/ServiceBody.h"
+#include "../Button/ServiceButton.h"
 #include "../Communication/ServiceCommunication.h"
+#include "../Constants.h"
 #include "../Control/ServiceControl.h"
 #include "../Display/ServiceDisplay.h"
+#include "../Event/EventDispatcherInterface.h"
 #include "../General/ServiceGeneral.h"
 #include "../Orientation/ServiceOrientation.h"
 #include "../Proximity/ServiceProximity.h"
+#include "../Service.h"
+#include "../Sound/ServiceSound.h"
 
 namespace Service
 {
@@ -21,43 +25,35 @@ namespace Service
         using namespace ::Service::Orientation;
         using namespace ::Service::Battery;
         using namespace ::Service::Display;
+        using namespace ::Service::Body;
+        using namespace ::Service::Button;
+        using namespace ::Service::Sound;
 
-        struct ServiceItem {
-            EServices serviceId;
-            Service *service;
-
-            ServiceItem() = default;
-
-            ~ServiceItem() = default;
-        };
-
-        class Services : public ServiceInterface {
+        class Services : public Core::CoreInterface {
         public:
-            Services(
-                Tick::TickInterface &tick,
-                ServiceGeneral &serviceGeneral,
-                ServiceControl &serviceControl,
-                ServiceCommunication &serviceCommunication,
-                ServiceProximity &serviceProximity,
-                ServiceOrientation &serviceOrientation,
-                ServiceBattery &serviceBattery,
-                ServiceDisplay &serviceDisplay,
-                Event::EventListenerInterface &eventListener);
+            Services(ServiceGeneral                  &serviceGeneral,
+                     ServiceControl                  &serviceControl,
+                     ServiceCommunication            &serviceCommunication,
+                     ServiceProximity                &serviceProximity,
+                     ServiceOrientation              &serviceOrientation,
+                     ServiceBattery                  &serviceBattery,
+                     ServiceDisplay                  &serviceDisplay,
+                     ServiceBody                     &serviceBody,
+                     ServiceButton                   &serviceButton,
+                     ServiceSound                    &serviceSound,
+                     Message::MessageInterface       &messageListener,
+                     Event::EventDispatcherInterface &eventDispatcher);
 
             ~Services() = default;
 
-            virtual Core::CoreStatus Initialize(void) final override;
+            virtual Core::Status Initialize(void) final override;
 
             virtual void Update(const uint64_t currentTime) final override;
 
         private:
-            void DispatchEvent(void);
-
-            Service *Get(const EServices serviceId);
-
-            Tick::TickInterface &mTick;
-            ServiceItem mServices[NB_SERVICES];
-            Event::EventListenerInterface &mEventListener;
+            std::map<EServices, Service *>   mServices;
+            Message::MessageInterface       &mMessageListener;
+            Event::EventDispatcherInterface &mEventDispatcher;
         };
-    }
-}
+    } // namespace Services
+} // namespace Service

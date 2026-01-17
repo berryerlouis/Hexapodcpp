@@ -4,81 +4,68 @@ namespace Cluster
 {
     namespace Decoding
     {
-        Protocol::Protocol() {
-        }
-
-        Protocol::ProtocolStatus Protocol::Decode(const char *frameBuffer, Frame &frame) {
+        Core::Status Protocol::Decode(const char *frameBuffer, Frame &frame) {
             if (frameBuffer == nullptr) {
-                return (ERROR_NULL_BUFFER);
+                return (Core::Status::CORE_ERROR_NULLPTR);
             }
-            uint8_t frameLength = strlen(frameBuffer);
-
+            const uint8_t frameLength = strlen(frameBuffer);
             if (frameLength >= 6U && frameLength % 2U == 0U) {
-                for (size_t i = 0U; i < frameLength; i++) {
-                    if (Protocol::ConvertHexCharToInt(frameBuffer[i]) == 0xFFU) {
-                        // char is invalid
-                        return (ERROR_CHAR_INVALID);
+                uint8_t      commandId = 0U;
+                uint8_t      clusterId = 0U;
+                uint8_t      nbParams = 0U;
+                uint8_t      params[FRAME_MAX_PARAMS] = {0U};
+                unsigned int tempClusterId = 0U;
+                unsigned int tempCommandId = 0U;
+                unsigned int tempNbParams = 0U;
+                unsigned int tempParam = 0U;
+                sscanf(frameBuffer,
+                       "%02x%02x%02x",
+                       &tempClusterId,
+                       &tempCommandId,
+                       &tempNbParams);
+                clusterId = static_cast<uint8_t>(tempClusterId);
+                commandId = static_cast<uint8_t>(tempCommandId);
+                nbParams = static_cast<uint8_t>(tempNbParams);
+
+                if (nbParams == 0U && frameLength == 6U) {
+                    return (frame.Build(
+                            clusterId, commandId, params, nbParams));
+                }
+                if ((nbParams * 2U) + 6U == frameLength) {
+                    for (size_t i = 0U; i < nbParams * 2U; i += 2U) {
+                        sscanf(&frameBuffer[6U + i], "%02x", &tempParam);
+                        params[i / 2U] = static_cast<uint8_t>(tempParam);
                     }
+                    return (frame.Build(
+                            clusterId, commandId, params, nbParams));
                 }
 
-                frame.clusterId = Protocol::ConvertHexCharToInt(frameBuffer[0U]) * 16U + Protocol::ConvertHexCharToInt(
-                                      frameBuffer[1U]);
-                frame.commandId = Protocol::ConvertHexCharToInt(frameBuffer[2U]) * 16U + Protocol::ConvertHexCharToInt(
-                                      frameBuffer[3U]);
-                frame.nbParams = Protocol::ConvertHexCharToInt(frameBuffer[4U]) * 16U + Protocol::ConvertHexCharToInt(
-                                     frameBuffer[5U]);
-
-                if (frame.nbParams == 0U && frameLength == 6U) {
-                    return (NO_ERROR);
-                } else if ((frame.nbParams * 2U) + 6U == frameLength) {
-                    for (size_t i = 0U; i < frame.nbParams * 2U; i += 2U) {
-                        frame.params[i / 2U] = Protocol::ConvertHexCharToInt(frameBuffer[6 + i]) * 16U +
-                                               Protocol::ConvertHexCharToInt(frameBuffer[7U + i]);
-                    }
-
-                    return (NO_ERROR);
-                } else {
-                    // wrong param size
-                    return (ERROR_SIZE_PARAMS);
-                }
-            } else {
-                // frameLength is not or less than 6 bytes
-                return (ERROR_LENGHT);
+                // wrong param size
+                return (Core::Status::CORE_ERROR_OVERLOAD);
             }
+            // frameLength is not or less than 6 bytes
+            return (Core::Status::CORE_ERROR_SIZE);
         }
 
-        uint8_t Protocol::Encode(const Frame &response, const char *buffer) {
-            if (buffer == nullptr || response.nbParams == 0) {
+        uint8_t Protocol::Encode(const Frame &response, char *buffer) {
+            if (buffer == nullptr) {
                 return (0U);
             }
-            const uint8_t *params = response.params;
-            const uint8_t size = response.nbParams;
-            const uint8_t cluster = response.clusterId;
-            const uint8_t command = response.commandId;
+            const uint8_t size = response.GetNbParams();
+            const uint8_t cluster = response.GetClusterId();
+            const uint8_t command = response.GetCommandId();
 
-            uint8_t length = sprintf(const_cast<char *>(buffer), "<%02x%02x%02x", cluster, command, size);
+            uint8_t       length = snprintf(
+                    buffer, 8U, "<%02X%02X%02X", cluster, command, size);
 
             for (size_t i = 0U; i < size; i++) {
-                length += sprintf(const_cast<char *>(&buffer[length]), "%02x", params[i]);
+                length += snprintf(
+                        &buffer[length], 3U, "%02X", response.Get1ByteParam(i));
             }
 
-            sprintf(const_cast<char *>(&buffer[length]), ">");
-            return (strlen(buffer));
+            buffer[length] = '>';
+            buffer[length + 1U] = '\0';
+            return (length + 1U);
         }
-
-        uint8_t Protocol::ConvertHexCharToInt(uint8_t byte) {
-            if ((byte >= '0') && (byte <= '9')) {
-                return (byte - '0');
-            }
-
-            if ((byte >= 'A') && (byte <= 'F')) {
-                return (byte + 10U - 'A');
-            }
-
-            if ((byte >= 'a') && (byte <= 'f')) {
-                return (byte + 10U - 'a');
-            }
-            return (0xFFU);
-        }
-    }
-}
+    } // namespace Decoding
+} // namespace Cluster

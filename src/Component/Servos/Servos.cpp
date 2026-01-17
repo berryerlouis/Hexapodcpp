@@ -1,69 +1,105 @@
 #include "Servos.h"
-#include <stdlib.h>
-#include <string.h>
 
 namespace Component
 {
     namespace Servos
     {
-        Servos::Servos(ServosController::Pca9685Interface &pca9685_0, ServosController::Pca9685Interface &pca9685_1,
-                       Tick::TickInterface &tick)
-            : mServo0(pca9685_0, tick, 0, 90U, 15, 60U, 120U, false)
-              , mServo1(pca9685_0, tick, 1, 90U, -4, 60U, 120U, false)
-              , mServo2(pca9685_0, tick, 2, 90U, 12, 60U, 120U, false)
-              , mServo3(pca9685_0, tick, 3, 90U, 2, 60U, 120U, false)
-              , mServo4(pca9685_0, tick, 4, 90U, 0, 60U, 120U, false)
-              , mServo5(pca9685_0, tick, 5, 90U, 18, 60U, 120U, false)
-              , mServo6(pca9685_0, tick, 6, 90U, 2, 60U, 120U, false)
-              , mServo7(pca9685_0, tick, 7, 90U, 0, 60U, 120U, false)
-              , mServo8(pca9685_0, tick, 8, 90U, 10, 60U, 120U, false)
-              , mServo9(pca9685_1, tick, 0, 90U, -20, 60U, 120U, true)
-              , mServo10(pca9685_1, tick, 1, 90U, -2, 60U, 120U, true)
-              , mServo11(pca9685_1, tick, 2, 90U, -15, 60U, 120U, true)
-              , mServo12(pca9685_1, tick, 3, 90U, 0, 60U, 120U, true)
-              , mServo13(pca9685_1, tick, 4, 90U, 0, 60U, 120U, true)
-              , mServo14(pca9685_1, tick, 5, 90U, -20, 60U, 120U, true)
-              , mServo15(pca9685_1, tick, 6, 90U, 10, 60U, 120U, true)
-              , mServo16(pca9685_1, tick, 7, 90U, 0, 60U, 120U, true)
-              , mServo17(pca9685_1, tick, 8, 90U, -18, 60U, 120U, true)
-              , mServos{
-                  &mServo0, &mServo1, &mServo2, &mServo3, &mServo4, &mServo5, &mServo6, &mServo7, &mServo8,
-                  &mServo9, &mServo10, &mServo11, &mServo12, &mServo13, &mServo14, &mServo15, &mServo16, &mServo17
-              }
-              , mPca9685Left(pca9685_0)
-              , mPca9685Right(pca9685_1) {
+        Servos::Servos(ServosController::Pca9685Interface &pca9685_0,
+                       ServosController::Pca9685Interface &pca9685_1,
+                       Gpio::GpioInterface                &enablePwmPin)
+            : mServos{{SERVO_0,
+                       Servo::Servo(pca9685_0, 0, 90U, -5, 60U, 120U, false)},
+                      {SERVO_1,
+                       Servo::Servo(pca9685_0, 1, 90U, -4, 60U, 120U, false)},
+                      {SERVO_2,
+                       Servo::Servo(pca9685_0, 2, 90U, 12, 60U, 120U, false)},
+                      {SERVO_3,
+                       Servo::Servo(pca9685_0, 3, 90U, 2, 60U, 120U, false)},
+                      {SERVO_4,
+                       Servo::Servo(pca9685_0, 4, 90U, 0, 60U, 120U, false)},
+                      {SERVO_5,
+                       Servo::Servo(pca9685_0, 5, 90U, 18, 60U, 120U, false)},
+                      {SERVO_6,
+                       Servo::Servo(pca9685_0, 6, 90U, 2, 60U, 120U, false)},
+                      {SERVO_7,
+                       Servo::Servo(pca9685_0, 7, 90U, 0, 60U, 120U, false)},
+                      {SERVO_8,
+                       Servo::Servo(pca9685_0, 8, 90U, 10, 60U, 120U, false)},
+                      {SERVO_9,
+                       Servo::Servo(pca9685_1, 0, 90U, -20, 60U, 120U, true)},
+                      {SERVO_10,
+                       Servo::Servo(pca9685_1, 1, 90U, -2, 60U, 120U, true)},
+                      {SERVO_11,
+                       Servo::Servo(pca9685_1, 2, 90U, -15, 60U, 120U, true)},
+                      {SERVO_12,
+                       Servo::Servo(pca9685_1, 3, 90U, 12, 60U, 120U, true)},
+                      {SERVO_13,
+                       Servo::Servo(pca9685_1, 4, 90U, 0, 60U, 120U, true)},
+                      {SERVO_14,
+                       Servo::Servo(pca9685_1, 5, 90U, -20, 60U, 120U, true)},
+                      {SERVO_15,
+                       Servo::Servo(pca9685_1, 6, 90U, 22, 60U, 120U, true)},
+                      {SERVO_16,
+                       Servo::Servo(pca9685_1, 7, 90U, 0, 60U, 120U, true)},
+                      {SERVO_17,
+                       Servo::Servo(pca9685_1, 8, 90U, -18, 60U, 120U, true)}}
+            , mPca9685Left(pca9685_0)
+            , mPca9685Right(pca9685_1)
+            , mEnablePwmPin(enablePwmPin) {
         }
 
-        Core::CoreStatus Servos::Initialize(void) {
+        Core::Status Servos::Initialize(void) {
             uint8_t success = 0UL;
             this->mPca9685Left.Initialize();
             this->mPca9685Right.Initialize();
-
-            for (size_t servoId = 0U; servoId < NB_SERVOS; servoId++) {
-                if (this->mServos[servoId]->Initialize()) {
+            this->Disable();
+            for (auto &pair: this->mServos) {
+                if (pair.second.Initialize() == Core::Status::CORE_OK) {
                     success++;
-                } else {
-                    break;
                 }
             }
-            return ((success == NB_SERVOS) ? Core::CoreStatus::CORE_OK : Core::CoreStatus::CORE_ERROR);
+
+            if (success == NB_SERVOS) {
+                LOG_COMPONENT_DEBUG("Servos", "Initialized.");
+            }
+            return ((success == NB_SERVOS) ? Core::Status::CORE_OK
+                                           : Core::Status::CORE_ERROR);
         }
 
         void Servos::Update(const uint64_t currentTime) {
-            for (Servo::Servo *servo: this->mServos) {
-                servo->Update(currentTime);
+            for (auto &pair: this->mServos) {
+                pair.second.Update(currentTime);
             }
         }
 
-        Servo::Servo &Servos::GetServo(const uint8_t servoId) {
-            return (*this->mServos[servoId]);
+        void Servos::Enable(void) {
+            this->mEnablePwmPin.Reset();
         }
 
-        ServosController::Pca9685Interface &Servos::GetServosController(const uint8_t pca9685Id) {
+        void Servos::Disable(void) {
+            this->mEnablePwmPin.Set();
+        }
+
+        bool Servos::GetState(void) {
+            return this->mEnablePwmPin.Get() == false;
+        }
+
+
+        Servo::ServoInterface *Servos::GetServo(const EServos servoId) {
+            const auto it = mServos.find(servoId);
+            if (it != mServos.end()) {
+                return &(it->second);
+            }
+            return nullptr;
+        }
+
+
+        ServosController::Pca9685Interface &
+        Servos::GetServosController(const uint8_t pca9685Id) {
             if (pca9685Id == 0U) {
                 return (this->mPca9685Left);
             }
             return (this->mPca9685Right);
         }
-    }
-}
+    } // namespace Servos
+} // namespace Component

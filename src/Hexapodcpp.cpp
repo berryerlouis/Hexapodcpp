@@ -1,39 +1,27 @@
-#ifndef GTEST
-#include <avr/interrupt.h>
-#include <avr/wdt.h>
-#endif
-#include "Builder/App.h"
+#include "App/App.h"
+#include "Core/Logger.h"
+#include "Core/Version.h"
 
-using namespace Builder;
+int main(const int argc, char **argv) {
+    setvbuf(stdout, nullptr, _IONBF, 0U);
 
-Builder::App robot;
-
-int main(void) {
-    //hexapod initialization
-    if (robot.Initialize()) {
-        //enable ITs
-#ifndef GTEST
-        sei();
-        wdt_enable(WDTO_15MS);
-#endif
-        while (true) {
-#ifndef GTEST
-            wdt_reset();
-#endif
-            //hexapod loop update
-            robot.Update(0U);
+    LOG_INFO("Hexapod started.");
+    LOG_INFO("Hexapod version: %d.%d", VERSION_MAJOR, VERSION_MINOR);
+    Core::Logger::SetLogLevel(Core::LogLevel::LOG_DEBUG);
+    if (argc > 1) {
+        const Core::LogLevel level = Core::Logger::StringToLevel(argv[1U]);
+        if (level != Core::LogLevel::LOG_UNKNOWN) {
+            Core::Logger::SetLogLevel(level);
         }
     }
 
-    return (-1);
+    App::App robot;
+    // hexapod initialization
+    if (robot.Initialize() == Core::Status::CORE_OK) {
+        while (true) {
+            // hexapod loop update
+            robot.Update();
+        }
+    }
+    return -1;
 }
-
-/*
- * I2C address 0x29  !
- * I2C address 0x3C  !
- * I2C address 0x40  !
- * I2C address 0x41  !
- * I2C address 0x69  !
- * I2C address 0x70  !
- * I2C address 0x77  !
- */

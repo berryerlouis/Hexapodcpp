@@ -1,27 +1,35 @@
 #include "Battery.h"
 
+
 namespace Component
 {
     namespace Battery
     {
-#define NOMINAL_LEVEL    80U
-#define WARNING_LEVEL    75U
+        static constexpr uint16_t NOMINAL_LEVEL = 800U;
+        static constexpr uint16_t WARNING_LEVEL = 750U;
+        static constexpr float    RPI_CURRENT_CONSUMPTION = 130.0;
 
-        Battery::Battery(Adc::AdcInterface &adc)
+        Battery::Battery(Adc::Ads1115Interface &adc)
             : mVoltage(0U)
-              , mState(BatteryState::UNKNOWN)
-              , mAdc(adc)
-              , mObservable() {
+            , mIntensity(0U)
+            , mState(BatteryState::UNKNOWN)
+            , mAdc(adc) {
         }
 
-        Core::CoreStatus Battery::Initialize(void) {
+        Core::Status Battery::Initialize(void) {
+            LOG_COMPONENT_DEBUG("Battery", "Initialized.");
             return (this->mAdc.Initialize());
         }
 
         void Battery::Update(const uint64_t currentTime) {
             (void) currentTime;
-            this->mVoltage = this->mAdc.Read();
-            const BatteryState state = this->mState;
+            this->mVoltage = static_cast<uint16_t>(
+                    this->mAdc.ReadADC(Adc::PIN_1) * 0.46F);
+            float intens = this->mAdc.ReadADC(Adc::PIN_0);
+            this->mIntensity = static_cast<uint16_t>((intens) * 0.066F);
+            // static_cast<uint16_t>((intens - 250.0F) *
+            // 0.066F) + RPI_CURRENT_CONSUMPTION;
+            const BatteryState prevState = this->mState;
             if (this->mVoltage >= NOMINAL_LEVEL) {
                 this->mState = NOMINAL;
             } else if (this->mVoltage >= WARNING_LEVEL) {
@@ -29,8 +37,8 @@ namespace Component
             } else {
                 this->mState = CRITICAL;
             }
-            if (state != this->mState) {
-                this->Notify(this->mState, this->mVoltage);
+            if (prevState != this->mState) {
+                this->Notify({this->mState, this->mVoltage, this->mIntensity});
             }
         }
 
@@ -42,12 +50,8 @@ namespace Component
             return (this->mVoltage);
         }
 
-        Core::CoreStatus Battery::Attach(BatteryObserverInterface *observer) {
-            return (this->mObservable.Attach(observer));
+        uint16_t Battery::GetIntensity(void) {
+            return (this->mIntensity);
         }
-
-        void Battery::Notify(const BatteryState &state, const uint16_t voltage) {
-            this->mObservable.Notify(state, voltage);
-        }
-    }
-}
+    } // namespace Battery
+} // namespace Component

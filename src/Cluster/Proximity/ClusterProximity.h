@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../ClusterBase.h"
 #include "../../Component/Proximity/SensorProximityInterface.h"
+#include "../ClusterBase.h"
 
 namespace Cluster
 {
@@ -9,67 +9,26 @@ namespace Cluster
     {
         using namespace Component::Proximity;
 
-        class ClusterProximity : public ClusterBase, StrategyCluster {
+        class ClusterProximity : public ClusterBase, ClusterCommand {
         public:
-            ClusterProximity(SensorProximityMultipleInterface &proximity)
-                : ClusterBase(PROXIMITY, this)
-                  , mProximity(proximity) {
-                this->AddClusterItem((ClusterItem){.commandId = EProximityCommands::US_LEFT, .expectedSize = 0U});
-                this->AddClusterItem((ClusterItem){.commandId = EProximityCommands::US_RIGHT, .expectedSize = 0U});
-                this->AddClusterItem((ClusterItem){.commandId = EProximityCommands::LASER, .expectedSize = 0U});
-                this->AddClusterItem((ClusterItem){.commandId = EProximityCommands::SET_THRESHOLD, .expectedSize = 3U});
-            }
+            explicit ClusterProximity(
+                    SensorProximityMultipleInterface &proximity);
 
             ~ClusterProximity() = default;
 
-            virtual Core::CoreStatus ExecuteFrame(const Frame &request, Frame &response) override {
-                Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-                if (request.commandId == EProximityCommands::LASER) {
-                    const SensorsId sensorId = static_cast<SensorsId>(request.commandId);
-                    const uint16_t distance = this->mProximity.GetDistance(sensorId);
-                    success = this->BuildFrameDistance(sensorId, distance, response);
-                } else if (request.commandId == EProximityCommands::US_LEFT) {
-                    const SensorsId sensorId = static_cast<SensorsId>(request.commandId);
-                    const uint16_t distance = this->mProximity.GetDistance(sensorId);
-                    success = this->BuildFrameDistance(sensorId, distance, response);
-                } else if (request.commandId == EProximityCommands::US_RIGHT) {
-                    const SensorsId sensorId = static_cast<SensorsId>(request.commandId);
-                    const uint16_t distance = this->mProximity.GetDistance(sensorId);
-                    success = this->BuildFrameDistance(sensorId, distance, response);
-                } else if (request.commandId == EProximityCommands::SET_THRESHOLD) {
-                    const SensorsId sensorId = static_cast<SensorsId>(request.Get1ByteParam(0U));
-                    const uint16_t threshold = request.Get2BytesParam(1U);
-                    this->mProximity.SetThreshold(sensorId, threshold);
-                    success = this->BuildFrameThreshold(sensorId, threshold, response);
-                }
-                return success;
-            }
+            virtual Core::Status ExecuteFrame(const Frame &request,
+                                              Frame       &response) override;
 
-            inline Core::CoreStatus BuildFrameDistance(const SensorsId sensorId, const uint16_t distance,
-                                                       Frame &response) const {
-                const Core::CoreStatus success = response.Build(
-                    EClusters::PROXIMITY,
-                    sensorId);
-                if (success) {
-                    response.Set2BytesParam(distance);
-                }
-                return (success);
-            }
+            static Core::Status  BuildFrameDistance(const SensorsId sensorId,
+                                                    const uint16_t  distance,
+                                                    Frame          &response);
 
-            inline Core::CoreStatus BuildFrameThreshold(const SensorsId sensorId, const uint16_t threshold,
-                                                        Frame &response) const {
-                const Core::CoreStatus success = response.Build(
-                    EClusters::PROXIMITY,
-                    EProximityCommands::SET_THRESHOLD);
-                if (success) {
-                    response.Set1ByteParam(sensorId);
-                    response.Set2BytesParam(threshold);
-                }
-                return (success);
-            }
+            static Core::Status  BuildFrameThreshold(const SensorsId sensorId,
+                                                     const uint16_t  threshold,
+                                                     Frame          &response);
 
         private:
             SensorProximityMultipleInterface &mProximity;
         };
-    }
-}
+    } // namespace Proximity
+} // namespace Cluster

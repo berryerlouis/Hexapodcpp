@@ -4,23 +4,26 @@ namespace Driver
 {
     namespace Gpio
     {
-        Gpio::GpioRegister Gpio::sGpioRegisters[] = {};
-
-        Gpio::Gpio(const SGpio &gpio, const EPortDirection &portDirection) : mGpio(gpio),
-                                                                             mPortDirection(portDirection),
-                                                                             mGpioRegister() {
+        Gpio::Gpio(const SGpio &gpio, const EPortDirection &portDirection)
+            : mGpio(gpio) {
+            (void) portDirection;
         }
 
-        EPin &Gpio::GetPin(void) {
-            return (this->mGpio.pin);
+        SGpio &Gpio::GetPin(void) {
+            return (this->mGpio);
         }
 
-        Core::CoreStatus Gpio::Set(void) {
-            return (Core::CoreStatus::CORE_OK);
+        Core::Status Gpio::Set(void) {
+            return (Core::Status::CORE_OK);
         }
 
-        Core::CoreStatus Gpio::Reset(void) {
-            return (Core::CoreStatus::CORE_OK);
+        Core::Status Gpio::Reset(void) {
+            return (Core::Status::CORE_OK);
+        }
+
+        Core::Status Gpio::Pwm(const uint16_t delay) {
+            (void) delay;
+            return (Core::Status::CORE_OK);
         }
 
         bool Gpio::Get(void) {
@@ -30,7 +33,11 @@ namespace Driver
         void Gpio::SetInterruptPin(void) {
         }
 
+        void Gpio::SetInterruptPin(const InterruptCallback callback) {
+            (void) callback;
+        }
+
         void Gpio::ResetInterruptPin(void) {
         }
-    }
-}
+    } // namespace Gpio
+} // namespace Driver

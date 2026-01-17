@@ -4,11 +4,11 @@
 
 namespace Cluster
 {
-	namespace Clusters
-	{
-		class MockClusters : public ClustersInterface {
-		public:
-			MOCK_CONST_METHOD1(GetCluster, ClusterInterface * ( const EClusters ));
-		};
-	}
-}
+    namespace Clusters
+    {
+        class MockClusters : public ClustersInterface {
+        public:
+            MOCK_METHOD1(GetCluster, ClusterBase *(const EClusters));
+        };
+    } // namespace Clusters
+} // namespace Cluster

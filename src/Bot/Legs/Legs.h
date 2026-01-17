@@ -1,8 +1,9 @@
 #pragma once
 
 #include "../../Component/Servos/ServosInterface.h"
-#include "../Leg/Leg.h"
 #include "../Constants.h"
+#include "../Leg/Leg.h"
+#include "LegsInterface.h"
 
 namespace Bot
 {
@@ -10,22 +11,21 @@ namespace Bot
     {
         using namespace Component::Servos;
 
-        class Legs {
+        class Legs : public LegsInterface {
         public:
-            Legs(ServosInterface &servos);
+            explicit Legs(ServosInterface &servos);
 
             ~Legs() = default;
 
-            Leg::Leg &GetLeg(const uint8_t legId) const;
+            std::map<ELeg, Leg::Leg> &GetLegs(void) final override;
+
+            Leg::LegInterface        *GetLeg(const ELeg legId) final override;
+
+            Core::Status              Update(void) final override;
 
         private:
-            Leg::Leg mLegFL;
-            Leg::Leg mLegML;
-            Leg::Leg mLegRL;
-            Leg::Leg mLegFR;
-            Leg::Leg mLegMR;
-            Leg::Leg mLegRR;
-            Leg::Leg *mLegs[NB_LEGS];
+            std::map<ELeg, Leg::Leg> mLegs;
+            uint8_t                  mLegIdInWaveGait = 0U;
         };
-    }
-}
+    } // namespace Legs
+} // namespace Bot

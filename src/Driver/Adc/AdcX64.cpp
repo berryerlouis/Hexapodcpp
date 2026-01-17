@@ -4,14 +4,13 @@ namespace Driver
 {
     namespace Adc
     {
-        volatile uint16_t Adc::sAdcValue = 0U;
-
-        Adc::Adc(Gpio::GpioInterface &gpio)
-            : mGpio(gpio) {
+        Adc::Adc(const Gpio::GpioInterface &gpio) {
+            (void) gpio;
         }
 
-        Core::CoreStatus Adc::Initialize(void) {
-            return (Core::CoreStatus::CORE_OK);
+        Core::Status Adc::Initialize(void) {
+            LOG_DRIVER_DEBUG("Adc", "Initialized.");
+            return (Core::Status::CORE_OK);
         }
 
         void Adc::Update(const uint64_t currentTime) {
@@ -22,8 +21,7 @@ namespace Driver
         }
 
         uint16_t Adc::Read() {
-            this->StartConversion();
             return 0U;
         }
-    }
-}
+    } // namespace Adc
+} // namespace Driver

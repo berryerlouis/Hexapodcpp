@@ -2,13 +2,13 @@
 #include <gtest/gtest.h>
 
 #include "../../../mock/cmp/MockPca9685.h"
-#include "../../../mock/drv/MockTick.h"
+#include "../../../mock/drv/MockGpio.h"
 
 #include "../../../../src/Component/Servos/Servos.h"
 
-using ::testing::StrictMock;
 using ::testing::_;
 using ::testing::Return;
+using ::testing::StrictMock;
 
 namespace Component
 {
@@ -16,20 +16,27 @@ namespace Component
     {
         class UT_CMP_SERVOS : public ::testing::Test {
         protected:
-            UT_CMP_SERVOS() : mMockTick(),
-                              mMockPca9685_0(),
-                              mMockPca9685_1(),
-                              mServos(mMockPca9685_0, mMockPca9685_1, mMockTick) {
+            UT_CMP_SERVOS()
+                : mMockGpio()
+                , mMockPca9685_0()
+                , mMockPca9685_1()
+                , mServos(mMockPca9685_0, mMockPca9685_1, mMockGpio) {
             }
 
             virtual void SetUp() {
-                Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
+                Core::Status success = Core::Status::CORE_ERROR;
 
-                EXPECT_CALL(mMockPca9685_0, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-                EXPECT_CALL(mMockPca9685_1, Initialize()).WillOnce(Return(Core::CoreStatus::CORE_OK));
-
+                EXPECT_CALL(mMockPca9685_0, GetAddress())
+                        .WillRepeatedly(Return(0U));
+                EXPECT_CALL(mMockPca9685_1, GetAddress())
+                        .WillRepeatedly(Return(1U));
+                EXPECT_CALL(mMockPca9685_0, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockPca9685_1, Initialize())
+                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockGpio, Set()).Times(1U);
                 success = mServos.Initialize();
-                EXPECT_TRUE(success);
+                EXPECT_EQ(success, Core::Status::CORE_OK);
             }
 
             virtual void TearDown() {
@@ -38,7 +45,7 @@ namespace Component
             virtual ~UT_CMP_SERVOS() = default;
 
             /* Mocks */
-            StrictMock<Driver::Tick::MockTick> mMockTick;
+            StrictMock<Driver::Gpio::MockGpio>                   mMockGpio;
             StrictMock<Component::ServosController::MockPca9685> mMockPca9685_0;
             StrictMock<Component::ServosController::MockPca9685> mMockPca9685_1;
 
@@ -48,14 +55,51 @@ namespace Component
 
         TEST_F(UT_CMP_SERVOS, Update_Ok) {
             for (size_t i = 0; i < NB_SERVOS; i++) {
-                mServos.GetServo(i).SetEnable(true);
-                mServos.GetServo(i).SetAngle(91U);
+                mServos.GetServo(static_cast<EServos>(i))->SetEnable(true);
             }
 
-            EXPECT_CALL(mMockPca9685_0, SetPwm( _, _ )).Times(NB_SERVOS / 2U);
-            EXPECT_CALL(mMockPca9685_1, SetPwm( _, _ )).Times(NB_SERVOS / 2U);
+            EXPECT_CALL(mMockPca9685_0, SetPwm(_, _)).Times(NB_SERVOS / 2U);
+            EXPECT_CALL(mMockPca9685_1, SetPwm(_, _)).Times(NB_SERVOS / 2U);
 
             mServos.Update(0UL);
         }
-    }
-}
+
+        TEST_F(UT_CMP_SERVOS, Enable_Ok) {
+            EXPECT_CALL(mMockGpio, Reset()).Times(1U);
+            mServos.Enable();
+        }
+
+        TEST_F(UT_CMP_SERVOS, Disable_Ok) {
+            EXPECT_CALL(mMockGpio, Set()).Times(1U);
+            mServos.Disable();
+        }
+
+        TEST_F(UT_CMP_SERVOS, GetState_Ok) {
+            EXPECT_CALL(mMockGpio, Get()).WillOnce(Return(false));
+            EXPECT_TRUE(mServos.GetState());
+        }
+
+        TEST_F(UT_CMP_SERVOS, GetServosController0_Ok) {
+            EXPECT_EQ(0U, mServos.GetServosController(0U).GetAddress());
+        }
+
+        TEST_F(UT_CMP_SERVOS, GetServosController1_Ok) {
+            EXPECT_EQ(1U, mServos.GetServosController(1U).GetAddress());
+        }
+
+        TEST_F(UT_CMP_SERVOS, GetServo_Ok) {
+            for (size_t i = 0; i < EServos::SERVO_17; i++) {
+                Servo::ServoInterface *servos =
+                        mServos.GetServo(static_cast<EServos>(i));
+                EXPECT_NE(servos, nullptr);
+            }
+        }
+
+        TEST_F(UT_CMP_SERVOS, GetServo_Nok) {
+            Servo::ServoInterface *servos =
+                    mServos.GetServo(static_cast<EServos>(20U));
+            EXPECT_EQ(servos, nullptr);
+        }
+    } // namespace Servos
+
+} // namespace Component

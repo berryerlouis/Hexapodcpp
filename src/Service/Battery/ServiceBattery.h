@@ -1,32 +1,36 @@
 #pragma once
 
-#include "../Service.h"
 #include "../../Component/Battery/BatteryInterface.h"
-#include "../../Component/Battery/BatteryObserverInterface.h"
+#include "../../Core/ObserverInterface.h"
+#include "../Service.h"
 
 namespace Service
 {
     namespace Battery
     {
+        using namespace Component;
         using namespace Component::Battery;
 
-        class ServiceBattery : public Service, public BatteryObserverInterface {
+        class ServiceBattery : public Service,
+                               Core::ObserverInterface<BatteryStruct>,
+                               Event::EventListenerInterface {
         public:
-            ServiceBattery(BatteryInterface &batteryInterface,
-                           Event::EventListenerInterface &eventListener);
+            ServiceBattery(BatteryInterface                &batteryInterface,
+                           Message::MessageInterface       &messageListener,
+                           Event::EventDispatcherInterface &eventDispatcher);
 
             ~ServiceBattery() = default;
 
-            virtual Core::CoreStatus Initialize(void) final override;
+            virtual Core::Status Initialize(void) final override;
 
             virtual void Update(const uint64_t currentTime) final override;
 
-            virtual void DispatchEvent(const SEvent &event) final override;
+            virtual void Notified(const BatteryStruct &battery) final override;
 
-            virtual void UpdatedBatteryState(const BatteryState &batteryState, const uint16_t voltage) final override;
+            virtual void OnEvent(const Event::Event &event) final override;
 
         protected:
             BatteryInterface &mBatteryInterface;
         };
-    }
-}
+    } // namespace Battery
+} // namespace Service

@@ -4,23 +4,31 @@ namespace Cluster
 {
     namespace Clusters
     {
-        Clusters::Clusters(
-            ClusterGeneral &general,
-            ClusterBattery &battery,
-            ClusterBody &body,
-            ClusterImu &imu,
-            ClusterProximity &proximity,
-            ClusterServo &servo)
-            : mClusters{&general, &battery, &body, &imu, &proximity, &servo} {
+        Clusters::Clusters(ClusterGeneral   &general,
+                           ClusterBattery   &battery,
+                           ClusterButton    &button,
+                           ClusterSound     &sound,
+                           ClusterBody      &body,
+                           ClusterImu       &imu,
+                           ClusterProximity &proximity,
+                           ClusterServo     &servo)
+            : mClusters{{GENERAL, std::ref(general)},
+                        {BATTERY, std::ref(battery)},
+                        {BUTTON, std::ref(button)},
+                        {SOUND, std::ref(sound)},
+                        {BODY, std::ref(body)},
+                        {IMU, std::ref(imu)},
+                        {PROXIMITY, std::ref(proximity)},
+                        {SERVO, std::ref(servo)}} {
+            LOG_CLUSTER_DEBUG("Clusters", " Initialized.");
         }
 
-        ClusterInterface *Clusters::GetCluster(const EClusters clusterId) const {
-            for (ClusterInterface *cluster: mClusters) {
-                if (cluster->GetId() == clusterId) {
-                    return (cluster);
-                }
+        ClusterBase *Clusters::GetCluster(const EClusters clusterId) {
+            const auto it = mClusters.find(clusterId);
+            if (it != mClusters.end()) {
+                return &(it->second.get());
             }
-            return (nullptr);
+            return nullptr;
         }
-    }
-}
+    } // namespace Clusters
+} // namespace Cluster

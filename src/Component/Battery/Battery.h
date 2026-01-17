@@ -1,8 +1,7 @@
 #pragma once
 
-#include "../../Driver/Adc/AdcInterface.h"
+#include "../Adc/Ads1115.h"
 #include "BatteryInterface.h"
-#include "BatteryObservable.h"
 
 namespace Component
 {
@@ -12,27 +11,25 @@ namespace Component
 
         class Battery : public BatteryInterface {
         public:
-            Battery(Adc::AdcInterface &adc);
+            explicit Battery(Adc::Ads1115Interface &adc);
 
             ~Battery() = default;
 
-            virtual Core::CoreStatus Initialize(void) final override;
+            virtual Core::Status Initialize(void) final override;
 
             virtual void Update(const uint64_t currentTime) final override;
 
             virtual BatteryState GetState(void) final override;
 
-            virtual uint16_t GetVoltage(void) final override;
+            virtual uint16_t     GetVoltage(void) final override;
 
-            virtual Core::CoreStatus Attach(BatteryObserverInterface *observer) final override;
-
-            virtual void Notify(const BatteryState &state, const uint16_t voltage) final override;
+            virtual uint16_t     GetIntensity(void) final override;
 
         private:
-            uint16_t mVoltage;
-            BatteryState mState;
-            Adc::AdcInterface &mAdc;
-            BatteryObservable mObservable;
+            uint16_t               mVoltage;
+            uint16_t               mIntensity;
+            BatteryState           mState;
+            Adc::Ads1115Interface &mAdc;
         };
-    }
-}
+    } // namespace Battery
+} // namespace Component

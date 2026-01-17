@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Pca9685Interface.h"
 #include "../../Driver/Twi/TwiInterface.h"
+#include "Pca9685Interface.h"
 
 namespace Component
 {
@@ -54,9 +54,9 @@ namespace Component
 
             struct EConstant {
                 static const uint32_t FREQUENCY_OSCILLATOR = 27000000;
-                static const uint8_t PRESCALE_MIN = 3;
-                static const uint8_t PRESCALE_MAX = 255;
-                static const uint8_t NB_LEDS = 10U;
+                static const uint8_t  PRESCALE_MIN = 3;
+                static const uint8_t  PRESCALE_MAX = 255;
+                static const uint8_t  NB_LEDS = 10U;
                 static const uint16_t LED_OFF = 4096U;
             };
 
@@ -65,7 +65,8 @@ namespace Component
                 uint16_t off;
             };
 
-            Pca9685(Twi::TwiInterface &i2c, const uint8_t address = PCA9685_I2C_ADDRESS);
+            explicit Pca9685(Twi::TwiInterface &i2c,
+                             const uint8_t      address = PCA9685_I2C_ADDRESS);
 
             ~Pca9685() = default;
 
@@ -75,22 +76,26 @@ namespace Component
 
             virtual void WakeUp(void) final override;
 
-            virtual void
-            setOscillatorFrequency(const uint32_t frequency = EConstant::FREQUENCY_OSCILLATOR) final override;
+            virtual void setOscillatorFrequency(
+                    const uint32_t frequency =
+                            EConstant::FREQUENCY_OSCILLATOR) final override;
 
             virtual void SetFrequency(const uint32_t frequency) final override;
 
-            virtual void SetPwm(uint8_t num, uint16_t off) final override;
+            virtual void SetPwm(const uint8_t  num,
+                                const uint16_t off) final override;
 
-            Core::CoreStatus Initialize(void);
+            virtual uint8_t GetAddress(void) final override;
 
-            void Update(const uint64_t currentTime);
+            Core::Status    Initialize(void) override;
+
+            void            Update(const uint64_t currentTime) override;
 
         private:
             Twi::TwiInterface &mI2c;
-            const uint8_t mAddress;
-            uint32_t mInternalOscillatorFrequency;
-            SPwm mPwm[EConstant::NB_LEDS];
+            uint8_t            mAddress;
+            uint32_t           mInternalOscillatorFrequency;
+            SPwm               mPwm[EConstant::NB_LEDS];
         };
-    }
-}
+    } // namespace ServosController
+} // namespace Component

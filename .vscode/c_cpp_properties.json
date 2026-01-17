@@ -1,18 +1,28 @@
 {
     "configurations": [
         {
-            "name": "Avr",
-            "compilerPath": "/usr/bin/avr-gcc",
+            "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/*",
-                "${workspaceFolder}/unittests/*",
-                "${workspaceFolder}/unittests/build/_deps/googletest-src/googlemock/include"
+                "${workspaceFolder}/src/**",
+                "${workspaceFolder}/build/rpi-cross-release/_deps/tinywebsockets-src/tiny_websockets_lib/include/**",
+                "${workspaceFolder}/build/rpi-cross-release/_deps/wiringpi-src/**",
+                "${workspaceFolder}/build/hexapod-X64-TEST/_deps/googletest-src/googletest/include/*",
+                "${workspaceFolder}/build/hexapod-X64-TEST/_deps/googletest-src/googletest/include/gtest/*",
+                "${workspaceFolder}/build/hexapod-X64-TEST/_deps/googletest-src/googletest/include/gtest/internal/*",
+                "${workspaceFolder}/build/hexapod-X64-TEST/_deps/googletest-src/googlemock/include/*",
+                "${workspaceFolder}/build/hexapod-X64-TEST/_deps/googletest-src/googlemock/include/gmock/*",
+                "${workspaceFolder}/build/hexapod-X64-TEST/_deps/googletest-src/googlemock/include/gmock/internal/*"
             ],
             "defines": [
-                "__AVR_ATmega1284P__",
-                "F_CPU=20000000UL",
-                "DEBUG"
-            ]
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.26100.0",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/g++"
         }
     ],
     "version": 4

@@ -1,86 +1,152 @@
 #include "App.h"
+#include "../Driver/Timer/Tick.h"
 
 using namespace Driver::Gpio;
+using namespace Driver::Timer;
 
-Gpio ledBoot         = Gpio( { EPort::PORT_B, EPin::PIN_0 }, EPortDirection::OUT );
-Gpio ledStatus       = Gpio( { EPort::PORT_B, EPin::PIN_1 }, EPortDirection::OUT );
-Gpio ledLeft         = Gpio( { EPort::PORT_B, EPin::PIN_2 }, EPortDirection::OUT );
-Gpio ledRight        = Gpio( { EPort::PORT_B, EPin::PIN_3 }, EPortDirection::OUT );
-Gpio adcPinBattery   = Gpio( { EPort::PORT_A, EPin::PIN_0 }, EPortDirection::IN );
-Gpio echoLeftPin     = Gpio( { EPort::PORT_A, EPin::PIN_2 }, EPortDirection::IN );
-Gpio echoRightPin    = Gpio( { EPort::PORT_A, EPin::PIN_4 }, EPortDirection::IN );
-Gpio triggerLeftPin  = Gpio( { EPort::PORT_A, EPin::PIN_1 }, EPortDirection::OUT );
-Gpio triggerRightPin = Gpio( { EPort::PORT_A, EPin::PIN_3 }, EPortDirection::OUT );
+Gpio ledStatus = Gpio({19}, PWM);
+Gpio ledCenter = Gpio({12}, OUT);
+Gpio ledLeft = Gpio({13}, OUT);
+Gpio ledMiddleLeft = Gpio({6}, OUT);
+Gpio ledRight = Gpio({16}, OUT);
+Gpio ledMiddleRight = Gpio({5}, OUT);
+Gpio enablePwm = Gpio({17}, OUT);
+Gpio echoLeftPin = Gpio({8}, IN);
+Gpio echoRightPin = Gpio({20}, IN);
+Gpio triggerLeftPin = Gpio({7}, OUT);
+Gpio triggerRightPin = Gpio({21}, OUT);
+Gpio soundLeftPin = Gpio({23}, IN);
+Gpio soundRightPin = Gpio({24}, IN);
+Gpio buttonPin = Gpio({4}, IN);
 
-namespace App {
-App::App( void )
-	: mTick()
-	, mUart()
-	, mTwi( Driver::Twi::Twi::EI2cFreq::FREQ_400_KHZ )
-	, mAdc( adcPinBattery )
-	, mLedBoot( ledStatus )
-	, mLedStatus( ledStatus )
-	, mLedLeft( ledLeft )
-	, mLedRight( ledRight )
-	, mInputCaptureLeft( echoLeftPin, mTick )
-	, mInputCaptureRight( echoRightPin, mTick )
-	, mBattery( mAdc )
-	, mMpu9150( mTwi )
-	, mSrf05Left( Cluster::EProximityCommands::US_LEFT, triggerLeftPin, mInputCaptureLeft, mLedLeft, mTick )
-	, mSrf05Right( Cluster::EProximityCommands::US_RIGHT, triggerRightPin, mInputCaptureRight, mLedRight, mTick )
-	, mVl53l0x( mTwi, mTick )
-	, mSensorProximity( mSrf05Left, mSrf05Right, mVl53l0x )
-	, mSsd1306( mTwi )
-	, mPca9685Left( mTwi, 0x41U )
-	, mPca9685Right( mTwi, 0x40U )
-	, mServos( mPca9685Left, mPca9685Right, mTick )
-	, mSoftware()
-	, mLegs( mServos )
-	, mBody( mLegs )
-	, mClusterGeneral( mSoftware )
-	, mClusterBattery( mBattery )
-	, mClusterBody( mBody )
-	, mClusterImu( mMpu9150 )
-	, mClusterProximity( mSensorProximity )
-	, mClusterServo( mServos )
-	, mClusters( mClusterGeneral, mClusterBattery, mClusterBody, mClusterImu, mClusterProximity, mClusterServo )
-	, mCommunication( mUart, mClusters, mLedStatus )
-	, mServiceControl( mServos )
-	, mServiceCommunication( mCommunication, mClusters )
-	, mServiceProximity( mSensorProximity )
-	, mServiceOrientation( mMpu9150 )
-	, mServiceBattery( mBattery )
-	, mServiceDisplay( mSsd1306, mBattery, mSensorProximity )
-	, mServiceGeneral( mSoftware )
-	, mServices( mServiceGeneral, mServiceControl, mServiceCommunication, mServiceProximity, mServiceOrientation, mServiceBattery, mServiceDisplay )
+namespace App
 {
-	INIT_LOGGER( mUart );
-}
+    App::App(void)
+        : mSocket()
+        , mTwi(Driver::Twi::EI2cFreq::FREQ_400_KHZ)
+        , mEnablePwm(enablePwm)
+        , mGpioButton(buttonPin)
+        , mGpioSoundLeft(soundLeftPin)
+        , mGpioSoundRight(soundRightPin)
+        , mGpioTriggerUsLeft(triggerLeftPin)
+        , mGpioTriggerUsRight(triggerRightPin)
+        , mLedStatus(ledStatus)
+        , mLedCenter(ledCenter)
+        , mLedLeft(ledLeft)
+        , mLedMiddleLeft(ledMiddleLeft)
+        , mLedRight(ledRight)
+        , mLedMiddleRight(ledMiddleRight)
+        , mLedPwmStatus(mLedStatus)
+        , mAds1115(mTwi)
+        , mBattery(mAds1115)
+        , mButton(mGpioButton)
+        , mSoundLeft(Component::Sound::SoundId::SOUND_LEFT,
+                     mGpioSoundLeft,
+                     mLedMiddleLeft)
+        , mSoundRight(Component::Sound::SoundId::SOUND_RIGHT,
+                      mGpioSoundRight,
+                      mLedMiddleRight)
+        , mInputCaptureLeft(echoLeftPin)
+        , mInputCaptureRight(echoRightPin)
+        , mMpu9150(mTwi)
+        , mBarometer(mTwi)
+        , mSrf05Left(Cluster::EProximityCommands::US_LEFT,
+                     mGpioTriggerUsLeft,
+                     mInputCaptureLeft,
+                     mLedLeft)
+        , mSrf05Right(Cluster::EProximityCommands::US_RIGHT,
+                      mGpioTriggerUsRight,
+                      mInputCaptureRight,
+                      mLedRight)
+        , mVl53l0x(mTwi, mLedCenter)
+        , mSensorProximity(mSrf05Left, mSrf05Right, mVl53l0x)
+        , mSsd1306(mTwi)
+        , mPca9685Left(mTwi, 0x41U)
+        , mPca9685Right(mTwi, 0x40U)
+        , mServos(mPca9685Left, mPca9685Right, mEnablePwm)
+        , mSoftware()
+        , mLegs(mServos)
+        , mBody(mLegs)
+        , mClusterGeneral(mSoftware)
+        , mClusterBattery(mBattery)
+        , mClusterButton(mButton)
+        , mClusterSound(mSoundLeft, mSoundRight)
+        , mClusterBody(mBody)
+        , mClusterImu(mMpu9150, mBarometer)
+        , mClusterProximity(mSensorProximity)
+        , mClusterServo(mServos)
+        , mClusters(mClusterGeneral,
+                    mClusterBattery,
+                    mClusterButton,
+                    mClusterSound,
+                    mClusterBody,
+                    mClusterImu,
+                    mClusterProximity,
+                    mClusterServo)
+        , mCommunication(mSocket, mClusters, mLedStatus)
+        , mMessageListener(mCommunication)
+        , mEventDispatcher()
+        , mServiceButton(mButton, mMessageListener, mEventDispatcher)
+        , mServiceSound(mSoundLeft,
+                        mSoundRight,
+                        mMessageListener,
+                        mEventDispatcher)
+        , mServiceControl(mServos, mMessageListener, mEventDispatcher)
+        , mServiceCommunication(mCommunication,
+                                mClusters,
+                                mMessageListener,
+                                mEventDispatcher)
+        , mServiceProximity(mSensorProximity,
+                            mMessageListener,
+                            mEventDispatcher)
+        , mServiceOrientation(mMpu9150,
+                              mBarometer,
+                              mMessageListener,
+                              mEventDispatcher)
+        , mServiceBattery(mBattery, mMessageListener, mEventDispatcher)
+        , mServiceBody(mBody, mMessageListener, mEventDispatcher)
+        , mServiceDisplay(mSsd1306, mMessageListener, mEventDispatcher)
+        , mServiceGeneral(mLedPwmStatus,
+                          mSoftware,
+                          mMessageListener,
+                          mEventDispatcher)
+        , mServices(mServiceGeneral,
+                    mServiceControl,
+                    mServiceCommunication,
+                    mServiceProximity,
+                    mServiceOrientation,
+                    mServiceBattery,
+                    mServiceDisplay,
+                    mServiceBody,
+                    mServiceButton,
+                    mServiceSound,
+                    mMessageListener,
+                    mEventDispatcher) {
+    }
 
-Core::CoreStatus App::Initialize ( void )
-{
-	Core::CoreStatus success = Core::CoreStatus::CORE_ERROR;
-	success = mUart.Initialize();
-	if ( success == true )
-	{
-		success = mTwi.Initialize();
-	}
-	if ( success == true )
-	{
-		success = mServices.Initialize();
-	}
-	if ( success == false )
-	{
-		LOG( "<error>" );
-	}
-	return ( success );
-}
+#define LOG_RESULT_INIT(name)             \
+    if (success != Core::Status::CORE_OK) \
+        LOG_ERROR("Initialization %s failed.", name);
+#define INIT(name, code) \
+    success = code;      \
+    LOG_RESULT_INIT(name);
 
-void App::Update ( const uint64_t currentTime )
-{
-	(void) currentTime;
-	uint64_t currentMillis = this->mTick.GetMs();
-	mLedBoot.Toggle();
-	mServices.Update( currentMillis );
-}
-}
+    Core::Status App::Initialize(void) {
+        Tick::GetInstance();
+        Core::Status success = Core::CORE_OK;
+        INIT("Socket", this->mSocket.Initialize());
+        if (success == Core::CORE_OK) {
+            INIT("Twi", this->mTwi.Initialize());
+        }
+        if (success == Core::CORE_OK) {
+            INIT("Services", this->mServices.Initialize());
+        }
+        return success;
+    }
+
+    void App::Update(void) {
+        const uint64_t currentTime = Tick::GetInstance().GetMs();
+        this->mServices.Update(currentTime);
+        Tick::GetInstance().DelayMs(1U);
+    }
+} // namespace App

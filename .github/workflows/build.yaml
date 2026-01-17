@@ -3,57 +3,131 @@ name: Make
 on: [ push, pull_request ]
 
 jobs:
-  compile-hexapod:
+
+  build-release:
+    name: Build Release
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build_type: [ DEBUG, RELEASE ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential gcc g++ cmake
+
+      - name: Build ${{ matrix.build_type }}
+        run: bin/dev/build.sh X64 sources ${{ matrix.build_type }} install
+
+      - name: Upload ${{ matrix.build_type }} Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: hexapodcpp-X64-${{ matrix.build_type }}
+          path: build/hexapod-X64-${{ matrix.build_type }}/src/Hexapodcpp
+
+  run-tests:
+    name: Run Google Tests
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install gcc and avr-gcc
+      - name: Run Google Test
+        run: bin/dev/test.sh all
+
+      - name: Archive Test Results
+        if: always()
         run: |
-          sudo apt update
-          sudo apt install build-essential binutils gcc-avr avr-libc
-          mkdir archive/
+          mkdir -p archive
+          cp build/hexapod-X64-TEST/test_results.xml archive/ || true
 
-      - name: Build Release
-        run: |
-          bin/dev/build.sh RELEASE
-
-      - name: Run Test
-        run: |
-          bin/dev/test.sh all
-
-      - name: Create Archive Directory
-        run: |
-          bin/dev/archive.sh
-
-      - name: Archive Artefacts
+      - name: Upload Test Results
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: hexapodcpp
-          path: archive/
+          name: test-results
+          path: archive/test_results.xml
+          if-no-files-found: warn
 
-  test-coverage-IHM:
-    permissions: write-all
+  coverage:
+    name: Coverage Analysis
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Install coverage tools
         run: |
-          cd HMI/
-          npm install .
-          npm run testcov
+          sudo apt-get update
+          sudo apt-get install -y lcov gcovr
 
-      - name: Create Archive Directory
-        run: |
-          mkdir -p archive/
-          mv HMI/coverage/lcov-report/* archive/
+      - name: Run Coverage
+        run: bin/dev/coverage.sh
 
-      - name: Archive Artefacts
+      - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
-          name: IHM
-          path: archive/
+          name: coverage-report
+          path: coverage-report
+
+  cppcheck:
+    name: Static Analysis (Cppcheck)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install cppcheck
+        run: sudo apt-get update && sudo apt-get install -y cppcheck
+
+      - name: Run cppcheck
+        run: bin/dev/cppcheck.sh
+
+      - name: Upload Cppcheck Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: cppcheck-report
+          path: |
+            cppcheck-report.xml
+            cppcheck_html
+
+  docker-cross-build-rpi:
+    name: Docker Cross-Compile (RPI Zero 2 W - ARM64)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build_type: [ Debug, Release ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Pull Toolchain Image
+        run: docker pull loumagrule/hexapodcpp:rpi-toolchain
+
+      - name: Cross-Compile for RPI (${{ matrix.build_type }})
+        run: |
+          BUILD_TYPE="${{ matrix.build_type }}"
+          BUILD_DIR="build/RPI-${BUILD_TYPE}"
+
+          docker run --rm \
+            -v ${{ github.workspace }}:/workspace \
+            -w /workspace \
+            loumagrule/hexapodcpp:rpi-toolchain \
+            bash -c "cmake -Wno-dev -S . -B $BUILD_DIR \
+              -DCMAKE_TOOLCHAIN_FILE=/workspace/cmake/toolchain-rpi-zero-2-w.cmake \
+              -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+              -DTARGET=RPI \
+              -DOPENSSL_USE_STATIC_LIBS=OFF \
+              -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+            && cmake --build $BUILD_DIR --target Hexapodcpp -- -j\$(nproc)"
+
+      - name: Upload RPi Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hexapodcpp-RPI-${{ matrix.build_type }}
+          path: build/RPI-${{ matrix.build_type }}/src/Hexapodcpp
