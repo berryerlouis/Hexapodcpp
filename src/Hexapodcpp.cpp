@@ -2,8 +2,8 @@
 #include "Core/Logger.h"
 #include "Core/Version.h"
 
-int main(const int argc, char **argv) {
-    setvbuf(stdout, nullptr, _IONBF, 0U);
+int main(int argc, char **argv) {
+    (void) setvbuf(stdout, nullptr, _IONBF, 0U);
 
     LOG_INFO("Hexapod started.");
     LOG_INFO("Hexapod version: %d.%d", VERSION_MAJOR, VERSION_MINOR);

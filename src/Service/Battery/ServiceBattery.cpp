@@ -14,7 +14,7 @@ namespace Service
             , mBatteryInterface(batteryInterface) {
         }
 
-        Core::Status ServiceBattery::Initialize(void) {
+        Core::Status ServiceBattery::Initialize() {
             const Core::Status success = this->mBatteryInterface.Initialize();
             if (Core::Status::CORE_OK == success) {
                 this->GetEventDispatcher().AddListener(this);

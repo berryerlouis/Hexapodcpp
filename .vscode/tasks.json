@@ -234,6 +234,33 @@
             }
         },
         {
+            "label": "Static Anlysis",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/clang-tidy.sh"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/clang-tidy.sh"
+                ]
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
             "label": "Build RPI Debug (Docker Cross-Compile)",
             "type": "shell",
             "options": {

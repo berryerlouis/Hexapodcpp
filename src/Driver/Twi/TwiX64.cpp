@@ -9,7 +9,7 @@ namespace Driver
             (void) freq;
         }
 
-        Core::Status Twi::Initialize(void) {
+        Core::Status Twi::Initialize() {
             LOG_DRIVER_DEBUG("Twi", "Initialized.");
             return (Core::Status::CORE_OK);
         }

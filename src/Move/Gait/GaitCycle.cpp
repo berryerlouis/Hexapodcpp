@@ -10,15 +10,13 @@ namespace Move
                              GaitParams               &gaitParams)
             : mLegs(legs)
             , mGaitParams(gaitParams)
-            , mLastUpdateTime(0UL)
-            , mGaitStrategy(
-                      std::move(std::make_unique<Move::Gait::GaitTripod>()))
+            , mGaitStrategy(std::make_unique<Move::Gait::GaitTripod>())
             , mStartTime(0UL)
             , mStepPositionIndex(0U) {
             this->mGaitParams.SetRunning(true);
         }
 
-        bool GaitCycle::Start(void) {
+        bool GaitCycle::Start() {
             if (!this->mGaitParams.IsRunning()) {
                 this->mGaitParams.SetRunning(true);
                 this->mStartTime = Driver::Timer::Tick::GetInstance().GetMs();
@@ -27,7 +25,7 @@ namespace Move
             return false;
         }
 
-        bool GaitCycle::Pause(void) const {
+        bool GaitCycle::Pause() const {
             if (this->mGaitParams.IsRunning()) {
                 this->mGaitParams.SetRunning(false);
                 return true;
@@ -35,7 +33,7 @@ namespace Move
             return false;
         }
 
-        bool GaitCycle::Stop(void) {
+        bool GaitCycle::Stop() {
             if (this->mGaitParams.IsRunning()) {
                 this->mGaitParams.SetRunning(false);
                 this->mStartTime = Driver::Timer::Tick::GetInstance().GetMs();
@@ -48,15 +46,15 @@ namespace Move
             if (this->mGaitParams.SetGaitType(gaitType)) {
                 if (this->mGaitParams.GetGaitType() ==
                     Move::Gait::GaitType::TRIPOD) {
-                    this->mGaitStrategy = std::move(
-                            std::make_unique<Move::Gait::GaitTripod>());
+                    this->mGaitStrategy =
+                            std::make_unique<Move::Gait::GaitTripod>();
                 } else if (this->mGaitParams.GetGaitType() ==
                            Move::Gait::GaitType::WAVE) {
                     this->mGaitStrategy =
-                            std::move(std::make_unique<Move::Gait::GaitWave>());
+                            std::make_unique<Move::Gait::GaitWave>();
                 } else {
-                    this->mGaitStrategy = std::move(
-                            std::make_unique<Move::Gait::GaitRipple>());
+                    this->mGaitStrategy =
+                            std::make_unique<Move::Gait::GaitRipple>();
                 }
                 return true;
             }
@@ -109,17 +107,17 @@ namespace Move
         }
 
         float GaitCycle::GetNormalizedTime(const uint64_t currentTime) const {
-            float deltaTimeMs =
+            const float deltaTimeMs =
                     static_cast<float>(currentTime - this->mStartTime);
-            float cycleDurationMs = this->mGaitParams.GetCycleDuration();
-            float normalizedTime = deltaTimeMs / cycleDurationMs;
+            const float cycleDurationMs = this->mGaitParams.GetCycleDuration();
+            const float normalizedTime = deltaTimeMs / cycleDurationMs;
             return (normalizedTime > 1.0F) ? 1.0F : normalizedTime;
         }
 
         bool GaitCycle::IsCycleComplete(const uint64_t currentTime) const {
-            float deltaTimeMs =
+            const float deltaTimeMs =
                     static_cast<float>(currentTime - this->mStartTime);
-            float cycleDurationMs = this->mGaitParams.GetCycleDuration();
+            const float cycleDurationMs = this->mGaitParams.GetCycleDuration();
             return deltaTimeMs >= cycleDurationMs;
         }
 

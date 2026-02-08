@@ -14,9 +14,9 @@ namespace Move
                 const uint8_t stepPositionIndex,
                 const float   normalizedTime) const {
             (void) isCycleComplete;
-            uint8_t stepPositionIndexAlt;
             for (auto &leg: legs) {
-                uint8_t legId = static_cast<uint8_t>(leg.second.GetId());
+                uint8_t stepPositionIndexAlt = 0U;
+                auto    legId = static_cast<uint8_t>(leg.second.GetId());
                 if (legId % 2U == 0U) {
                     stepPositionIndexAlt = stepPositionIndex;
                 } else {
@@ -61,9 +61,9 @@ namespace Move
             // position
 
             for (auto &leg: legs) {
-                uint8_t legId = static_cast<uint8_t>(leg.second.GetId());
-                bool    move = false;
-                if (GaitWave::activeAllLegId == false) {
+                auto legId = static_cast<uint8_t>(leg.second.GetId());
+                bool move = false;
+                if (!GaitWave::activeAllLegId) {
                     if ((legId == GaitWave::activeLegId) &&
                         (!isCycleComplete)) {
                         normalizedTimeAlt = normalizedTime;
@@ -98,7 +98,7 @@ namespace Move
                 }
             }
             if (isCycleComplete) {
-                if (GaitWave::activeAllLegId == false) {
+                if (!GaitWave::activeAllLegId) {
                     GaitWave::activeLegId = (GaitWave::activeLegId + 1U);
                     if (GaitWave::activeLegId >=
                         static_cast<uint8_t>(legs.size())) {
@@ -121,9 +121,9 @@ namespace Move
                 const uint8_t stepPositionIndex,
                 const float   normalizedTime) const {
             (void) isCycleComplete;
-            uint8_t stepPositionIndexAlt;
             for (auto &leg: legs) {
-                uint8_t legId = static_cast<uint8_t>(leg.second.GetId());
+                uint8_t stepPositionIndexAlt = 0U;
+                auto    legId = static_cast<uint8_t>(leg.second.GetId());
                 if (legId % 2U == 0U) {
                     stepPositionIndexAlt = stepPositionIndex;
                 } else {

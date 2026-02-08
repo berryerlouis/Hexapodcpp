@@ -15,7 +15,7 @@ namespace Service
             , mSoftware(software) {
         }
 
-        Core::Status ServiceGeneral::Initialize(void) {
+        Core::Status ServiceGeneral::Initialize() {
             Core::Status       success = Core::Status::CORE_ERROR;
             const Core::Status success1 = this->mLedPwm.Initialize();
             const Core::Status success2 = this->mSoftware.Initialize();

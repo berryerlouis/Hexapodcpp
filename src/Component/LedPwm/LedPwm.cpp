@@ -1,6 +1,6 @@
 #include "LedPwm.h"
 #include <algorithm>
-#include <math.h>
+#include <cmath>
 
 namespace Component
 {
@@ -21,7 +21,7 @@ namespace Component
             this->Stop();
         }
 
-        Core::Status LedPwm::Initialize(void) {
+        Core::Status LedPwm::Initialize() {
             this->mRunning = true;
             this->mLastUpdate = 0U;
             this->mDutyCycle = 0U;
@@ -31,8 +31,9 @@ namespace Component
         }
 
         void LedPwm::Update(const uint64_t currentTime) {
-            if (!this->mRunning)
+            if (!this->mRunning) {
                 return;
+            }
 
             // Update sine wave every 5ms for smooth
             // animation
@@ -56,7 +57,7 @@ namespace Component
             this->mPhase = 0.0F;
         }
 
-        void LedPwm::UpdateSineWave(void) {
+        void LedPwm::UpdateSineWave() {
             // Phase advance: angular frequency = 2πf, time
             // step = 5ms
             const float timeStep = 0.005f; // 5ms in seconds
@@ -69,8 +70,8 @@ namespace Component
 
             // Compute sine wave: sin(φ) ∈ [-1,1] → [0,1000]
             // scaled by amplitude
-            float    sineValue = sinf(this->mPhase);
-            uint16_t targetDuty = static_cast<uint16_t>(
+            const float    sineValue = sinf(this->mPhase);
+            const uint16_t targetDuty = static_cast<uint16_t>(
                     (sineValue + 1.0F) * 0.5f * this->mAmplitude);
             this->mDutyCycle = targetDuty;
             // Smooth transition to prevent flicker

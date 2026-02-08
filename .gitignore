@@ -12,3 +12,4 @@ coverage-report/
 coverage.info
 /cppcheck-report.xml
 cppcheck_html
+clang-tidy-report/report.txt

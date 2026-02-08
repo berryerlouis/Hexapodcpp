@@ -14,7 +14,7 @@ namespace Service
             , mButtonInterface(ButtonInterface) {
         }
 
-        Core::Status ServiceButton::Initialize(void) {
+        Core::Status ServiceButton::Initialize() {
             const Core::Status success = this->mButtonInterface.Initialize();
             if (Core::Status::CORE_OK == success) {
                 this->GetEventDispatcher().AddListener(this);

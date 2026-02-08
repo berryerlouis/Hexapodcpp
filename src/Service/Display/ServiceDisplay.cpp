@@ -37,7 +37,7 @@ namespace Service
             , mNotifiedTimeSoundRight(0UL) {
         }
 
-        Core::Status ServiceDisplay::Initialize(void) {
+        Core::Status ServiceDisplay::Initialize() {
             Core::Status success = Core::Status::CORE_ERROR;
             if (this->mSsd1306.Initialize() == Core::Status::CORE_OK) {
                 this->GetEventDispatcher().AddListener(this);
@@ -84,7 +84,7 @@ namespace Service
             this->mSsd1306.Update(currentTime);
         }
 
-        void ServiceDisplay::DisplayBackground(void) const {
+        void ServiceDisplay::DisplayBackground() const {
             this->mSsd1306.DrawLine(
                     0U, 10U, SCREEN_WIDTH, 10U, Bitmaps::Color::COLOR_WHITE);
             this->mSsd1306.DrawLine(
@@ -119,9 +119,9 @@ namespace Service
                                       Bitmaps::Color::COLOR_WHITE);
         }
 
-        void ServiceDisplay::DisplayCommunicationBmp(void) {
+        void ServiceDisplay::DisplayCommunicationBmp() {
             if (this->mState == NO_CLIENT) {
-                if (this->mToggleCommunicationBmp == true) {
+                if (this->mToggleCommunicationBmp) {
                     this->mSsd1306.DrawBitmap(
                             &this->mBmpCommunication,
                             SCREEN_WIDTH - this->mBmpCommunication.width,

@@ -46,7 +46,6 @@ namespace Component
                 uint8_t            mAddress;
                 uint16_t           mDistance;
                 uint16_t           mThreshold;
-                uint32_t           mMeasurementTimingBudget = 0U;
                 uint8_t            mStop;
 
                 void               Tune(void) const;

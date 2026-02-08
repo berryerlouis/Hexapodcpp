@@ -10,7 +10,7 @@ namespace Driver
     {
         class Socket : public SocketInterface<1U, SocketStruct> {
         public:
-            Socket(void);
+            Socket() = default;
 
             ~Socket() = default;
 

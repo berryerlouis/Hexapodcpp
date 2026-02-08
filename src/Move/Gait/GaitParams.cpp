@@ -11,7 +11,7 @@ namespace Move
         static constexpr float ELEVATION_MAX = 3.0F;
         static constexpr float DURATION_MIN = 1000.0F; // in milliseconds
 
-        GaitParams::GaitParams(void)
+        GaitParams::GaitParams()
             : mCurrentGait(GaitType::TRIPOD)
             , mIsRunning(false)
             , mDirection(0.0F)

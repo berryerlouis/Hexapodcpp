@@ -31,18 +31,17 @@ namespace Service
 
         class Services : public Core::CoreInterface {
         public:
-            Services(ServiceGeneral                  &serviceGeneral,
-                     ServiceControl                  &serviceControl,
-                     ServiceCommunication            &serviceCommunication,
-                     ServiceProximity                &serviceProximity,
-                     ServiceOrientation              &serviceOrientation,
-                     ServiceBattery                  &serviceBattery,
-                     ServiceDisplay                  &serviceDisplay,
-                     ServiceBody                     &serviceBody,
-                     ServiceButton                   &serviceButton,
-                     ServiceSound                    &serviceSound,
-                     Message::MessageInterface       &messageListener,
-                     Event::EventDispatcherInterface &eventDispatcher);
+            Services(ServiceGeneral            &serviceGeneral,
+                     ServiceControl            &serviceControl,
+                     ServiceCommunication      &serviceCommunication,
+                     ServiceProximity          &serviceProximity,
+                     ServiceOrientation        &serviceOrientation,
+                     ServiceBattery            &serviceBattery,
+                     ServiceDisplay            &serviceDisplay,
+                     ServiceBody               &serviceBody,
+                     ServiceButton             &serviceButton,
+                     ServiceSound              &serviceSound,
+                     Message::MessageInterface &messageListener);
 
             ~Services() = default;
 
@@ -51,9 +50,8 @@ namespace Service
             virtual void Update(const uint64_t currentTime) final override;
 
         private:
-            std::map<EServices, Service *>   mServices;
-            Message::MessageInterface       &mMessageListener;
-            Event::EventDispatcherInterface &mEventDispatcher;
+            std::map<EServices, Service *> mServices;
+            Message::MessageInterface     &mMessageListener;
         };
     } // namespace Services
 } // namespace Service

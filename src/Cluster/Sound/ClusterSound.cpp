@@ -22,7 +22,7 @@ namespace Cluster
                                                 Frame       &response) {
             Core::Status success = Core::Status::CORE_ERROR;
             if (request.GetCommandId() == ESoundCommands::GET_SOUND_STATUS) {
-                uint64_t      sound;
+                uint64_t      sound = 0UL;
                 const SoundId soundId =
                         static_cast<SoundId>(request.Get1ByteParam(0U));
                 if (soundId == SOUND_LEFT) {

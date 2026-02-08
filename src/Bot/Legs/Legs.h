@@ -25,7 +25,6 @@ namespace Bot
 
         private:
             std::map<ELeg, Leg::Leg> mLegs;
-            uint8_t                  mLegIdInWaveGait = 0U;
         };
     } // namespace Legs
 } // namespace Bot

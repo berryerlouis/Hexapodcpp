@@ -64,9 +64,8 @@ namespace Bot
 
             Legs::ELeg   GetId(void) const final override;
 
-            Core::Status
-                         SetLegIk(const Position3d &position,
-                                  const uint16_t    travelTime = 0U) final override;
+            Core::Status SetLegIk(const Position3d &position,
+                                  const uint16_t    travelTime) final override;
 
             Core::Status SetLegBodyIk(const Position3d &position,
                                       const Position3d &bodyIk,

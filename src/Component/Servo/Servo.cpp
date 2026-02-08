@@ -5,7 +5,7 @@ namespace Component
 {
     namespace Servo
     {
-#define REVERSE_ANGLE(angle) (((angle - 90) * -1) + 90)
+#define REVERSE_ANGLE(angle) ((((angle) - 90) * -1) + 90)
 
         Servo::Servo(ServosController::Pca9685Interface &pca9685,
                      const uint8_t                       servoId,
@@ -28,8 +28,8 @@ namespace Component
             , mIsMoving(false) {
         }
 
-        Core::Status Servo::Initialize(void) {
-            if (true == this->mReverse) {
+        Core::Status Servo::Initialize() {
+            if (this->mReverse) {
                 this->mMax = REVERSE_ANGLE(this->mMin);
                 this->mMin = REVERSE_ANGLE(this->mMax);
             }
@@ -74,7 +74,7 @@ namespace Component
             return (this->mTargetAngle);
         }
 
-        bool Servo::IsMoving(void) {
+        bool Servo::IsMoving() {
             return (this->mIsMoving);
         }
 
@@ -90,7 +90,7 @@ namespace Component
             }
             if ((angle >= this->mMin) && (angle <= this->mMax)) {
                 this->mTargetAngle = angle;
-                if (true == this->mReverse) {
+                if (this->mReverse) {
                     this->mTargetAngle = REVERSE_ANGLE(angle);
                 }
                 // Instant move
@@ -108,8 +108,8 @@ namespace Component
             return (Core::Status::CORE_ERROR);
         }
 
-        uint8_t Servo::GetAngle(void) const {
-            if (true == this->mReverse) {
+        uint8_t Servo::GetAngle() const {
+            if (this->mReverse) {
                 return (REVERSE_ANGLE(this->mAngle));
             }
             return (this->mAngle);
@@ -123,7 +123,7 @@ namespace Component
             return (false);
         }
 
-        uint8_t Servo::GetMin(void) const {
+        uint8_t Servo::GetMin() const {
             return (this->mMin);
         }
 
@@ -135,7 +135,7 @@ namespace Component
             return (false);
         }
 
-        uint8_t Servo::GetMax(void) const {
+        uint8_t Servo::GetMax() const {
             return (this->mMax);
         }
 
@@ -144,7 +144,7 @@ namespace Component
             return (true);
         }
 
-        int8_t Servo::GetOffset(void) const {
+        int8_t Servo::GetOffset() const {
             return (this->mOffset);
         }
 
@@ -152,20 +152,20 @@ namespace Component
             this->mReverse = reverse;
         }
 
-        bool Servo::GetReverse(void) {
+        bool Servo::GetReverse() {
             return (this->mReverse);
         }
 
         void Servo::SetEnable(const bool enable) {
             this->mEnable = enable;
-            if (this->mEnable == true) {
-                this->SetAngle(this->mAngle);
+            if (this->mEnable) {
+                this->SetAngle(this->mAngle, 0U);
             } else {
                 this->mPca9685.SetPwm(this->mServoId, 4096U);
             }
         }
 
-        bool Servo::IsEnable(void) {
+        bool Servo::IsEnable() {
             return (this->mEnable);
         }
     } // namespace Servo

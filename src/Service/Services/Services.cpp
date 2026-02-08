@@ -15,8 +15,7 @@ namespace Service
                            ServiceBody               &serviceBody,
                            ServiceButton             &serviceButton,
                            ServiceSound              &serviceSound,
-                           Message::MessageInterface &messageListener,
-                           Event::EventDispatcherInterface &eventDispatcher)
+                           Message::MessageInterface &messageListener)
             : mServices{{GENERAL, &serviceGeneral},
                         {CONTROL, &serviceControl},
                         {COMMUNICATION, &serviceCommunication},
@@ -27,11 +26,10 @@ namespace Service
                         {BODY, &serviceBody},
                         {BUTTON, &serviceButton},
                         {SOUND, &serviceSound}}
-            , mMessageListener(messageListener)
-            , mEventDispatcher(eventDispatcher) {
+            , mMessageListener(messageListener) {
         }
 
-        Core::Status Services::Initialize(void) {
+        Core::Status Services::Initialize() {
             Core::Status success = Core::Status::CORE_ERROR;
 
             for (const auto &pair: this->mServices) {

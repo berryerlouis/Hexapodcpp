@@ -16,7 +16,7 @@ namespace Service
             , mSoundRight(soundInterfaceRight) {
         }
 
-        Core::Status ServiceSound::Initialize(void) {
+        Core::Status ServiceSound::Initialize() {
             const Core::Status successLeft = this->mSoundLeft.Initialize();
             const Core::Status successRight = this->mSoundRight.Initialize();
             Core::Status       success = Core::Status::CORE_ERROR;
@@ -34,7 +34,7 @@ namespace Service
             this->SendMaxSound();
         }
 
-        void ServiceSound::SendMaxSound(void) const {
+        void ServiceSound::SendMaxSound() const {
             const SoundStruct maxSound =
                     Component::Sound::Sound::ComputeAndNotifyMaxSound();
 

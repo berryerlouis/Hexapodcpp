@@ -9,15 +9,15 @@ namespace Driver
             (void) portDirection;
         }
 
-        SGpio &Gpio::GetPin(void) {
+        SGpio &Gpio::GetPin() {
             return (this->mGpio);
         }
 
-        Core::Status Gpio::Set(void) {
+        Core::Status Gpio::Set() {
             return (Core::Status::CORE_OK);
         }
 
-        Core::Status Gpio::Reset(void) {
+        Core::Status Gpio::Reset() {
             return (Core::Status::CORE_OK);
         }
 
@@ -26,18 +26,18 @@ namespace Driver
             return (Core::Status::CORE_OK);
         }
 
-        bool Gpio::Get(void) {
+        bool Gpio::Get() {
             return (false);
         }
 
-        void Gpio::SetInterruptPin(void) {
+        void Gpio::SetInterruptPin() {
         }
 
         void Gpio::SetInterruptPin(const InterruptCallback callback) {
             (void) callback;
         }
 
-        void Gpio::ResetInterruptPin(void) {
+        void Gpio::ResetInterruptPin() {
         }
     } // namespace Gpio
 } // namespace Driver

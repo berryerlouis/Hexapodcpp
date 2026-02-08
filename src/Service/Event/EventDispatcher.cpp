@@ -9,7 +9,7 @@ namespace Service
         }
 
         void EventDispatcher::AddListener(EventListenerInterface *listener) {
-            if (listener) {
+            if (listener != nullptr) {
                 this->mEventList.push_back(listener);
             }
         }
@@ -28,7 +28,7 @@ namespace Service
                     event.serviceId,
                     Event::Event::EventTypeToString(event.eventType).c_str());
             for (auto *listener: this->mEventList) {
-                if (listener) {
+                if (listener != nullptr) {
                     listener->OnEvent(event);
                 }
             }

@@ -111,7 +111,7 @@ namespace Misc
                 static_cast<uint8_t>(val >> 56U)                            \
     }
 
-#define PTR_TO_UINT16(arr) (uint16_t)(arr)[0U] | (uint16_t) (arr)[1U] << 8U;
+#define PTR_TO_UINT16(arr) (uint16_t)((arr)[0U] | (uint16_t) (arr)[1U] << 8U)
 #define PTR_TO_UINT24(arr)                                       \
     (uint32_t)(uint32_t)(arr)[0U] | (uint32_t) (arr)[1U] << 8U | \
             (uint32_t) (arr)[2U] << 16U;

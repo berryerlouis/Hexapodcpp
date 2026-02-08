@@ -61,7 +61,7 @@ namespace Service
             Bitmaps::SBitmap    mBmpButton;
             Bitmaps::SBitmap    mBmpSound;
             uint64_t            mPreviousTime;
-            uint32_t            mToggleCommunicationBmp;
+            bool                mToggleCommunicationBmp;
             CommunicationStruct mState;
             uint64_t            mNotifiedTimeProximityUsLeft;
             uint64_t            mNotifiedTimeProximityUsRight;

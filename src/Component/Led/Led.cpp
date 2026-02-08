@@ -9,7 +9,7 @@ namespace Component
             , mState(OFF) {
         }
 
-        Core::Status Led::Initialize(void) {
+        Core::Status Led::Initialize() {
             LOG_COMPONENT_DEBUG(
                     "Led", "led %d Initialized.", this->mGpio.GetPin().pin);
             this->Off();

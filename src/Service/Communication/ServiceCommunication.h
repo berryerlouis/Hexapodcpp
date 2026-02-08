@@ -17,7 +17,6 @@ namespace Service
         public:
             ServiceCommunication(
                     CommunicationInterface          &communication,
-                    Clusters::ClustersInterface     &clusters,
                     Message::MessageInterface       &messageListener,
                     Event::EventDispatcherInterface &eventDispatcher);
 
@@ -31,9 +30,6 @@ namespace Service
             Notified(const CommunicationStruct &state) final override;
 
             virtual void OnEvent(const Event::Event &event) final override;
-
-        private:
-            Clusters::ClustersInterface &mClusters;
 
         protected:
             CommunicationInterface &mCommunication;

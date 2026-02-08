@@ -1,5 +1,5 @@
 #include "Ahrs.h"
-#include "math.h"
+#include <cmath>
 
 namespace Component
 {
@@ -45,19 +45,28 @@ namespace Component
             float q2 = this->mQuaternion[1U];
             float q3 = this->mQuaternion[2U];
             float q4 = this->mQuaternion[3U];
-            float norm;
-            float hx, hy, _2bx, _2bz;
-            float s1, s2, s3, s4;
-            float qDot1, qDot2, qDot3, qDot4;
+            float norm = 0.0F;
+            float hx = 0.0F;
+            float hy = 0.0F;
+            float _2bx = 0.0F;
+            float _2bz = 0.0F;
+            float s1 = 0.0F;
+            float s2 = 0.0F;
+            float s3 = 0.0F;
+            float s4 = 0.0F;
+            float qDot1 = 0.0F;
+            float qDot2 = 0.0F;
+            float qDot3 = 0.0F;
+            float qDot4 = 0.0F;
 
             // Auxiliary variables to avoid repeated
             // arithmetic
-            float       _2q1mx;
-            float       _2q1my;
-            float       _2q1mz;
-            float       _2q2mx;
-            float       _4bx;
-            float       _4bz;
+            float       _2q1mx = 0.0F;
+            float       _2q1my = 0.0F;
+            float       _2q1mz = 0.0F;
+            float       _2q2mx = 0.0F;
+            float       _4bx = 0.0F;
+            float       _4bz = 0.0F;
             const float _2q1 = 2.0F * q1;
             const float _2q2 = 2.0F * q2;
             const float _2q3 = 2.0F * q3;
@@ -77,8 +86,9 @@ namespace Component
 
             // Normalise accelerometer measurement
             norm = sqrt(acc.x * acc.x + acc.y * acc.y + acc.z * acc.z);
-            if (norm == 0.0F)
+            if (norm == 0.0F) {
                 return; // handle NaN
+            }
             norm = 1.0F / norm;
             acc.x *= norm;
             acc.y *= norm;
@@ -86,8 +96,9 @@ namespace Component
 
             // Normalise magnetometer measurement
             norm = sqrt(mag.x * mag.x + mag.y * mag.y + mag.z * mag.z);
-            if (norm == 0.0F)
+            if (norm == 0.0F) {
                 return; // handle NaN
+            }
             norm = 1.0F / norm;
             mag.x *= norm;
             mag.y *= norm;
@@ -176,8 +187,9 @@ namespace Component
             q4 += qDot4 * deltaTime;
             norm = sqrt(q1 * q1 + q2 * q2 + q3 * q3 +
                         q4 * q4); // normalise quaternion
-            if (norm == 0.0F)
+            if (norm == 0.0F) {
                 return; // handle NaN
+            }
             norm = 1.0F / norm;
             this->mQuaternion[0U] = q1 * norm;
             this->mQuaternion[1U] = q2 * norm;

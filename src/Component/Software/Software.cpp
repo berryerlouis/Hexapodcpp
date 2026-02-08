@@ -12,7 +12,7 @@ namespace Component
             , mPrevTime(0UL) {
         }
 
-        Core::Status Software::Initialize(void) {
+        Core::Status Software::Initialize() {
             LOG_COMPONENT_DEBUG("Software", "Initialized.");
             return (Core::Status::CORE_OK);
         }
@@ -30,20 +30,20 @@ namespace Component
             this->AdjustLoopTime(currentTime);
         }
 
-        uint64_t Software::GetMinTime(void) const {
+        uint64_t Software::GetMinTime() const {
             return this->mMinLoopTime;
         }
 
-        uint64_t Software::GetMaxTime(void) const {
+        uint64_t Software::GetMaxTime() const {
             return this->mMaxLoopTime;
         }
 
-        void Software::ResetTime(void) {
+        void Software::ResetTime() {
             this->mMaxLoopTime = 0UL;
             this->mMinLoopTime = 0xFFFFFFFFUL;
         }
 
-        SoftwareInterface::Version Software::GetVersion(void) {
+        SoftwareInterface::Version Software::GetVersion() {
             constexpr Version version = {.major = VERSION_MAJOR,
                                          .minor = VERSION_MINOR};
             return (version);

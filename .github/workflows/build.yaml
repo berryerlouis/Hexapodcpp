@@ -4,8 +4,8 @@ on: [ push, pull_request ]
 
 jobs:
 
-  build-release:
-    name: Build Release
+  build-X64:
+    name: Build X64
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -26,7 +26,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: hexapodcpp-X64-${{ matrix.build_type }}
-          path: build/hexapod-X64-${{ matrix.build_type }}/src/Hexapodcpp
+          path: |
+            build/hexapod-X64-${{ matrix.build_type }}
+            build/hexapod-X64-${{ matrix.build_type }}/src/Hexapodcpp
 
   run-tests:
     name: Run Google Tests
@@ -36,7 +38,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run Google Test
-        run: bin/dev/test.sh all
+        run: bin/dev/test.sh all || exit 1
 
       - name: Archive Test Results
         if: always()
@@ -73,6 +75,26 @@ jobs:
           name: coverage-report
           path: coverage-report
 
+  clang-tidy:
+    name: Static Analysis (clang-tidy)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install clang-tidy
+        run: sudo apt-get update && sudo apt-get install -y clang-tidy-20
+
+      - name: Run clang-tidy
+        run: bin/dev/clang-tidy.sh
+
+      - name: Upload clang-tidy Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: clang-tidy-report
+          path: |
+            clang-tidy-report/report.txt
+
   cppcheck:
     name: Static Analysis (Cppcheck)
     runs-on: ubuntu-latest
@@ -94,7 +116,7 @@ jobs:
             cppcheck-report.xml
             cppcheck_html
 
-  docker-cross-build-rpi:
+  build-RPI:
     name: Docker Cross-Compile (RPI Zero 2 W - ARM64)
     runs-on: ubuntu-latest
     strategy:
@@ -131,3 +153,5 @@ jobs:
         with:
           name: hexapodcpp-RPI-${{ matrix.build_type }}
           path: build/RPI-${{ matrix.build_type }}/src/Hexapodcpp
+
+  

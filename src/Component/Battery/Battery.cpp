@@ -7,7 +7,6 @@ namespace Component
     {
         static constexpr uint16_t NOMINAL_LEVEL = 800U;
         static constexpr uint16_t WARNING_LEVEL = 750U;
-        static constexpr float    RPI_CURRENT_CONSUMPTION = 130.0;
 
         Battery::Battery(Adc::Ads1115Interface &adc)
             : mVoltage(0U)
@@ -16,7 +15,7 @@ namespace Component
             , mAdc(adc) {
         }
 
-        Core::Status Battery::Initialize(void) {
+        Core::Status Battery::Initialize() {
             LOG_COMPONENT_DEBUG("Battery", "Initialized.");
             return (this->mAdc.Initialize());
         }
@@ -25,9 +24,9 @@ namespace Component
             (void) currentTime;
             this->mVoltage = static_cast<uint16_t>(
                     this->mAdc.ReadADC(Adc::PIN_1) * 0.46F);
-            float intens = this->mAdc.ReadADC(Adc::PIN_0);
-            this->mIntensity = static_cast<uint16_t>((intens) * 0.066F);
-            // static_cast<uint16_t>((intens - 250.0F) *
+            const float intensity = this->mAdc.ReadADC(Adc::PIN_0);
+            this->mIntensity = static_cast<uint16_t>((intensity) * 0.066F);
+            // static_cast<uint16_t>((intensity - 250.0F) *
             // 0.066F) + RPI_CURRENT_CONSUMPTION;
             const BatteryState prevState = this->mState;
             if (this->mVoltage >= NOMINAL_LEVEL) {
@@ -42,15 +41,15 @@ namespace Component
             }
         }
 
-        BatteryState Battery::GetState(void) {
+        BatteryState Battery::GetState() {
             return (this->mState);
         }
 
-        uint16_t Battery::GetVoltage(void) {
+        uint16_t Battery::GetVoltage() {
             return (this->mVoltage);
         }
 
-        uint16_t Battery::GetIntensity(void) {
+        uint16_t Battery::GetIntensity() {
             return (this->mIntensity);
         }
     } // namespace Battery
