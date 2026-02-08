@@ -13,7 +13,7 @@ namespace Service
             , mServosInterface(servos) {
         }
 
-        Core::Status ServiceControl::Initialize(void) {
+        Core::Status ServiceControl::Initialize() {
             const Core::Status success = this->mServosInterface.Initialize();
             if (Core::Status::CORE_OK == success) {
                 this->GetEventDispatcher().AddListener(this);

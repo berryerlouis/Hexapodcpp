@@ -14,7 +14,7 @@ namespace Service
             , mBody(body) {
         }
 
-        Core::Status ServiceBody::Initialize(void) {
+        Core::Status ServiceBody::Initialize() {
             const Core::Status success = this->mBody.Initialize();
             if (Core::Status::CORE_OK == success) {
                 this->GetEventDispatcher().AddListener(this);

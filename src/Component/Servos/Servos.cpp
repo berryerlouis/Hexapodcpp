@@ -48,7 +48,7 @@ namespace Component
             , mEnablePwmPin(enablePwmPin) {
         }
 
-        Core::Status Servos::Initialize(void) {
+        Core::Status Servos::Initialize() {
             uint8_t success = 0UL;
             this->mPca9685Left.Initialize();
             this->mPca9685Right.Initialize();
@@ -72,23 +72,23 @@ namespace Component
             }
         }
 
-        void Servos::Enable(void) {
+        void Servos::Enable() {
             this->mEnablePwmPin.Reset();
         }
 
-        void Servos::Disable(void) {
+        void Servos::Disable() {
             this->mEnablePwmPin.Set();
         }
 
-        bool Servos::GetState(void) {
-            return this->mEnablePwmPin.Get() == false;
+        bool Servos::GetState() {
+            return !this->mEnablePwmPin.Get();
         }
 
 
         Servo::ServoInterface *Servos::GetServo(const EServos servoId) {
-            const auto it = mServos.find(servoId);
-            if (it != mServos.end()) {
-                return &(it->second);
+            const auto servo = mServos.find(servoId);
+            if (servo != mServos.end()) {
+                return &(servo->second);
             }
             return nullptr;
         }

@@ -68,16 +68,16 @@ namespace Cluster
             }
             if (request.GetCommandId() == EServoCommands::GET_STATE_PCA) {
                 const bool state = this->mServosInterface.GetState();
-                return this->BuildFrameGetStatePca(state, response);
+                return BuildFrameGetStatePca(state, response);
             }
             if (request.GetCommandId() == EServoCommands::SET_STATE_PCA) {
-                const bool state = request.Get1ByteParam(0U);
-                if (state == true) {
+                const bool state = static_cast<bool>(request.Get1ByteParam(0U));
+                if (state) {
                     this->mServosInterface.Enable();
                 } else {
                     this->mServosInterface.Disable();
                 }
-                return this->BuildFrameSetStatePca(state, response);
+                return BuildFrameSetStatePca(state, response);
             }
 
             const uint8_t servoId = request.Get1ByteParam(0U);
@@ -86,90 +86,85 @@ namespace Cluster
                             static_cast<EServos>(servoId));
             Core::Status success = Core::Status::CORE_ERROR;
             if (servo == nullptr) {
-                this->BuildFrameSetError(success, servoId, 0U, response);
+                BuildFrameSetError(success, servoId, 0U, response);
                 return Core::CORE_ERROR;
             }
 
             if (request.GetCommandId() == EServoCommands::GET_ANGLE) {
                 const uint8_t angle = servo->GetAngle();
-                return this->BuildFrameGetAngle(servoId, angle, response);
+                return BuildFrameGetAngle(servoId, angle, response);
             }
             if (request.GetCommandId() == EServoCommands::SET_ANGLE) {
                 const uint8_t angle = request.Get1ByteParam(1U);
-                success = servo->SetAngle(angle);
+                success = servo->SetAngle(angle, 0U);
                 if (success == Core::Status::CORE_OK) {
                     const uint8_t angleServo =
                             this->mServosInterface
                                     .GetServo(static_cast<EServos>(servoId))
                                     ->GetAngle();
-                    return this->BuildFrameSetAngle(
-                            servoId, angleServo, response);
+                    return BuildFrameSetAngle(servoId, angleServo, response);
                 }
             }
             if (request.GetCommandId() == EServoCommands::GET_MIN) {
                 const uint8_t angle = servo->GetMin();
-                return this->BuildFrameGetMinAngle(servoId, angle, response);
+                return BuildFrameGetMinAngle(servoId, angle, response);
             }
             if (request.GetCommandId() == EServoCommands::SET_MIN) {
                 uint8_t angle = request.Get1ByteParam(1U);
                 success = servo->SetMin(angle) ? Core::CORE_OK
                                                : Core::CORE_ERROR_MIN;
                 if (success == Core::Status::CORE_OK) {
-                    return this->BuildFrameSetMinAngle(
-                            servoId, angle, response);
+                    return BuildFrameSetMinAngle(servoId, angle, response);
                 }
                 angle = servo->GetAngle();
-                return this->BuildFrameSetError(
-                        success, servoId, angle, response);
+                return BuildFrameSetError(success, servoId, angle, response);
             }
             if (request.GetCommandId() == EServoCommands::GET_MAX) {
                 const uint8_t angle = servo->GetMax();
-                return this->BuildFrameGetMaxAngle(servoId, angle, response);
+                return BuildFrameGetMaxAngle(servoId, angle, response);
             }
             if (request.GetCommandId() == EServoCommands::SET_MAX) {
                 uint8_t angle = request.Get1ByteParam(1U);
                 success = servo->SetMax(angle) ? Core::CORE_OK
                                                : Core::CORE_ERROR_MAX;
                 if (success == Core::Status::CORE_OK) {
-                    return this->BuildFrameSetMaxAngle(
-                            servoId, angle, response);
+                    return BuildFrameSetMaxAngle(servoId, angle, response);
                 }
                 angle = servo->GetAngle();
-                return this->BuildFrameSetError(
-                        success, servoId, angle, response);
+                return BuildFrameSetError(success, servoId, angle, response);
             }
             if (request.GetCommandId() == EServoCommands::GET_OFFSET) {
                 const int8_t angle = servo->GetOffset();
-                return this->BuildFrameGetOffset(servoId, angle, response);
+                return BuildFrameGetOffset(servoId, angle, response);
             }
             if (request.GetCommandId() == EServoCommands::SET_OFFSET) {
                 int8_t angle = request.Get1ByteParam(1U);
                 success = servo->SetOffset(angle) ? Core::CORE_OK
                                                   : Core::CORE_ERROR_MAX;
                 if (success == Core::Status::CORE_OK) {
-                    return this->BuildFrameSetOffset(servoId, angle, response);
+                    return BuildFrameSetOffset(servoId, angle, response);
                 }
                 angle = servo->GetOffset();
-                return this->BuildFrameSetError(
-                        success, servoId, angle, response);
+                return BuildFrameSetError(success, servoId, angle, response);
             }
             if (request.GetCommandId() == EServoCommands::GET_STATE) {
                 const bool state = servo->IsEnable();
-                return this->BuildFrameGetState(servoId, state, response);
+                return BuildFrameGetState(servoId, state, response);
             }
             if (request.GetCommandId() == EServoCommands::SET_STATE) {
-                const bool state = request.Get1ByteParam(1U);
+                const bool state = static_cast<bool>(request.Get1ByteParam(1U));
                 servo->SetEnable(state);
-                return this->BuildFrameSetState(servoId, state, response);
+                return BuildFrameSetState(servoId, state, response);
             }
             if (request.GetCommandId() == EServoCommands::GET_REVERSE) {
                 const bool reversed = servo->GetReverse();
-                return this->BuildFrameGetReverse(servoId, reversed, response);
+                return BuildFrameGetReverse(servoId, reversed, response);
             }
             if (request.GetCommandId() == EServoCommands::SET_REVERSE) {
-                const bool reversed = request.Get1ByteParam(1U);
+                const bool reversed =
+                        static_cast<bool>(request.Get1ByteParam(1U));
                 servo->SetReverse(reversed);
-                return this->BuildFrameSetReverse(servoId, reversed, response);
+                return BuildFrameSetReverse(servoId, reversed, response);
             }
             return Core::Status::CORE_ERROR;
         }
@@ -288,7 +283,7 @@ namespace Cluster
                     response.Build(EClusters::SERVO, EServoCommands::GET_STATE);
             if (success == Core::Status::CORE_OK) {
                 response.Set1ByteParam(servoId);
-                response.Set1ByteParam(state);
+                response.Set1ByteParam(static_cast<uint8_t>(state));
             }
             return (success);
         }
@@ -300,7 +295,7 @@ namespace Cluster
                     response.Build(EClusters::SERVO, EServoCommands::SET_STATE);
             if (success == Core::Status::CORE_OK) {
                 response.Set1ByteParam(servoId);
-                response.Set1ByteParam(state);
+                response.Set1ByteParam(static_cast<uint8_t>(state));
             }
             return (success);
         }
@@ -312,7 +307,7 @@ namespace Cluster
                     EClusters::SERVO, EServoCommands::GET_REVERSE);
             if (success == Core::Status::CORE_OK) {
                 response.Set1ByteParam(servoId);
-                response.Set1ByteParam(reversed);
+                response.Set1ByteParam(static_cast<uint8_t>(reversed));
             }
             return (success);
         }
@@ -324,7 +319,7 @@ namespace Cluster
                     EClusters::SERVO, EServoCommands::SET_REVERSE);
             if (success == Core::Status::CORE_OK) {
                 response.Set1ByteParam(servoId);
-                response.Set1ByteParam(reversed);
+                response.Set1ByteParam(static_cast<uint8_t>(reversed));
             }
             return (success);
         }
@@ -334,7 +329,7 @@ namespace Cluster
             const Core::Status success = response.Build(
                     EClusters::SERVO, EServoCommands::GET_STATE_PCA);
             if (success == Core::Status::CORE_OK) {
-                response.Set1ByteParam(state);
+                response.Set1ByteParam(static_cast<uint8_t>(state));
             }
             return (success);
         }
@@ -344,7 +339,7 @@ namespace Cluster
             const Core::Status success = response.Build(
                     EClusters::SERVO, EServoCommands::GET_STATE_PCA);
             if (success == Core::Status::CORE_OK) {
-                response.Set1ByteParam(state);
+                response.Set1ByteParam(static_cast<uint8_t>(state));
             }
             return (success);
         }

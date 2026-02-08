@@ -22,14 +22,13 @@ namespace Component
                 , mAddress(address)
                 , mDistance(0)
                 , mThreshold(DISTANCE_THRESHOLD)
-                , mMeasurementTimingBudget(0U)
                 , mStop(0U) {
 #ifdef RPI
                 this->mAddress = wiringPiI2CSetup(address);
 #endif
             }
 
-            Core::Status Vl53l0x::Initialize(void) {
+            Core::Status Vl53l0x::Initialize() {
                 Core::Status success = Core::Status::CORE_ERROR;
                 uint8_t      data = 0U;
                 uint8_t      timeout = 0U;
@@ -138,7 +137,7 @@ namespace Component
                 this->mDistance = this->GetDistance();
                 const bool detection = this->mDistance != 0U &&
                                        this->mDistance <= this->mThreshold;
-                if (true == detection) {
+                if (detection) {
                     this->mLed.On();
                     this->Notify({VLX, this->mDistance});
                 } else {
@@ -151,11 +150,11 @@ namespace Component
                 return Core::Status::CORE_OK;
             }
 
-            uint16_t Vl53l0x::GetThreshold(void) {
+            uint16_t Vl53l0x::GetThreshold() {
                 return this->mThreshold;
             }
 
-            uint16_t Vl53l0x::GetDistance(void) {
+            uint16_t Vl53l0x::GetDistance() {
                 this->mI2c.WriteRegister(this->mAddress, 0x80, 0x01);
                 this->mI2c.WriteRegister(this->mAddress, 0xFF, 0x01);
                 this->mI2c.WriteRegister(this->mAddress, 0x00, 0x00);
@@ -174,7 +173,8 @@ namespace Component
                                             VL53L0X_SYSRANGE_START,
                                             sysrange_start);
                     timeout++;
-                } while (sysrange_start & 0x01 && timeout < 100U);
+                } while (static_cast<bool>(sysrange_start & 0x01) &&
+                         timeout < 100U);
 
                 if (timeout >= 100U) {
                     return this->mDistance;
@@ -239,7 +239,7 @@ namespace Component
                 return false;
             }
 
-            void Vl53l0x::Tune(void) const {
+            void Vl53l0x::Tune() const {
                 this->mI2c.WriteRegister(this->mAddress, 0xFFU, 0x01U);
                 this->mI2c.WriteRegister(this->mAddress, 0x00U, 0x00U);
                 this->mI2c.WriteRegister(this->mAddress, 0xFFU, 0x00U);

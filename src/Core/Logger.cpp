@@ -20,7 +20,7 @@ namespace Core
 
             std::cout << "[" << CurrentTime() << "] " << color << "["
                       << levelStr << "] " << formatted << LOG_COLOR_RESET
-                      << std::endl;
+                      << "\n";
         }
     }
 
@@ -99,11 +99,11 @@ namespace Core
                 1000;
 
         // Convert to local time
-        std::tm local_tm = *std::localtime(&now_time_t);
+        const std::tm *local_tm = std::localtime(&now_time_t);
 
         // Format time with milliseconds
         std::ostringstream oss;
-        oss << std::put_time(&local_tm, "%Y-%m-%d %H:%M:%S");
+        oss << std::put_time(local_tm, "%Y-%m-%d %H:%M:%S");
         oss << '.' << std::setfill('0') << std::setw(3) << now_ms.count();
 
         return oss.str();

@@ -7,7 +7,7 @@ namespace Component
         static Button *button[3U] = {};
         static uint8_t buttonIndex = 0U;
 
-        void           InterruptGpioBp(void) {
+        void           InterruptGpioBp() {
             for (size_t i = 0U; i < buttonIndex; i++) {
                 button[i]->Hit();
             }
@@ -21,14 +21,14 @@ namespace Component
             buttonIndex++;
         }
 
-        Core::Status Button::Initialize(void) {
+        Core::Status Button::Initialize() {
             this->mGpioButton.SetInterruptPin(&InterruptGpioBp);
             LOG_COMPONENT_DEBUG("Button", "Initialized.");
             return Core::Status::CORE_OK;
         }
 
-        void Button::Hit(void) {
-            if (this->mGpioButton.Get() == true) {
+        void Button::Hit() {
+            if (this->mGpioButton.Get()) {
                 this->mState = PUSH;
                 this->mPushTime = Timer::Tick::GetInstance().GetUs();
                 this->Notify({this->mState, 0U});

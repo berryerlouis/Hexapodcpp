@@ -8,7 +8,7 @@ namespace Driver
             (void) gpio;
         }
 
-        Core::Status Adc::Initialize(void) {
+        Core::Status Adc::Initialize() {
             LOG_DRIVER_DEBUG("Adc", "Initialized.");
             return (Core::Status::CORE_OK);
         }
@@ -17,7 +17,7 @@ namespace Driver
             (void) currentTime;
         }
 
-        void Adc::StartConversion(void) {
+        void Adc::StartConversion() {
         }
 
         uint16_t Adc::Read() {

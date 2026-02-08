@@ -30,7 +30,7 @@ namespace Component
 
             virtual Core::Status
                             SetAngle(const uint8_t  angle,
-                                     const uint16_t travelTime = 0U) final override;
+                                     const uint16_t travelTime) final override;
 
             virtual uint8_t GetAngle(void) const final override;
 

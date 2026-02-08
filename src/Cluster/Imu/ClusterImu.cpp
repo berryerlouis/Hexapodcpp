@@ -46,41 +46,41 @@ namespace Cluster
                 const Vector3  gyr = this->mImu.ReadGyr();
                 const Vector3  mag = this->mImu.ReadMag();
                 const uint16_t temp = this->mImu.ReadTemp();
-                success = this->BuildFrameAll(acc, gyr, mag, temp, response);
+                success = BuildFrameAll(acc, gyr, mag, temp, response);
             } else if (request.GetCommandId() == EImuCommands::ACC) {
                 const Vector3 acc = this->mImu.ReadAcc();
-                success = this->BuildFrameAcc(acc, response);
+                success = BuildFrameAcc(acc, response);
             } else if (request.GetCommandId() == EImuCommands::GYR) {
                 const Vector3 gyr = this->mImu.ReadGyr();
-                success = this->BuildFrameGyr(gyr, response);
+                success = BuildFrameGyr(gyr, response);
             } else if (request.GetCommandId() == EImuCommands::MAG) {
                 const Vector3 mag = this->mImu.ReadMag();
-                success = this->BuildFrameMag(mag, response);
+                success = BuildFrameMag(mag, response);
             } else if (request.GetCommandId() == EImuCommands::TMP) {
                 const uint16_t temp = this->mImu.ReadTemp();
-                success = this->BuildFrameTmp(temp, response);
+                success = BuildFrameTmp(temp, response);
             } else if (request.GetCommandId() == EImuCommands::YAW_PITCH_ROLL) {
                 const Imu3d ypr = this->mImu.ReadYawPitchRoll();
-                success = this->BuildFrameYawPitchRoll(ypr, response);
+                success = BuildFrameYawPitchRoll(ypr, response);
             } else if (request.GetCommandId() == EImuCommands::PRESSURE) {
                 const int32_t pressure = this->mBarometer.GetPressure();
-                success = this->BuildFramePressure(pressure, response);
+                success = BuildFramePressure(pressure, response);
             } else if (request.GetCommandId() == EImuCommands::ALTITUDE) {
                 const uint16_t seaLevel = this->mBarometer.GetAltitude();
-                success = this->BuildFrameSeaLevel(seaLevel, response);
+                success = BuildFrameSeaLevel(seaLevel, response);
             } else if (request.GetCommandId() == EImuCommands::TMP_BAR) {
                 const int16_t temp = this->mBarometer.GetTemp();
-                success = this->BuildFrameTmpBar(temp, response);
+                success = BuildFrameTmpBar(temp, response);
             } else if (request.GetCommandId() == EImuCommands::CALIB_SENSOR) {
                 const SensorsImu sensor =
                         static_cast<SensorsImu>(request.Get1ByteParam(0U));
-                const bool enable = request.Get1ByteParam(1U);
-                if (enable == true) {
+                const bool enable = static_cast<bool>(request.Get1ByteParam(1U));
+                if (enable) {
                     this->mImu.StartCalibration(sensor);
                 } else {
                     this->mImu.StopCalibration(sensor);
                 }
-                success = this->BuildFrameStartCalibMag(response);
+                success = BuildFrameStartCalibMag(response);
             }
             return success;
         }
@@ -149,7 +149,7 @@ namespace Cluster
 
         Core::Status ClusterImu::BuildFrameYawPitchRoll(const Imu3d ypr,
                                                         Frame      &response) {
-            Vector3 cmp;
+            Vector3 cmp = {};
             cmp.x = static_cast<int16_t>(ypr.roll * 100U);
             cmp.y = static_cast<int16_t>(ypr.pitch * 100U);
             cmp.z = static_cast<int16_t>(ypr.yaw * 100U);

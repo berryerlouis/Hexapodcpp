@@ -12,7 +12,7 @@ namespace Bot
             , mRotation{0.0, 0.0, 0.0} {
         }
 
-        Core::Status Body::Initialize(void) {
+        Core::Status Body::Initialize() {
             this->SetBodyPositionRotation(
                     this->mPosition, this->mRotation, 1000);
 
@@ -58,7 +58,7 @@ namespace Bot
             return this->mWalk.SetGait(gait);
         }
 
-        float Body::GetDirection(void) {
+        float Body::GetDirection() {
             return this->mWalk.GetDirection();
         }
 
@@ -70,11 +70,11 @@ namespace Bot
             return this->mWalk.GetRotationClockWize();
         }
 
-        float Body::GetAmplitude(void) {
+        float Body::GetAmplitude() {
             return this->mWalk.GetAmplitude();
         }
 
-        float Body::GetElevation(void) {
+        float Body::GetElevation() {
             return this->mWalk.GetElevation();
         }
 

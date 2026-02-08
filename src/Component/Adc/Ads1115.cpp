@@ -23,7 +23,7 @@ namespace Component
 #endif
         }
 
-        Core::Status Ads1115::Initialize(void) {
+        Core::Status Ads1115::Initialize() {
             LOG_COMPONENT_DEBUG(
                     "Ads1115", "address 0x%02X Initialized.", this->mAddress);
             return (Core::Status::CORE_OK);
@@ -33,7 +33,7 @@ namespace Component
             (void) currentTime;
         }
 
-        bool Ads1115::IsReady(void) const {
+        bool Ads1115::IsReady() const {
             uint8_t  buffer[2U];
             uint16_t value = 0U;
             uint8_t  timeout = 0U;
@@ -82,7 +82,7 @@ namespace Component
             this->mTwi.WriteRegisters(
                     this->mAddress, ADS1115_REG_POINTER_CONFIG, buffer, 2U);
 
-            if (this->IsReady() == true) {
+            if (this->IsReady()) {
                 this->mTwi.ReadRegisters(this->mAddress,
                                          ADS1115_REG_POINTER_CONVERT,
                                          buffer,

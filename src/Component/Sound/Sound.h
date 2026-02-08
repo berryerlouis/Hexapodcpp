@@ -40,7 +40,6 @@ namespace Component
             static void              InterruptGpioSoundHit(void);
 
             constexpr static uint8_t NB_MAX_INTERVAL_SOUND_TIME = 100U;
-            SoundId                  mSoundId;
             Gpio::GpioInterface     &mGpioSound;
             Led::LedInterface       &mLed;
             uint64_t mIntervalSoundTimeArray[NB_MAX_INTERVAL_SOUND_TIME];

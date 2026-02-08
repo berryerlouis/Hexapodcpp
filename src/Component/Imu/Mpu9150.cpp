@@ -44,7 +44,7 @@ namespace Component
 #endif
         }
 
-        Core::Status Mpu9150::Initialize(void) {
+        Core::Status Mpu9150::Initialize() {
             uint8_t      whoAmI = 0x00U;
             Core::Status success = Core::Status::CORE_ERROR;
 
@@ -126,8 +126,8 @@ namespace Component
 
         void Mpu9150::Update(const uint64_t currentTime) {
             (void) currentTime;
-            if (this->mStartCalib == false) {
-                if (this->IsDataReady() == true) {
+            if (!this->mStartCalib) {
+                if (this->IsDataReady()) {
                     static float deltaTime;
                     this->UpdateAll();
                     this->UpdateMag();
@@ -221,13 +221,13 @@ namespace Component
             }
         }
 
-        void Mpu9150::UpdateAll(void) {
+        void Mpu9150::UpdateAll() {
             uint8_t data[14U] = {0U};
             if (this->mI2c.ReadRegisters(this->mAddress,
                                          ERegister::ACCEL_XOUT_H,
                                          reinterpret_cast<uint8_t *>(&data),
                                          14U)) {
-                Vector3 accRaw;
+                Vector3 accRaw = {0, 0, 0};
                 accRaw.x = ((data[0U] << 8U) | ((data[1U]))) - mAccOffset.x;
                 accRaw.y = ((data[2U] << 8U) | ((data[3U]))) - mAccOffset.y;
                 accRaw.z = ((data[4U] << 8U) | ((data[5U]))) - mAccOffset.z;
@@ -236,7 +236,7 @@ namespace Component
                 this->mAcc.y = accRaw.y * res * accSign.y;
                 this->mAcc.z = accRaw.z * res * accSign.z;
 
-                Vector3 gyrRaw;
+                Vector3 gyrRaw = {0, 0, 0};
                 res = 250.0F / 32768.0F;
                 gyrRaw.x = ((data[8U] << 8U) | ((data[9U]))) - mGyrOffset.x;
                 gyrRaw.y = ((data[10U] << 8U) | ((data[11U]))) - mGyrOffset.y;
@@ -250,8 +250,8 @@ namespace Component
             }
         }
 
-        Vector3 Mpu9150::UpdateAcc(void) {
-            Vector3 accRaw;
+        Vector3 Mpu9150::UpdateAcc() {
+            Vector3 accRaw = {0, 0, 0};
             if (this->mI2c.ReadRegisters(this->mAddress,
                                          ERegister::ACCEL_XOUT_H,
                                          reinterpret_cast<uint8_t *>(&accRaw),
@@ -273,8 +273,8 @@ namespace Component
             return accRaw;
         }
 
-        Vector3 Mpu9150::UpdateGyr(void) {
-            Vector3 gyrRaw;
+        Vector3 Mpu9150::UpdateGyr() {
+            Vector3 gyrRaw = {0, 0, 0};
             if (this->mI2c.ReadRegisters(this->mAddress,
                                          ERegister::GYRO_XOUT_H,
                                          reinterpret_cast<uint8_t *>(&gyrRaw),
@@ -296,7 +296,7 @@ namespace Component
             return gyrRaw;
         }
 
-        void Mpu9150::AdjustingMag(void) {
+        void Mpu9150::AdjustingMag() {
             int8_t adjustMagValues[3U] = {0, 0, 0};
             this->mI2c.ReadRegisters(
                     this->mAddressMag,
@@ -308,9 +308,9 @@ namespace Component
             this->mMagBias.z = ((adjustMagValues[2U] - 128.0F) / 256.0F) + 1.0F;
         }
 
-        Vector3 Mpu9150::UpdateMag(void) {
+        Vector3 Mpu9150::UpdateMag() {
             uint8_t dataIsReady = 0;
-            Vector3 magRaw;
+            Vector3 magRaw = {0, 0, 0};
 
             this->mI2c.ReadRegister(this->mAddressMag, 0x02, dataIsReady);
             if (dataIsReady == 1U &&
@@ -322,7 +322,7 @@ namespace Component
                     return magRaw;
                 }
                 constexpr float res = 10.0F * 1229.0F / 4096.0F;
-                if (this->mStartCalib == false) {
+                if (!this->mStartCalib) {
                     this->mMag.x = ((magRaw.x - this->mMagOffset.x) * res *
                                     this->mMagBias.x) *
                                    magSign.x;
@@ -343,7 +343,7 @@ namespace Component
             return magRaw;
         }
 
-        int16_t Mpu9150::UpdateTemp(void) {
+        int16_t Mpu9150::UpdateTemp() {
             uint8_t tmpL = 0U;
             uint8_t tmpH = 0U;
 
@@ -356,34 +356,34 @@ namespace Component
             return this->mTmp;
         }
 
-        bool Mpu9150::IsDataReady(void) const {
+        bool Mpu9150::IsDataReady() const {
             uint8_t isReady = 0U;
 
             this->mI2c.ReadRegister(
                     this->mAddress, ERegister::INT_ENABLE, isReady);
             isReady &= 0x01U;
-            return isReady;
+            return static_cast<bool>(isReady);
         }
 
-        Vector3 Mpu9150::ReadAcc(void) const {
+        Vector3 Mpu9150::ReadAcc() const {
             return Vector3{.x = static_cast<int16_t>(this->mAcc.x * 100),
                            .y = static_cast<int16_t>(this->mAcc.y * 100),
                            .z = static_cast<int16_t>(this->mAcc.z * 100)};
         }
 
-        Vector3 Mpu9150::ReadGyr(void) const {
+        Vector3 Mpu9150::ReadGyr() const {
             return Vector3{.x = static_cast<int16_t>(this->mGyr.x * 10),
                            .y = static_cast<int16_t>(this->mGyr.y * 10),
                            .z = static_cast<int16_t>(this->mGyr.z * 10)};
         }
 
-        Vector3 Mpu9150::ReadMag(void) const {
+        Vector3 Mpu9150::ReadMag() const {
             return Vector3{.x = static_cast<int16_t>(this->mMag.x),
                            .y = static_cast<int16_t>(this->mMag.y),
                            .z = static_cast<int16_t>(this->mMag.z)};
         }
 
-        int16_t Mpu9150::ReadTemp(void) const {
+        int16_t Mpu9150::ReadTemp() const {
             return this->mTmp * 10;
         }
     } // namespace Imu

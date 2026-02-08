@@ -14,7 +14,7 @@ namespace Service
             , mProximity(proximity) {
         }
 
-        Core::Status ServiceProximity::Initialize(void) {
+        Core::Status ServiceProximity::Initialize() {
             const Core::Status success = this->mProximity.Initialize();
             if (Core::Status::CORE_OK == success) {
                 this->GetEventDispatcher().AddListener(this);

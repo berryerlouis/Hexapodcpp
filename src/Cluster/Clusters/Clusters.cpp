@@ -24,9 +24,9 @@ namespace Cluster
         }
 
         ClusterBase *Clusters::GetCluster(const EClusters clusterId) {
-            const auto it = mClusters.find(clusterId);
-            if (it != mClusters.end()) {
-                return &(it->second.get());
+            const auto cluster = mClusters.find(clusterId);
+            if (cluster != mClusters.end()) {
+                return &(cluster->second.get());
             }
             return nullptr;
         }

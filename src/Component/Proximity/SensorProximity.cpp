@@ -10,7 +10,7 @@ namespace Component
             : mSensors{&srf05Left, &srf05Right, &Vl53l0x} {
         }
 
-        Core::Status SensorProximity::Initialize(void) {
+        Core::Status SensorProximity::Initialize() {
             uint8_t success = 0U;
 
             for (SensorProximityInterface *sensor: this->mSensors) {

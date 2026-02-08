@@ -32,28 +32,25 @@ namespace Cluster
                                                   Frame       &response) {
             Core::Status success = Core::Status::CORE_ERROR;
             if (request.GetCommandId() == EGeneralCommands::RESET) {
-                success =
-                        this->BuildFrameReset(response, Core::Status::CORE_OK);
+                success = BuildFrameReset(response, Core::Status::CORE_OK);
             } else if (request.GetCommandId() == EGeneralCommands::VERSION) {
                 const SoftwareInterface::Version version =
                         this->mSoftware.GetVersion();
-                success = this->BuildFrameGetVersion(version, response);
+                success = BuildFrameGetVersion(version, response);
             } else if (request.GetCommandId() ==
                        EGeneralCommands::MIN_EXECUTION_TIME) {
-                success =
-                        this->BuildFrameGetMinTime(Service::EServices::GENERAL,
-                                                   this->mSoftware.GetMinTime(),
-                                                   response);
+                success = BuildFrameGetMinTime(Service::EServices::GENERAL,
+                                               this->mSoftware.GetMinTime(),
+                                               response);
             } else if (request.GetCommandId() ==
                        EGeneralCommands::MAX_EXECUTION_TIME) {
-                success =
-                        this->BuildFrameGetMaxTime(Service::EServices::GENERAL,
-                                                   this->mSoftware.GetMaxTime(),
-                                                   response);
+                success = BuildFrameGetMaxTime(Service::EServices::GENERAL,
+                                               this->mSoftware.GetMaxTime(),
+                                               response);
             } else if (request.GetCommandId() ==
                        EGeneralCommands::RESET_EXECUTION_TIME) {
-                success = this->BuildFrameResetTime(Service::EServices::GENERAL,
-                                                    response);
+                success = BuildFrameResetTime(Service::EServices::GENERAL,
+                                              response);
             }
             return success;
         }

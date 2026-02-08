@@ -1,6 +1,6 @@
 #include "Legs.h"
 #include <cmath>
-#include "../../Misc/Maths/Utils.h"
+
 
 namespace Bot
 {
@@ -40,7 +40,7 @@ namespace Bot
             LOG_BOT_DEBUG("Leg", "Legs Initialized");
         }
 
-        std::map<ELeg, Leg::Leg> &Legs::GetLegs(void) {
+        std::map<ELeg, Leg::Leg> &Legs::GetLegs() {
             return this->mLegs;
         }
 
@@ -52,7 +52,7 @@ namespace Bot
             return nullptr;
         }
 
-        Core::Status Legs::Update(void) {
+        Core::Status Legs::Update() {
             for (auto &leg: this->mLegs) {
                 leg.second.Update();
             }

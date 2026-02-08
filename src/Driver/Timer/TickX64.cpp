@@ -1,5 +1,6 @@
-#include <thread>
 #include "Tick.h"
+
+#include <thread>
 
 namespace Driver
 {
@@ -13,12 +14,12 @@ namespace Driver
             return instance;
         }
 
-        Tick::Tick(void) {
+        Tick::Tick() {
             now = std::chrono::system_clock::now();
             start = GetMs();
         }
 
-        uint64_t Tick::GetUs(void) {
+        uint64_t Tick::GetUs() {
 #ifdef GTEST
             return mFakeUs;
 #else
@@ -31,7 +32,7 @@ namespace Driver
 #endif
         }
 
-        uint64_t Tick::GetMs(void) {
+        uint64_t Tick::GetMs() {
 #ifdef GTEST
             return mFakeMs;
 #else

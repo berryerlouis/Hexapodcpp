@@ -39,7 +39,6 @@ namespace Move
 
             Bot::Legs::LegsInterface                 &mLegs;
             GaitParams                               &mGaitParams;
-            uint64_t                                  mLastUpdateTime;
             std::unique_ptr<Move::Gait::GaitStrategy> mGaitStrategy;
 
             uint64_t                                  mStartTime;

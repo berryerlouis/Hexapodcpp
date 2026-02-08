@@ -53,7 +53,7 @@ namespace Component
 #define SSD1306_SET_VERTICAL_SCROLL_AREA 0xA3U
 
 
-#define BUFFER_DISPLAY_LENGTH SCREEN_WIDTH *((SCREEN_HEIGHT + 7U) / 8U)
+#define BUFFER_DISPLAY_LENGTH (SCREEN_WIDTH * ((SCREEN_HEIGHT + 7U) / 8U))
 
 
             explicit Ssd1306(Twi::TwiInterface &twi,

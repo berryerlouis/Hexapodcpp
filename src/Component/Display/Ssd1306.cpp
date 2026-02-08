@@ -1,7 +1,9 @@
 #include "Ssd1306.h"
-#include <math.h>
-#include <string.h>
+#include <cmath>
+#include <cstring>
 #include "../../Misc/Bitmap/Font.h"
+
+
 #ifdef RPI
 #include "wiringPi/wiringPiI2C.h"
 #endif
@@ -12,7 +14,7 @@ namespace Component
         Ssd1306::Ssd1306(Twi::TwiInterface &twi, const uint8_t address)
             : mTwi(twi)
             , mAddress(address)
-            , mBufferScreen{0x00U}
+            , mBufferScreen{{0x00U}}
             , mNeedToUpdate(false)
             , mUpdateIndex(BUFFER_DISPLAY_LENGTH) {
 #ifdef RPI
@@ -21,7 +23,7 @@ namespace Component
             this->ClearBuffer();
         }
 
-        Core::Status Ssd1306::Initialize(void) {
+        Core::Status Ssd1306::Initialize() {
             uint8_t init1[] = {SSD1306_DISPLAYOFF,
                                SSD1306_SETDISPLAYCLOCKDIV,
                                0x80U,
@@ -73,7 +75,7 @@ namespace Component
         void Ssd1306::Update(const uint64_t currentTime) {
             (void) currentTime;
             static const uint16_t NB_BYTES = 64U;
-            if (this->mNeedToUpdate == true) {
+            if (this->mNeedToUpdate) {
                 if (this->mUpdateIndex == BUFFER_DISPLAY_LENGTH) {
                     memcpy(this->mBufferScreen[1U],
                            this->mBufferScreen[0U],
@@ -121,7 +123,7 @@ namespace Component
             this->mNeedToUpdate = true;
         }
 
-        void Ssd1306::ClearBuffer(void) {
+        void Ssd1306::ClearBuffer() {
             memset(this->mBufferScreen, 0x00U, BUFFER_DISPLAY_LENGTH);
             this->mNeedToUpdate = true;
         }
@@ -161,7 +163,7 @@ namespace Component
                 const uint16_t dx = abs(x2 - x1);
                 const uint16_t dy = abs(y2 - y1);
                 if (dx != 0) {
-                    float m = static_cast<float>(dy) / dx;
+                    const float m = static_cast<float>(dy) / dx;
                     for (uint16_t x = x1; x <= x2; x++) {
                         const uint16_t y =
                                 static_cast<uint16_t>(y1 + m * (x - x1));
@@ -195,7 +197,9 @@ namespace Component
                                  const uint16_t yc,
                                  const uint16_t r,
                                  const uint16_t color) {
-            int16_t x, y, p;
+            int16_t x = 0;
+            int16_t y = 0;
+            int16_t p = 0;
             x = 0U;
             y = r;
             Ssd1306::DrawPixel(xc + x, yc - y, color);
@@ -226,8 +230,6 @@ namespace Component
                                const uint16_t               x,
                                const uint16_t               y,
                                const Bitmap::Bitmaps::Color color) {
-            uint8_t i, j;
-
             // Convert the character to an index
             c = c & 0x7FU;
             if (c < ' ') {
@@ -242,9 +244,9 @@ namespace Component
                     Bitmap::Font::font[static_cast<uint8_t>(c)];
 
             // Draw pixels
-            for (j = 0U; j < CHARACTER_WIDTH; j++) {
-                for (i = 0U; i < CHARACTER_HEIGHT; i++) {
-                    if (chr[j] & (1 << i)) {
+            for (uint8_t j = 0U; j < CHARACTER_WIDTH; j++) {
+                for (uint8_t i = 0U; i < CHARACTER_HEIGHT; i++) {
+                    if ((chr[j] & (1 << i)) != 0U) {
                         Ssd1306::DrawPixel(x + j, y + i, color);
                     } else {
                         Ssd1306::DrawPixel(
@@ -263,7 +265,7 @@ namespace Component
                                  uint16_t                     x,
                                  const uint16_t               y,
                                  const Bitmap::Bitmaps::Color color) {
-            while (*str) {
+            while (*str != '\0') {
                 Ssd1306::DrawChar(*str++, x, y, color);
                 x += CHARACTER_WIDTH + 1U;
             }
@@ -274,18 +276,18 @@ namespace Component
                                  uint16_t                        y,
                                  const Bitmap::Bitmaps::Color    color) {
 #ifndef GTEST
-            uint16_t byteWidth = (bmp->width + 7U) / 8U;
+            const uint16_t byteWidth = (bmp->width + 7U) / 8U;
 #endif
             uint8_t b = 0U;
 
             for (uint16_t j = 0U; j < bmp->height; j++, y++) {
                 for (uint16_t i = 0U; i < bmp->width; i++) {
-                    if (i & 7U) {
+                    if ((i & 7U) != 0U) {
                         b <<= 1U;
                     } else {
                         b = bmp->bmp[j * byteWidth + i / 8U];
                     }
-                    if (b & 0x80) {
+                    if ((b & 0x80U) != 0U) {
                         this->DrawPixel(x + i, y, color);
                     }
                 }

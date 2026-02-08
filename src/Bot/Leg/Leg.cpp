@@ -111,7 +111,7 @@ namespace Bot
                           this->mLegId);
         }
 
-        Legs::ELeg Leg::GetId(void) const {
+        Legs::ELeg Leg::GetId() const {
             return this->mLegId;
         }
 
@@ -136,7 +136,7 @@ namespace Bot
                                   const float angleRotation,
                                   const bool  clockwize) const {
             (void) angleRotation;
-            if (clockwize == false) {
+            if (!clockwize) {
                 if (this->GetId() <= Legs::ELeg::REAR_LEFT) {
                     position.y *= -1.0F;
                 }
@@ -163,11 +163,11 @@ namespace Bot
             return this->mFootPosition;
         }
 
-        float Leg::GetBodyCenterOffsetX(void) const {
+        float Leg::GetBodyCenterOffsetX() const {
             return this->mBodyCenterOffsetX;
         }
 
-        float Leg::GetBodyCenterOffsetY(void) const {
+        float Leg::GetBodyCenterOffsetY() const {
             return this->mBodyCenterOffsetY;
         }
 
@@ -175,12 +175,12 @@ namespace Bot
             this->mCurrentPos = target;
         }
 
-        Position3d &Leg::GetCurrentPosition(void) {
+        Position3d &Leg::GetCurrentPosition() {
             return this->mCurrentPos;
         }
 
-        Core::Status Leg::Update(void) {
-            return this->SetLegIk(this->mCurrentPos);
+        Core::Status Leg::Update() {
+            return this->SetLegIk(this->mCurrentPos, 0U);
         }
 
         void Leg::ComputeLerpTarget(const uint64_t           currentTime,
@@ -192,7 +192,7 @@ namespace Bot
                                     const float              rotation,
                                     const bool               clockWize,
                                     const uint64_t           timeStamp) {
-            if (false == isRotated) {
+            if (!isRotated) {
                 this->ComputeDirection(position, direction);
             } else {
                 this->ComputeRotation(position, rotation, clockWize);
@@ -200,7 +200,7 @@ namespace Bot
             this->ComputeAmplitude(position, amplitude);
             this->ComputeElevation(position, elevation);
 
-            uint64_t timeDiff = currentTime - timeStamp;
+            const uint64_t timeDiff = currentTime - timeStamp;
             if (timeDiff < 500U) {
                 if (this->mStartPos.x == INFINITY &&
                     this->mStartPos.y == INFINITY &&
@@ -352,14 +352,12 @@ namespace Bot
             }
 
             // Clamp to valid servo range (60-120 degrees)
-            if (this->mLegIk.coxaIk < 60.0F) {
+            if ((this->mLegIk.coxaIk < 60.0F) ||
+                (this->mLegIk.coxaIk >= 240.0F)) {
                 this->mLegIk.coxaIk = 60.0F;
             } else if (this->mLegIk.coxaIk > 120.0F &&
                        this->mLegIk.coxaIk < 240.0F) {
                 this->mLegIk.coxaIk = 120.0F;
-            } else if (this->mLegIk.coxaIk >= 240.0F) {
-                // Angle is closer to 0-60 when wrapped
-                this->mLegIk.coxaIk = 60.0F;
             }
 
             Core::Status success = Core::Status::CORE_OK;

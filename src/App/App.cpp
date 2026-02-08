@@ -1,27 +1,26 @@
 #include "App.h"
-#include "../Driver/Timer/Tick.h"
-
-using namespace Driver::Gpio;
-using namespace Driver::Timer;
-
-Gpio ledStatus = Gpio({19}, PWM);
-Gpio ledCenter = Gpio({12}, OUT);
-Gpio ledLeft = Gpio({13}, OUT);
-Gpio ledMiddleLeft = Gpio({6}, OUT);
-Gpio ledRight = Gpio({16}, OUT);
-Gpio ledMiddleRight = Gpio({5}, OUT);
-Gpio enablePwm = Gpio({17}, OUT);
-Gpio echoLeftPin = Gpio({8}, IN);
-Gpio echoRightPin = Gpio({20}, IN);
-Gpio triggerLeftPin = Gpio({7}, OUT);
-Gpio triggerRightPin = Gpio({21}, OUT);
-Gpio soundLeftPin = Gpio({23}, IN);
-Gpio soundRightPin = Gpio({24}, IN);
-Gpio buttonPin = Gpio({4}, IN);
 
 namespace App
 {
-    App::App(void)
+    using Driver::Gpio::Gpio;
+    using Driver::Timer::Tick;
+
+    Gpio ledStatus = Gpio({19}, Driver::Gpio::EPortDirection::PWM);
+    Gpio ledCenter = Gpio({12}, Driver::Gpio::EPortDirection::OUT);
+    Gpio ledLeft = Gpio({13}, Driver::Gpio::EPortDirection::OUT);
+    Gpio ledMiddleLeft = Gpio({6}, Driver::Gpio::EPortDirection::OUT);
+    Gpio ledRight = Gpio({16}, Driver::Gpio::EPortDirection::OUT);
+    Gpio ledMiddleRight = Gpio({5}, Driver::Gpio::EPortDirection::OUT);
+    Gpio enablePwm = Gpio({17}, Driver::Gpio::EPortDirection::OUT);
+    Gpio echoLeftPin = Gpio({8}, Driver::Gpio::EPortDirection::IN);
+    Gpio echoRightPin = Gpio({20}, Driver::Gpio::EPortDirection::IN);
+    Gpio triggerLeftPin = Gpio({7}, Driver::Gpio::EPortDirection::OUT);
+    Gpio triggerRightPin = Gpio({21}, Driver::Gpio::EPortDirection::OUT);
+    Gpio soundLeftPin = Gpio({23}, Driver::Gpio::EPortDirection::IN);
+    Gpio soundRightPin = Gpio({24}, Driver::Gpio::EPortDirection::IN);
+    Gpio buttonPin = Gpio({4}, Driver::Gpio::EPortDirection::IN);
+
+    App::App()
         : mSocket()
         , mTwi(Driver::Twi::EI2cFreq::FREQ_400_KHZ)
         , mEnablePwm(enablePwm)
@@ -93,7 +92,6 @@ namespace App
                         mEventDispatcher)
         , mServiceControl(mServos, mMessageListener, mEventDispatcher)
         , mServiceCommunication(mCommunication,
-                                mClusters,
                                 mMessageListener,
                                 mEventDispatcher)
         , mServiceProximity(mSensorProximity,
@@ -120,8 +118,7 @@ namespace App
                     mServiceBody,
                     mServiceButton,
                     mServiceSound,
-                    mMessageListener,
-                    mEventDispatcher) {
+                    mMessageListener) {
     }
 
 #define LOG_RESULT_INIT(name)             \
@@ -131,7 +128,7 @@ namespace App
     success = code;      \
     LOG_RESULT_INIT(name);
 
-    Core::Status App::Initialize(void) {
+    Core::Status App::Initialize() {
         Tick::GetInstance();
         Core::Status success = Core::CORE_OK;
         INIT("Socket", this->mSocket.Initialize());
@@ -144,7 +141,7 @@ namespace App
         return success;
     }
 
-    void App::Update(void) {
+    void App::Update() {
         const uint64_t currentTime = Tick::GetInstance().GetMs();
         this->mServices.Update(currentTime);
         Tick::GetInstance().DelayMs(1U);

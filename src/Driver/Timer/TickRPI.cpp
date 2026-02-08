@@ -14,19 +14,19 @@ namespace Driver
             return instance;
         }
 
-        Tick::Tick(void) {
+        Tick::Tick() {
             start_time = std::chrono::steady_clock::now();
             start = GetMs();
         }
 
-        uint64_t Tick::GetUs(void) {
+        uint64_t Tick::GetUs() {
             const auto duration = std::chrono::steady_clock::now() - start_time;
             return std::chrono::duration_cast<std::chrono::microseconds>(
                            duration)
                     .count();
         }
 
-        uint64_t Tick::GetMs(void) {
+        uint64_t Tick::GetMs() {
             const auto duration = std::chrono::steady_clock::now() - start_time;
             return std::chrono::duration_cast<std::chrono::milliseconds>(
                            duration)

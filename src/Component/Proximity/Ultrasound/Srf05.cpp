@@ -17,7 +17,7 @@ namespace Component
                 , mThreshold(DISTANCE_THRESHOLD) {
             }
 
-            Core::Status Srf05::Initialize(void) {
+            Core::Status Srf05::Initialize() {
                 this->mGpioEcho.Initialize();
                 this->mLed.Initialize();
                 LOG_COMPONENT_DEBUG("Ultrasound",
@@ -32,7 +32,7 @@ namespace Component
                 const uint16_t distance = this->GetDistance();
                 const bool     detection =
                         (distance != 0U && distance <= this->mThreshold);
-                if (true == detection) {
+                if (detection) {
                     this->mLed.On();
                     this->Notify(
                             {static_cast<SensorsId>(this->mSide), distance});
@@ -41,7 +41,7 @@ namespace Component
                 }
             }
 
-            uint16_t Srf05::GetThreshold(void) {
+            uint16_t Srf05::GetThreshold() {
                 return this->mThreshold;
             }
 
@@ -50,13 +50,13 @@ namespace Component
                 return Core::Status::CORE_OK;
             }
 
-            void Srf05::SendPulse(void) const {
+            void Srf05::SendPulse() const {
                 this->mGpioTrigger.Set();
                 Driver::Timer::Tick::GetInstance().DelayUs(10U);
                 this->mGpioTrigger.Reset();
             }
 
-            uint16_t Srf05::GetDistance(void) {
+            uint16_t Srf05::GetDistance() {
                 const uint64_t delay = this->mGpioEcho.GetInputCaptureTime();
                 return static_cast<uint16_t>(delay / 58.0F);
             }

@@ -28,10 +28,7 @@ namespace Driver
             }
         }
 
-        Socket::Socket(void) {
-        }
-
-        Core::Status Socket::Initialize(void) {
+        Core::Status Socket::Initialize() {
             server.listen(8080);
             LOG_DRIVER_DEBUG("Socket", "Initialized.");
             return (Core::Status::CORE_OK);
@@ -42,12 +39,12 @@ namespace Driver
             if (server.available()) {
                 if (server.poll()) {
                     client = server.accept();
-                    client.onMessage((websockets::MessageCallback) onMessage);
-                    client.onEvent((websockets::EventCallback) onEvent);
+                    client.onMessage(onMessage);
+                    client.onEvent(onEvent);
                     this->Notify(CLIENT_CONNECTED);
                 }
-                if (client.available() == false) {
-                    if (once == false) {
+                if (!client.available()) {
+                    if (!once) {
                         this->Notify(NO_CLIENT);
                         once = true;
                     }
@@ -57,19 +54,19 @@ namespace Driver
         }
 
         void Socket::Send(const char *data, const size_t len) {
-            if (client.available() == true) {
+            if (client.available()) {
                 client.send(data, len);
             }
         }
 
         void Socket::Send(const uint8_t data) {
-            if (client.available() == true) {
+            if (client.available()) {
                 client.send(reinterpret_cast<const char *>(&data), 1U);
             }
         }
 
-        uint8_t Socket::Read(void) {
-            if (bufferMessage.length() > 0U) {
+        uint8_t Socket::Read() {
+            if (!bufferMessage.empty()) {
                 const uint8_t value = bufferMessage.c_str()[0U];
                 bufferMessage = bufferMessage.substr(1);
                 return value;
@@ -77,7 +74,7 @@ namespace Driver
             return 0xFFU;
         }
 
-        uint8_t Socket::DataAvailable(void) {
+        uint8_t Socket::DataAvailable() {
             return bufferMessage.length();
         }
     } // namespace Socket

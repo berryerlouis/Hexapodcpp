@@ -62,7 +62,6 @@ namespace Component
             int32_t                    mRawPressure;
             int16_t                    mTemp;
             int32_t                    mPressure;
-            uint16_t                   mAltitude;
         };
     } // namespace Barometer
 } // namespace Component

@@ -21,11 +21,9 @@ namespace Service
         protected:
             UT_SRV_COMMUNICATION()
                 : mMockCommunication()
-                , mMockClusters()
                 , mMockEventDispatcherInterface()
                 , mMockMessageInterface()
                 , mServiceCommunication(mMockCommunication,
-                                        mMockClusters,
 
                                         mMockMessageInterface,
                                         mMockEventDispatcherInterface) {
@@ -52,8 +50,7 @@ namespace Service
 
             /* Mocks */
             StrictMock<Component::Communication::MockCommunication>
-                                                        mMockCommunication;
-            StrictMock<Cluster::Clusters::MockClusters> mMockClusters;
+                    mMockCommunication;
             StrictMock<Event::MockEventDispatcherInterface>
                     mMockEventDispatcherInterface;
             StrictMock<Message::MockMessageInterface> mMockMessageInterface;

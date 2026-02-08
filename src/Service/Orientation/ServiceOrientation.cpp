@@ -14,7 +14,7 @@ namespace Service
             , mBarometer(barometer) {
         }
 
-        Core::Status ServiceOrientation::Initialize(void) {
+        Core::Status ServiceOrientation::Initialize() {
             const Core::Status successImu = this->mImu.Initialize();
             const Core::Status successBarometer = this->mBarometer.Initialize();
             Core::Status       success = Core::Status::CORE_ERROR;

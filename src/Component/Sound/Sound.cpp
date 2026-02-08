@@ -12,7 +12,6 @@ namespace Component
                      Led::LedInterface   &led)
             : mStartSoundTime(0UL)
             , mStopSoundTime(0UL)
-            , mSoundId(soundId)
             , mGpioSound(gpio)
             , mLed(led)
             , mIntervalSoundTimeArray{0U}
@@ -22,20 +21,20 @@ namespace Component
             soundIndex++;
         }
 
-        Core::Status Sound::Initialize(void) {
+        Core::Status Sound::Initialize() {
             const Core::Status success = this->mLed.Initialize();
             this->mStartSoundTime = 0U;
             this->mStopSoundTime = 0U;
             this->mLed.Off();
-            this->mGpioSound.SetInterruptPin(&this->InterruptGpioSoundHit);
+            this->mGpioSound.SetInterruptPin(Sound::InterruptGpioSoundHit);
             LOG_COMPONENT_DEBUG("Sound",
                                 "pin %d Initialized.",
                                 this->mGpioSound.GetPin().pin);
             return success;
         }
 
-        void Sound::Hit(void) {
-            if (this->mGpioSound.Get() == false) {
+        void Sound::Hit() {
+            if (!this->mGpioSound.Get()) {
                 this->mStartSoundTime = Timer::Tick::GetInstance().GetUs();
                 this->mLed.On();
             } else {
@@ -83,11 +82,11 @@ namespace Component
             this->mIntervalSoundTimeArrayIndex = 0U;
         }
 
-        uint64_t Sound::GetIntervalSoundHit(void) const {
+        uint64_t Sound::GetIntervalSoundHit() const {
             return this->mAverageIntervalSoundTime;
         }
 
-        SoundStruct Sound::ComputeAndNotifyMaxSound(void) {
+        SoundStruct Sound::ComputeAndNotifyMaxSound() {
             SoundStruct    soundStruct = {.id = SOUND_NONE, .delay = 0U};
             const uint64_t soundLeft = sound[SOUND_LEFT]->GetIntervalSoundHit();
             const uint64_t soundRight =
@@ -116,7 +115,7 @@ namespace Component
             return soundStruct;
         }
 
-        void Sound::InterruptGpioSoundHit(void) {
+        void Sound::InterruptGpioSoundHit() {
             for (size_t i = 0U; i < Sound::soundIndex; i++) {
                 if (sound[i] != nullptr) {
                     sound[i]->Hit();

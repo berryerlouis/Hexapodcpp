@@ -33,7 +33,7 @@ namespace Bot
             virtual Legs::ELeg   GetId(void) const = 0;
 
             virtual Core::Status SetLegIk(const Position3d &position,
-                                          const uint16_t travelTime = 0U) = 0;
+                                          const uint16_t    travelTime) = 0;
 
             virtual Core::Status SetLegBodyIk(const Position3d &position,
                                               const Position3d &bodyIk,

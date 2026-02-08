@@ -76,9 +76,8 @@ namespace Component
 
             virtual void WakeUp(void) final override;
 
-            virtual void setOscillatorFrequency(
-                    const uint32_t frequency =
-                            EConstant::FREQUENCY_OSCILLATOR) final override;
+            virtual void
+            setOscillatorFrequency(const uint32_t frequency) final override;
 
             virtual void SetFrequency(const uint32_t frequency) final override;
 

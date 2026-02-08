@@ -18,7 +18,7 @@ namespace Component
             , mBeginIncomingFrame(false) {
         }
 
-        Core::Status Communication::Initialize(void) {
+        Core::Status Communication::Initialize() {
             this->mSocket.Attach(this);
             LOG_COMPONENT_DEBUG("Communication", "Initialized.");
             return (this->mLedStatus.Initialize());
@@ -32,7 +32,7 @@ namespace Component
 
         void Communication::Update(const uint64_t currentTime) {
             this->mSocket.Update(currentTime);
-            if (true == this->ReceivedStringFrame()) {
+            if (this->ReceivedStringFrame()) {
                 // this->mLedStatus.On();
                 Frame              request;
                 Frame              response;
@@ -41,7 +41,7 @@ namespace Component
                 if (parsedStatus == Core::Status::CORE_OK) {
                     const uint8_t frameClusterID = request.GetClusterId();
                     if (frameClusterID < NB_CLUSTERS) {
-                        const auto cluster = this->mClusters.GetCluster(
+                        auto *const cluster = this->mClusters.GetCluster(
                                 static_cast<EClusters>(frameClusterID));
                         if (cluster != nullptr) {
                             if (cluster->Execute(request, response) !=
@@ -95,7 +95,7 @@ namespace Component
             return (Core::Status::CORE_ERROR);
         }
 
-        bool Communication::ReceivedStringFrame(void) {
+        bool Communication::ReceivedStringFrame() {
             uint8_t nbData = this->mSocket.DataAvailable();
             while (nbData != 0U) {
                 nbData--;
@@ -117,7 +117,7 @@ namespace Component
                         this->mBeginIncomingFrame = false;
                     }
                 } else {
-                    if (this->mBeginIncomingFrame == true &&
+                    if (this->mBeginIncomingFrame &&
                         this->mIndexBufferRx >= 6U &&
                         (this->mIndexBufferRx & 0x01U) == 0U) {
                         this->mBufferRx[this->mIndexBufferRx] = '\0';

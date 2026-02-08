@@ -6,15 +6,13 @@ namespace Service
     {
         ServiceCommunication::ServiceCommunication(
                 CommunicationInterface          &communication,
-                Clusters::ClustersInterface     &clusters,
                 Message::MessageInterface       &messageListener,
                 Event::EventDispatcherInterface &eventDispatcher)
             : Service(COMMUNICATION, 1U, messageListener, eventDispatcher)
-            , mClusters(clusters)
             , mCommunication(communication) {
         }
 
-        Core::Status ServiceCommunication::Initialize(void) {
+        Core::Status ServiceCommunication::Initialize() {
             const Core::Status success = this->mCommunication.Initialize();
             if (Core::Status::CORE_OK == success) {
                 this->GetEventDispatcher().AddListener(this);

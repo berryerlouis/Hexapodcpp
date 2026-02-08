@@ -8,7 +8,7 @@ namespace Driver
         static InputCapture *inputCapture[3U] = {};
         static uint8_t       inputCaptureIndex = 0U;
 
-        void                 InterruptInputCapture(void) {
+        void                 InterruptInputCapture() {
             for (size_t i = 0U; i < inputCaptureIndex; i++) {
                 inputCapture[i]->EdgeChange();
             }
@@ -26,7 +26,7 @@ namespace Driver
                         &InterruptInputCapture);
         }
 
-        Core::Status InputCapture::Initialize(void) {
+        Core::Status InputCapture::Initialize() {
             LOG_DRIVER_DEBUG("InputCapture",
                              "pin %d Initialized.",
                              this->mGpio.GetPin().pin);
@@ -37,15 +37,15 @@ namespace Driver
             (void) currentTime;
         }
 
-        uint64_t InputCapture::GetInputCaptureTime(void) {
+        uint64_t InputCapture::GetInputCaptureTime() {
             return this->mDelay;
         }
 
-        void InputCapture::ResetInputCaptureTime(void) {
+        void InputCapture::ResetInputCaptureTime() {
             this->mDelay = 0U;
         }
 
-        void InputCapture::EdgeChange(void) {
+        void InputCapture::EdgeChange() {
             const int state = this->mGpio.Get();
 
             if (state != this->mState && state == true) {
