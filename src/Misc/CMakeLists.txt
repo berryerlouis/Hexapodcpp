@@ -1,7 +1,14 @@
-cmake_minimum_required(VERSION 3.22)
+add_subdirectory(Bitmap)
+add_subdirectory(Buffer)
 
-set(SRC_FILES_MISC
-        Misc/Bitmap/Bitmaps.cpp
-        Misc/Buffer/Buffer.cpp
-        PARENT_SCOPE
+
+add_library(Misc 
+    ${SRC_FILES_BITMAP}
+    ${SRC_FILES_BUFFER}
+)
+
+target_include_directories(Misc
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/Bitmap
+        ${CMAKE_CURRENT_SOURCE_DIR}/Buffer
 )

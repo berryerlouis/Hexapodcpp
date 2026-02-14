@@ -1,18 +1,51 @@
-cmake_minimum_required(VERSION 3.22)
+add_subdirectory(Battery)
+add_subdirectory(Body)
+add_subdirectory(Button)
+add_subdirectory(Communication)
+add_subdirectory(Control)
+add_subdirectory(Display)
+add_subdirectory(Event)
+add_subdirectory(General)
+add_subdirectory(Message)
+add_subdirectory(Orientation)
+add_subdirectory(Proximity)
+add_subdirectory(Services)
+add_subdirectory(Sound)
 
-set(SRC_FILES_SERVICES
-        Service/Battery/ServiceBattery.cpp
-        Service/Button/ServiceButton.cpp
-        Service/Communication/ServiceCommunication.cpp
-        Service/Control/ServiceControl.cpp
-        Service/Display/ServiceDisplay.cpp
-        Service/Event/EventDispatcher.cpp
-        Service/General/ServiceGeneral.cpp
-        Service/Orientation/ServiceOrientation.cpp
-        Service/Proximity/ServiceProximity.cpp
-        Service/Sound/ServiceSound.cpp
-        Service/Services/Services.cpp
-        Service/Message/MessageListener.cpp
-        Service/Body/ServiceBody.cpp
-        PARENT_SCOPE
+add_library(Service 
+    ${SRC_FILES_BATTERY}
+    ${SRC_FILES_BODY}
+    ${SRC_FILES_BUTTON}
+    ${SRC_FILES_COMMUNICATION}
+    ${SRC_FILES_CONTROL}
+    ${SRC_FILES_DISPLAY}
+    ${SRC_FILES_EVENT}
+    ${SRC_FILES_GENERAL}
+    ${SRC_FILES_MESSAGE}
+    ${SRC_FILES_ORIENTATION}
+    ${SRC_FILES_PROXIMITY}
+    ${SRC_FILES_SERVICES}
+    ${SRC_FILES_SOUND}
+)
+
+target_include_directories(Service
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/Battery
+        ${CMAKE_CURRENT_SOURCE_DIR}/Body
+        ${CMAKE_CURRENT_SOURCE_DIR}/Button
+        ${CMAKE_CURRENT_SOURCE_DIR}/Communication
+        ${CMAKE_CURRENT_SOURCE_DIR}/Control
+        ${CMAKE_CURRENT_SOURCE_DIR}/Display
+        ${CMAKE_CURRENT_SOURCE_DIR}/Event
+        ${CMAKE_CURRENT_SOURCE_DIR}/General
+        ${CMAKE_CURRENT_SOURCE_DIR}/Message
+        ${CMAKE_CURRENT_SOURCE_DIR}/Orientation
+        ${CMAKE_CURRENT_SOURCE_DIR}/Proximity
+        ${CMAKE_CURRENT_SOURCE_DIR}/Services
+        ${CMAKE_CURRENT_SOURCE_DIR}/Sound
+)
+
+target_link_libraries(Service
+    PUBLIC
+        Misc
 )

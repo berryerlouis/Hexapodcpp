@@ -1,3 +1,5 @@
+add_subdirectory(body)
+
 # Bot unit tests - shared source files
 set(SRC_FILES
         ../src/Core/Logger.cpp

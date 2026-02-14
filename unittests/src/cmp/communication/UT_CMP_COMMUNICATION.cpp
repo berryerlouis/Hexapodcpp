@@ -9,8 +9,8 @@
 
 
 #include "../../../../src/Cluster/Body/ClusterBody.h"
-#include "../../../../src/Cluster/Decoding/Protocol.h"
 #include "../../../../src/Component/Communication/Communication.h"
+#include "../../../../src/Component/Communication/Decoding/Protocol.h"
 #include "../../../../src/Misc/Maths/Geometry.h"
 
 using ::testing::_;

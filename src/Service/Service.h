@@ -9,6 +9,7 @@
 
 namespace Service
 {
+
     class Service : public ServiceInterface {
     public:
         Service(const EServices                  serviceId,

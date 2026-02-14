@@ -1,9 +1,13 @@
 #pragma once
 
 #include <stdint.h>
+#include "../Component/Communication/Frame/Frame.h"
+
 
 namespace Cluster
 {
+    using Component::Frame;
+
     enum EClusters {
         GENERAL = 0U,
         IMU = 1U,

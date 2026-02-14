@@ -1,0 +1,4 @@
+set(SRC_FILES_BAROMETER
+    ${CMAKE_CURRENT_SOURCE_DIR}/Barometer.cpp
+    PARENT_SCOPE
+)

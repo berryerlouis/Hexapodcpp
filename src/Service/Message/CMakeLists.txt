@@ -1,0 +1,4 @@
+set(SRC_FILES_MESSAGE
+    ${CMAKE_CURRENT_SOURCE_DIR}/MessageListener.cpp
+    PARENT_SCOPE
+)

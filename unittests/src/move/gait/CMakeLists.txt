@@ -5,6 +5,8 @@ set(SRC_FILES
         ../src/Move/Gait/GaitParams.cpp
         ../src/Move/Gait/GaitCycle.cpp
         ../src/Move/Gait/GaitStrategy.cpp
+        ../src/Bot/Leg/Leg.cpp
+        ../src/Bot/Legs/Legs.cpp
 )
 
 # Test files

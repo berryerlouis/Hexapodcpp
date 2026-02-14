@@ -1,0 +1,4 @@
+set(SRC_FILES_DECODING
+    ${CMAKE_CURRENT_SOURCE_DIR}/Protocol.cpp
+    PARENT_SCOPE
+)

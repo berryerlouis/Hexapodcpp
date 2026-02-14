@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ClusterItem.h"
-#include "Frame/Frame.h"
 
 namespace Cluster
 {

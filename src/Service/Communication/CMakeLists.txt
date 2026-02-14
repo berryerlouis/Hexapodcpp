@@ -1,0 +1,4 @@
+set(SRC_FILES_COMMUNICATION
+    ${CMAKE_CURRENT_SOURCE_DIR}/ServiceCommunication.cpp
+    PARENT_SCOPE
+)

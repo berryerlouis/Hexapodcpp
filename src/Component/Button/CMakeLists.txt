@@ -1,0 +1,4 @@
+set(SRC_FILES_BUTTON
+    ${CMAKE_CURRENT_SOURCE_DIR}/Button.cpp
+    PARENT_SCOPE
+)

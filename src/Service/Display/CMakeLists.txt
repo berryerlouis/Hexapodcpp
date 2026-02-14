@@ -1,0 +1,4 @@
+set(SRC_FILES_DISPLAY
+    ${CMAKE_CURRENT_SOURCE_DIR}/ServiceDisplay.cpp
+    PARENT_SCOPE
+)

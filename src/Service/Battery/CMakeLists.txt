@@ -1,0 +1,4 @@
+set(SRC_FILES_BATTERY
+    ${CMAKE_CURRENT_SOURCE_DIR}/ServiceBattery.cpp
+    PARENT_SCOPE
+)

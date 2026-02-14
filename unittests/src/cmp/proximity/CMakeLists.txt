@@ -1,6 +1,6 @@
 set(
         SRC_FILES
-        ../src/Cluster/Frame/Frame.cpp
+        ../src/Component/Communication/Frame/Frame.cpp
         ../src/Component/Proximity/SensorProximity.cpp
 )
 set(

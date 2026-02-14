@@ -1,0 +1,5 @@
+set(SRC_FILES_LEGS
+    ${CMAKE_CURRENT_SOURCE_DIR}/Legs.cpp
+    PARENT_SCOPE
+)
+

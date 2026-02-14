@@ -1,22 +1,52 @@
-# Component module source files
-set(SRC_FILES_COMPONENT
-        Component/Adc/Ads1115.cpp
-        Component/Barometer/Barometer.cpp
-        Component/Battery/Battery.cpp
-        Component/Button/Button.cpp
-        Component/Communication/Communication.cpp
-        Component/Display/Ssd1306.cpp
-        Component/Imu/Ahrs.cpp
-        Component/Imu/Mpu9150.cpp
-        Component/Led/Led.cpp
-        Component/LedPwm/LedPwm.cpp
-        Component/Proximity/Laser/Vl53l0x.cpp
-        Component/Proximity/SensorProximity.cpp
-        Component/Proximity/Ultrasound/Srf05.cpp
-        Component/Servo/Servo.cpp
-        Component/Servos/Servos.cpp
-        Component/ServosController/Pca9685.cpp
-        Component/Software/Software.cpp
-        Component/Sound/Sound.cpp
-        PARENT_SCOPE
+add_subdirectory(Adc)
+add_subdirectory(Barometer)
+add_subdirectory(Battery)
+add_subdirectory(Button)
+add_subdirectory(Communication)
+add_subdirectory(Display)
+add_subdirectory(Imu)
+add_subdirectory(Led)
+add_subdirectory(LedPwm)
+add_subdirectory(Proximity)
+add_subdirectory(Servo)
+add_subdirectory(Servos)
+add_subdirectory(ServosController)
+add_subdirectory(Software)
+add_subdirectory(Sound)
+
+add_library(Component 
+    ${SRC_FILES_ADC}
+    ${SRC_FILES_BAROMETER}
+    ${SRC_FILES_BATTERY}
+    ${SRC_FILES_BUTTON}
+    ${SRC_FILES_COMMUNICATION}
+    ${SRC_FILES_DISPLAY}
+    ${SRC_FILES_IMU}
+    ${SRC_FILES_LED}
+    ${SRC_FILES_LEDPWM}
+    ${SRC_FILES_PROXIMITY}
+    ${SRC_FILES_SERVO}
+    ${SRC_FILES_SERVOS}
+    ${SRC_FILES_SERVOSCONTROLLER}
+    ${SRC_FILES_SOFTWARE}
+    ${SRC_FILES_SOUND}
+)
+
+target_include_directories(Component
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/Adc
+        ${CMAKE_CURRENT_SOURCE_DIR}/Barometer
+        ${CMAKE_CURRENT_SOURCE_DIR}/Battery
+        ${CMAKE_CURRENT_SOURCE_DIR}/Button
+        ${CMAKE_CURRENT_SOURCE_DIR}/Communication
+        ${CMAKE_CURRENT_SOURCE_DIR}/Display
+        ${CMAKE_CURRENT_SOURCE_DIR}/Imu
+        ${CMAKE_CURRENT_SOURCE_DIR}/Led
+        ${CMAKE_CURRENT_SOURCE_DIR}/LedPwm
+        ${CMAKE_CURRENT_SOURCE_DIR}/Proximity
+        ${CMAKE_CURRENT_SOURCE_DIR}/Servo
+        ${CMAKE_CURRENT_SOURCE_DIR}/Servos
+        ${CMAKE_CURRENT_SOURCE_DIR}/ServosController
+        ${CMAKE_CURRENT_SOURCE_DIR}/Software
+        ${CMAKE_CURRENT_SOURCE_DIR}/Sound
 )

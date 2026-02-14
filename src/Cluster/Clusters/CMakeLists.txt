@@ -1,0 +1,4 @@
+set(SRC_FILES_CLUSTERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/Clusters.cpp
+    PARENT_SCOPE
+)

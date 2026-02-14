@@ -1,8 +1,13 @@
-# Move/Gait module source files
-set(SRC_FILES_MOVE
-        Move/Gait/GaitCycle.cpp
-        Move/Gait/GaitParams.cpp
-        Move/Gait/GaitStrategy.cpp
-        Move/Walk/Walk.cpp
-        PARENT_SCOPE
+add_subdirectory(Gait)
+add_subdirectory(Walk)
+
+add_library(Move 
+    ${SRC_FILES_GAIT}
+    ${SRC_FILES_WALK}
+)
+
+target_include_directories(Move
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/Gait
+        ${CMAKE_CURRENT_SOURCE_DIR}/Walk
 )

@@ -1,0 +1,4 @@
+set(SRC_FILES_CONTROL
+    ${CMAKE_CURRENT_SOURCE_DIR}/ServiceControl.cpp
+    PARENT_SCOPE
+)

@@ -2,10 +2,10 @@
 
 #include "../../Cluster/Clusters/ClustersInterface.h"
 #include "../../Cluster/Constants.h"
-#include "../../Cluster/Decoding/Protocol.h"
 #include "../../Driver/Socket/SocketInterface.h"
 #include "../Led/LedInterface.h"
 #include "CommunicationInterface.h"
+#include "Decoding/Protocol.h"
 
 
 namespace Component
@@ -13,7 +13,7 @@ namespace Component
     namespace Communication
     {
         using namespace Driver;
-        using namespace Cluster::Decoding;
+        using namespace Component::Decoding;
 
         class Communication : public CommunicationInterface,
                               Core::ObserverInterface<Socket::SocketStruct> {

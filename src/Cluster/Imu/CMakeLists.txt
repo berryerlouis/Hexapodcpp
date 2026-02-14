@@ -1,0 +1,4 @@
+set(SRC_FILES_IMU
+    ${CMAKE_CURRENT_SOURCE_DIR}/ClusterImu.cpp
+    PARENT_SCOPE
+)

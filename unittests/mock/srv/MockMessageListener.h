@@ -9,7 +9,7 @@ namespace Service
     {
         class MockMessageInterface : public MessageInterface {
         public:
-            MOCK_CONST_METHOD1(SendMessage, void(const Cluster::Frame &));
+            MOCK_CONST_METHOD1(SendMessage, void(const Component::Frame &));
         };
     } // namespace Message
 } // namespace Service

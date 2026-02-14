@@ -1,0 +1,4 @@
+set(SRC_FILES_BUFFER
+    ${CMAKE_CURRENT_SOURCE_DIR}/Buffer.cpp
+    PARENT_SCOPE
+)

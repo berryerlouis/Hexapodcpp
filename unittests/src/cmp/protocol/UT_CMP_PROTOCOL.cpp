@@ -2,18 +2,18 @@
 #include <gtest/gtest.h>
 
 
-#include "../../../../src/Cluster/Decoding/Protocol.h"
+#include "../../../../src/Component/Communication/Decoding/Protocol.h"
 
 using ::testing::_;
 using ::testing::Return;
 
-namespace Cluster
+namespace Component
 {
     namespace Decoding
     {
-        class UT_CLU_PROTOCOL : public ::testing::Test {
+        class UT_CMP_PROTOCOL : public ::testing::Test {
         protected:
-            UT_CLU_PROTOCOL() {
+            UT_CMP_PROTOCOL() {
             }
 
             virtual void SetUp() {
@@ -22,14 +22,14 @@ namespace Cluster
             virtual void TearDown() {
             }
 
-            virtual ~UT_CLU_PROTOCOL() = default;
+            virtual ~UT_CMP_PROTOCOL() = default;
 
             /* Mocks */
 
             /* Test class */
         };
 
-        TEST_F(UT_CLU_PROTOCOL, Decode_NullPtrBufferData) {
+        TEST_F(UT_CMP_PROTOCOL, Decode_NullPtrBufferData) {
             Frame              request;
 
             const Core::Status parsedStatus =
@@ -44,7 +44,7 @@ namespace Cluster
             }
         }
 
-        TEST_F(UT_CLU_PROTOCOL, Decode_NoBufferData) {
+        TEST_F(UT_CMP_PROTOCOL, Decode_NoBufferData) {
             Frame              request;
             constexpr char     bufferRx[] = "";
             const Core::Status parsedStatus =
@@ -59,7 +59,7 @@ namespace Cluster
             }
         }
 
-        TEST_F(UT_CLU_PROTOCOL, Decode_BufferDataWhitoutParam) {
+        TEST_F(UT_CMP_PROTOCOL, Decode_BufferDataWhitoutParam) {
             Frame              request;
             constexpr char     bufferRx[] = "010400";
             const Core::Status parsedStatus =
@@ -74,7 +74,7 @@ namespace Cluster
             }
         }
 
-        TEST_F(UT_CLU_PROTOCOL, Decode_BufferDataWhitParam) {
+        TEST_F(UT_CMP_PROTOCOL, Decode_BufferDataWhitParam) {
             Frame              request;
             constexpr char     bufferRx[] = "0608020102";
             const Core::Status parsedStatus =
@@ -92,7 +92,7 @@ namespace Cluster
             }
         }
 
-        TEST_F(UT_CLU_PROTOCOL, Decode_BufferDataTooSmall) {
+        TEST_F(UT_CMP_PROTOCOL, Decode_BufferDataTooSmall) {
             Frame              request;
             constexpr char     bufferRx[] = "00000";
             const Core::Status parsedStatus =
@@ -107,7 +107,7 @@ namespace Cluster
             }
         }
 
-        TEST_F(UT_CLU_PROTOCOL, Decode_BufferDataTooBig) {
+        TEST_F(UT_CMP_PROTOCOL, Decode_BufferDataTooBig) {
             Frame              request;
             constexpr char     bufferRx[] = "0000000";
             const Core::Status parsedStatus =
@@ -122,7 +122,7 @@ namespace Cluster
             }
         }
 
-        TEST_F(UT_CLU_PROTOCOL, Decode_BufferDataSizeError) {
+        TEST_F(UT_CMP_PROTOCOL, Decode_BufferDataSizeError) {
             Frame              request;
             constexpr char     bufferRx[] = "000001";
             const Core::Status parsedStatus =
@@ -137,7 +137,7 @@ namespace Cluster
             }
         }
 
-        TEST_F(UT_CLU_PROTOCOL, Encode_Frame) {
+        TEST_F(UT_CMP_PROTOCOL, Encode_Frame) {
             Frame             response;
             constexpr uint8_t params[] = {1U, 2U};
             response.Build(4U, 1U, params, 2U);
@@ -149,7 +149,7 @@ namespace Cluster
             EXPECT_TRUE(0U == strcmp(bufferTx, "<0401020102>"));
         }
 
-        TEST_F(UT_CLU_PROTOCOL, Encode_NullBuffer) {
+        TEST_F(UT_CMP_PROTOCOL, Encode_NullBuffer) {
             Frame             response;
             constexpr uint8_t params[] = {1U, 2U};
             response.Build(4U, 1U, params, 2U);
@@ -157,4 +157,4 @@ namespace Cluster
             EXPECT_EQ(size, 0U);
         }
     } // namespace Decoding
-} // namespace Cluster
+} // namespace Component

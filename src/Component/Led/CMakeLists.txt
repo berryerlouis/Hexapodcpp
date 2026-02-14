@@ -1,0 +1,4 @@
+set(SRC_FILES_LED
+    ${CMAKE_CURRENT_SOURCE_DIR}/Led.cpp
+    PARENT_SCOPE
+)

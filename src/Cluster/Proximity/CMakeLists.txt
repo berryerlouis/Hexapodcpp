@@ -1,0 +1,4 @@
+set(SRC_FILES_PROXIMITY
+    ${CMAKE_CURRENT_SOURCE_DIR}/ClusterProximity.cpp
+    PARENT_SCOPE
+)

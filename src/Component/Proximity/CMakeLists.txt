@@ -1,0 +1,6 @@
+set(SRC_FILES_PROXIMITY
+    ${CMAKE_CURRENT_SOURCE_DIR}/SensorProximity.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Laser/Vl53l0x.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Ultrasound/Srf05.cpp
+    PARENT_SCOPE
+)

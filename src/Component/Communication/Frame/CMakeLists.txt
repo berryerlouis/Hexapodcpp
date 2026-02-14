@@ -1,0 +1,4 @@
+set(SRC_FILES_FRAME
+    ${CMAKE_CURRENT_SOURCE_DIR}/Frame.cpp
+    PARENT_SCOPE
+)

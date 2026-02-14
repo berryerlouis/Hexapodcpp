@@ -1,0 +1,4 @@
+set(SRC_FILES_SOUND
+    ${CMAKE_CURRENT_SOURCE_DIR}/ServiceSound.cpp
+    PARENT_SCOPE
+)

@@ -1,0 +1,4 @@
+set(SRC_FILES_BATTERY
+    ${CMAKE_CURRENT_SOURCE_DIR}/ClusterBattery.cpp
+    PARENT_SCOPE
+)

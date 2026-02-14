@@ -1,0 +1,4 @@
+set(SRC_FILES_GENERAL
+    ${CMAKE_CURRENT_SOURCE_DIR}/ClusterGeneral.cpp
+    PARENT_SCOPE
+)

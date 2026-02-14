@@ -1,0 +1,4 @@
+set(SRC_FILES_WALK
+    ${CMAKE_CURRENT_SOURCE_DIR}/Walk.cpp
+    PARENT_SCOPE
+)

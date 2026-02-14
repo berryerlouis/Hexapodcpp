@@ -1,6 +1,13 @@
-cmake_minimum_required(VERSION 3.22)
+add_library(App 
+    App.cpp
+)
 
-set(SRC_FILES_BUILDER
-        App/App.cpp
-        PARENT_SCOPE
+target_include_directories(App
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_link_libraries(App
+    PUBLIC
+        tiny_websockets_lib
 )

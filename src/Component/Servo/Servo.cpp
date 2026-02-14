@@ -103,9 +103,8 @@ namespace Component
                             Driver::Timer::Tick::GetInstance().GetMs();
                 }
                 this->mIsMoving = true;
-                return (Core::Status::CORE_OK);
             }
-            return (Core::Status::CORE_ERROR);
+            return (Core::Status::CORE_OK);
         }
 
         uint8_t Servo::GetAngle() const {

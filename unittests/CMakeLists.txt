@@ -37,57 +37,13 @@ FetchContent_MakeAvailable(googletest)
 # Enable testing
 enable_testing()
 
-# Cluster tests
+# tests
+add_subdirectory(src/cmp)
+add_subdirectory(src/move)
+add_subdirectory(src/cor)
+add_subdirectory(src/srv)
 add_subdirectory(src/clu)
-add_subdirectory(src/clu/battery)
-add_subdirectory(src/clu/button)
-add_subdirectory(src/clu/body)
-add_subdirectory(src/clu/frame)
-add_subdirectory(src/clu/general)
-add_subdirectory(src/clu/imu)
-add_subdirectory(src/clu/protocol)
-add_subdirectory(src/clu/proximity)
-add_subdirectory(src/clu/servo)
-add_subdirectory(src/clu/sound)
-
-# Component tests
-add_subdirectory(src/cmp/ads1115)
-add_subdirectory(src/cmp/ahrs)
-add_subdirectory(src/cmp/battery)
-add_subdirectory(src/cmp/communication)
-add_subdirectory(src/cmp/button)
-add_subdirectory(src/cmp/led)
-add_subdirectory(src/cmp/mpu9150)
-add_subdirectory(src/cmp/pca9685)
-add_subdirectory(src/cmp/proximity)
-add_subdirectory(src/cmp/servo)
-add_subdirectory(src/cmp/servos)
-add_subdirectory(src/cmp/sound)
-add_subdirectory(src/cmp/srf05)
-add_subdirectory(src/cmp/vl53l0x)
-
-# Service tests
-add_subdirectory(src/srv/battery)
-add_subdirectory(src/srv/body)
-add_subdirectory(src/srv/button)
-add_subdirectory(src/srv/communication)
-add_subdirectory(src/srv/control)
-add_subdirectory(src/srv/display)
-add_subdirectory(src/srv/general)
-add_subdirectory(src/srv/orientation)
-add_subdirectory(src/srv/proximity)
-add_subdirectory(src/srv/sound)
-
-# Bot tests
 add_subdirectory(src/bot)
-add_subdirectory(src/bot/body)
-
-# Move tests
-add_subdirectory(src/move/gait)
-
-# Core tests
-add_subdirectory(src/cor/status)
-add_subdirectory(src/cor/logger)
 
 # Create test executable
 add_executable(HexapodcppTest ${EXECUTABLES_SRC})

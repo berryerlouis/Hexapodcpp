@@ -1,8 +1,10 @@
-set(
-        SRC_FILES
-        ../src/Cluster/Frame/Frame.cpp
-        ../src/Cluster/ClusterCommand.cpp
-        ../src/Cluster/ClusterBase.cpp
-        ../src/Core/Logger.cpp
-)
-set(EXECUTABLES_SRC ${EXECUTABLES_SRC} ${SRC_FILES} PARENT_SCOPE)
+add_subdirectory(battery)
+add_subdirectory(body)
+add_subdirectory(button)
+add_subdirectory(general)
+add_subdirectory(imu)
+add_subdirectory(proximity)
+add_subdirectory(servo)
+add_subdirectory(sound)
+
+set(EXECUTABLES_SRC ${EXECUTABLES_SRC} PARENT_SCOPE)

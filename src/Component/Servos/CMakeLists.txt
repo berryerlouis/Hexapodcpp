@@ -1,0 +1,4 @@
+set(SRC_FILES_SERVOS
+    ${CMAKE_CURRENT_SOURCE_DIR}/Servos.cpp
+    PARENT_SCOPE
+)

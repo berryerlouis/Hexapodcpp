@@ -1,7 +1,7 @@
 set(
         SRC_FILES
-        ../src/Cluster/Frame/Frame.cpp
-        ../src/Cluster/Decoding/Protocol.cpp
+        ../src/Component/Communication/Frame/Frame.cpp
+        ../src/Component/Communication/Decoding/Protocol.cpp
         ../src/Component/Communication/Communication.cpp
 )
 

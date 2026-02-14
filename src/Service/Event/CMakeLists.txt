@@ -1,0 +1,4 @@
+set(SRC_FILES_EVENT
+    ${CMAKE_CURRENT_SOURCE_DIR}/EventDispatcher.cpp
+    PARENT_SCOPE
+)

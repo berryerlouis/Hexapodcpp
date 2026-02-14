@@ -1,0 +1,6 @@
+set(SRC_FILES_GAIT
+    ${CMAKE_CURRENT_SOURCE_DIR}/GaitCycle.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/GaitParams.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/GaitStrategy.cpp
+    PARENT_SCOPE
+)

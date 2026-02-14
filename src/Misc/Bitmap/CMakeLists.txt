@@ -1,0 +1,4 @@
+set(SRC_FILES_BITMAP
+    ${CMAKE_CURRENT_SOURCE_DIR}/Bitmaps.cpp
+    PARENT_SCOPE
+)

@@ -1,7 +1,8 @@
 #pragma once
 
+#include "../Component/Communication/Frame/Frame.h"
 #include "Constants.h"
-#include "Frame/Frame.h"
+
 
 namespace Cluster
 {

@@ -1,0 +1,4 @@
+set(SRC_FILES_SOFTWARE
+    ${CMAKE_CURRENT_SOURCE_DIR}/Software.cpp
+    PARENT_SCOPE
+)

@@ -1,0 +1,6 @@
+set(
+        TEST_FILE
+        src/cmp/frame/UT_CMP_FRAME.cpp
+)
+set(UT_CMP_FRAME ${TEST_FILE})
+set(EXECUTABLES_SRC ${EXECUTABLES_SRC} ${UT_CMP_FRAME} PARENT_SCOPE)

@@ -1,8 +1,9 @@
 #pragma once
 
-#include "../../Cluster/Frame/Frame.h"
+#include "../../Cluster/Clusters/ClustersInterface.h"
 #include "../../Driver/Socket/SocketInterface.h"
 #include "../ComponentInterface.h"
+#include "Frame/Frame.h"
 
 namespace Component
 {
