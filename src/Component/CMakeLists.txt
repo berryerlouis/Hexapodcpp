@@ -50,3 +50,11 @@ target_include_directories(Component
         ${CMAKE_CURRENT_SOURCE_DIR}/Software
         ${CMAKE_CURRENT_SOURCE_DIR}/Sound
 )
+
+if (${TARGET} STREQUAL "RPI")
+    target_include_directories(Component PUBLIC ${wiringpi_SOURCE_DIR})
+    target_link_libraries(Component
+        PUBLIC
+            wiringPi
+    )
+endif ()
