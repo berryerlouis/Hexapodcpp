@@ -11,25 +11,20 @@ namespace Cluster
             : ClusterBase(GENERAL, *this)
             , ClusterCommand(NB_COMMANDS_GENERAL)
             , mSoftware(software) {
+            this->AddClusterItem(ClusterItem(EGeneralCommands::RESET, 0U));
+            this->AddClusterItem(ClusterItem(EGeneralCommands::VERSION, 0U));
             this->AddClusterItem(
-                    {.commandId = EGeneralCommands::RESET, .expectedSize = 0U});
-            this->AddClusterItem({.commandId = EGeneralCommands::VERSION,
-                                  .expectedSize = 0U});
+                    ClusterItem(EGeneralCommands::MIN_EXECUTION_TIME, 0U));
             this->AddClusterItem(
-                    {.commandId = EGeneralCommands::MIN_EXECUTION_TIME,
-                     .expectedSize = 0U});
+                    ClusterItem(EGeneralCommands::MAX_EXECUTION_TIME, 0U));
             this->AddClusterItem(
-                    {.commandId = EGeneralCommands::MAX_EXECUTION_TIME,
-                     .expectedSize = 0U});
-            this->AddClusterItem(
-                    {.commandId = EGeneralCommands::RESET_EXECUTION_TIME,
-                     .expectedSize = 0U});
+                    ClusterItem(EGeneralCommands::RESET_EXECUTION_TIME, 0U));
             LOG_CLUSTER_DEBUG("General", "(%d) Initialized.", GENERAL);
         }
 
 
-        Core::Status ClusterGeneral::ExecuteFrame(const Frame &request,
-                                                  Frame       &response) {
+        auto ClusterGeneral::ExecuteFrame(const Frame &request,
+                                          Frame &response) -> Core::Status {
             Core::Status success = Core::Status::CORE_ERROR;
             if (request.GetCommandId() == EGeneralCommands::RESET) {
                 success = BuildFrameReset(response, Core::Status::CORE_OK);

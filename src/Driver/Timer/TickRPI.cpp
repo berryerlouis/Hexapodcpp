@@ -1,36 +1,32 @@
+#include "TickRPI.h"
 #include <chrono>
 #include <thread>
-#include "Tick.h"
 
 namespace Driver
 {
     namespace Timer
     {
-        uint64_t                                           start;
-        std::chrono::time_point<std::chrono::steady_clock> start_time;
-
-        Tick                                              &Tick::GetInstance() {
+        Tick &Tick::GetInstance() {
             static Tick instance;
             return instance;
         }
 
         Tick::Tick() {
-            start_time = std::chrono::steady_clock::now();
-            start = GetMs();
+            this->mStart = clock::now();
         }
 
         uint64_t Tick::GetUs() {
-            const auto duration = std::chrono::steady_clock::now() - start_time;
-            return std::chrono::duration_cast<std::chrono::microseconds>(
-                           duration)
-                    .count();
+            const auto duration =
+                    std::chrono::duration_cast<std::chrono::microseconds>(
+                            clock::now() - this->mStart);
+            return static_cast<uint64_t>(duration.count());
         }
 
         uint64_t Tick::GetMs() {
-            const auto duration = std::chrono::steady_clock::now() - start_time;
-            return std::chrono::duration_cast<std::chrono::milliseconds>(
-                           duration)
-                    .count();
+            const auto duration =
+                    std::chrono::duration_cast<std::chrono::milliseconds>(
+                            clock::now() - this->mStart);
+            return static_cast<uint64_t>(duration.count());
         }
 
         void Tick::DelayMs(const uint64_t delayMs) {

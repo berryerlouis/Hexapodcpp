@@ -13,51 +13,25 @@ namespace Cluster
             , ClusterCommand(NB_COMMANDS_BODY)
             , mBody(body) {
             this->AddClusterItem(
-                    (ClusterItem){.commandId = EBodyCommands::GET_ALL_PARAMS,
-                                  .expectedSize = 0U});
+                    ClusterItem(EBodyCommands::GET_ALL_PARAMS, 0U));
             this->AddClusterItem(
-                    (ClusterItem){.commandId = EBodyCommands::SET_BODY_POS_ROT,
-                                  .expectedSize = 14U});
+                    ClusterItem(EBodyCommands::SET_BODY_POS_ROT, 14U));
             this->AddClusterItem(
-                    (ClusterItem){.commandId = EBodyCommands::SET_LEG_POS_ROT,
-                                  .expectedSize = 9U});
+                    ClusterItem(EBodyCommands::SET_LEG_POS_ROT, 9U));
             this->AddClusterItem(
-                    (ClusterItem){.commandId = EBodyCommands::SET_WALK_STATUS,
-                                  .expectedSize = 3U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EBodyCommands::SET_DIRECTION,
-                                  .expectedSize = 2U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EBodyCommands::GET_DIRECTION,
-                                  .expectedSize = 0U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EBodyCommands::SET_AMPLITUDE,
-                                  .expectedSize = 1U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EBodyCommands::GET_AMPLITUDE,
-                                  .expectedSize = 0U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EBodyCommands::SET_ELEVATION,
-                                  .expectedSize = 1U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EBodyCommands::GET_ELEVATION,
-                                  .expectedSize = 0U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EBodyCommands::GET_DURATION,
-                                  .expectedSize = 0U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EBodyCommands::SET_DURATION,
-                                  .expectedSize = 2U});
-            this->AddClusterItem((ClusterItem){
-                    .commandId = EBodyCommands::GET_GAIT, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){
-                    .commandId = EBodyCommands::SET_GAIT, .expectedSize = 1U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EBodyCommands::SET_ROTATION,
-                                  .expectedSize = 3U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EBodyCommands::GET_ROTATION,
-                                  .expectedSize = 0U});
+                    ClusterItem(EBodyCommands::SET_WALK_STATUS, 3U));
+            this->AddClusterItem(ClusterItem(EBodyCommands::SET_DIRECTION, 2U));
+            this->AddClusterItem(ClusterItem(EBodyCommands::GET_DIRECTION, 0U));
+            this->AddClusterItem(ClusterItem(EBodyCommands::SET_AMPLITUDE, 1U));
+            this->AddClusterItem(ClusterItem(EBodyCommands::GET_AMPLITUDE, 0U));
+            this->AddClusterItem(ClusterItem(EBodyCommands::SET_ELEVATION, 1U));
+            this->AddClusterItem(ClusterItem(EBodyCommands::GET_ELEVATION, 0U));
+            this->AddClusterItem(ClusterItem(EBodyCommands::GET_DURATION, 0U));
+            this->AddClusterItem(ClusterItem(EBodyCommands::SET_DURATION, 2U));
+            this->AddClusterItem(ClusterItem(EBodyCommands::GET_GAIT, 0U));
+            this->AddClusterItem(ClusterItem(EBodyCommands::SET_GAIT, 1U));
+            this->AddClusterItem(ClusterItem(EBodyCommands::SET_ROTATION, 3U));
+            this->AddClusterItem(ClusterItem(EBodyCommands::GET_ROTATION, 0U));
             LOG_CLUSTER_DEBUG("Body", "(%d) Initialized.", BODY);
         }
 

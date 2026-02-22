@@ -13,33 +13,21 @@ namespace Cluster
             , ClusterCommand(NB_COMMANDS_IMU)
             , mImu(imu)
             , mBarometer(barometer) {
-            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::ALL,
-                                               .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::ACC,
-                                               .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::GYR,
-                                               .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::MAG,
-                                               .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){.commandId = EImuCommands::TMP,
-                                               .expectedSize = 0U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EImuCommands::YAW_PITCH_ROLL,
-                                  .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){
-                    .commandId = EImuCommands::PRESSURE, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){
-                    .commandId = EImuCommands::ALTITUDE, .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){
-                    .commandId = EImuCommands::TMP_BAR, .expectedSize = 0U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EImuCommands::CALIB_SENSOR,
-                                  .expectedSize = 2U});
+            this->AddClusterItem(ClusterItem(EImuCommands::ALL, 0U));
+            this->AddClusterItem(ClusterItem(EImuCommands::ACC, 0U));
+            this->AddClusterItem(ClusterItem(EImuCommands::GYR, 0U));
+            this->AddClusterItem(ClusterItem(EImuCommands::MAG, 0U));
+            this->AddClusterItem(ClusterItem(EImuCommands::TMP, 0U));
+            this->AddClusterItem(ClusterItem(EImuCommands::YAW_PITCH_ROLL, 0U));
+            this->AddClusterItem(ClusterItem(EImuCommands::PRESSURE, 0U));
+            this->AddClusterItem(ClusterItem(EImuCommands::ALTITUDE, 0U));
+            this->AddClusterItem(ClusterItem(EImuCommands::TMP_BAR, 0U));
+            this->AddClusterItem(ClusterItem(EImuCommands::CALIB_SENSOR, 2U));
             LOG_CLUSTER_DEBUG("Imu", "(%d) Initialized.", IMU);
         }
 
-        Core::Status ClusterImu::ExecuteFrame(const Frame &request,
-                                              Frame       &response) {
+        auto ClusterImu::ExecuteFrame(const Frame &request,
+                                      Frame       &response) -> Core::Status {
             Core::Status success = Core::Status::CORE_ERROR;
             if (request.GetCommandId() == EImuCommands::ALL) {
                 const Vector3  acc = this->mImu.ReadAcc();
@@ -74,7 +62,8 @@ namespace Cluster
             } else if (request.GetCommandId() == EImuCommands::CALIB_SENSOR) {
                 const SensorsImu sensor =
                         static_cast<SensorsImu>(request.Get1ByteParam(0U));
-                const bool enable = static_cast<bool>(request.Get1ByteParam(1U));
+                const bool enable =
+                        static_cast<bool>(request.Get1ByteParam(1U));
                 if (enable) {
                     this->mImu.StartCalibration(sensor);
                 } else {

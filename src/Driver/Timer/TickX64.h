@@ -42,6 +42,8 @@ namespace Driver
             uint64_t mFakeUs = 0U;
             uint64_t mFakeMs = 0U;
 #endif
+            using clock = std::chrono::steady_clock;
+            clock::time_point mStart;
         };
     } // namespace Timer
 } // namespace Driver

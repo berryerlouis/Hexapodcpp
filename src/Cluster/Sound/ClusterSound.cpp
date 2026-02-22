@@ -13,8 +13,8 @@ namespace Cluster
             , ClusterCommand(NB_COMMANDS_SOUND)
             , mSoundLeft(soundLeft)
             , mSoundRight(soundRight) {
-            this->AddClusterItem({.commandId = ESoundCommands::GET_SOUND_STATUS,
-                                  .expectedSize = 1U});
+            this->AddClusterItem(
+                    ClusterItem(ESoundCommands::GET_SOUND_STATUS, 1U));
             LOG_CLUSTER_DEBUG("Sound", "(%d) Initialized.", SOUND);
         }
 

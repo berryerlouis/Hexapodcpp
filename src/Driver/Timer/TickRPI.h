@@ -29,6 +29,9 @@ namespace Driver
             Tick(const Tick &) = delete;
 
             Tick &operator=(const Tick &) = delete;
+
+            using clock = std::chrono::steady_clock;
+            clock::time_point mStart;
         };
     } // namespace Timer
 } // namespace Driver

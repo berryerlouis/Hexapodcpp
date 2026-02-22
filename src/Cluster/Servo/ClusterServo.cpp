@@ -10,46 +10,23 @@ namespace Cluster
             : ClusterBase(SERVO, *this)
             , ClusterCommand(NB_COMMANDS_SERVO)
             , mServosInterface(servos) {
-            this->AddClusterItem((ClusterItem){
-                    .commandId = EServoCommands::GET_ALL, .expectedSize = 0U});
+            this->AddClusterItem(ClusterItem(EServoCommands::GET_ALL, 0U));
+            this->AddClusterItem(ClusterItem(EServoCommands::GET_ANGLE, 1U));
+            this->AddClusterItem(ClusterItem(EServoCommands::SET_ANGLE, 2U));
+            this->AddClusterItem(ClusterItem(EServoCommands::GET_MIN, 1U));
+            this->AddClusterItem(ClusterItem(EServoCommands::SET_MIN, 2U));
+            this->AddClusterItem(ClusterItem(EServoCommands::GET_MAX, 1U));
+            this->AddClusterItem(ClusterItem(EServoCommands::SET_MAX, 2U));
+            this->AddClusterItem(ClusterItem(EServoCommands::GET_OFFSET, 1U));
+            this->AddClusterItem(ClusterItem(EServoCommands::SET_OFFSET, 2U));
+            this->AddClusterItem(ClusterItem(EServoCommands::GET_STATE, 1U));
+            this->AddClusterItem(ClusterItem(EServoCommands::SET_STATE, 2U));
+            this->AddClusterItem(ClusterItem(EServoCommands::GET_REVERSE, 1U));
+            this->AddClusterItem(ClusterItem(EServoCommands::SET_REVERSE, 2U));
             this->AddClusterItem(
-                    (ClusterItem){.commandId = EServoCommands::GET_ANGLE,
-                                  .expectedSize = 1U});
+                    ClusterItem(EServoCommands::GET_STATE_PCA, 0U));
             this->AddClusterItem(
-                    (ClusterItem){.commandId = EServoCommands::SET_ANGLE,
-                                  .expectedSize = 2U});
-            this->AddClusterItem((ClusterItem){
-                    .commandId = EServoCommands::GET_MIN, .expectedSize = 1U});
-            this->AddClusterItem((ClusterItem){
-                    .commandId = EServoCommands::SET_MIN, .expectedSize = 2U});
-            this->AddClusterItem((ClusterItem){
-                    .commandId = EServoCommands::GET_MAX, .expectedSize = 1U});
-            this->AddClusterItem((ClusterItem){
-                    .commandId = EServoCommands::SET_MAX, .expectedSize = 2U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EServoCommands::GET_OFFSET,
-                                  .expectedSize = 1U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EServoCommands::SET_OFFSET,
-                                  .expectedSize = 2U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EServoCommands::GET_STATE,
-                                  .expectedSize = 1U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EServoCommands::SET_STATE,
-                                  .expectedSize = 2U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EServoCommands::GET_REVERSE,
-                                  .expectedSize = 1U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EServoCommands::SET_REVERSE,
-                                  .expectedSize = 2U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EServoCommands::GET_STATE_PCA,
-                                  .expectedSize = 0U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EServoCommands::GET_STATE_PCA,
-                                  .expectedSize = 1U});
+                    ClusterItem(EServoCommands::GET_STATE_PCA, 1U));
             LOG_CLUSTER_DEBUG("Servo", "(%d) Initialized.", SERVO);
         }
 

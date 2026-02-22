@@ -11,18 +11,11 @@ namespace Cluster
             : ClusterBase(PROXIMITY, *this)
             , ClusterCommand(NB_COMMANDS_PROXIMITY)
             , mProximity(proximity) {
+            this->AddClusterItem(ClusterItem(EProximityCommands::US_LEFT, 0U));
+            this->AddClusterItem(ClusterItem(EProximityCommands::US_RIGHT, 0U));
+            this->AddClusterItem(ClusterItem(EProximityCommands::LASER, 0U));
             this->AddClusterItem(
-                    (ClusterItem){.commandId = EProximityCommands::US_LEFT,
-                                  .expectedSize = 0U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EProximityCommands::US_RIGHT,
-                                  .expectedSize = 0U});
-            this->AddClusterItem(
-                    (ClusterItem){.commandId = EProximityCommands::LASER,
-                                  .expectedSize = 0U});
-            this->AddClusterItem((ClusterItem){
-                    .commandId = EProximityCommands::SET_THRESHOLD,
-                    .expectedSize = 3U});
+                    ClusterItem(EProximityCommands::SET_THRESHOLD, 3U));
             LOG_CLUSTER_DEBUG("Proximity", "(%d) Initialized.", PROXIMITY);
         }
 

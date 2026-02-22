@@ -29,8 +29,8 @@ a:hover {
 
 #panel {
   position: absolute;
-  top: 5vh;
-  right: 0;
+  top: 7vh;
+  right: 10px;
 }
 
 #panel>div {
@@ -81,7 +81,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   color: #ffffff;
-  background-color: #4d4f80;
+  background-color: #192835;
   border: none;
   border-radius: 4px;
   padding: 10px 20px;
@@ -89,7 +89,77 @@ button {
 }
 
 button:hover {
-  background-color: #353878;
+  background-color: #4a6a8f;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #213547;
+  min-width: 130px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown .dropdown-content {
+  border: none;
+  border-radius: 4px;
+}
+
+.dropdown .dropdown-content button {
+  width: 100%;
+  padding: 5px 10px;
+}
+
+.dropdown .dropdown-content button:hover {
+  background-color: #4a6a8f;
+  border: none;
+  border-radius: 4px;
+}
+
+#connect-target span {
+  padding: 0 10px;
+}
+
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  width: 30vw;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: auto;
+  background-color: #213547;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.modal .modal-title {
+  font-size: large;
+  font-weight: 500;
+  margin: 20px 10px;
+}
+
+.modal .modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal .modal-content-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .popup {
@@ -146,6 +216,8 @@ button:hover {
   align-content: center;
   place-items: center;
   min-width: 100vw;
+  min-height: 6vh;
+  background-color: #192835;
 }
 
 .header-left {

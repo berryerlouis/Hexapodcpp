@@ -312,9 +312,9 @@ namespace Component
                 this->mI2c.WriteRegister(this->mAddress, 0x77U, 0x00U);
                 this->mI2c.WriteRegister(this->mAddress, 0xFFU, 0x01U);
                 this->mI2c.WriteRegister(this->mAddress, 0x0DU, 0x01U);
-                this->mI2c.WriteRegister(this->mAddress, 0xFFU, 0x00u);
-                this->mI2c.WriteRegister(this->mAddress, 0x80U, 0x01u);
-                this->mI2c.WriteRegister(this->mAddress, 0x01U, 0xF8u);
+                this->mI2c.WriteRegister(this->mAddress, 0xFFU, 0x00U);
+                this->mI2c.WriteRegister(this->mAddress, 0x80U, 0x01U);
+                this->mI2c.WriteRegister(this->mAddress, 0x01U, 0xF8U);
                 this->mI2c.WriteRegister(this->mAddress, 0xFFU, 0x01U);
                 this->mI2c.WriteRegister(this->mAddress, 0x8EU, 0x01U);
                 this->mI2c.WriteRegister(this->mAddress, 0x00U, 0x01U);

@@ -11,12 +11,12 @@ namespace Cluster
             : ClusterBase(BATTERY, *this)
             , ClusterCommand(NB_COMMANDS_BATTERY)
             , mBattery(battery) {
-            this->AddClusterItem({.commandId = EBatteryCommands::GET_BAT_STATUS,
-                                  .expectedSize = 0U});
-            this->AddClusterItem({.commandId = EBatteryCommands::GET_VOLTAGE,
-                                  .expectedSize = 0U});
-            this->AddClusterItem({.commandId = EBatteryCommands::GET_CURRENT,
-                                  .expectedSize = 0U});
+            this->AddClusterItem(
+                    ClusterItem(EBatteryCommands::GET_BAT_STATUS, 0U));
+            this->AddClusterItem(
+                    ClusterItem(EBatteryCommands::GET_VOLTAGE, 0U));
+            this->AddClusterItem(
+                    ClusterItem(EBatteryCommands::GET_CURRENT, 0U));
 
             LOG_CLUSTER_DEBUG("Battery", "(%d) Initialized.", BATTERY);
         }

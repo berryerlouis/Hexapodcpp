@@ -1,57 +1,48 @@
-#include "Tick.h"
+#include "TickX64.h"
 
+#include <chrono>
 #include <thread>
 
 namespace Driver
 {
     namespace Timer
     {
-        uint64_t                                           start;
-        std::chrono::time_point<std::chrono::system_clock> now;
-
-        Tick                                              &Tick::GetInstance() {
+        auto Tick::GetInstance() -> Tick & {
             static Tick instance;
             return instance;
         }
 
         Tick::Tick() {
-            now = std::chrono::system_clock::now();
-            start = GetMs();
+            this->mStart = clock::now();
         }
 
-        uint64_t Tick::GetUs() {
+        auto Tick::GetUs() -> uint64_t {
 #ifdef GTEST
             return mFakeUs;
 #else
-            const auto duration = now.time_since_epoch();
-            now = std::chrono::system_clock::now();
-            return std::chrono::duration_cast<std::chrono::microseconds>(
-                           duration)
-                           .count() -
-                   start;
+            const auto duration =
+                    std::chrono::duration_cast<std::chrono::microseconds>(
+                            clock::now() - this->mStart);
+            return static_cast<uint64_t>(duration.count());
 #endif
         }
 
-        uint64_t Tick::GetMs() {
+        auto Tick::GetMs() -> uint64_t {
 #ifdef GTEST
             return mFakeMs;
 #else
-            const auto duration = now.time_since_epoch();
-            now = std::chrono::system_clock::now();
-            return std::chrono::duration_cast<std::chrono::milliseconds>(
-                           duration)
-                           .count() -
-                   start;
+            const auto duration =
+                    std::chrono::duration_cast<std::chrono::milliseconds>(
+                            clock::now() - this->mStart);
+            return static_cast<uint64_t>(duration.count());
 #endif
         }
 
         void Tick::DelayMs(const uint64_t delayMs) {
-            std::this_thread::yield();
             std::this_thread::sleep_for(std::chrono::milliseconds(delayMs));
         }
 
         void Tick::DelayUs(const uint64_t delayUs) {
-            std::this_thread::yield();
             std::this_thread::sleep_for(std::chrono::microseconds(delayUs));
         }
     } // namespace Timer

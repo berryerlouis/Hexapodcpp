@@ -1,97 +1,119 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Hexapod</title>
-        <link rel="stylesheet" href="./style.css" type="text/css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-        <link rel="shortcut icon" href="./bot.ico">
-    </head>
-    <body>
-        <div class="popup" id="popup"></div>
-        <div id="panel"></div>
-        <div class="header">
-            <div class="header-left">
-                <h1>Hexapod<span id="version">V0.0</span></h1>
-            </div>
-          <div class="header-center">
-          </div>
-          <div class="header-right">
-          </div>
-        </div>
-        <div class="app" id="app"><canvas></canvas></div>
 
-        <div class="footer">
-            <div class="cockpit">
-                <div class="cockpit-enable" id="enable">
-                    <i class="bi bi-toggle2-off" ></i>
-                </div>
-                <div class="cockpit-direction" id="direction">
-                    <div class="up" id="forward"><i class="bi bi-arrow-up-circle"></i></div>
-                    <div class="down" id="backward"><i class="bi bi-arrow-down-circle"></i></div>
-                    <div class="left" id="left"><i class="bi bi-arrow-left-circle"></i></div>
-                    <div class="right" id="right"><i class="bi bi-arrow-right-circle"></i></div>
-                    <div class="stop" id="stop"><i class="bi bi-stop-circle"></i></div>
-                </div>
-                <div class="cockpit-items">
-                    <div class="cockpit-item">
-                        <div class="cockpit-item-content">
-                            <i class="bi bi-battery-full"></i>
-                            <div class="cockpit-item-content-value">
-                                <div class="cockpit-item-content-value-title"><span id="voltage">_</span>V</div>
-                                <div class="cockpit-item-content-value-title"><span id="current">_</span>A</div>
-                                <div class="cockpit-item-content-value-title"><span id="temperature">_</span>°C</div>
-                            </div>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hexapod</title>
+    <link rel="stylesheet" href="./style.css" type="text/css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="shortcut icon" href="./bot.ico">
+</head>
+
+<body>
+    <div class="popup" id="popup"></div>
+    <div id="panel"></div>
+    <div class="header">
+        <div class="header-left">
+            <h1>Hexapod<span id="version">V0.0</span></h1>
+        </div>
+        <div class="header-center">
+        </div>
+        <div class="header-right">
+            <span>Connect to:</span>
+            <div id="connect-target">
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-connect" class="modal">
+        <div class="modal-title">
+            <span>Connection Target:</span>
+        </div>
+        <div class="modal-content">
+            <div class="modal-content-buttons">
+                <button id="connect-x64" value="X64">X64</button>
+                <button id="connect-bot" value="BOT">Hexapod</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app" id="app">
+        <canvas></canvas>
+    </div>
+
+    <div class="footer">
+        <div class="cockpit">
+            <div class="cockpit-enable" id="enable">
+                <i class="bi bi-toggle2-off"></i>
+            </div>
+            <div class="cockpit-direction" id="direction">
+                <div class="up" id="forward"><i class="bi bi-arrow-up-circle"></i></div>
+                <div class="down" id="backward"><i class="bi bi-arrow-down-circle"></i></div>
+                <div class="left" id="left"><i class="bi bi-arrow-left-circle"></i></div>
+                <div class="right" id="right"><i class="bi bi-arrow-right-circle"></i></div>
+                <div class="stop" id="stop"><i class="bi bi-stop-circle"></i></div>
+            </div>
+            <div class="cockpit-items">
+                <div class="cockpit-item">
+                    <div class="cockpit-item-content">
+                        <i class="bi bi-battery-full"></i>
+                        <div class="cockpit-item-content-value">
+                            <div class="cockpit-item-content-value-title"><span id="voltage">_</span>V</div>
+                            <div class="cockpit-item-content-value-title"><span id="current">_</span>A</div>
+                            <div class="cockpit-item-content-value-title"><span id="temperature">_</span>°C</div>
                         </div>
                     </div>
-                    <div class="cockpit-item">
-                        <div class="cockpit-item-content">
-                            <i class="bi bi-compass"></i>
-                            <div class="cockpit-item-content-value">
-                                <div class="cockpit-item-content-value-title">roll:<span id="roll">_</span>°</div>
-                                <div class="cockpit-item-content-value-title">pitch:<span id="pitch">_</span>°</div>
-                                <div class="cockpit-item-content-value-title">yaw:<span id="yaw">_</span>°</div>
-                            </div>
+                </div>
+                <div class="cockpit-item">
+                    <div class="cockpit-item-content">
+                        <i class="bi bi-compass"></i>
+                        <div class="cockpit-item-content-value">
+                            <div class="cockpit-item-content-value-title">roll:<span id="roll">_</span>°</div>
+                            <div class="cockpit-item-content-value-title">pitch:<span id="pitch">_</span>°</div>
+                            <div class="cockpit-item-content-value-title">yaw:<span id="yaw">_</span>°</div>
                         </div>
                     </div>
-                    <div class="cockpit-item">
-                        <div class="cockpit-item-content">
-                            <i class="bi bi-activity"></i>
-                            <div class="cockpit-item-content-value">
-                                <div class="cockpit-item-content-value-title">msg:
-                                    <div class="cockpit-item-content-value-content">
-                                        <div class="progressbar">
-                                            <div class="progressbar-container" id="progress-message-queue" style="width:0"></div>
-                                            <div class="progressbar-value" id="progress-message-queue-val"></div>
+                </div>
+                <div class="cockpit-item">
+                    <div class="cockpit-item-content">
+                        <i class="bi bi-activity"></i>
+                        <div class="cockpit-item-content-value">
+                            <div class="cockpit-item-content-value-title">msg:
+                                <div class="cockpit-item-content-value-content">
+                                    <div class="progressbar">
+                                        <div class="progressbar-container" id="progress-message-queue" style="width:0">
                                         </div>
+                                        <div class="progressbar-value" id="progress-message-queue-val"></div>
                                     </div>
                                 </div>
-                                <div class="cockpit-item-content-value-title">max:<span id="max-time">_</span>ms</div>
-                                <div class="cockpit-item-content-value-title">min:<span id="min-time">_</span>ms</div>
                             </div>
+                            <div class="cockpit-item-content-value-title">max:<span id="max-time">_</span>ms</div>
+                            <div class="cockpit-item-content-value-title">min:<span id="min-time">_</span>ms</div>
                         </div>
                     </div>
-                    <div class="cockpit-item">
-                        <div class="cockpit-item-content">
-                            <i class="bi bi-motherboard"></i>
-                            <div class="cockpit-item-content-value">
-                                <div class="cockpit-item-content-value-title">BP:<span id="button">Released</span></div>
-                            </div>
+                </div>
+                <div class="cockpit-item">
+                    <div class="cockpit-item-content">
+                        <i class="bi bi-motherboard"></i>
+                        <div class="cockpit-item-content-value">
+                            <div class="cockpit-item-content-value-title">BP:<span id="button">Released</span></div>
                         </div>
                     </div>
-                    <div class="cockpit-item">
-                        <div class="cockpit-item-content">
-                            <i class="bi bi-airplane-engines"></i>
-                            <div class="cockpit-item-content-value">
-                                <div><span id="altitude">0.00</span>m</div>
-                                <div><span id="pressure">0.00</span>pa</div>
-                            </div>
+                </div>
+                <div class="cockpit-item">
+                    <div class="cockpit-item-content">
+                        <i class="bi bi-airplane-engines"></i>
+                        <div class="cockpit-item-content-value">
+                            <div><span id="altitude">0.00</span>m</div>
+                            <div><span id="pressure">0.00</span>pa</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <script type="module" src="./src/main.ts"></script>
-    </body>
+    </div>
+    <script type="module" src="./src/main.ts"></script>
+</body>
+
 </html>
