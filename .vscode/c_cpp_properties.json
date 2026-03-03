@@ -14,6 +14,7 @@
                 "${workspaceFolder}/build/hexapod-X64-TEST/_deps/googletest-src/googlemock/include/gmock/internal/*"
             ],
             "defines": [
+                "RPI",
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE"

@@ -11,8 +11,8 @@ namespace Component
 
         class Pca9685 : public Pca9685Interface {
         public:
-            static const uint8_t PCA9685_I2C_ADDRESS = 0x40U;
-            static const uint8_t SERVO_FREQUENCY = 50U;
+            static const uint8_t  PCA9685_I2C_ADDRESS = 0x40U;
+            static const uint16_t SERVO_FREQUENCY = 300U;
 
             struct ERegister {
                 static const uint8_t MODE1 = 0x00;
@@ -79,7 +79,7 @@ namespace Component
             virtual void
             setOscillatorFrequency(const uint32_t frequency) final override;
 
-            virtual void SetFrequency(const uint32_t frequency) final override;
+            virtual void SetFrequency(const uint16_t frequency) final override;
 
             virtual void SetPwm(const uint8_t  num,
                                 const uint16_t off) final override;

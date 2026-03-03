@@ -22,7 +22,7 @@ namespace Component
 
             MOCK_METHOD1(setOscillatorFrequency, void(const uint32_t));
 
-            MOCK_METHOD1(SetFrequency, void(const uint32_t));
+            MOCK_METHOD1(SetFrequency, void(const uint16_t));
 
             MOCK_METHOD2(SetPwm, void(uint8_t, uint16_t)
 

@@ -9,7 +9,7 @@ export default class Light extends Object3D {
         point.position.set(-4, 6, 6);
         point.castShadow = true;
         point.shadow.bias = -0.001;
-        point.shadow.mapSize = new Vector2(2048, 2048);
+        point.shadow.mapSize = new Vector2(1024, 1024);
 
         this.add(ambient);
         this.add(point)

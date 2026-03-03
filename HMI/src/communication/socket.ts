@@ -20,8 +20,10 @@ const MAX_MESSAGE_QUEUE_SIZE = 100;
 const RECONNECT_INTERVAL_MS = 2500;
 
 export default class Socket {
+    private static readonly DEBUG_LOGS = true;
 
     private listOfSpecificCallbackRead: SpecificCallback[];
+    private specificCallbacksByKey: Map<string, SpecificCallback[]>;
     private listOfCallbackRead: Callback[];
     private listOfCallbackWrite: Callback[];
     private listOfCallbackStarted: CallbackStarted[];
@@ -31,23 +33,42 @@ export default class Socket {
     private url: string | URL;
     private reconnectTimer: number | null = null;
     private shouldReconnect: boolean = true;
+    private pb: HTMLElement | null;
+    private pbVal: HTMLElement | null;
+    private lastProgressPercentage: number;
+    private lastProgressCount: number;
 
     constructor(url: string | URL) {
         this.url = url;
         this.listOfCallbackRead = [];
         this.listOfCallbackWrite = [];
         this.listOfSpecificCallbackRead = [];
+        this.specificCallbacksByKey = new Map<string, SpecificCallback[]>();
         this.listOfCallbackStarted = [];
         this.listOfCallbackStopped = [];
         this.messagesList = [];
+        this.pb = document.getElementById('progress-message-queue');
+        this.pbVal = document.getElementById('progress-message-queue-val');
+        this.lastProgressPercentage = -1;
+        this.lastProgressCount = -1;
         this.socket = this.createWebSocket();
+    }
+
+    private static log(message?: any, ...optionalParams: any[]) {
+        if (Socket.DEBUG_LOGS) {
+            console.log(message, ...optionalParams);
+        }
+    }
+
+    private getSpecificCallbackKey(cluster: ClusterName, command: CommandName): string {
+        return `${cluster}:${command}`;
     }
 
     private createWebSocket(): WebSocket {
         const socket = new WebSocket(this.url);
 
         socket.addEventListener('open', () => {
-            console.log('Connected to the WebSocket server');
+            Socket.log('Connected to the WebSocket server');
             openPopupInfo('Connected!');
 
             // Clear reconnect timer on successful connection
@@ -90,7 +111,7 @@ export default class Socket {
         });
 
         socket.addEventListener('close', () => {
-            console.log('Disconnected from the WebSocket server');
+            Socket.log('Disconnected from the WebSocket server');
             openPopupWarning('WebSocket disconnected!');
             this.notifyCallbackStopped();
             this.messagesList = [];
@@ -102,7 +123,9 @@ export default class Socket {
         });
 
         socket.addEventListener('error', (event) => {
-            console.error('WebSocket error:', event);
+            if (Socket.DEBUG_LOGS) {
+                console.error('WebSocket error:', event);
+            }
             openPopupError('WebSocket error!');
         });
 
@@ -114,10 +137,10 @@ export default class Socket {
             return; // Already scheduled
         }
 
-        console.log(`Reconnecting in ${RECONNECT_INTERVAL_MS}ms...`);
+        Socket.log(`Reconnecting in ${RECONNECT_INTERVAL_MS}ms...`);
         this.reconnectTimer = setTimeout(() => {
             if (this.shouldReconnect && this.socket.readyState !== WebSocket.OPEN && this.socket.readyState !== WebSocket.CONNECTING) {
-                console.log('Attempting to reconnect...');
+                Socket.log('Attempting to reconnect...');
                 clearAllPopups();
                 this.socket = this.createWebSocket();
             }
@@ -165,10 +188,18 @@ export default class Socket {
     }
 
     addSpecificCallbackRead(cluster: ClusterName, command: CommandName, cb: Callback, params?: number[]) {
-        if (params == null) {
-            this.listOfSpecificCallbackRead.push({ callback: cb, cluster: cluster, command: command });
+        const specificCallback = params == null
+            ? { callback: cb, cluster: cluster, command: command }
+            : { callback: cb, cluster: cluster, command: command, params: params };
+
+        this.listOfSpecificCallbackRead.push(specificCallback);
+
+        const callbackKey = this.getSpecificCallbackKey(cluster, command);
+        const callbackBucket = this.specificCallbacksByKey.get(callbackKey);
+        if (callbackBucket) {
+            callbackBucket.push(specificCallback);
         } else {
-            this.listOfSpecificCallbackRead.push({ callback: cb, cluster: cluster, command: command, params: params });
+            this.specificCallbacksByKey.set(callbackKey, [specificCallback]);
         }
     }
 
@@ -177,32 +208,38 @@ export default class Socket {
     }
 
     notifyRead(message: Message) {
-        console.log(`Received: ${message}`);
+        Socket.log(`Received: ${message}`);
         this.listOfCallbackRead.forEach((cb) => {
             cb(message);
         });
 
-        this.listOfSpecificCallbackRead.forEach((speCb) => {
-            if (message.cluster?.name === speCb.cluster) {
-                if (message.command?.name === speCb.command) {
-                    if (message.params && speCb.params) {
-                        for (let i = 0; i < speCb.params.length; i++) {
-                            if (message.params[i] !== speCb.params[i]) {
-                                return;
-                            }
-                        }
-                        speCb.callback(message);
-                    } else {
-                        speCb.callback(message);
-                    }
-                }
+        const clusterName = message.cluster?.name;
+        const commandName = message.command?.name;
+        if (clusterName && commandName) {
+            const callbackKey = this.getSpecificCallbackKey(clusterName, commandName);
+            const callbackBucket = this.specificCallbacksByKey.get(callbackKey);
+            if (!callbackBucket) {
+                return;
             }
-        });
+
+            callbackBucket.forEach((speCb) => {
+                if (message.params && speCb.params) {
+                    for (let i = 0; i < speCb.params.length; i++) {
+                        if (message.params[i] !== speCb.params[i]) {
+                            return;
+                        }
+                    }
+                    speCb.callback(message);
+                } else {
+                    speCb.callback(message);
+                }
+            });
+        }
     }
 
     notifyWrite(message: Message) {
         message.setDate();
-        console.log(`Transmit: ${message}`);
+        Socket.log(`Transmit: ${message}`);
         this.listOfCallbackWrite.forEach((cb) => {
             cb(message);
         });
@@ -227,14 +264,16 @@ export default class Socket {
     }
 
     private updateProgressBar() {
-        const pb = document.getElementById('progress-message-queue');
-        const pbVal = document.getElementById('progress-message-queue-val');
-        if (pb) {
-            const percentage = Math.min((this.messagesList.length / MAX_MESSAGE_QUEUE_SIZE) * 100, 100);
-            pb.setAttribute('style', `width: ${percentage}%`);
+        const percentage = Math.min((this.messagesList.length / MAX_MESSAGE_QUEUE_SIZE) * 100, 100);
+        const count = this.messagesList.length;
+
+        if (this.pb && percentage !== this.lastProgressPercentage) {
+            this.pb.style.width = `${percentage}%`;
+            this.lastProgressPercentage = percentage;
         }
-        if (pbVal) {
-            pbVal.innerText = this.messagesList.length.toString();
+        if (this.pbVal && count !== this.lastProgressCount) {
+            this.pbVal.innerText = count.toString();
+            this.lastProgressCount = count;
         }
     }
 

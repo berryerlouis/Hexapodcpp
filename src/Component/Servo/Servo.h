@@ -7,8 +7,8 @@ namespace Component
     namespace Servo
     {
         class Servo : public ServoInterface {
-            static constexpr uint16_t SERVO_PWM_MIN = 168U;
-            static constexpr uint16_t SERVO_PWM_MAX = 413U;
+            static constexpr uint16_t SERVO_PWM_MIN = 667U;
+            static constexpr uint16_t SERVO_PWM_MAX = 1640U;
             static constexpr uint16_t SERVO_ANGLE_MIN = 0U;
             static constexpr uint16_t SERVO_ANGLE_MAX = 180U;
             static constexpr uint16_t SERVO_ANGLE_RANGE = 180U;

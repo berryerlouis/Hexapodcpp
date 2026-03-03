@@ -7,8 +7,38 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-echo ""
+PI_HOST="hexabot"
+TARGET_BIN="/home/hexabot/Hexapodcpp"
+PORT=2345
+
 printf "${GREEN}Start GDB on Raspberry Pi:${NC}\n"
-ssh hexabot command -v gdbserver >/dev/null || pkill gdbserver 2>/dev/null || true; sudo gdbserver :2345 /home/hexabot/Hexapodcpp
-printf "${GREEN}GDB started!${NC}\n"
-echo ""
+
+ssh "$PI_HOST" bash -c "'
+    pkill gdbserver 2>/dev/null || true
+    echo \"Launching gdbserver on port $PORT...\"
+    nohup gdbserver :$PORT $TARGET_BIN >/tmp/gdbserver.log 2>&1 &
+    disown
+'"
+#!/usr/bin/env bash
+set -euo pipefail
+
+PI_HOST="hexabot"
+TARGET_BIN="/home/hexabot/Hexapodcpp"
+PORT=2345
+
+echo "Starting gdbserver on Raspberry Pi..."
+
+ssh "$PI_HOST" bash -c "'
+    # Kill any previous gdbserver
+    pkill gdbserver 2>/dev/null || true
+
+    echo \"Launching gdbserver on port $PORT...\"
+
+    # Start gdbserver fully detached
+    sudo nohup gdbserver :$PORT $TARGET_BIN \
+        >/tmp/gdbserver.log 2>&1 < /dev/null &
+'"
+
+echo "gdbserver started."
+
+printf "${GREEN}GDB server stopped.\n"

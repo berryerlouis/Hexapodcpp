@@ -8,7 +8,7 @@ namespace Service
                 ServosInterface                 &servos,
                 Message::MessageInterface       &messageListener,
                 Event::EventDispatcherInterface &eventDispatcher)
-            : Service(CONTROL, 20U, messageListener, eventDispatcher)
+            : Service(CONTROL, 5U, messageListener, eventDispatcher)
             , mStepPca9685(0U)
             , mServosInterface(servos) {
         }

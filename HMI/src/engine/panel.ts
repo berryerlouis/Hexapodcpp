@@ -11,9 +11,11 @@ import {ClusterImuCommands} from "../communication/clusters/clusterImu.ts";
 import {ClusterBodyCommands} from "../communication/clusters/clusterBody.ts";
 
 export default class Panel extends Pane {
+    private static readonly REFRESH_INTERVAL_MS = 120;
     hexapod: Hexapod;
     socket: Socket;
     initDone: boolean;
+    lastRefreshAt: number;
 
     constructor(domElement: HTMLElement | undefined, hexapod: Hexapod, socket: Socket) {
         super({container: domElement});
@@ -21,6 +23,7 @@ export default class Panel extends Pane {
         this.hexapod = hexapod;
         this.socket = socket;
         this.initDone = false;
+        this.lastRefreshAt = 0;
 
         this.setCallbackVersion();
 
@@ -66,7 +69,12 @@ export default class Panel extends Pane {
     }
 
     update() {
-        this.refresh()
+        const now = performance.now();
+        if (now - this.lastRefreshAt < Panel.REFRESH_INTERVAL_MS) {
+            return;
+        }
+        this.lastRefreshAt = now;
+        this.refresh();
     }
 
     setCallbackVersion() {

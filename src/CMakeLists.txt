@@ -11,20 +11,23 @@ endif ()
 # Platform-specific dependencies
 include(FetchContent)
 
-if (${TARGET} STREQUAL "X64")
-    # TinyWebsockets for X64
-    FetchContent_Declare(
-            TinyWebsockets
-            GIT_REPOSITORY https://github.com/berryerlouis/TinyWebsockets.git
-            GIT_TAG master
-            GIT_SHALLOW TRUE
-    )
-    FetchContent_MakeAvailable(TinyWebsockets)
+# TinyWebsockets for RPI
+FetchContent_Declare(
+        TinyWebsockets
+        GIT_REPOSITORY https://github.com/berryerlouis/TinyWebsockets.git
+        GIT_TAG master
+        GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(TinyWebsockets)
 
+if (${TARGET} STREQUAL "X64")
     add_compile_definitions(X64)
     message(STATUS "Configured for X64 platform")
 
 elseif (${TARGET} STREQUAL "RPI")
+    add_compile_definitions(RPI)
+    message(STATUS "Configured for Raspberry Pi platform")
+
     # WiringPi for Raspberry Pi
     FetchContent_Declare(
             wiringPi
@@ -33,18 +36,6 @@ elseif (${TARGET} STREQUAL "RPI")
             GIT_SHALLOW TRUE
     )
     FetchContent_MakeAvailable(wiringPi)
-
-    # TinyWebsockets for RPI
-    FetchContent_Declare(
-            TinyWebsockets
-            GIT_REPOSITORY https://github.com/berryerlouis/TinyWebsockets.git
-            GIT_TAG master
-            GIT_SHALLOW TRUE
-    )
-    FetchContent_MakeAvailable(TinyWebsockets)
-
-    add_compile_definitions(RPI)
-    message(STATUS "Configured for Raspberry Pi platform")
 else ()
     message(FATAL_ERROR "Unknown TARGET: ${TARGET}. Must be X64 or RPI")
 endif ()

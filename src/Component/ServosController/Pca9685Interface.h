@@ -20,7 +20,7 @@ namespace Component
 
             virtual void setOscillatorFrequency(const uint32_t frequency) = 0;
 
-            virtual void SetFrequency(const uint32_t frequency) = 0;
+            virtual void SetFrequency(const uint16_t frequency) = 0;
 
             virtual void SetPwm(const uint8_t num, const uint16_t off) = 0;
 

@@ -79,7 +79,7 @@ namespace Component
             this->mInternalOscillatorFrequency = frequency;
         }
 
-        void Pca9685::SetFrequency(const uint32_t frequency) {
+        void Pca9685::SetFrequency(const uint16_t frequency) {
             float prescaleval =
                     ((mInternalOscillatorFrequency / (frequency * 4096.0F)) +
                      0.5F) -
@@ -119,7 +119,7 @@ namespace Component
         void Pca9685::SetPwm(const uint8_t num, const uint16_t off) {
             this->mPwm[num].on = 0U;
 
-            if (off > 100 && off < 500) {
+            if (off > 600 && off < 2000) {
                 this->mPwm[num].off = off;
             } else {
                 this->mPwm[num].off = EConstant::LED_OFF;
