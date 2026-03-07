@@ -25,36 +25,28 @@ namespace Driver
         }
 
 
-        bool Twi::ReadRegister(const uint8_t address,
-                               const uint8_t reg,
-                               uint8_t      &data) {
+        bool Twi::ReadRegister(const uint8_t address, const uint8_t reg, uint8_t &data) {
             (void) address;
             (void) reg;
             (void) data;
             return (true);
         }
 
-        bool Twi::ReadRegister16Bits(const uint8_t address,
-                                     const uint8_t reg,
-                                     uint16_t     &data) {
+        bool Twi::ReadRegister16Bits(const uint8_t address, const uint8_t reg, uint16_t &data) {
             (void) address;
             (void) reg;
             (void) data;
             return (true);
         }
 
-        bool Twi::ReadRegister24Bits(const uint8_t address,
-                                     const uint8_t reg,
-                                     uint32_t     &data) {
+        bool Twi::ReadRegister24Bits(const uint8_t address, const uint8_t reg, uint32_t &data) {
             (void) address;
             (void) reg;
             (void) data;
             return true;
         }
 
-        bool Twi::ReadRegister32Bits(const uint8_t address,
-                                     const uint8_t reg,
-                                     uint32_t     &data) {
+        bool Twi::ReadRegister32Bits(const uint8_t address, const uint8_t reg, uint32_t &data) {
             (void) address;
             (void) reg;
             (void) data;
@@ -78,27 +70,21 @@ namespace Driver
             return (true);
         }
 
-        bool Twi::WriteRegister(const uint8_t address,
-                                const uint8_t reg,
-                                uint8_t       data) {
+        bool Twi::WriteRegister(const uint8_t address, const uint8_t reg, uint8_t data) {
             (void) address;
             (void) reg;
             (void) data;
             return (true);
         }
 
-        bool Twi::WriteRegister16Bits(const uint8_t address,
-                                      const uint8_t reg,
-                                      uint16_t     &data) {
+        bool Twi::WriteRegister16Bits(const uint8_t address, const uint8_t reg, uint16_t &data) {
             (void) address;
             (void) reg;
             (void) data;
             return (true);
         }
 
-        bool Twi::WriteRegister32Bits(const uint8_t address,
-                                      const uint8_t reg,
-                                      uint32_t     &data) {
+        bool Twi::WriteRegister32Bits(const uint8_t address, const uint8_t reg, uint32_t &data) {
             (void) address;
             (void) reg;
             (void) data;

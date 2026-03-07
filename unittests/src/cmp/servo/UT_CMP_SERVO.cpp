@@ -133,7 +133,7 @@ namespace Component
         }
 
         TEST_F(UT_CMP_SERVO, SetMax_Nok) {
-            EXPECT_FALSE(mServo.SetMax(200U));
+            EXPECT_FALSE(mServo.SetMax(250U));
         }
 
         TEST_F(UT_CMP_SERVO, IsEnable_Ok) {

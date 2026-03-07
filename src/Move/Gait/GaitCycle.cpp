@@ -6,8 +6,7 @@ namespace Move
 {
     namespace Gait
     {
-        GaitCycle::GaitCycle(Bot::Legs::LegsInterface &legs,
-                             GaitParams               &gaitParams)
+        GaitCycle::GaitCycle(Bot::Legs::LegsInterface &legs, GaitParams &gaitParams)
             : mLegs(legs)
             , mGaitParams(gaitParams)
             , mGaitStrategy(std::make_unique<Move::Gait::GaitTripod>())
@@ -44,17 +43,12 @@ namespace Move
 
         bool GaitCycle::SetGaitType(GaitType gaitType) {
             if (this->mGaitParams.SetGaitType(gaitType)) {
-                if (this->mGaitParams.GetGaitType() ==
-                    Move::Gait::GaitType::TRIPOD) {
-                    this->mGaitStrategy =
-                            std::make_unique<Move::Gait::GaitTripod>();
-                } else if (this->mGaitParams.GetGaitType() ==
-                           Move::Gait::GaitType::WAVE) {
-                    this->mGaitStrategy =
-                            std::make_unique<Move::Gait::GaitWave>();
+                if (this->mGaitParams.GetGaitType() == Move::Gait::GaitType::TRIPOD) {
+                    this->mGaitStrategy = std::make_unique<Move::Gait::GaitTripod>();
+                } else if (this->mGaitParams.GetGaitType() == Move::Gait::GaitType::WAVE) {
+                    this->mGaitStrategy = std::make_unique<Move::Gait::GaitWave>();
                 } else {
-                    this->mGaitStrategy =
-                            std::make_unique<Move::Gait::GaitRipple>();
+                    this->mGaitStrategy = std::make_unique<Move::Gait::GaitRipple>();
                 }
                 return true;
             }
@@ -67,16 +61,15 @@ namespace Move
                 if (!isCycleComplete) {
                     for (auto &leg: this->mLegs.GetLegs()) {
                         Misc::Maths::Position3d position = this->mPositionsStop;
-                        leg.second.ComputeLerpTarget(
-                                currentTime,
-                                position,
-                                this->mGaitParams.GetAmplitude(),
-                                this->mGaitParams.GetElevation(),
-                                this->mGaitParams.GetDirection(),
-                                this->mGaitParams.IsRotated(),
-                                this->mGaitParams.GetRotation(),
-                                this->mGaitParams.GetRotationClockWize(),
-                                this->mGaitParams.GetUpdatedTimeStamp());
+                        leg.second.ComputeLerpTarget(currentTime,
+                                                     position,
+                                                     this->mGaitParams.GetAmplitude(),
+                                                     this->mGaitParams.GetElevation(),
+                                                     this->mGaitParams.GetDirection(),
+                                                     this->mGaitParams.IsRotated(),
+                                                     this->mGaitParams.GetRotation(),
+                                                     this->mGaitParams.GetRotationClockWize(),
+                                                     this->mGaitParams.GetUpdatedTimeStamp());
                         leg.second.SetTarget(position);
                     }
                     this->mLegs.Update();
@@ -87,8 +80,7 @@ namespace Move
                     this->AdvanceToNextCycle(currentTime);
                 }
 
-                const float normalizedTime =
-                        this->GetNormalizedTime(currentTime);
+                const float normalizedTime = this->GetNormalizedTime(currentTime);
 
                 mGaitStrategy->doGaitStrategy(isCycleComplete,
                                               currentTime,
@@ -101,30 +93,26 @@ namespace Move
             }
         }
 
-        float GaitCycle::GetDeltaTimeOfCycleDuration(
-                const uint64_t currentTime) const {
+        float GaitCycle::GetDeltaTimeOfCycleDuration(const uint64_t currentTime) const {
             return this->GetNormalizedTime(currentTime);
         }
 
         float GaitCycle::GetNormalizedTime(const uint64_t currentTime) const {
-            const float deltaTimeMs =
-                    static_cast<float>(currentTime - this->mStartTime);
+            const float deltaTimeMs = static_cast<float>(currentTime - this->mStartTime);
             const float cycleDurationMs = this->mGaitParams.GetCycleDuration();
             const float normalizedTime = deltaTimeMs / cycleDurationMs;
             return (normalizedTime > 1.0F) ? 1.0F : normalizedTime;
         }
 
         bool GaitCycle::IsCycleComplete(const uint64_t currentTime) const {
-            const float deltaTimeMs =
-                    static_cast<float>(currentTime - this->mStartTime);
+            const float deltaTimeMs = static_cast<float>(currentTime - this->mStartTime);
             const float cycleDurationMs = this->mGaitParams.GetCycleDuration();
             return deltaTimeMs >= cycleDurationMs;
         }
 
         void GaitCycle::AdvanceToNextCycle(const uint64_t currentTime) {
             this->mStartTime = currentTime;
-            this->mStepPositionIndex =
-                    (this->mStepPositionIndex + 1U) % this->mPositions.size();
+            this->mStepPositionIndex = (this->mStepPositionIndex + 1U) % this->mPositions.size();
         }
     } // namespace Gait
 } // namespace Move

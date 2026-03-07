@@ -12,8 +12,7 @@ namespace Bot
 
             MOCK_METHOD1(Update, void(const uint64_t));
 
-            MOCK_METHOD2(UpdateWalkStatus,
-                         void(const Move::Walk::EWalkStatus, const uint16_t));
+            MOCK_METHOD2(UpdateWalkStatus, void(const Move::Walk::EWalkStatus, const uint16_t));
 
             MOCK_METHOD0(GetWalkStatus, Move::Walk::EWalkStatus(void));
 

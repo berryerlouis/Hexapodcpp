@@ -24,18 +24,17 @@ namespace Component
 
                 ~Srf05() = default;
 
-                Core::Status Initialize(void) final override;
+                Core::Status         Initialize(void) final override;
 
-                void         Update(const uint64_t currentTime) final override;
+                void                 Update(const uint64_t currentTime) final override;
 
-                void         SendPulse(void) const;
+                void                 SendPulse(void) const;
 
-                virtual uint16_t GetDistance(void) final override;
+                virtual uint16_t     GetDistance(void) final override;
 
-                virtual uint16_t GetThreshold(void) final override;
+                virtual uint16_t     GetThreshold(void) final override;
 
-                virtual Core::Status
-                SetThreshold(const uint16_t threshold) final override;
+                virtual Core::Status SetThreshold(const uint16_t threshold) final override;
 
             private:
                 Cluster::EProximityCommands                  mSide;

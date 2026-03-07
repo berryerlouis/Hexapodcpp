@@ -38,41 +38,27 @@ namespace Component
                     EXPECT_CALL(mMockTwi, WriteRegister(_, 0xBF, 0x00))
                             .InSequence(sWrite)
                             .WillOnce(Return(true));
-                    EXPECT_CALL(
-                            mMockTwi,
-                            ReadRegister(
-                                    _,
-                                    Vl53l0x::VL53L0X_IDENTIFICATION_MODEL_ID,
-                                    _))
+                    EXPECT_CALL(mMockTwi,
+                                ReadRegister(_, Vl53l0x::VL53L0X_IDENTIFICATION_MODEL_ID, _))
                             .InSequence(sRead)
-                            .WillOnce(DoAll(SetArgReferee<2U>(0x00U),
-                                            Return(true)));
+                            .WillOnce(DoAll(SetArgReferee<2U>(0x00U), Return(true)));
                     EXPECT_CALL(mMockTwi, WriteRegister(_, 0xBF, 0x01))
                             .InSequence(sWrite)
                             .WillOnce(Return(true));
-                    EXPECT_CALL(
-                            mMockTwi,
-                            ReadRegister(
-                                    _,
-                                    Vl53l0x::VL53L0X_IDENTIFICATION_MODEL_ID,
-                                    _))
+                    EXPECT_CALL(mMockTwi,
+                                ReadRegister(_, Vl53l0x::VL53L0X_IDENTIFICATION_MODEL_ID, _))
                             .InSequence(sRead)
-                            .WillOnce(DoAll(SetArgReferee<2U>(0xEEU),
-                                            Return(true)));
+                            .WillOnce(DoAll(SetArgReferee<2U>(0xEEU), Return(true)));
 
                     EXPECT_CALL(mMockTwi, ReadRegister(_, _, _))
                             .InSequence(sRead)
-                            .WillRepeatedly(DoAll(SetArgReferee<2U>(0x07U),
-                                                  Return(true)));
+                            .WillRepeatedly(DoAll(SetArgReferee<2U>(0x07U), Return(true)));
                     EXPECT_CALL(mMockTwi, WriteRegister(_, _, _))
                             .InSequence(sWrite)
                             .WillRepeatedly(Return(true));
-                    EXPECT_CALL(mMockTwi, ReadRegisters(_, _, _, _))
-                            .WillRepeatedly(Return(true));
-                    EXPECT_CALL(mMockTwi, WriteRegisters(_, _, _, _))
-                            .WillRepeatedly(Return(true));
-                    EXPECT_CALL(mMockTwi, ReadRegister16Bits(_, _, _))
-                            .WillRepeatedly(Return(true));
+                    EXPECT_CALL(mMockTwi, ReadRegisters(_, _, _, _)).WillRepeatedly(Return(true));
+                    EXPECT_CALL(mMockTwi, WriteRegisters(_, _, _, _)).WillRepeatedly(Return(true));
+                    EXPECT_CALL(mMockTwi, ReadRegister16Bits(_, _, _)).WillRepeatedly(Return(true));
                     EXPECT_CALL(mMockTwi, WriteRegister16Bits(_, _, _))
                             .WillRepeatedly(Return(true));
                     EXPECT_CALL(mMockTwi, WriteRegister32Bits(_, _, _))
@@ -101,16 +87,13 @@ namespace Component
                 EXPECT_CALL(mMockLed, Off());
                 EXPECT_CALL(mMockTwi, ReadRegister(_, _, _))
                         .InSequence(s)
-                        .WillOnce(
-                                DoAll(SetArgReferee<2U>(0x07U), Return(true)));
+                        .WillOnce(DoAll(SetArgReferee<2U>(0x07U), Return(true)));
                 EXPECT_CALL(mMockTwi, ReadRegister(_, _, _))
                         .InSequence(s)
-                        .WillOnce(
-                                DoAll(SetArgReferee<2U>(0x00U), Return(true)));
+                        .WillOnce(DoAll(SetArgReferee<2U>(0x00U), Return(true)));
                 EXPECT_CALL(mMockTwi, ReadRegister(_, _, _))
                         .InSequence(s)
-                        .WillOnce(
-                                DoAll(SetArgReferee<2U>(0x07U), Return(true)));
+                        .WillOnce(DoAll(SetArgReferee<2U>(0x07U), Return(true)));
                 mVl53l0x.Update(0U);
             }
 

@@ -7,9 +7,7 @@ namespace Component
         static Sound *sound[NB_SENSORS_SOUND] = {};
         uint8_t       Sound::soundIndex = 0U;
 
-        Sound::Sound(const SoundId       &soundId,
-                     Gpio::GpioInterface &gpio,
-                     Led::LedInterface   &led)
+        Sound::Sound(const SoundId &soundId, Gpio::GpioInterface &gpio, Led::LedInterface &led)
             : mStartSoundTime(0UL)
             , mStopSoundTime(0UL)
             , mGpioSound(gpio)
@@ -27,9 +25,7 @@ namespace Component
             this->mStopSoundTime = 0U;
             this->mLed.Off();
             this->mGpioSound.SetInterruptPin(Sound::InterruptGpioSoundHit);
-            LOG_COMPONENT_DEBUG("Sound",
-                                "pin %d Initialized.",
-                                this->mGpioSound.GetPin().pin);
+            LOG_COMPONENT_DEBUG("Sound", "pin %d Initialized.", this->mGpioSound.GetPin().pin);
             return success;
         }
 
@@ -41,10 +37,8 @@ namespace Component
                 this->mStopSoundTime = Timer::Tick::GetInstance().GetUs();
                 this->mLed.Off();
                 if (this->mStartSoundTime != 0U &&
-                    this->mIntervalSoundTimeArrayIndex <
-                            NB_MAX_INTERVAL_SOUND_TIME) {
-                    this->mIntervalSoundTimeArray
-                            [this->mIntervalSoundTimeArrayIndex] =
+                    this->mIntervalSoundTimeArrayIndex < NB_MAX_INTERVAL_SOUND_TIME) {
+                    this->mIntervalSoundTimeArray[this->mIntervalSoundTimeArrayIndex] =
                             this->mStopSoundTime - this->mStartSoundTime;
                     this->mIntervalSoundTimeArrayIndex++;
                 }
@@ -57,10 +51,8 @@ namespace Component
             // signal
             if (this->mStopSoundTime < this->mStartSoundTime) {
                 this->mStopSoundTime = Timer::Tick::GetInstance().GetUs();
-                if (this->mIntervalSoundTimeArrayIndex <
-                    NB_MAX_INTERVAL_SOUND_TIME) {
-                    this->mIntervalSoundTimeArray
-                            [this->mIntervalSoundTimeArrayIndex] =
+                if (this->mIntervalSoundTimeArrayIndex < NB_MAX_INTERVAL_SOUND_TIME) {
+                    this->mIntervalSoundTimeArray[this->mIntervalSoundTimeArrayIndex] =
                             this->mStopSoundTime - this->mStartSoundTime;
                     this->mIntervalSoundTimeArrayIndex++;
                 }
@@ -70,14 +62,11 @@ namespace Component
             if (this->mIntervalSoundTimeArrayIndex > 0U) {
                 // make the average of all hits interval
                 this->mAverageIntervalSoundTime = 0U;
-                for (uint8_t indexInterval = 0U;
-                     indexInterval < this->mIntervalSoundTimeArrayIndex;
+                for (uint8_t indexInterval = 0U; indexInterval < this->mIntervalSoundTimeArrayIndex;
                      indexInterval++) {
-                    this->mAverageIntervalSoundTime +=
-                            this->mIntervalSoundTimeArray[indexInterval];
+                    this->mAverageIntervalSoundTime += this->mIntervalSoundTimeArray[indexInterval];
                 }
-                this->mAverageIntervalSoundTime /=
-                        this->mIntervalSoundTimeArrayIndex;
+                this->mAverageIntervalSoundTime /= this->mIntervalSoundTimeArrayIndex;
             }
             this->mIntervalSoundTimeArrayIndex = 0U;
         }
@@ -89,15 +78,13 @@ namespace Component
         SoundStruct Sound::ComputeAndNotifyMaxSound() {
             SoundStruct    soundStruct = {.id = SOUND_NONE, .delay = 0U};
             const uint64_t soundLeft = sound[SOUND_LEFT]->GetIntervalSoundHit();
-            const uint64_t soundRight =
-                    sound[SOUND_RIGHT]->GetIntervalSoundHit();
+            const uint64_t soundRight = sound[SOUND_RIGHT]->GetIntervalSoundHit();
             sound[SOUND_LEFT]->mStartSoundTime = 0U;
             sound[SOUND_RIGHT]->mStartSoundTime = 0U;
             sound[SOUND_LEFT]->mAverageIntervalSoundTime = 0U;
             sound[SOUND_RIGHT]->mAverageIntervalSoundTime = 0U;
 
-            for (uint8_t indexInterval = 0U; indexInterval < 100U;
-                 indexInterval++) {
+            for (uint8_t indexInterval = 0U; indexInterval < 100U; indexInterval++) {
                 sound[SOUND_LEFT]->mIntervalSoundTimeArray[indexInterval] = 0U;
                 sound[SOUND_RIGHT]->mIntervalSoundTimeArray[indexInterval] = 0U;
             }

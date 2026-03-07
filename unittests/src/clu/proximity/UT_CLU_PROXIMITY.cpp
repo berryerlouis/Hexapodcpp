@@ -29,8 +29,7 @@ namespace Cluster
             virtual ~UT_CLU_PROXIMITY() = default;
 
             /* Mocks */
-            StrictMock<Component::Proximity::MockSensorProximity>
-                    mMockSensorProximity;
+            StrictMock<Component::Proximity::MockSensorProximity> mMockSensorProximity;
 
             /* Test class */
             ClusterProximity mClusterProximity;
@@ -55,8 +54,7 @@ namespace Cluster
             Core::Status success = Core::Status::CORE_ERROR;
             const Frame  request(PROXIMITY, US_LEFT);
             Frame        response;
-            EXPECT_CALL(mMockSensorProximity,
-                        GetDistance(static_cast<SensorsId>(US_LEFT)))
+            EXPECT_CALL(mMockSensorProximity, GetDistance(static_cast<SensorsId>(US_LEFT)))
                     .WillOnce(Return(10U));
             success = mClusterProximity.ExecuteFrame(request, response);
 
@@ -72,8 +70,7 @@ namespace Cluster
             Core::Status success = Core::Status::CORE_ERROR;
             const Frame  request(PROXIMITY, US_RIGHT);
             Frame        response;
-            EXPECT_CALL(mMockSensorProximity,
-                        GetDistance(static_cast<SensorsId>(US_RIGHT)))
+            EXPECT_CALL(mMockSensorProximity, GetDistance(static_cast<SensorsId>(US_RIGHT)))
                     .WillOnce(Return(10U));
             success = mClusterProximity.ExecuteFrame(request, response);
 
@@ -89,8 +86,7 @@ namespace Cluster
             Core::Status success = Core::Status::CORE_ERROR;
             const Frame  request(PROXIMITY, LASER);
             Frame        response;
-            EXPECT_CALL(mMockSensorProximity,
-                        GetDistance(static_cast<SensorsId>(LASER)))
+            EXPECT_CALL(mMockSensorProximity, GetDistance(static_cast<SensorsId>(LASER)))
                     .WillOnce(Return(10U));
             success = mClusterProximity.ExecuteFrame(request, response);
 
@@ -109,8 +105,7 @@ namespace Cluster
             request.Set2BytesParam(10U);
 
             Frame response;
-            EXPECT_CALL(mMockSensorProximity,
-                        SetThreshold(static_cast<SensorsId>(LASER), 10U))
+            EXPECT_CALL(mMockSensorProximity, SetThreshold(static_cast<SensorsId>(LASER), 10U))
                     .WillOnce(Return(Core::Status::CORE_OK));
             success = mClusterProximity.ExecuteFrame(request, response);
 

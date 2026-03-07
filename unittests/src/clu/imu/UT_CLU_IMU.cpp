@@ -59,12 +59,9 @@ namespace Cluster
             Frame        request;
 
             request.Build(IMU, EImuCommands::ALL);
-            EXPECT_CALL(mMockMpu9150, ReadAcc())
-                    .WillOnce(Return(Vector3{5, 5, 5}));
-            EXPECT_CALL(mMockMpu9150, ReadGyr())
-                    .WillOnce(Return(Vector3{5, 5, 5}));
-            EXPECT_CALL(mMockMpu9150, ReadMag())
-                    .WillOnce(Return(Vector3{5, 5, 5}));
+            EXPECT_CALL(mMockMpu9150, ReadAcc()).WillOnce(Return(Vector3{5, 5, 5}));
+            EXPECT_CALL(mMockMpu9150, ReadGyr()).WillOnce(Return(Vector3{5, 5, 5}));
+            EXPECT_CALL(mMockMpu9150, ReadMag()).WillOnce(Return(Vector3{5, 5, 5}));
             EXPECT_CALL(mMockMpu9150, ReadTemp()).WillOnce(Return(25));
 
             success = mClusterImu.ExecuteFrame(request, response);
@@ -81,8 +78,7 @@ namespace Cluster
             Frame        request;
 
             request.Build(IMU, EImuCommands::ACC);
-            EXPECT_CALL(mMockMpu9150, ReadAcc())
-                    .WillOnce(Return(Vector3{5, 5, 5}));
+            EXPECT_CALL(mMockMpu9150, ReadAcc()).WillOnce(Return(Vector3{5, 5, 5}));
 
             success = mClusterImu.ExecuteFrame(request, response);
 
@@ -98,8 +94,7 @@ namespace Cluster
             Frame        request;
 
             request.Build(IMU, EImuCommands::GYR);
-            EXPECT_CALL(mMockMpu9150, ReadGyr())
-                    .WillOnce(Return(Vector3{5, 5, 5}));
+            EXPECT_CALL(mMockMpu9150, ReadGyr()).WillOnce(Return(Vector3{5, 5, 5}));
 
             success = mClusterImu.ExecuteFrame(request, response);
 
@@ -115,8 +110,7 @@ namespace Cluster
             Frame        request;
 
             request.Build(IMU, EImuCommands::MAG);
-            EXPECT_CALL(mMockMpu9150, ReadMag())
-                    .WillOnce(Return(Vector3{5, 5, 5}));
+            EXPECT_CALL(mMockMpu9150, ReadMag()).WillOnce(Return(Vector3{5, 5, 5}));
 
             success = mClusterImu.ExecuteFrame(request, response);
 
@@ -149,8 +143,7 @@ namespace Cluster
             Imu3d        imu3d;
 
             request.Build(IMU, EImuCommands::YAW_PITCH_ROLL);
-            EXPECT_CALL(mMockMpu9150, ReadYawPitchRoll())
-                    .WillOnce(Return(imu3d));
+            EXPECT_CALL(mMockMpu9150, ReadYawPitchRoll()).WillOnce(Return(imu3d));
 
             success = mClusterImu.ExecuteFrame(request, response);
 
@@ -167,8 +160,7 @@ namespace Cluster
             int32_t      pressure = 10U;
 
             request.Build(IMU, EImuCommands::PRESSURE);
-            EXPECT_CALL(mMockBarometer, GetPressure())
-                    .WillOnce(Return(pressure));
+            EXPECT_CALL(mMockBarometer, GetPressure()).WillOnce(Return(pressure));
 
             success = mClusterImu.ExecuteFrame(request, response);
 
@@ -185,8 +177,7 @@ namespace Cluster
             uint16_t     seaLevel = 10U;
 
             request.Build(IMU, EImuCommands::ALTITUDE);
-            EXPECT_CALL(mMockBarometer, GetAltitude())
-                    .WillOnce(Return(seaLevel));
+            EXPECT_CALL(mMockBarometer, GetAltitude()).WillOnce(Return(seaLevel));
 
             success = mClusterImu.ExecuteFrame(request, response);
 
@@ -221,8 +212,7 @@ namespace Cluster
             request.Build(IMU, EImuCommands::CALIB_SENSOR);
             request.Set1ByteParam((uint8_t) SensorsImu::ACCEL);
             request.Set1ByteParam(true);
-            EXPECT_CALL(mMockMpu9150, StartCalibration(SensorsImu::ACCEL))
-                    .Times(1U);
+            EXPECT_CALL(mMockMpu9150, StartCalibration(SensorsImu::ACCEL)).Times(1U);
 
             success = mClusterImu.ExecuteFrame(request, response);
 
@@ -240,8 +230,7 @@ namespace Cluster
             request.Build(IMU, EImuCommands::CALIB_SENSOR);
             request.Set1ByteParam((uint8_t) SensorsImu::ACCEL);
             request.Set1ByteParam(false);
-            EXPECT_CALL(mMockMpu9150, StopCalibration(SensorsImu::ACCEL))
-                    .Times(1U);
+            EXPECT_CALL(mMockMpu9150, StopCalibration(SensorsImu::ACCEL)).Times(1U);
 
             success = mClusterImu.ExecuteFrame(request, response);
 

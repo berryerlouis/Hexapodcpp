@@ -11,22 +11,20 @@ namespace Service
         using namespace Component::Imu;
         using namespace Component::Barometer;
 
-        class ServiceOrientation : public Service,
-                                   Event::EventListenerInterface {
+        class ServiceOrientation : public Service, Event::EventListenerInterface {
         public:
-            ServiceOrientation(
-                    Mpu9150Interface                &imu,
-                    BarometerInterface              &barometer,
-                    Message::MessageInterface       &messageListener,
-                    Event::EventDispatcherInterface &eventDispatcher);
+            ServiceOrientation(Mpu9150Interface                &imu,
+                               BarometerInterface              &barometer,
+                               Message::MessageInterface       &messageListener,
+                               Event::EventDispatcherInterface &eventDispatcher);
 
             ~ServiceOrientation() = default;
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void OnEvent(const Event::Event &event) final override;
+            virtual void         OnEvent(const Event::Event &event) final override;
 
         protected:
             Mpu9150Interface   &mImu;

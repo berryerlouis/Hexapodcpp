@@ -12,8 +12,7 @@ namespace Component
 
             ~ServoInterface() = default;
 
-            virtual Core::Status SetAngle(const uint8_t  angle,
-                                          const uint16_t travelTime) = 0;
+            virtual Core::Status SetAngle(const uint8_t angle, const uint16_t travelTime) = 0;
 
             virtual uint8_t      GetAngle(void) const = 0;
 

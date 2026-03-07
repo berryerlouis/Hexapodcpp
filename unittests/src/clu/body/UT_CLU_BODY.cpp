@@ -94,8 +94,7 @@ namespace Cluster
             Frame        request;
             Frame        response;
 
-            EXPECT_CALL(mBodyMock,
-                        UpdateWalkStatus(Move::Walk::EWalkStatus::WALKING, 10U))
+            EXPECT_CALL(mBodyMock, UpdateWalkStatus(Move::Walk::EWalkStatus::WALKING, 10U))
                     .Times(1U);
             EXPECT_CALL(mBodyMock, GetWalkStatus()).Times(1U);
             request.Build(BODY, EBodyCommands::SET_WALK_STATUS);

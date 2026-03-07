@@ -41,14 +41,11 @@ namespace Component
         TEST_F(UT_CMP_PCA9685, Initialize_Ok) {
             Core::Status success = Core::Status::CORE_ERROR;
 
-            EXPECT_CALL(mMockTwi,
-                        WriteRegister(_, Pca9685::ERegister::MODE1, _))
+            EXPECT_CALL(mMockTwi, WriteRegister(_, Pca9685::ERegister::MODE1, _))
                     .WillRepeatedly(Return(true));
             EXPECT_CALL(mMockTwi, ReadRegister(_, Pca9685::ERegister::MODE1, _))
                     .WillRepeatedly(Return(true));
-            EXPECT_CALL(
-                    mMockTwi,
-                    WriteRegister(_, (uint8_t) Pca9685::ERegister::PRESCALE, _))
+            EXPECT_CALL(mMockTwi, WriteRegister(_, (uint8_t) Pca9685::ERegister::PRESCALE, _))
                     .WillOnce(Return(true));
 
             success = mPca9685.Initialize();
@@ -59,21 +56,15 @@ namespace Component
         TEST_F(UT_CMP_PCA9685, Update_Ok) {
             Core::Status success = Core::Status::CORE_ERROR;
 
-            EXPECT_CALL(mMockTwi,
-                        WriteRegister(_, Pca9685::ERegister::MODE1, _))
+            EXPECT_CALL(mMockTwi, WriteRegister(_, Pca9685::ERegister::MODE1, _))
                     .WillRepeatedly(Return(true));
             EXPECT_CALL(mMockTwi, ReadRegister(_, Pca9685::ERegister::MODE1, _))
                     .WillRepeatedly(Return(true));
-            EXPECT_CALL(
-                    mMockTwi,
-                    WriteRegister(_, (uint8_t) Pca9685::ERegister::PRESCALE, _))
+            EXPECT_CALL(mMockTwi, WriteRegister(_, (uint8_t) Pca9685::ERegister::PRESCALE, _))
                     .WillOnce(Return(true));
 
 
-            EXPECT_CALL(
-                    mMockTwi,
-                    WriteRegisters(
-                            _, (uint8_t) Pca9685::ERegister::LED0_ON_L, _, _))
+            EXPECT_CALL(mMockTwi, WriteRegisters(_, (uint8_t) Pca9685::ERegister::LED0_ON_L, _, _))
                     .WillOnce(Return(true));
 
             success = mPca9685.Initialize();
@@ -83,8 +74,7 @@ namespace Component
         }
 
         TEST_F(UT_CMP_PCA9685, Sleep_Ok) {
-            EXPECT_CALL(mMockTwi,
-                        ReadRegister(_, (uint8_t) Pca9685::ERegister::MODE1, _))
+            EXPECT_CALL(mMockTwi, ReadRegister(_, (uint8_t) Pca9685::ERegister::MODE1, _))
                     .WillOnce(DoAll(SetArgReferee<2U>(0U), Return(true)));
 
             EXPECT_CALL(mMockTwi,
@@ -96,13 +86,10 @@ namespace Component
         }
 
         TEST_F(UT_CMP_PCA9685, WakeUp_Ok) {
-            EXPECT_CALL(mMockTwi,
-                        ReadRegister(_, (uint8_t) Pca9685::ERegister::MODE1, _))
+            EXPECT_CALL(mMockTwi, ReadRegister(_, (uint8_t) Pca9685::ERegister::MODE1, _))
                     .WillOnce(DoAll(SetArgReferee<2U>(0U), Return(true)));
 
-            EXPECT_CALL(
-                    mMockTwi,
-                    WriteRegister(_, (uint8_t) Pca9685::ERegister::MODE1, 0U))
+            EXPECT_CALL(mMockTwi, WriteRegister(_, (uint8_t) Pca9685::ERegister::MODE1, 0U))
                     .WillOnce(Return(true));
             mPca9685.WakeUp();
         }

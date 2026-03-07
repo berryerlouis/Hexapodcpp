@@ -28,13 +28,10 @@ namespace Service
             }
 
             virtual void SetUp() {
-                EXPECT_CALL(mMockButton, Initialize())
-                        .WillOnce(Return(Core::Status::CORE_ERROR));
-                EXPECT_EQ(Core::Status::CORE_ERROR,
-                          mServiceButton.Initialize());
+                EXPECT_CALL(mMockButton, Initialize()).WillOnce(Return(Core::Status::CORE_ERROR));
+                EXPECT_EQ(Core::Status::CORE_ERROR, mServiceButton.Initialize());
 
-                EXPECT_CALL(mMockButton, Initialize())
-                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockButton, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockEventDispatcherInterface, AddListener(_));
                 EXPECT_EQ(Core::Status::CORE_OK, mServiceButton.Initialize());
             }
@@ -45,10 +42,9 @@ namespace Service
             virtual ~UT_SRV_BUTTON() = default;
 
             /* Mocks */
-            StrictMock<Event::MockEventDispatcherInterface>
-                    mMockEventDispatcherInterface;
-            StrictMock<Message::MockMessageInterface> mMockMessageInterface;
-            StrictMock<Component::Button::MockButton> mMockButton;
+            StrictMock<Event::MockEventDispatcherInterface> mMockEventDispatcherInterface;
+            StrictMock<Message::MockMessageInterface>       mMockMessageInterface;
+            StrictMock<Component::Button::MockButton>       mMockButton;
 
             /* Test class */
             ServiceButton mServiceButton;
@@ -63,20 +59,16 @@ namespace Service
             constexpr ButtonState ButtonState = ButtonState::RELEASE;
 
             Frame                 response;
-            Cluster::Button::ClusterButton::BuildFrameGetButtonState(
-                    ButtonState, response);
+            Cluster::Button::ClusterButton::BuildFrameGetButtonState(ButtonState, response);
             EXPECT_CALL(mMockMessageInterface, SendMessage(response)).Times(1U);
-            EXPECT_CALL(mMockEventDispatcherInterface, DispatchEvent(_))
-                    .Times(1U);
+            EXPECT_CALL(mMockEventDispatcherInterface, DispatchEvent(_)).Times(1U);
             mServiceButton.Notified({ButtonState, 10U});
         }
 
         TEST_F(UT_SRV_BUTTON, OnEvent) {
             const Component::Button::ButtonStruct button(
-                    {.state = Component::Button::ButtonState::PUSH,
-                     .delayMs = 10U});
-            const Event::Event event = Event::Event(
-                    BUTTON, EventType::EVENT_BUTTON_UPDATE, button);
+                    {.state = Component::Button::ButtonState::PUSH, .delayMs = 10U});
+            const Event::Event event = Event::Event(BUTTON, EventType::EVENT_BUTTON_UPDATE, button);
             mServiceButton.OnEvent(event);
         }
     } // namespace Button

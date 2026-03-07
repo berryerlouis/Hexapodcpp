@@ -28,9 +28,7 @@ namespace Service
             EventType eventType;
             EServices serviceId;
             std::any  eventArg;
-            Event(const EServices serviceId,
-                  const EventType eventType,
-                  const std::any &eventArg) {
+            Event(const EServices serviceId, const EventType eventType, const std::any &eventArg) {
                 this->serviceId = serviceId;
                 this->eventType = eventType;
                 this->eventArg = eventArg;
@@ -54,8 +52,7 @@ namespace Service
                 }
             }
             bool operator==(const Event &other) const {
-                return (this->serviceId == other.serviceId &&
-                        this->eventType == other.eventType &&
+                return (this->serviceId == other.serviceId && this->eventType == other.eventType &&
                         this->eventArg.type() == other.eventArg.type());
             }
         };

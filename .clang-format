@@ -42,7 +42,7 @@ ConstructorInitializerAllOnOneLineOrOnePerLine: true
 AllowAllConstructorInitializersOnNextLine: false
 AllowShortBlocksOnASingleLine: Never
 AllowShortCaseLabelsOnASingleLine: false
-ColumnLimit: 80
+ColumnLimit: 100
 ContinuationIndentWidth: 8
 IncludeCategories:
   - Regex: '^<.*'

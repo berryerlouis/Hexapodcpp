@@ -11,8 +11,11 @@ namespace Component
 
         class Pca9685 : public Pca9685Interface {
         public:
-            static const uint8_t  PCA9685_I2C_ADDRESS = 0x40U;
-            static const uint16_t SERVO_FREQUENCY = 300U;
+            static const uint8_t   PCA9685_I2C_ADDRESS = 0x40U;
+            static const uint16_t  PCA9685_FREQUENCY = 300U;
+            static const uint16_t  PCA9685_MAX_STEPS = 4096U;
+            static constexpr float PCA9685_STEP =
+                    (1.0F / PCA9685_FREQUENCY) * 1000000.0F / PCA9685_MAX_STEPS;
 
             struct ERegister {
                 static const uint8_t MODE1 = 0x00;
@@ -65,24 +68,21 @@ namespace Component
                 uint16_t off;
             };
 
-            explicit Pca9685(Twi::TwiInterface &i2c,
-                             const uint8_t      address = PCA9685_I2C_ADDRESS);
+            explicit Pca9685(Twi::TwiInterface &i2c, const uint8_t address = PCA9685_I2C_ADDRESS);
 
             ~Pca9685() = default;
 
-            virtual void Reset(void) final override;
+            virtual void    Reset(void) final override;
 
-            virtual void Sleep(void) final override;
+            virtual void    Sleep(void) final override;
 
-            virtual void WakeUp(void) final override;
+            virtual void    WakeUp(void) final override;
 
-            virtual void
-            setOscillatorFrequency(const uint32_t frequency) final override;
+            virtual void    setOscillatorFrequency(const uint32_t frequency) final override;
 
-            virtual void SetFrequency(const uint16_t frequency) final override;
+            virtual void    SetFrequency(const uint16_t frequency) final override;
 
-            virtual void SetPwm(const uint8_t  num,
-                                const uint16_t off) final override;
+            virtual void    SetPwm(const uint8_t num, const uint16_t off) final override;
 
             virtual uint8_t GetAddress(void) final override;
 

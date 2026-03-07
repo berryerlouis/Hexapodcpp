@@ -6,10 +6,9 @@ namespace Service
 {
     namespace Button
     {
-        ServiceButton::ServiceButton(
-                ButtonInterface                 &ButtonInterface,
-                Message::MessageInterface       &messageListener,
-                Event::EventDispatcherInterface &eventDispatcher)
+        ServiceButton::ServiceButton(ButtonInterface                 &ButtonInterface,
+                                     Message::MessageInterface       &messageListener,
+                                     Event::EventDispatcherInterface &eventDispatcher)
             : Service(BUTTON, 10U, messageListener, eventDispatcher)
             , mButtonInterface(ButtonInterface) {
         }
@@ -30,11 +29,9 @@ namespace Service
 
         void ServiceButton::Notified(const ButtonStruct &button) {
             Frame response;
-            Cluster::Button::ClusterButton::BuildFrameGetButtonState(
-                    button.state, response);
+            Cluster::Button::ClusterButton::BuildFrameGetButtonState(button.state, response);
             this->SendMessage(response);
-            this->DispatchEvent<ButtonStruct>(EventType::EVENT_BUTTON_UPDATE,
-                                              button);
+            this->DispatchEvent<ButtonStruct>(EventType::EVENT_BUTTON_UPDATE, button);
         }
 
         void ServiceButton::OnEvent(const Event::Event &event) {

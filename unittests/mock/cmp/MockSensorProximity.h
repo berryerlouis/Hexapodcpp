@@ -16,8 +16,7 @@ namespace Component
 
             MOCK_METHOD1(GetThreshold, uint16_t(const SensorsId &));
 
-            MOCK_METHOD2(SetThreshold,
-                         Core::Status(const SensorsId &, uint16_t));
+            MOCK_METHOD2(SetThreshold, Core::Status(const SensorsId &, uint16_t));
         };
     } // namespace Proximity
 } // namespace Component

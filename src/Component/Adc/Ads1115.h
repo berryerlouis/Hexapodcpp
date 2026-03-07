@@ -103,15 +103,15 @@ namespace Component
         class Ads1115 : public Ads1115Interface {
         public:
             explicit Ads1115(Driver::Twi::TwiInterface &twi,
-                             const uint8_t address = ADS1115_ADDRESS);
+                             const uint8_t              address = ADS1115_ADDRESS);
 
             ~Ads1115() = default;
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void  Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual float ReadADC(const Ads1115Pin pin) const final override;
+            virtual float        ReadADC(const Ads1115Pin pin) const final override;
 
         private:
             bool IsReady(void) const;

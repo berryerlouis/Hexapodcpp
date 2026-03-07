@@ -56,18 +56,16 @@ namespace Component
 #define BUFFER_DISPLAY_LENGTH (SCREEN_WIDTH * ((SCREEN_HEIGHT + 7U) / 8U))
 
 
-            explicit Ssd1306(Twi::TwiInterface &twi,
-                             const uint8_t      address = SSD1306_ADDRESS);
+            explicit Ssd1306(Twi::TwiInterface &twi, const uint8_t address = SSD1306_ADDRESS);
 
             ~Ssd1306() = default;
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void DrawPixel(const uint16_t x,
-                                   const uint16_t y,
-                                   const uint16_t color) final override;
+            virtual void
+            DrawPixel(const uint16_t x, const uint16_t y, const uint16_t color) final override;
 
             virtual void DrawLine(const uint16_t x1,
                                   const uint16_t y1,
@@ -86,20 +84,17 @@ namespace Component
                                     const uint16_t r,
                                     const uint16_t color) final override;
 
-            virtual void
-            DrawChar(char                         c,
-                     uint16_t                     x,
-                     const uint16_t               y,
-                     const Bitmap::Bitmaps::Color color) final override;
+            virtual void DrawChar(char                         c,
+                                  uint16_t                     x,
+                                  const uint16_t               y,
+                                  const Bitmap::Bitmaps::Color color) final override;
 
-            virtual void
-            DrawString(const char                  *str,
-                       uint16_t                     x,
-                       const uint16_t               y,
-                       const Bitmap::Bitmaps::Color color) final override;
+            virtual void DrawString(const char                  *str,
+                                    uint16_t                     x,
+                                    const uint16_t               y,
+                                    const Bitmap::Bitmaps::Color color) final override;
 
-            virtual void
-                         DrawBitmap(const Bitmap::Bitmaps::SBitmap *bmp,
+            virtual void DrawBitmap(const Bitmap::Bitmaps::SBitmap *bmp,
                                     uint16_t                        x,
                                     uint16_t                        y,
                                     Bitmap::Bitmaps::Color          color) final override;

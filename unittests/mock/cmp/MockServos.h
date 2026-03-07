@@ -20,8 +20,7 @@ namespace Component
 
             MOCK_METHOD1(GetServo, Servo::ServoInterface *(const EServos));
 
-            MOCK_METHOD1(GetServosController,
-                         ServosController::Pca9685Interface &(const uint8_t));
+            MOCK_METHOD1(GetServosController, ServosController::Pca9685Interface &(const uint8_t));
         };
     } // namespace Servos
 } // namespace Component

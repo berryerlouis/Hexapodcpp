@@ -6,13 +6,10 @@
 
 namespace Bot
 {
-#define LOG_BOT_DEBUG(cmp, ...) \
-    LOG_GENERIC(DEBUG, BOT, "[" cmp "] " __VA_ARGS__)
+#define LOG_BOT_DEBUG(cmp, ...) LOG_GENERIC(DEBUG, BOT, "[" cmp "] " __VA_ARGS__)
 #define LOG_BOT_INFO(cmp, ...) LOG_GENERIC(INFO, BOT, "[" cmp "] " __VA_ARGS__)
-#define LOG_BOT_WARNING(cmp, ...) \
-    LOG_GENERIC(WARNING, BOT, "[" cmp "] " __VA_ARGS__)
-#define LOG_BOT_ERROR(cmp, ...) \
-    LOG_GENERIC(ERROR, BOT, "[" cmp "] " __VA_ARGS__)
+#define LOG_BOT_WARNING(cmp, ...) LOG_GENERIC(WARNING, BOT, "[" cmp "] " __VA_ARGS__)
+#define LOG_BOT_ERROR(cmp, ...) LOG_GENERIC(ERROR, BOT, "[" cmp "] " __VA_ARGS__)
 
     namespace Legs
     {

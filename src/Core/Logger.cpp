@@ -18,9 +18,8 @@ namespace Core
             const std::string color = GetColor(level);
             const std::string levelStr = LevelToString(level);
 
-            std::cout << "[" << CurrentTime() << "] " << color << "["
-                      << levelStr << "] " << formatted << LOG_COLOR_RESET
-                      << "\n";
+            std::cout << "[" << CurrentTime() << "] " << color << "[" << levelStr << "] "
+                      << formatted << LOG_COLOR_RESET << "\n";
         }
     }
 
@@ -94,8 +93,7 @@ namespace Core
         const auto now = std::chrono::system_clock::now();
         const auto now_time_t = std::chrono::system_clock::to_time_t(now);
         const auto now_ms =
-                std::chrono::duration_cast<std::chrono::milliseconds>(
-                        now.time_since_epoch()) %
+                std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) %
                 1000;
 
         // Convert to local time

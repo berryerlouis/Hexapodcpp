@@ -43,8 +43,7 @@ namespace Cluster
             request.Set1ByteParam(SOUND_LEFT);
             Frame response;
 
-            EXPECT_CALL(mMockSoundLeft, GetIntervalSoundHit())
-                    .WillOnce(Return(1110U));
+            EXPECT_CALL(mMockSoundLeft, GetIntervalSoundHit()).WillOnce(Return(1110U));
 
             success = mClusterSound.ExecuteFrame(request, response);
 
@@ -70,8 +69,7 @@ namespace Cluster
             request.Set1ByteParam(SOUND_RIGHT);
             Frame response;
 
-            EXPECT_CALL(mMockSoundRight, GetIntervalSoundHit())
-                    .WillOnce(Return(1110U));
+            EXPECT_CALL(mMockSoundRight, GetIntervalSoundHit()).WillOnce(Return(1110U));
 
             success = mClusterSound.ExecuteFrame(request, response);
 

@@ -23,11 +23,11 @@ namespace Service
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void Notified(const BatteryStruct &battery) final override;
+            virtual void         Notified(const BatteryStruct &battery) final override;
 
-            virtual void OnEvent(const Event::Event &event) final override;
+            virtual void         OnEvent(const Event::Event &event) final override;
 
         protected:
             BatteryInterface &mBatteryInterface;

@@ -22,8 +22,7 @@ namespace Component
 
         void Battery::Update(const uint64_t currentTime) {
             (void) currentTime;
-            this->mVoltage = static_cast<uint16_t>(
-                    this->mAdc.ReadADC(Adc::PIN_1) * 0.46F);
+            this->mVoltage = static_cast<uint16_t>(this->mAdc.ReadADC(Adc::PIN_1) * 0.46F);
             const float intensity = this->mAdc.ReadADC(Adc::PIN_0);
             this->mIntensity = static_cast<uint16_t>((intensity) * 0.066F);
             // static_cast<uint16_t>((intensity - 250.0F) *

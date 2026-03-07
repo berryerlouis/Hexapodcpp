@@ -25,8 +25,7 @@ namespace Move
             void SetUp() override {
                 // Setup default mock leg behavior
                 for (int i = 0; i < 6; i++) {
-                    ON_CALL(mMockLegs, GetLeg(_))
-                            .WillByDefault(Return(&mMockLeg[i]));
+                    ON_CALL(mMockLegs, GetLeg(_)).WillByDefault(Return(&mMockLeg[i]));
                 }
             }
 
@@ -77,12 +76,8 @@ namespace Move
 
             // When not running but cycle not complete,
             // should call GetLegs and Update
-            EXPECT_CALL(mMockLegs, GetLegs())
-                    .Times(1)
-                    .WillOnce(::testing::ReturnRef(mockLegsMap));
-            EXPECT_CALL(mMockLegs, Update())
-                    .Times(1)
-                    .WillOnce(Return(Core::Status::CORE_OK));
+            EXPECT_CALL(mMockLegs, GetLegs()).Times(1).WillOnce(::testing::ReturnRef(mockLegsMap));
+            EXPECT_CALL(mMockLegs, Update()).Times(1).WillOnce(Return(Core::Status::CORE_OK));
 
             gaitCycle.Pause(); // Pause to set running to
                                // false
@@ -97,12 +92,8 @@ namespace Move
 
             // Update should call GetLegs to get the map,
             // then Update
-            EXPECT_CALL(mMockLegs, GetLegs())
-                    .Times(1)
-                    .WillOnce(::testing::ReturnRef(mockLegsMap));
-            EXPECT_CALL(mMockLegs, Update())
-                    .Times(1)
-                    .WillOnce(Return(Core::Status::CORE_OK));
+            EXPECT_CALL(mMockLegs, GetLegs()).Times(1).WillOnce(::testing::ReturnRef(mockLegsMap));
+            EXPECT_CALL(mMockLegs, Update()).Times(1).WillOnce(Return(Core::Status::CORE_OK));
 
             gaitCycle.Update(500U);
         }
@@ -120,22 +111,14 @@ namespace Move
 
             // Update at 500ms (mid-cycle) - should call
             // GetLegs once and Update once
-            EXPECT_CALL(mMockLegs, GetLegs())
-                    .Times(1)
-                    .WillOnce(::testing::ReturnRef(mockLegsMap));
-            EXPECT_CALL(mMockLegs, Update())
-                    .Times(1)
-                    .WillOnce(Return(Core::Status::CORE_OK));
+            EXPECT_CALL(mMockLegs, GetLegs()).Times(1).WillOnce(::testing::ReturnRef(mockLegsMap));
+            EXPECT_CALL(mMockLegs, Update()).Times(1).WillOnce(Return(Core::Status::CORE_OK));
             gaitCycle.Update(500U);
 
             // Update at 1100ms (cycle complete) - should
             // call GetLegs once and Update once
-            EXPECT_CALL(mMockLegs, GetLegs())
-                    .Times(1)
-                    .WillOnce(::testing::ReturnRef(mockLegsMap));
-            EXPECT_CALL(mMockLegs, Update())
-                    .Times(1)
-                    .WillOnce(Return(Core::Status::CORE_OK));
+            EXPECT_CALL(mMockLegs, GetLegs()).Times(1).WillOnce(::testing::ReturnRef(mockLegsMap));
+            EXPECT_CALL(mMockLegs, Update()).Times(1).WillOnce(Return(Core::Status::CORE_OK));
             gaitCycle.Update(1100U);
         }
     } // namespace Gait

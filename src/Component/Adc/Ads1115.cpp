@@ -24,8 +24,7 @@ namespace Component
         }
 
         Core::Status Ads1115::Initialize() {
-            LOG_COMPONENT_DEBUG(
-                    "Ads1115", "address 0x%02X Initialized.", this->mAddress);
+            LOG_COMPONENT_DEBUG("Ads1115", "address 0x%02X Initialized.", this->mAddress);
             return (Core::Status::CORE_OK);
         }
 
@@ -38,12 +37,10 @@ namespace Component
             uint16_t value = 0U;
             uint8_t  timeout = 0U;
 
-            while ((timeout < 100U) &&
-                   ((value & ADS1115_REG_CONFIG_OS_NOTBUSY) == 0U)) {
+            while ((timeout < 100U) && ((value & ADS1115_REG_CONFIG_OS_NOTBUSY) == 0U)) {
                 usleep(1U);
                 timeout++;
-                this->mTwi.ReadRegisters(
-                        this->mAddress, ADS1115_REG_POINTER_CONFIG, buffer, 2U);
+                this->mTwi.ReadRegisters(this->mAddress, ADS1115_REG_POINTER_CONFIG, buffer, 2U);
                 value = (static_cast<uint16_t>(buffer[0U]) << 8U) +
                         static_cast<uint16_t>(buffer[1U]);
             }
@@ -52,12 +49,9 @@ namespace Component
 
         float Ads1115::ReadADC(const Ads1115Pin pin) const {
             // Start with default values
-            uint16_t config = ADS1115_REG_CONFIG_CQUE_1CONV |
-                              ADS1115_REG_CONFIG_CLAT_NONLAT |
-                              ADS1115_REG_CONFIG_CPOL_ACTVLOW |
-                              ADS1115_REG_CONFIG_CMODE_TRAD |
-                              ADS1115_REG_CONFIG_MODE_SINGLE |
-                              ADS1115_REG_CONFIG_OS_SINGLE;
+            uint16_t config = ADS1115_REG_CONFIG_CQUE_1CONV | ADS1115_REG_CONFIG_CLAT_NONLAT |
+                              ADS1115_REG_CONFIG_CPOL_ACTVLOW | ADS1115_REG_CONFIG_CMODE_TRAD |
+                              ADS1115_REG_CONFIG_MODE_SINGLE | ADS1115_REG_CONFIG_OS_SINGLE;
             config |= mGain;
             config |= mSps;
 
@@ -79,14 +73,10 @@ namespace Component
 
             buffer[0U] = config >> 8U;
             buffer[1U] = config & 0xFFU;
-            this->mTwi.WriteRegisters(
-                    this->mAddress, ADS1115_REG_POINTER_CONFIG, buffer, 2U);
+            this->mTwi.WriteRegisters(this->mAddress, ADS1115_REG_POINTER_CONFIG, buffer, 2U);
 
             if (this->IsReady()) {
-                this->mTwi.ReadRegisters(this->mAddress,
-                                         ADS1115_REG_POINTER_CONVERT,
-                                         buffer,
-                                         2U);
+                this->mTwi.ReadRegisters(this->mAddress, ADS1115_REG_POINTER_CONVERT, buffer, 2U);
                 return ((static_cast<uint16_t>(buffer[0U]) << 8U) +
                         static_cast<uint16_t>(buffer[1U])) *
                        (6144.0F / 32768.0F);

@@ -28,7 +28,7 @@ namespace Bot
                                                    const bool               isRotated,
                                                    const float              rotation,
                                                    const bool               clockWize,
-                                                   const uint64_t timeStamp) = 0;
+                                                   const uint64_t           timeStamp) = 0;
 
             virtual Legs::ELeg   GetId(void) const = 0;
 
@@ -39,24 +39,20 @@ namespace Bot
                                               const Position3d &bodyIk,
                                               const uint16_t    travelTime) = 0;
 
-            virtual void         ComputeDirection(Position3d &position,
-                                                  float       angleDirection) const = 0;
+            virtual void ComputeDirection(Position3d &position, float angleDirection) const = 0;
 
-            virtual void         ComputeRotation(Position3d &position,
-                                                 float       angleRotation,
-                                                 bool        clockwize) const = 0;
+            virtual void
+            ComputeRotation(Position3d &position, float angleRotation, bool clockwize) const = 0;
 
-            virtual void         ComputeAmplitude(Position3d &position,
-                                                  uint8_t     amplitude) = 0;
+            virtual void       ComputeAmplitude(Position3d &position, uint8_t amplitude) = 0;
 
-            virtual void         ComputeElevation(Position3d &position,
-                                                  uint8_t     elevation) = 0;
+            virtual void       ComputeElevation(Position3d &position, uint8_t elevation) = 0;
 
-            virtual Position3d   GetFootPosition() const = 0;
+            virtual Position3d GetFootPosition() const = 0;
 
-            virtual float        GetBodyCenterOffsetX(void) const = 0;
+            virtual float      GetBodyCenterOffsetX(void) const = 0;
 
-            virtual float        GetBodyCenterOffsetY(void) const = 0;
+            virtual float      GetBodyCenterOffsetY(void) const = 0;
         };
     } // namespace Leg
 } // namespace Bot

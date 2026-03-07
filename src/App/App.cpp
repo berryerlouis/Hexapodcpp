@@ -39,12 +39,8 @@ namespace App
         , mAds1115(mTwi)
         , mBattery(mAds1115)
         , mButton(mGpioButton)
-        , mSoundLeft(Component::Sound::SoundId::SOUND_LEFT,
-                     mGpioSoundLeft,
-                     mLedMiddleLeft)
-        , mSoundRight(Component::Sound::SoundId::SOUND_RIGHT,
-                      mGpioSoundRight,
-                      mLedMiddleRight)
+        , mSoundLeft(Component::Sound::SoundId::SOUND_LEFT, mGpioSoundLeft, mLedMiddleLeft)
+        , mSoundRight(Component::Sound::SoundId::SOUND_RIGHT, mGpioSoundRight, mLedMiddleRight)
         , mInputCaptureLeft(echoLeftPin)
         , mInputCaptureRight(echoRightPin)
         , mMpu9150(mTwi)
@@ -86,28 +82,15 @@ namespace App
         , mMessageListener(mCommunication)
         , mEventDispatcher()
         , mServiceButton(mButton, mMessageListener, mEventDispatcher)
-        , mServiceSound(mSoundLeft,
-                        mSoundRight,
-                        mMessageListener,
-                        mEventDispatcher)
+        , mServiceSound(mSoundLeft, mSoundRight, mMessageListener, mEventDispatcher)
         , mServiceControl(mServos, mMessageListener, mEventDispatcher)
-        , mServiceCommunication(mCommunication,
-                                mMessageListener,
-                                mEventDispatcher)
-        , mServiceProximity(mSensorProximity,
-                            mMessageListener,
-                            mEventDispatcher)
-        , mServiceOrientation(mMpu9150,
-                              mBarometer,
-                              mMessageListener,
-                              mEventDispatcher)
+        , mServiceCommunication(mCommunication, mMessageListener, mEventDispatcher)
+        , mServiceProximity(mSensorProximity, mMessageListener, mEventDispatcher)
+        , mServiceOrientation(mMpu9150, mBarometer, mMessageListener, mEventDispatcher)
         , mServiceBattery(mBattery, mMessageListener, mEventDispatcher)
         , mServiceBody(mBody, mMessageListener, mEventDispatcher)
         , mServiceDisplay(mSsd1306, mMessageListener, mEventDispatcher)
-        , mServiceGeneral(mLedPwmStatus,
-                          mSoftware,
-                          mMessageListener,
-                          mEventDispatcher)
+        , mServiceGeneral(mLedPwmStatus, mSoftware, mMessageListener, mEventDispatcher)
         , mServices(mServiceGeneral,
                     mServiceControl,
                     mServiceCommunication,

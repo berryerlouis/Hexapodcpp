@@ -13,11 +13,9 @@ namespace Service
 
             ~EventDispatcher() = default;
 
-            virtual void
-            AddListener(EventListenerInterface *listener) final override;
+            virtual void AddListener(EventListenerInterface *listener) final override;
 
-            virtual void
-            RemoveListener(EventListenerInterface *listener) final override;
+            virtual void RemoveListener(EventListenerInterface *listener) final override;
 
             virtual void DispatchEvent(const Event &event) const final override;
 

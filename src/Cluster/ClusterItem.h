@@ -8,8 +8,7 @@ namespace Cluster
     using Component::Frame;
     struct ClusterItem {
         ClusterItem() = default;
-        explicit ClusterItem(const uint8_t commandId,
-                             const uint8_t expectedSize)
+        explicit ClusterItem(const uint8_t commandId, const uint8_t expectedSize)
             : commandId(commandId)
             , expectedSize(expectedSize) {
         }

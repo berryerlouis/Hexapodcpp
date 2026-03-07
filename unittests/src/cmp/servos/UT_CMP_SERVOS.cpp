@@ -26,14 +26,10 @@ namespace Component
             virtual void SetUp() {
                 Core::Status success = Core::Status::CORE_ERROR;
 
-                EXPECT_CALL(mMockPca9685_0, GetAddress())
-                        .WillRepeatedly(Return(0U));
-                EXPECT_CALL(mMockPca9685_1, GetAddress())
-                        .WillRepeatedly(Return(1U));
-                EXPECT_CALL(mMockPca9685_0, Initialize())
-                        .WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockPca9685_1, Initialize())
-                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockPca9685_0, GetAddress()).WillRepeatedly(Return(0U));
+                EXPECT_CALL(mMockPca9685_1, GetAddress()).WillRepeatedly(Return(1U));
+                EXPECT_CALL(mMockPca9685_0, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockPca9685_1, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockGpio, Set()).Times(1U);
                 success = mServos.Initialize();
                 EXPECT_EQ(success, Core::Status::CORE_OK);
@@ -89,15 +85,13 @@ namespace Component
 
         TEST_F(UT_CMP_SERVOS, GetServo_Ok) {
             for (size_t i = 0; i < EServos::SERVO_17; i++) {
-                Servo::ServoInterface *servos =
-                        mServos.GetServo(static_cast<EServos>(i));
+                Servo::ServoInterface *servos = mServos.GetServo(static_cast<EServos>(i));
                 EXPECT_NE(servos, nullptr);
             }
         }
 
         TEST_F(UT_CMP_SERVOS, GetServo_Nok) {
-            Servo::ServoInterface *servos =
-                    mServos.GetServo(static_cast<EServos>(20U));
+            Servo::ServoInterface *servos = mServos.GetServo(static_cast<EServos>(20U));
             EXPECT_EQ(servos, nullptr);
         }
     } // namespace Servos

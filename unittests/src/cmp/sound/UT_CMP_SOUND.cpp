@@ -32,15 +32,13 @@ namespace Component
                 Driver::Gpio::SGpio gpio;
                 EXPECT_CALL(mMockGpio, GetPin()).WillOnce(ReturnRef(gpio));
                 EXPECT_CALL(mMockLed, Initialize()).Times(1U);
-                EXPECT_CALL(mMockLed, Off())
-                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockGpio, SetInterruptPin(_)).Times(1U);
                 EXPECT_EQ(mSoundLeft.Initialize(), Core::Status::CORE_OK);
 
                 EXPECT_CALL(mMockGpio, GetPin()).WillOnce(ReturnRef(gpio));
                 EXPECT_CALL(mMockLed, Initialize()).Times(1U);
-                EXPECT_CALL(mMockLed, Off())
-                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockGpio, SetInterruptPin(_)).Times(1U);
                 EXPECT_EQ(mSoundRight.Initialize(), Core::Status::CORE_OK);
             }
@@ -51,18 +49,15 @@ namespace Component
 
             virtual ~UT_CMP_SOUND() = default;
 
-            void HitTest(const SoundId    &soundId,
-                         const SoundState &soundState,
-                         const uint64_t    time) {
+            void
+            HitTest(const SoundId &soundId, const SoundState &soundState, const uint64_t time) {
                 Driver::Timer::Tick::GetInstance().SetUs(time);
                 if (soundState == LOUD) {
                     EXPECT_CALL(mMockGpio, Get()).WillOnce(Return(false));
-                    EXPECT_CALL(mMockLed, On())
-                            .WillOnce(Return(Core::Status::CORE_OK));
+                    EXPECT_CALL(mMockLed, On()).WillOnce(Return(Core::Status::CORE_OK));
                 } else {
                     EXPECT_CALL(mMockGpio, Get()).WillOnce(Return(true));
-                    EXPECT_CALL(mMockLed, Off())
-                            .WillOnce(Return(Core::Status::CORE_OK));
+                    EXPECT_CALL(mMockLed, Off()).WillOnce(Return(Core::Status::CORE_OK));
                 }
 
                 if (soundId == SOUND_LEFT) {
@@ -118,8 +113,7 @@ namespace Component
             EXPECT_EQ(mSoundRight.GetIntervalSoundHit(), 10U);
         }
 
-        TEST_F(UT_CMP_SOUND,
-               Hit_Left_Right_Start_And_Left_Right_Stop_Right_First_Ok) {
+        TEST_F(UT_CMP_SOUND, Hit_Left_Right_Start_And_Left_Right_Stop_Right_First_Ok) {
             HitTest(SOUND_LEFT, LOUD, 110U);
             HitTest(SOUND_RIGHT, LOUD, 120U);
             HitTest(SOUND_RIGHT, NO_SOUND, 130U);

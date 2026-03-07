@@ -31,14 +31,12 @@ namespace Service
             virtual void SetUp() {
                 EXPECT_CALL(mMockSensorProximity, Initialize())
                         .WillOnce(Return(Core::Status::CORE_ERROR));
-                EXPECT_EQ(Core::Status::CORE_ERROR,
-                          mServiceProximity.Initialize());
+                EXPECT_EQ(Core::Status::CORE_ERROR, mServiceProximity.Initialize());
 
                 EXPECT_CALL(mMockSensorProximity, Initialize())
                         .WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockEventDispatcherInterface, AddListener(_));
-                EXPECT_EQ(Core::Status::CORE_OK,
-                          mServiceProximity.Initialize());
+                EXPECT_EQ(Core::Status::CORE_OK, mServiceProximity.Initialize());
             }
 
             virtual void TearDown() {
@@ -47,11 +45,9 @@ namespace Service
             virtual ~UT_SRV_PROXIMITY() = default;
 
             /* Mocks */
-            StrictMock<Component::Proximity::MockSensorProximity>
-                    mMockSensorProximity;
-            StrictMock<Event::MockEventDispatcherInterface>
-                    mMockEventDispatcherInterface;
-            StrictMock<Message::MockMessageInterface> mMockMessageInterface;
+            StrictMock<Component::Proximity::MockSensorProximity> mMockSensorProximity;
+            StrictMock<Event::MockEventDispatcherInterface>       mMockEventDispatcherInterface;
+            StrictMock<Message::MockMessageInterface>             mMockMessageInterface;
 
             /* Test class */
             ServiceProximity mServiceProximity;
@@ -67,19 +63,16 @@ namespace Service
             constexpr uint16_t  distance = 42U;
 
             Frame               response;
-            Cluster::Proximity::ClusterProximity::BuildFrameDistance(
-                    sensorId, distance, response);
+            Cluster::Proximity::ClusterProximity::BuildFrameDistance(sensorId, distance, response);
             EXPECT_CALL(mMockMessageInterface, SendMessage(response)).Times(1U);
-            EXPECT_CALL(mMockEventDispatcherInterface, DispatchEvent(_))
-                    .Times(1U);
+            EXPECT_CALL(mMockEventDispatcherInterface, DispatchEvent(_)).Times(1U);
             mServiceProximity.Notified({sensorId, distance});
         }
 
         TEST_F(UT_SRV_PROXIMITY, OnEvent) {
-            const SensorsStruct sensor(
-                    {.id = SensorsId::SRF_LEFT, .distance = 10U});
-            const Event::Event event = Event::Event(
-                    BATTERY, EventType::EVENT_SENSOR_UPDATE, sensor);
+            const SensorsStruct sensor({.id = SensorsId::SRF_LEFT, .distance = 10U});
+            const Event::Event  event =
+                    Event::Event(BATTERY, EventType::EVENT_SENSOR_UPDATE, sensor);
             mServiceProximity.OnEvent(event);
         }
     } // namespace Proximity

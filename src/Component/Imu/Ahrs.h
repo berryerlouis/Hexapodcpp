@@ -13,10 +13,7 @@ namespace Component
 
             ~Ahrs() = default;
 
-            void Update(Vector3F    acc,
-                        Vector3F    gyr,
-                        Vector3F    mag,
-                        const float deltaTime);
+            void Update(Vector3F acc, Vector3F gyr, Vector3F mag, const float deltaTime);
 
             void GetRollPitchYaw(Imu3d &ypr) const;
 

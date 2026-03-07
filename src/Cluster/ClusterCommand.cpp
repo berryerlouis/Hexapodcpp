@@ -19,8 +19,7 @@ namespace Cluster
         return true;
     }
 
-    Core::Status ClusterCommand::Execute(const Frame &request,
-                                         Frame       &response) {
+    Core::Status ClusterCommand::Execute(const Frame &request, Frame &response) {
         const uint8_t cmdId = request.GetCommandId();
 
         // Bounds check
@@ -29,8 +28,7 @@ namespace Cluster
         }
 
         // Validate expected parameter size
-        if (this->mClusterCommands[cmdId].expectedSize !=
-            request.GetNbParams()) {
+        if (this->mClusterCommands[cmdId].expectedSize != request.GetNbParams()) {
             return Core::Status::CORE_ERROR;
         }
 

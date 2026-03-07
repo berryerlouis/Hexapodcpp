@@ -12,9 +12,7 @@ namespace Driver
         }
 
         Core::Status InputCapture::Initialize() {
-            LOG_DRIVER_DEBUG("InputCapture",
-                             "pin %d Initialized.",
-                             this->mGpio.GetPin().pin);
+            LOG_DRIVER_DEBUG("InputCapture", "pin %d Initialized.", this->mGpio.GetPin().pin);
             return Core::Status::CORE_OK;
         }
 
@@ -36,8 +34,7 @@ namespace Driver
             if (state != this->mState && state) {
                 this->mStartTime = Driver::Timer::Tick::GetInstance().GetUs();
             } else if (state != this->mState && !state) {
-                this->mDelay = Driver::Timer::Tick::GetInstance().GetUs() -
-                               this->mStartTime;
+                this->mDelay = Driver::Timer::Tick::GetInstance().GetUs() - this->mStartTime;
             }
             this->mState = state;
         }

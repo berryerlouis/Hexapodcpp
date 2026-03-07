@@ -89,8 +89,7 @@ namespace Cluster
             success = mClusterGeneral.ExecuteFrame(request, response);
 
             EXPECT_EQ(response.GetClusterId(), GENERAL);
-            EXPECT_EQ(response.GetCommandId(),
-                      EGeneralCommands::MIN_EXECUTION_TIME);
+            EXPECT_EQ(response.GetCommandId(), EGeneralCommands::MIN_EXECUTION_TIME);
             EXPECT_EQ(response.GetNbParams(), 9U);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
@@ -105,8 +104,7 @@ namespace Cluster
             success = mClusterGeneral.ExecuteFrame(request, response);
 
             EXPECT_EQ(response.GetClusterId(), GENERAL);
-            EXPECT_EQ(response.GetCommandId(),
-                      EGeneralCommands::MAX_EXECUTION_TIME);
+            EXPECT_EQ(response.GetCommandId(), EGeneralCommands::MAX_EXECUTION_TIME);
             EXPECT_EQ(response.GetNbParams(), 9U);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }
@@ -120,8 +118,7 @@ namespace Cluster
             success = mClusterGeneral.ExecuteFrame(request, response);
 
             EXPECT_EQ(response.GetClusterId(), GENERAL);
-            EXPECT_EQ(response.GetCommandId(),
-                      EGeneralCommands::RESET_EXECUTION_TIME);
+            EXPECT_EQ(response.GetCommandId(), EGeneralCommands::RESET_EXECUTION_TIME);
             EXPECT_EQ(response.GetNbParams(), 1U);
             EXPECT_EQ(success, Core::Status::CORE_OK);
         }

@@ -22,29 +22,29 @@ namespace Move
             EWalkStatus GetStatus() const;
 
             // Direct access to gait parameters
-            bool  SetDirection(const float directionAngle);
+            bool           SetDirection(const float directionAngle);
 
-            bool  SetRotation(const float rotationAngle, const bool clockWize);
+            bool           SetRotation(const float rotationAngle, const bool clockWize);
 
-            bool  SetAmplitude(const float amplitude);
+            bool           SetAmplitude(const float amplitude);
 
-            bool  SetElevation(const float elevation);
+            bool           SetElevation(const float elevation);
 
-            bool  SetCycleDuration(const uint16_t duration);
+            bool           SetCycleDuration(const uint16_t duration);
 
-            bool  SetGait(const Gait::GaitType gait);
+            bool           SetGait(const Gait::GaitType gait);
 
-            float GetDirection() const;
+            float          GetDirection() const;
 
-            float GetRotation() const;
+            float          GetRotation() const;
 
-            bool  GetRotationClockWize() const;
+            bool           GetRotationClockWize() const;
 
-            bool  IsRotated() const;
+            bool           IsRotated() const;
 
-            float GetAmplitude() const;
+            float          GetAmplitude() const;
 
-            float GetElevation() const;
+            float          GetElevation() const;
 
             uint16_t       GetCycleDuration() const;
 

@@ -21,20 +21,15 @@ namespace Component
                 : mMockSrf05Left()
                 , mMockSrf05Right()
                 , mMockVl53l0x()
-                , mSensorProximity(mMockSrf05Left,
-                                   mMockSrf05Right,
-                                   mMockVl53l0x) {
+                , mSensorProximity(mMockSrf05Left, mMockSrf05Right, mMockVl53l0x) {
             }
 
             virtual void SetUp() {
                 Core::Status success = Core::Status::CORE_ERROR;
 
-                EXPECT_CALL(mMockSrf05Left, Initialize())
-                        .WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockSrf05Right, Initialize())
-                        .WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockVl53l0x, Initialize())
-                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockSrf05Left, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockSrf05Right, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockVl53l0x, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
 
                 success = mSensorProximity.Initialize();
 
@@ -47,11 +42,9 @@ namespace Component
             virtual ~UT_CMP_PROXIMITY() = default;
 
             /* Mocks */
-            StrictMock<Component::Proximity::Ultrasound::MockSrf05>
-                    mMockSrf05Left;
-            StrictMock<Component::Proximity::Ultrasound::MockSrf05>
-                    mMockSrf05Right;
-            StrictMock<Component::Proximity::Laser::MockVl53l0x> mMockVl53l0x;
+            StrictMock<Component::Proximity::Ultrasound::MockSrf05> mMockSrf05Left;
+            StrictMock<Component::Proximity::Ultrasound::MockSrf05> mMockSrf05Right;
+            StrictMock<Component::Proximity::Laser::MockVl53l0x>    mMockVl53l0x;
 
             /* Test class */
             SensorProximity mSensorProximity;
@@ -71,8 +64,7 @@ namespace Component
             EXPECT_CALL(mMockSrf05Right, GetDistance()).Times(1U);
             EXPECT_CALL(mMockVl53l0x, GetDistance()).Times(1U);
 
-            for (size_t sensorId = 0U; sensorId < SensorProximity::NB_SENSORS;
-                 sensorId++) {
+            for (size_t sensorId = 0U; sensorId < SensorProximity::NB_SENSORS; sensorId++) {
                 mSensorProximity.GetDistance((SensorsId) sensorId);
             }
         }
@@ -91,32 +83,23 @@ namespace Component
                     .WillOnce(Return(Core::Status::CORE_OK));
 
 
-            for (size_t sensorId = 0U; sensorId < SensorProximity::NB_SENSORS;
-                 sensorId++) {
-                EXPECT_EQ(Core::Status::CORE_OK,
-                          mSensorProximity.SetThreshold(
-                                  static_cast<SensorsId>(sensorId), threshold));
+            for (size_t sensorId = 0U; sensorId < SensorProximity::NB_SENSORS; sensorId++) {
+                EXPECT_EQ(
+                        Core::Status::CORE_OK,
+                        mSensorProximity.SetThreshold(static_cast<SensorsId>(sensorId), threshold));
             }
         }
 
         TEST_F(UT_CMP_PROXIMITY, GetThreshold_Ok) {
             const uint16_t threshold = 10U;
 
-            EXPECT_CALL(mMockSrf05Left, GetThreshold())
-                    .Times(1U)
-                    .WillOnce(Return(threshold));
-            EXPECT_CALL(mMockSrf05Right, GetThreshold())
-                    .Times(1U)
-                    .WillOnce(Return(threshold));
-            EXPECT_CALL(mMockVl53l0x, GetThreshold())
-                    .Times(1U)
-                    .WillOnce(Return(threshold));
+            EXPECT_CALL(mMockSrf05Left, GetThreshold()).Times(1U).WillOnce(Return(threshold));
+            EXPECT_CALL(mMockSrf05Right, GetThreshold()).Times(1U).WillOnce(Return(threshold));
+            EXPECT_CALL(mMockVl53l0x, GetThreshold()).Times(1U).WillOnce(Return(threshold));
 
-            for (size_t sensorId = 0U; sensorId < SensorProximity::NB_SENSORS;
-                 sensorId++) {
+            for (size_t sensorId = 0U; sensorId < SensorProximity::NB_SENSORS; sensorId++) {
                 EXPECT_EQ(threshold,
-                          mSensorProximity.GetThreshold(
-                                  static_cast<SensorsId>(sensorId)));
+                          mSensorProximity.GetThreshold(static_cast<SensorsId>(sensorId)));
             }
         }
 

@@ -18,27 +18,21 @@ namespace Component
                 unsigned int tempCommandId = 0U;
                 unsigned int tempNbParams = 0U;
                 unsigned int tempParam = 0U;
-                (void) sscanf(frameBuffer,
-                              "%02x%02x%02x",
-                              &tempClusterId,
-                              &tempCommandId,
-                              &tempNbParams);
+                (void) sscanf(
+                        frameBuffer, "%02x%02x%02x", &tempClusterId, &tempCommandId, &tempNbParams);
                 clusterId = static_cast<uint8_t>(tempClusterId);
                 commandId = static_cast<uint8_t>(tempCommandId);
                 nbParams = static_cast<uint8_t>(tempNbParams);
 
                 if (nbParams == 0U && frameLength == 6U) {
-                    return (frame.Build(
-                            clusterId, commandId, params, nbParams));
+                    return (frame.Build(clusterId, commandId, params, nbParams));
                 }
                 if ((nbParams * 2U) + 6U == frameLength) {
-                    for (size_t i = 0U; i < static_cast<size_t>(nbParams * 2U);
-                         i += 2U) {
+                    for (size_t i = 0U; i < static_cast<size_t>(nbParams * 2U); i += 2U) {
                         (void) sscanf(&frameBuffer[6U + i], "%02x", &tempParam);
                         params[i / 2U] = static_cast<uint8_t>(tempParam);
                     }
-                    return (frame.Build(
-                            clusterId, commandId, params, nbParams));
+                    return (frame.Build(clusterId, commandId, params, nbParams));
                 }
 
                 // wrong param size
@@ -56,12 +50,10 @@ namespace Component
             const uint8_t cluster = response.GetClusterId();
             const uint8_t command = response.GetCommandId();
 
-            uint8_t       length = snprintf(
-                    buffer, 8U, "<%02X%02X%02X", cluster, command, size);
+            uint8_t       length = snprintf(buffer, 8U, "<%02X%02X%02X", cluster, command, size);
 
             for (size_t i = 0U; i < size; i++) {
-                length += snprintf(
-                        &buffer[length], 3U, "%02X", response.Get1ByteParam(i));
+                length += snprintf(&buffer[length], 3U, "%02X", response.Get1ByteParam(i));
             }
 
             buffer[length] = '>';

@@ -21,7 +21,7 @@ namespace Driver
 
             static std::chrono::time_point<std::chrono::system_clock> now;
 
-            static Tick &GetInstance();
+            static Tick                                              &GetInstance();
 
         private:
             Tick();

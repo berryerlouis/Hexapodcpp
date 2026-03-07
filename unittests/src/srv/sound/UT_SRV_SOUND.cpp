@@ -41,14 +41,12 @@ namespace Service
                 Driver::Gpio::SGpio gpio;
                 EXPECT_CALL(mMockGpioLeft, GetPin()).WillOnce(ReturnRef(gpio));
                 EXPECT_CALL(mMockLedLeft, Initialize()).Times(1U);
-                EXPECT_CALL(mMockLedLeft, Off())
-                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockLedLeft, Off()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockGpioLeft, SetInterruptPin(_)).Times(1U);
 
                 EXPECT_CALL(mMockGpioRight, GetPin()).WillOnce(ReturnRef(gpio));
                 EXPECT_CALL(mMockLedRight, Initialize()).Times(1U);
-                EXPECT_CALL(mMockLedRight, Off())
-                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockLedRight, Off()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockGpioRight, SetInterruptPin(_)).Times(1U);
 
                 EXPECT_CALL(mMockEventDispatcherInterface, AddListener(_));
@@ -61,16 +59,15 @@ namespace Service
             virtual ~UT_SRV_SOUND() = default;
 
             /* Mocks */
-            StrictMock<Driver::Gpio::MockGpio>  mMockGpioLeft;
-            StrictMock<Component::Led::MockLed> mMockLedLeft;
-            StrictMock<Driver::Gpio::MockGpio>  mMockGpioRight;
-            StrictMock<Component::Led::MockLed> mMockLedRight;
-            StrictMock<Event::MockEventDispatcherInterface>
-                    mMockEventDispatcherInterface;
-            StrictMock<Message::MockMessageInterface> mMockMessageInterface;
+            StrictMock<Driver::Gpio::MockGpio>              mMockGpioLeft;
+            StrictMock<Component::Led::MockLed>             mMockLedLeft;
+            StrictMock<Driver::Gpio::MockGpio>              mMockGpioRight;
+            StrictMock<Component::Led::MockLed>             mMockLedRight;
+            StrictMock<Event::MockEventDispatcherInterface> mMockEventDispatcherInterface;
+            StrictMock<Message::MockMessageInterface>       mMockMessageInterface;
 
-            StrictMock<Component::Sound::Sound>       mSoundLeft;
-            StrictMock<Component::Sound::Sound>       mSoundRight;
+            StrictMock<Component::Sound::Sound>             mSoundLeft;
+            StrictMock<Component::Sound::Sound>             mSoundRight;
 
             /* Test class */
             ServiceSound mServiceSound;
@@ -81,10 +78,9 @@ namespace Service
         }
         TEST_F(UT_SRV_SOUND, OnEvent) {
             const Component::Proximity::SensorsStruct sensor(
-                    {.id = Component::Proximity::SensorsId::SRF_LEFT,
-                     .distance = 10U});
-            const Event::Event event = Event::Event(
-                    BATTERY, EventType::EVENT_SENSOR_UPDATE, sensor);
+                    {.id = Component::Proximity::SensorsId::SRF_LEFT, .distance = 10U});
+            const Event::Event event =
+                    Event::Event(BATTERY, EventType::EVENT_SENSOR_UPDATE, sensor);
             mServiceSound.OnEvent(event);
         }
     } // namespace Sound

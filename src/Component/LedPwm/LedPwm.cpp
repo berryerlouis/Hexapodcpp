@@ -71,8 +71,8 @@ namespace Component
             // Compute sine wave: sin(φ) ∈ [-1,1] → [0,1000]
             // scaled by amplitude
             const float    sineValue = sinf(this->mPhase);
-            const uint16_t targetDuty = static_cast<uint16_t>(
-                    (sineValue + 1.0F) * 0.5f * this->mAmplitude);
+            const uint16_t targetDuty =
+                    static_cast<uint16_t>((sineValue + 1.0F) * 0.5f * this->mAmplitude);
             this->mDutyCycle = targetDuty;
             // Smooth transition to prevent flicker
             /*if (this->mDutyCycle < targetDuty) {

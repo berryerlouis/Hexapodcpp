@@ -15,7 +15,7 @@ namespace Component
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
             virtual Core::Status On() final override;
 

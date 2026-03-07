@@ -33,8 +33,7 @@ namespace Move
             return this->mGaitParams.SetDirection(directionAngle);
         }
 
-        bool Walk::SetRotation(const float rotationAngle,
-                               const bool  clockWize) {
+        bool Walk::SetRotation(const float rotationAngle, const bool clockWize) {
             return this->mGaitParams.SetRotation(rotationAngle, clockWize);
         }
 

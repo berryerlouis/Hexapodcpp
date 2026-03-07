@@ -16,8 +16,7 @@ namespace Component
 
         using namespace Cluster;
 
-        class CommunicationInterface
-            : public ComponentInterface<1U, CommunicationStruct> {
+        class CommunicationInterface : public ComponentInterface<1U, CommunicationStruct> {
         public:
             CommunicationInterface(void) = default;
 
