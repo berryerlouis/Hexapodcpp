@@ -95,6 +95,7 @@ namespace Component
             uint8_t            mAddress;
             uint32_t           mInternalOscillatorFrequency;
             SPwm               mPwm[EConstant::NB_LEDS];
+            bool               mIsDirty;
         };
     } // namespace ServosController
 } // namespace Component

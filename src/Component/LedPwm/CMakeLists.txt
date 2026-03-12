@@ -1,4 +1,8 @@
-set(SRC_FILES_LEDPWM
-    ${CMAKE_CURRENT_SOURCE_DIR}/LedPwm.cpp
-    PARENT_SCOPE
+add_library(LedPwm
+    LedPwm.cpp
+)
+
+target_include_directories(LedPwm
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )

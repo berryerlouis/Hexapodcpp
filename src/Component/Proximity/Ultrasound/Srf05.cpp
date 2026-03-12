@@ -33,7 +33,7 @@ namespace Component
                 const bool     detection = (distance != 0U && distance <= this->mThreshold);
                 if (detection) {
                     this->mLed.On();
-                    this->Notify({static_cast<SensorsId>(this->mSide), distance});
+                    this->Notify({static_cast<SensorsId>(this->mSide), distance, {}});
                 } else {
                     this->mLed.Off();
                 }

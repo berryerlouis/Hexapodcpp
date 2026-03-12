@@ -1,4 +1,8 @@
-set(SRC_FILES_LED
-    ${CMAKE_CURRENT_SOURCE_DIR}/Led.cpp
-    PARENT_SCOPE
+add_library(Led
+    Led.cpp
+)
+
+target_include_directories(Led
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include "../Battery/ServiceBattery.h"
 #include "../Body/ServiceBody.h"
 #include "../Button/ServiceButton.h"
@@ -50,7 +52,7 @@ namespace Service
             virtual void         Update(const uint64_t currentTime) final override;
 
         private:
-            std::map<EServices, Service *> mServices;
+            std::array<std::pair<EServices, Service *>, 10U> mServices;
             Message::MessageInterface     &mMessageListener;
         };
     } // namespace Services

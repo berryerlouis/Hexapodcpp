@@ -1,7 +1,4 @@
 #include "Barometer.h"
-#ifdef RPI
-#include "wiringPi/wiringPiI2C.h"
-#endif
 namespace Component
 {
     namespace Barometer
@@ -17,9 +14,6 @@ namespace Component
             , mRawPressure(0U)
             , mTemp(0U)
             , mPressure(0U) {
-#ifdef RPI
-            this->mAddress = wiringPiI2CSetup(address);
-#endif
         }
 
         Core::Status Barometer::Initialize() {

@@ -7,6 +7,7 @@ namespace Move
         void GaitTripod::doGaitStrategy(
                 const bool                                               isCycleComplete,
                 const uint64_t                                           currentTime,
+                const uint64_t                                           transitionStartTime,
                 std::map<Bot::Legs::ELeg, Bot::Leg::Leg>                &legs,
                 const Move::Gait::GaitParams                            &gaitParams,
                 const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
@@ -35,7 +36,7 @@ namespace Move
                                              gaitParams.IsRotated(),
                                              gaitParams.GetRotation(),
                                              gaitParams.GetRotationClockWize(),
-                                             gaitParams.GetUpdatedTimeStamp());
+                                             transitionStartTime);
                 leg.second.SetTarget(position);
             }
         }
@@ -43,6 +44,7 @@ namespace Move
         void
         GaitWave::doGaitStrategy(const bool                                isCycleComplete,
                                  const uint64_t                            currentTime,
+                                 const uint64_t                            transitionStartTime,
                                  std::map<Bot::Legs::ELeg, Bot::Leg::Leg> &legs,
                                  const Move::Gait::GaitParams             &gaitParams,
                                  const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
@@ -87,7 +89,7 @@ namespace Move
                                                  gaitParams.IsRotated(),
                                                  gaitParams.GetRotation(),
                                                  gaitParams.GetRotationClockWize(),
-                                                 gaitParams.GetUpdatedTimeStamp());
+                                                 transitionStartTime);
                     leg.second.SetTarget(position);
                 }
             }
@@ -107,6 +109,7 @@ namespace Move
         void GaitRipple::doGaitStrategy(
                 const bool                                               isCycleComplete,
                 const uint64_t                                           currentTime,
+                const uint64_t                                           transitionStartTime,
                 std::map<Bot::Legs::ELeg, Bot::Leg::Leg>                &legs,
                 const Move::Gait::GaitParams                            &gaitParams,
                 const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
@@ -135,7 +138,7 @@ namespace Move
                                              gaitParams.IsRotated(),
                                              gaitParams.GetRotation(),
                                              gaitParams.GetRotationClockWize(),
-                                             gaitParams.GetUpdatedTimeStamp());
+                                             transitionStartTime);
                 leg.second.SetTarget(position);
             }
         }

@@ -23,6 +23,8 @@ namespace Component
             ~CommunicationInterface() = default;
 
             virtual Core::Status SendMessage(const Frame &message) = 0;
+
+            virtual Core::Status GetMessage(Frame &message) = 0;
         };
     } // namespace Communication
 } // namespace Component

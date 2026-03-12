@@ -1,14 +1,15 @@
 add_subdirectory(Bitmap)
 add_subdirectory(Buffer)
 
-
-add_library(Misc 
-    ${SRC_FILES_BITMAP}
-    ${SRC_FILES_BUFFER}
-)
+add_library(Misc INTERFACE)
 
 target_include_directories(Misc
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/Bitmap
-        ${CMAKE_CURRENT_SOURCE_DIR}/Buffer
+    INTERFACE
+        ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_link_libraries(Misc
+    INTERFACE
+        Bitmaps
+        Buffer
 )

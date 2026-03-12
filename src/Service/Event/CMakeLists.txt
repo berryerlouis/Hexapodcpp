@@ -1,4 +1,8 @@
-set(SRC_FILES_EVENT
-    ${CMAKE_CURRENT_SOURCE_DIR}/EventDispatcher.cpp
-    PARENT_SCOPE
+add_library(ServiceEvent 
+    EventDispatcher.cpp
+)
+
+target_include_directories(ServiceEvent
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )

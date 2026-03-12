@@ -89,19 +89,21 @@ namespace Core
     }
 
     std::string Logger::CurrentTime() {
-        // Get current time_point
         const auto now = std::chrono::system_clock::now();
         const auto now_time_t = std::chrono::system_clock::to_time_t(now);
         const auto now_ms =
                 std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) %
                 1000;
 
-        // Convert to local time
-        const std::tm *local_tm = std::localtime(&now_time_t);
+        std::tm localTm {};
+    #ifdef _WIN32
+        localtime_s(&localTm, &now_time_t);
+    #else
+        localtime_r(&now_time_t, &localTm);
+    #endif
 
-        // Format time with milliseconds
         std::ostringstream oss;
-        oss << std::put_time(local_tm, "%Y-%m-%d %H:%M:%S");
+        oss << std::put_time(&localTm, "%Y-%m-%d %H:%M:%S");
         oss << '.' << std::setfill('0') << std::setw(3) << now_ms.count();
 
         return oss.str();

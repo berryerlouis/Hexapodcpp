@@ -15,6 +15,7 @@ namespace Service
                                      Event::EventListenerInterface {
         public:
             ServiceCommunication(CommunicationInterface          &communication,
+                                 Clusters::ClustersInterface     &clusters,
                                  Message::MessageInterface       &messageListener,
                                  Event::EventDispatcherInterface &eventDispatcher);
 
@@ -28,8 +29,12 @@ namespace Service
 
             virtual void         OnEvent(const Event::Event &event) final override;
 
+        private:
+            void DispatchToClusters(const Frame &message);
+
         protected:
-            CommunicationInterface &mCommunication;
+            Clusters::ClustersInterface &mClusters;
+            CommunicationInterface      &mCommunication;
         };
     } // namespace Communication
 } // namespace Service

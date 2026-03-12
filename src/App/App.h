@@ -13,7 +13,7 @@
 #include "../Component/Imu/Mpu9150.h"
 #include "../Component/Led/Led.h"
 #include "../Component/LedPwm/LedPwm.h"
-#include "../Component/Proximity/Laser/Vl53l0x.h"
+#include "../Component/Proximity/Laser/Vl53l5x.h"
 #include "../Component/Proximity/SensorProximity.h"
 #include "../Component/Proximity/Ultrasound/Srf05.h"
 #include "../Component/Servos/Servos.h"
@@ -76,7 +76,7 @@ namespace App
         Component::Barometer::Barometer              mBarometer;
         Component::Proximity::Ultrasound::Srf05      mSrf05Left;
         Component::Proximity::Ultrasound::Srf05      mSrf05Right;
-        Component::Proximity::Laser::Vl53l0x         mVl53l0x;
+        Component::Proximity::Laser::Vl53l5x         mVl53l5x;
         Component::Proximity::SensorProximity        mSensorProximity;
         Component::Display::Ssd1306                  mSsd1306;
         Component::ServosController::Pca9685         mPca9685Left;
@@ -111,5 +111,6 @@ namespace App
         Service::Display::ServiceDisplay             mServiceDisplay;
         Service::General::ServiceGeneral             mServiceGeneral;
         Service::Services::Services                  mServices;
+        uint64_t                                     mNextUpdateDeadlineMs;
     };
 } // namespace App

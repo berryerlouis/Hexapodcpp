@@ -1,6 +1,15 @@
-set(SRC_FILES_GAIT
-    ${CMAKE_CURRENT_SOURCE_DIR}/GaitCycle.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/GaitParams.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/GaitStrategy.cpp
-    PARENT_SCOPE
+add_library(Gait 
+    GaitCycle.cpp
+    GaitParams.cpp
+    GaitStrategy.cpp
+)
+
+target_include_directories(Gait
+    INTERFACE
+        ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_link_libraries(Gait
+    INTERFACE
+        Legs
 )

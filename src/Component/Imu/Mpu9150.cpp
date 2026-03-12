@@ -1,8 +1,5 @@
 #include "Mpu9150.h"
 #include "unistd.h"
-#ifdef RPI
-#include "wiringPi/wiringPiI2C.h"
-#endif
 
 namespace Component
 {
@@ -38,10 +35,6 @@ namespace Component
             , mLastLoopTime(0U)
             , mAhrs()
             , mYawPitchRoll{0, 0, 0} {
-#ifdef RPI
-            this->mAddress = wiringPiI2CSetup(address);
-            this->mAddressMag = wiringPiI2CSetup(AK8963_I2C_ADDRESS);
-#endif
         }
 
         Core::Status Mpu9150::Initialize() {

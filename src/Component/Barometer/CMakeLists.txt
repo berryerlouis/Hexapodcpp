@@ -1,4 +1,8 @@
-set(SRC_FILES_BAROMETER
-    ${CMAKE_CURRENT_SOURCE_DIR}/Barometer.cpp
-    PARENT_SCOPE
+add_library(Barometer 
+    Barometer.cpp
+)
+
+target_include_directories(Barometer
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )

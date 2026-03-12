@@ -1,9 +1,4 @@
 #include "Pca9685.h"
-#ifdef RPI
-#ifndef GTEST
-#include "wiringPi/wiringPiI2C.h"
-#endif
-#endif
 namespace Component
 {
     namespace ServosController
@@ -12,12 +7,8 @@ namespace Component
             : mI2c(i2c)
             , mAddress(address)
             , mInternalOscillatorFrequency(EConstant::FREQUENCY_OSCILLATOR)
-            , mPwm{{0U, 0U}} {
-#ifdef RPI
-#ifndef GTEST
-            this->mAddress = wiringPiI2CSetup(address);
-#endif
-#endif
+            , mPwm{{0U, 0U}}
+            , mIsDirty(true) {
         }
 
         Core::Status Pca9685::Initialize() {
@@ -28,10 +19,14 @@ namespace Component
 
         void Pca9685::Update(const uint64_t currentTime) {
             (void) currentTime;
+            if (!this->mIsDirty) {
+                return;
+            }
             this->mI2c.WriteRegisters(this->mAddress,
                                       static_cast<uint8_t>(ERegister::LED0_ON_L),
                                       reinterpret_cast<uint8_t *>(this->mPwm),
                                       4 * EConstant::NB_LEDS);
+            this->mIsDirty = false;
         }
 
         void Pca9685::Reset() {
@@ -98,12 +93,17 @@ namespace Component
         }
 
         void Pca9685::SetPwm(const uint8_t num, const uint16_t off) {
-            this->mPwm[num].on = 0U;
+            const uint16_t newOn = 0U;
+            uint16_t       newOff = EConstant::LED_OFF;
 
             if (off > 500U && off < 3000U) {
-                this->mPwm[num].off = off;
-            } else {
-                this->mPwm[num].off = EConstant::LED_OFF;
+                newOff = off;
+            }
+
+            if (this->mPwm[num].on != newOn || this->mPwm[num].off != newOff) {
+                this->mPwm[num].on = newOn;
+                this->mPwm[num].off = newOff;
+                this->mIsDirty = true;
             }
         }
 

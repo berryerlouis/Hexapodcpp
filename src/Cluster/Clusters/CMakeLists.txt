@@ -1,4 +1,8 @@
-set(SRC_FILES_CLUSTERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/Clusters.cpp
-    PARENT_SCOPE
+add_library(Clusters 
+    Clusters.cpp
+)
+
+target_include_directories(Clusters
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )

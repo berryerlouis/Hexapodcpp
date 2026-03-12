@@ -20,6 +20,8 @@ namespace Driver
 
             virtual bool
             ReadRegister(const uint8_t address, const uint8_t reg, uint8_t &data) final override;
+            virtual bool
+            Read16Register(const uint8_t address, const uint16_t reg, uint8_t &data) final override;
 
             virtual bool ReadRegister16Bits(const uint8_t address,
                                             const uint8_t reg,
@@ -38,10 +40,17 @@ namespace Driver
                                        uint8_t      *data,
                                        const uint8_t length) final override;
 
+            virtual bool Read16Registers(const uint8_t  address,
+                                         const uint16_t reg,
+                                         uint8_t       *data,
+                                         const uint16_t length) final override;
+
             virtual bool Write(const uint8_t address, const uint8_t reg) final override;
 
             virtual bool
             WriteRegister(const uint8_t address, const uint8_t reg, uint8_t data) final override;
+            virtual bool
+            Write16Register(const uint8_t address, const uint16_t reg, uint8_t data) final override;
 
             virtual bool WriteRegister16Bits(const uint8_t address,
                                              const uint8_t reg,
@@ -55,6 +64,11 @@ namespace Driver
                                         const uint8_t reg,
                                         uint8_t      *data,
                                         const uint8_t length) final override;
+
+            virtual bool Write16Registers(const uint8_t  address,
+                                          const uint16_t reg,
+                                          uint8_t       *data,
+                                          const uint16_t length) final override;
 
         private:
         };

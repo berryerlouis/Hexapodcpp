@@ -23,6 +23,7 @@ namespace Service
             , mPreviousTime(0UL)
             , mMinDeltaTime(10000UL)
             , mMaxDeltaTime(0UL)
+            , mLastTimingReportTime(0UL)
             , mMessageListener(messageListener)
             , mEventDispatcher(eventDispatcher) {
             if (updateTime < 10U) {
@@ -91,16 +92,22 @@ namespace Service
             this->mPreviousTime = currentTime;
             if (this->mDeltaTime < this->mMinDeltaTime) {
                 this->SetMinTime(this->mDeltaTime);
-                Frame response;
-                Cluster::General::ClusterGeneral::BuildFrameGetMinTime(
-                        this->mServiceId, this->mDeltaTime, response);
-                this->SendMessage(response);
+                if ((currentTime - this->mLastTimingReportTime) >= 1000U) {
+                    Frame response;
+                    Cluster::General::ClusterGeneral::BuildFrameGetMinTime(
+                            this->mServiceId, this->mDeltaTime, response);
+                    this->SendMessage(response);
+                    this->mLastTimingReportTime = currentTime;
+                }
             } else if (this->mDeltaTime > this->mMaxDeltaTime) {
                 this->SetMaxTime(this->mDeltaTime);
-                Frame response;
-                Cluster::General::ClusterGeneral::BuildFrameGetMaxTime(
-                        this->mServiceId, this->mDeltaTime, response);
-                this->SendMessage(response);
+                if ((currentTime - this->mLastTimingReportTime) >= 1000U) {
+                    Frame response;
+                    Cluster::General::ClusterGeneral::BuildFrameGetMaxTime(
+                            this->mServiceId, this->mDeltaTime, response);
+                    this->SendMessage(response);
+                    this->mLastTimingReportTime = currentTime;
+                }
             }
         }
 
@@ -151,6 +158,7 @@ namespace Service
         volatile uint64_t                mPreviousTime;
         volatile uint64_t                mMinDeltaTime;
         volatile uint64_t                mMaxDeltaTime;
+        volatile uint64_t                mLastTimingReportTime;
         Message::MessageInterface       &mMessageListener;
         Event::EventDispatcherInterface &mEventDispatcher;
     };

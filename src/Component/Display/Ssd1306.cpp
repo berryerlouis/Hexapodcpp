@@ -3,10 +3,6 @@
 #include <cstring>
 #include "../../Misc/Bitmap/Font.h"
 
-
-#ifdef RPI
-#include "wiringPi/wiringPiI2C.h"
-#endif
 namespace Component
 {
     namespace Display
@@ -17,9 +13,6 @@ namespace Component
             , mBufferScreen{{0x00U}}
             , mNeedToUpdate(false)
             , mUpdateIndex(BUFFER_DISPLAY_LENGTH) {
-#ifdef RPI
-            this->mAddress = wiringPiI2CSetup(address);
-#endif
             this->ClearBuffer();
         }
 

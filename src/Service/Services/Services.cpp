@@ -16,16 +16,16 @@ namespace Service
                            ServiceButton             &serviceButton,
                            ServiceSound              &serviceSound,
                            Message::MessageInterface &messageListener)
-            : mServices{{GENERAL, &serviceGeneral},
-                        {CONTROL, &serviceControl},
-                        {COMMUNICATION, &serviceCommunication},
-                        {PROXIMITY, &serviceProximity},
-                        {ORIENTATION, &serviceOrientation},
-                        {BATTERY, &serviceBattery},
-                        {DISPLAY, &serviceDisplay},
-                        {BODY, &serviceBody},
-                        {BUTTON, &serviceButton},
-                        {SOUND, &serviceSound}}
+            : mServices{{{GENERAL, &serviceGeneral},
+                         {CONTROL, &serviceControl},
+                         {COMMUNICATION, &serviceCommunication},
+                         {PROXIMITY, &serviceProximity},
+                         {ORIENTATION, &serviceOrientation},
+                         {BATTERY, &serviceBattery},
+                         {DISPLAY, &serviceDisplay},
+                         {BODY, &serviceBody},
+                         {BUTTON, &serviceButton},
+                         {SOUND, &serviceSound}}}
             , mMessageListener(messageListener) {
         }
 

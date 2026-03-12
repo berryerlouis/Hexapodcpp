@@ -1,4 +1,8 @@
-set(SRC_FILES_SOUND
-    ${CMAKE_CURRENT_SOURCE_DIR}/ServiceSound.cpp
-    PARENT_SCOPE
+add_library(ServiceSound 
+    ServiceSound.cpp
+)
+
+target_include_directories(ServiceSound
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )

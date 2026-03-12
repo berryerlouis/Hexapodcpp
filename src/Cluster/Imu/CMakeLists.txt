@@ -1,4 +1,8 @@
-set(SRC_FILES_IMU
-    ${CMAKE_CURRENT_SOURCE_DIR}/ClusterImu.cpp
-    PARENT_SCOPE
+add_library(ClusterImu 
+    ClusterImu.cpp
+)
+
+target_include_directories(ClusterImu
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )

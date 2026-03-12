@@ -69,7 +69,7 @@ namespace Move
                                                      this->mGaitParams.IsRotated(),
                                                      this->mGaitParams.GetRotation(),
                                                      this->mGaitParams.GetRotationClockWize(),
-                                                     this->mGaitParams.GetUpdatedTimeStamp());
+                                                     this->mStartTime);
                         leg.second.SetTarget(position);
                     }
                     this->mLegs.Update();
@@ -84,6 +84,7 @@ namespace Move
 
                 mGaitStrategy->doGaitStrategy(isCycleComplete,
                                               currentTime,
+                                              this->mStartTime,
                                               this->mLegs.GetLegs(),
                                               this->mGaitParams,
                                               this->mPositions,

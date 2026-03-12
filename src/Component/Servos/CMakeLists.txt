@@ -1,4 +1,13 @@
-set(SRC_FILES_SERVOS
-    ${CMAKE_CURRENT_SOURCE_DIR}/Servos.cpp
-    PARENT_SCOPE
+add_library(Servos
+    Servos.cpp
+)
+
+target_include_directories(Servos
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_link_libraries(Servos
+    PUBLIC
+        Servo
 )

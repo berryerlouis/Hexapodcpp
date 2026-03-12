@@ -32,13 +32,8 @@ ssh "$PI_HOST" bash -c "'
     # Kill any previous gdbserver
     pkill gdbserver 2>/dev/null || true
 
-    echo \"Launching gdbserver on port $PORT...\"
-
     # Start gdbserver fully detached
     sudo nohup gdbserver :$PORT $TARGET_BIN \
         >/tmp/gdbserver.log 2>&1 < /dev/null &
 '"
-
-echo "gdbserver started."
-
-printf "${GREEN}GDB server stopped.\n"
+printf "${GREEN}GDB server started.\n"

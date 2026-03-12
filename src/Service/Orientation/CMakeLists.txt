@@ -1,4 +1,8 @@
-set(SRC_FILES_ORIENTATION
-    ${CMAKE_CURRENT_SOURCE_DIR}/ServiceOrientation.cpp
-    PARENT_SCOPE
+add_library(ServiceOrientation 
+    ServiceOrientation.cpp
+)
+
+target_include_directories(ServiceOrientation
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )

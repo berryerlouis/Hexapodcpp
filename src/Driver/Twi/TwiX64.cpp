@@ -31,6 +31,12 @@ namespace Driver
             (void) data;
             return (true);
         }
+        bool Twi::Read16Register(const uint8_t address, const uint16_t reg, uint8_t &data) {
+            (void) address;
+            (void) reg;
+            (void) data;
+            return (true);
+        }
 
         bool Twi::ReadRegister16Bits(const uint8_t address, const uint8_t reg, uint16_t &data) {
             (void) address;
@@ -64,6 +70,17 @@ namespace Driver
             return (true);
         }
 
+        bool Twi::Read16Registers(const uint8_t  address,
+                                  const uint16_t reg,
+                                  uint8_t       *data,
+                                  const uint16_t length) {
+            (void) address;
+            (void) reg;
+            (void) data;
+            (void) length;
+            return (true);
+        }
+
         bool Twi::Write(const uint8_t address, const uint8_t reg) {
             (void) address;
             (void) reg;
@@ -71,6 +88,12 @@ namespace Driver
         }
 
         bool Twi::WriteRegister(const uint8_t address, const uint8_t reg, uint8_t data) {
+            (void) address;
+            (void) reg;
+            (void) data;
+            return (true);
+        }
+        bool Twi::Write16Register(const uint8_t address, const uint16_t reg, uint8_t data) {
             (void) address;
             (void) reg;
             (void) data;
@@ -95,6 +118,16 @@ namespace Driver
                                  const uint8_t reg,
                                  uint8_t      *data,
                                  const uint8_t length) {
+            (void) address;
+            (void) reg;
+            (void) data;
+            (void) length;
+            return (true);
+        }
+        bool Twi::Write16Registers(const uint8_t  address,
+                                   const uint16_t reg,
+                                   uint8_t       *data,
+                                   const uint16_t length) {
             (void) address;
             (void) reg;
             (void) data;

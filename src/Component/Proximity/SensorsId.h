@@ -15,8 +15,9 @@ namespace Component
         };
 
         struct SensorsStruct {
-            const SensorsId &id;
+            const SensorsId  &id;
             const uint16_t   distance;
+            const uint16_t   (*distanceArray)[8U];
         };
     } // namespace Proximity
 } // namespace Component

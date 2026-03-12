@@ -6,6 +6,7 @@
                 "${workspaceFolder}/src/**",
                 "${workspaceFolder}/build/hexapod-RPI-DEBUG/_deps/tinywebsockets-src/tiny_websockets_lib/include/**",
                 "${workspaceFolder}/build/hexapod-RPI-DEBUG/_deps/wiringpi-src/**",
+                "${workspaceFolder}/build/hexapod-RPI-DEBUG/_deps/pigpio-src/**",
                 "${workspaceFolder}/build/hexapod-X64-TEST/_deps/googletest-src/googletest/include/*",
                 "${workspaceFolder}/build/hexapod-X64-TEST/_deps/googletest-src/googletest/include/gtest/*",
                 "${workspaceFolder}/build/hexapod-X64-TEST/_deps/googletest-src/googletest/include/gtest/internal/*",

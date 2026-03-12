@@ -10,11 +10,10 @@ namespace Component
         class SensorProximity : public SensorProximityMultipleInterface,
                                 Core::ObserverInterface<SensorsStruct> {
         public:
-            static constexpr uint8_t NB_SENSORS = 3U;
 
             SensorProximity(SensorProximityInterface &srf05Left,
                             SensorProximityInterface &srf05Right,
-                            SensorProximityInterface &Vl53l0x);
+                            SensorProximityInterface &vl53lxx);
 
             ~SensorProximity() = default;
 

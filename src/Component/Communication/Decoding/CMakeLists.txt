@@ -1,4 +1,8 @@
-set(SRC_FILES_DECODING
-    ${CMAKE_CURRENT_SOURCE_DIR}/Protocol.cpp
-    PARENT_SCOPE
+add_library(Decoding 
+    Protocol.cpp
+)
+
+target_include_directories(Decoding
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )

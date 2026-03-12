@@ -1,4 +1,8 @@
-set(SRC_FILES_SERVO
-    ${CMAKE_CURRENT_SOURCE_DIR}/ClusterServo.cpp
-    PARENT_SCOPE
+add_library(ClusterServo 
+    ClusterServo.cpp
+)
+
+target_include_directories(ClusterServo
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )
