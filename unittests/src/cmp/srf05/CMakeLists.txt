@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.22)
 set(
         SRC_FILES
         ../src/Component/Proximity/Ultrasound/Srf05.cpp

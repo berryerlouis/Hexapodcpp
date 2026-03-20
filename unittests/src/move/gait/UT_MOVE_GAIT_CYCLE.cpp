@@ -65,6 +65,17 @@ namespace Move
             EXPECT_FALSE(gaitCycle.Pause());
         }
 
+        // Test Stop
+        TEST_F(UT_MOVE_GAIT_CYCLE, TestStop) {
+            gaitParams.SetRunning(true);
+            EXPECT_TRUE(gaitCycle.Stop());
+            EXPECT_FALSE(gaitParams.IsRunning());
+
+            // Second stop should return false (already
+            // stopped)
+            EXPECT_FALSE(gaitCycle.Stop());
+        }
+
         // Test Update when not running
         TEST_F(UT_MOVE_GAIT_CYCLE, TestUpdateNotRunning) {
             gaitParams.SetRunning(false);

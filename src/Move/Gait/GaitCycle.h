@@ -20,7 +20,7 @@ namespace Move
 
             bool Start(void);
 
-            bool Pause(void) const;
+            bool Pause(void);
 
             bool Stop(void);
 

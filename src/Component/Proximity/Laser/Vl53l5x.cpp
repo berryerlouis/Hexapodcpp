@@ -1,5 +1,5 @@
 #include "Vl53l5x.h"
-#include "../../Driver/Timer/Tick.h"
+#include "../../../Driver/Timer/Tick.h"
 #include "string.h"
 
 namespace Component
@@ -13,10 +13,12 @@ namespace Component
                 , mLed(led)
                 , mAddress(address)
                 , mDistance(0U)
-                , mThreshold(DISTANCE_THRESHOLD) {
+                , mThreshold(DISTANCE_THRESHOLD)
+                , mResolution(VL53L5CX_RESOLUTION_8X8)
+                , mDataReadSize(0U) {
                 // Initialize distance matrix to zeros
-                for (uint8_t row = 0U; row < 8U; ++row) {
-                    for (uint8_t col = 0U; col < 8U; ++col) {
+                for (uint8_t row = 0U; row < MATRIX_SIDE; ++row) {
+                    for (uint8_t col = 0U; col < MATRIX_SIDE; ++col) {
                         this->mDistanceMatrix[row][col] = 0U;
                     }
                 }
@@ -30,7 +32,12 @@ namespace Component
                                 "Laser", "VL53L5X address 0x%02X failed to start.", this->mAddress);
                         return Core::Status::CORE_ERROR;
                     }
-                    this->StartRanging();
+                    if (!this->InitSensor()) {
+                        LOG_COMPONENT_ERROR("Laser",
+                                            "VL53L5X address 0x%02X sensor init failed.",
+                                            this->mAddress);
+                        return Core::Status::CORE_ERROR;
+                    }
                     /*this->MotionIndicatorInit(VL53L5CX_RESOLUTION_4X4);
                     this->MotionSetDistance(400U, 1000U);
                     this->MotionSetRangingFrequency(2U);*/
@@ -47,8 +54,8 @@ namespace Component
 
             void Vl53l5x::Update(const uint64_t currentTime) {
                 (void) currentTime;
-                if (this->IsDataReady()) {
-                    this->mDistance = this->GetDistance();
+                if (this->DataIsReady()) {
+                    this->ReadData();
 
                     const bool detection =
                             this->mDistance != 0U && this->mDistance <= this->mThreshold;
@@ -72,6 +79,149 @@ namespace Component
 
             uint16_t Vl53l5x::GetThreshold() {
                 return this->mThreshold;
+            }
+
+            bool Vl53l5x::DataIsReady(void) {
+                const bool status = this->mI2c.Read16Registers(this->mAddress, 0x0, this->temp_buffer, 4);
+                if (!status) {
+                    LOG_COMPONENT_ERROR(
+                            "Laser", "VL53L5X address 0x%02X check data ready failed.", this->mAddress);
+                    return false;
+                }
+
+                if ((this->temp_buffer[0] != this->streamcount) &&
+                    (this->temp_buffer[0] != (uint8_t) 255) &&
+                    (this->temp_buffer[1] == (uint8_t) 0x5) &&
+                    ((this->temp_buffer[2] & (uint8_t) 0x5) == (uint8_t) 0x5) &&
+                    ((this->temp_buffer[3] & (uint8_t) 0x10) == (uint8_t) 0x10)) {
+                    this->streamcount = this->temp_buffer[0];
+                    return true;
+                }
+
+                return false;
+            }
+
+            void Vl53l5x::ReadData(void) {
+                if (this->mDataReadSize == 0U || this->mDataReadSize > sizeof(this->temp_buffer)) {
+                    return;
+                }
+
+                if (!this->mI2c.Read16Registers(
+                            this->mAddress, 0x0, this->temp_buffer, this->mDataReadSize)) {
+                    LOG_COMPONENT_ERROR(
+                            "Laser", "VL53L5X address 0x%02X read ranging data failed.", this->mAddress);
+                    return;
+                }
+
+                this->SwapBuffer(this->temp_buffer, (uint16_t) this->mDataReadSize);
+                this->ParseFrame();
+                this->ConvertResults();
+                this->UpdateDistanceMatrix();
+            }
+
+            void Vl53l5x::ParseFrame(void) {
+                for (uint32_t i = (uint32_t) 16; i < this->mDataReadSize; i += (uint32_t) 4) {
+                    union Block_header *bh_ptr = (union Block_header *) &(this->temp_buffer[i]);
+                    uint32_t            msize =
+                            ((bh_ptr->type > (uint32_t) 0x1) && (bh_ptr->type < (uint32_t) 0x0D))
+                                    ? (bh_ptr->type * bh_ptr->size)
+                                    : bh_ptr->size;
+
+                    switch (bh_ptr->idx) {
+                        case VL53L5CX_AMBIENT_RATE_IDX:
+                            (void) memcpy(this->mResults.ambient_per_spad,
+                                          &(this->temp_buffer[i + (uint32_t) 4]),
+                                          msize);
+                            break;
+                        case VL53L5CX_NB_TARGET_DETECTED_IDX:
+                            (void) memcpy(this->mResults.nb_target_detected,
+                                          &(this->temp_buffer[i + (uint32_t) 4]),
+                                          msize);
+                            break;
+                        case VL53L5CX_DISTANCE_IDX:
+                            (void) memcpy(this->mResults.distance_mm,
+                                          &(this->temp_buffer[i + (uint32_t) 4]),
+                                          msize);
+                            break;
+                        case VL53L5CX_TARGET_STATUS_IDX:
+                            (void) memcpy(this->mResults.target_status,
+                                          &(this->temp_buffer[i + (uint32_t) 4]),
+                                          msize);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    i += msize;
+                }
+            }
+
+            void Vl53l5x::ConvertResults(void) {
+                for (uint8_t zone = 0U; zone < VL53L5CX_RESOLUTION_8X8; zone++) {
+                    this->mResults.ambient_per_spad[zone] /= (uint32_t) 2048;
+                }
+
+                for (uint8_t idx = 0U;
+                     idx < (uint8_t) (VL53L5CX_RESOLUTION_8X8 * VL53L5CX_NB_TARGET_PER_ZONE);
+                     idx++) {
+                    this->mResults.distance_mm[idx] /= (int16_t) 4;
+                    if (this->mResults.distance_mm[idx] < 0) {
+                        this->mResults.distance_mm[idx] = 0;
+                    }
+                }
+            }
+
+            void Vl53l5x::UpdateDistanceMatrix(void) {
+                uint16_t min_distance = 0U;
+                for (uint8_t pixel = 0U; pixel < this->GetPixelCount(); pixel++) {
+                    const int16_t distance = this->GetDistanceMm(pixel);
+                    const uint8_t row = pixel / MATRIX_SIDE;
+                    const uint8_t col = pixel % MATRIX_SIDE;
+
+                    this->mDistanceMatrix[row][col] = (distance > 0) ? (uint16_t) distance : 0U;
+
+                    if ((distance > 0) && ((min_distance == 0U) || ((uint16_t) distance < min_distance))) {
+                        min_distance = (uint16_t) distance;
+                    }
+                }
+
+                this->mDistance = min_distance;
+            }
+
+            uint8_t Vl53l5x::GetPixelCount(void) const {
+                return this->mResolution;
+            }
+
+            uint8_t Vl53l5x::GetTargetStatus(const uint8_t pixel) const {
+                if (pixel >= this->GetPixelCount()) {
+                    return 0U;
+                }
+
+                return this->mResults.target_status[(uint8_t) (VL53L5CX_NB_TARGET_PER_ZONE * pixel)];
+            }
+
+            int16_t Vl53l5x::GetDistanceMm(const uint8_t pixel) const {
+                if (pixel >= this->GetPixelCount()) {
+                    return 0;
+                }
+
+                return this->mResults.distance_mm[(uint8_t) (VL53L5CX_NB_TARGET_PER_ZONE * pixel)];
+            }
+
+            uint8_t Vl53l5x::GetTargetDetectedCount(const uint8_t pixel) const {
+                if (pixel >= this->GetPixelCount()) {
+                    return 0U;
+                }
+
+                return this->mResults.nb_target_detected[pixel];
+            }
+
+            uint8_t Vl53l5x::GetAmbientPerSpad(const uint8_t pixel) const {
+                if (pixel >= this->GetPixelCount()) {
+                    return 0U;
+                }
+
+                return (uint8_t) this->mResults.ambient_per_spad[pixel];
             }
 
             bool Vl53l5x::Poll(const uint8_t  size,
@@ -108,7 +258,7 @@ namespace Component
                 uint8_t status = this->mI2c.Write16Register(this->mAddress, PAGE_SELECT, 0U);
                 status |= this->mI2c.Read16Register(this->mAddress, 0, modelId);
                 status |= this->mI2c.Read16Register(this->mAddress, 1, revisionId);
-                status |= this->mI2c.Write16Register(this->mAddress, PAGE_SELECT, 1U);
+                status |= this->mI2c.Write16Register(this->mAddress, PAGE_SELECT, 2U);
                 return (status == 1U) && (modelId == 0xF0U) && (revisionId == 0x02U);
             }
 
@@ -223,8 +373,7 @@ namespace Component
                 uint8_t  tmp, status = 0U;
                 uint8_t  pipe_ctrl[] = {VL53L5CX_NB_TARGET_PER_ZONE, 0x00, 0x01, 0x00};
                 uint32_t single_range = 0x01;
-                uint8_t  temp_buffer[VL53L5CX_NVM_DATA_SIZE] = {0U};
-                uint8_t  offset_buffer[VL53L5CX_OFFSET_BUFFER_SIZE] = {0U};
+                uint8_t  nvm_buffer[VL53L5CX_NVM_DATA_SIZE] = {0U};
 
 
                 /* SW reboot sequence */
@@ -321,7 +470,7 @@ namespace Component
                 status |= this->mI2c.Write16Register(this->mAddress, 0x0B, 0x00);
                 status |= this->mI2c.Write16Register(this->mAddress, 0x0C, 0x00);
                 status |= this->mI2c.Write16Register(this->mAddress, 0x0B, 0x01);
-                status |= this->Poll(1, 0, 0x06, 0xff, 0x01);
+                status |= this->Poll(1, 0, 0x06, 0xff, 0x00);
                 status |= this->mI2c.Write16Register(this->mAddress, PAGE_SELECT, 0x02);
 
                 /* Get offset NVM data and store them into the offset buffer */
@@ -331,8 +480,8 @@ namespace Component
                                                       sizeof(VL53L5CX_GET_NVM_CMD));
                 status |= this->Poll(4, 0, VL53L5CX_UI_CMD_STATUS, 0xff, 2);
                 status |= this->mI2c.Read16Registers(
-                        this->mAddress, VL53L5CX_UI_CMD_START, temp_buffer, VL53L5CX_NVM_DATA_SIZE);
-                (void) memcpy(offset_buffer, temp_buffer, VL53L5CX_OFFSET_BUFFER_SIZE);
+                    this->mAddress, VL53L5CX_UI_CMD_START, nvm_buffer, VL53L5CX_NVM_DATA_SIZE);
+                (void) memcpy(this->offset_buffer, nvm_buffer, VL53L5CX_OFFSET_BUFFER_SIZE);
                 status |= this->OffsetData(VL53L5CX_RESOLUTION_4X4);
 
                 /* Set default Xtalk shape. Send Xtalk to sensor */
@@ -369,6 +518,91 @@ namespace Component
                 status |= this->DciWriteData((uint8_t *) &single_range,
                                              VL53L5CX_DCI_SINGLE_RANGE,
                                              (uint16_t) sizeof(single_range));
+                return status;
+            }
+
+
+            bool Vl53l5x::InitSensor(void) {
+                uint8_t  status = 0U;
+                uint8_t  resolution = DEFAULT_RESOLUTION;
+                uint8_t  ranging_mode = DEFAULT_RANGING_MODE;
+                uint8_t  frequency_hz = DEFAULT_FREQUENCY_HZ;
+                uint8_t  target_order = DEFAULT_TARGET_ORDER;
+                uint32_t single_range = 0x00U;
+                uint32_t integration_time_us = 0U;
+
+                /* Set resolution first as other configuration depends on it. */
+                if (resolution == VL53L5CX_RESOLUTION_4X4) {
+                    status |= this->DciReadData(this->temp_buffer, VL53L5CX_DCI_DSS_CONFIG, 16);
+                    this->temp_buffer[0x04] = 64;
+                    this->temp_buffer[0x06] = 64;
+                    this->temp_buffer[0x09] = 4;
+                    status |= this->DciWriteData(this->temp_buffer, VL53L5CX_DCI_DSS_CONFIG, 16);
+
+                    status |= this->DciReadData(this->temp_buffer, VL53L5CX_DCI_ZONE_CONFIG, 8);
+                    this->temp_buffer[0x00] = 4;
+                    this->temp_buffer[0x01] = 4;
+                    this->temp_buffer[0x04] = 8;
+                    this->temp_buffer[0x05] = 8;
+                    status |= this->DciWriteData(this->temp_buffer, VL53L5CX_DCI_ZONE_CONFIG, 8);
+                } else {
+                    status |= this->DciReadData(this->temp_buffer, VL53L5CX_DCI_DSS_CONFIG, 16);
+                    this->temp_buffer[0x04] = 16;
+                    this->temp_buffer[0x06] = 16;
+                    this->temp_buffer[0x09] = 1;
+                    status |= this->DciWriteData(this->temp_buffer, VL53L5CX_DCI_DSS_CONFIG, 16);
+
+                    status |= this->DciReadData(this->temp_buffer, VL53L5CX_DCI_ZONE_CONFIG, 8);
+                    this->temp_buffer[0x00] = 8;
+                    this->temp_buffer[0x01] = 8;
+                    this->temp_buffer[0x04] = 4;
+                    this->temp_buffer[0x05] = 4;
+                    status |= this->DciWriteData(this->temp_buffer, VL53L5CX_DCI_ZONE_CONFIG, 8);
+                }
+
+                status |= this->OffsetData(resolution);
+                status |= this->SendXtalkData(resolution);
+
+                /* Set continuous ranging mode. */
+                status |= this->DciReadData(this->temp_buffer, VL53L5CX_DCI_RANGING_MODE, 8);
+                if (ranging_mode == VL53L5CX_RANGING_MODE_CONTINUOUS) {
+                    this->temp_buffer[0x01] = 0x1;
+                    this->temp_buffer[0x03] = 0x3;
+                    single_range = 0x00U;
+                } else {
+                    this->temp_buffer[0x01] = 0x3;
+                    this->temp_buffer[0x03] = 0x2;
+                    single_range = 0x01U;
+                }
+                status |= this->DciWriteData(this->temp_buffer, VL53L5CX_DCI_RANGING_MODE, 8);
+                status |= this->DciWriteData((uint8_t *) &single_range,
+                                             VL53L5CX_DCI_SINGLE_RANGE,
+                                             (uint16_t) sizeof(single_range));
+
+                status |= this->DciReplaceData(this->temp_buffer,
+                                               VL53L5CX_DCI_FREQ_HZ,
+                                               4,
+                                               (uint8_t *) &frequency_hz,
+                                               1,
+                                               0x01);
+
+                status |= this->DciReplaceData(this->temp_buffer,
+                                               VL53L5CX_DCI_TARGET_ORDER,
+                                               4,
+                                               (uint8_t *) &target_order,
+                                               1,
+                                               0x00);
+
+                status |= this->DciReadData(this->temp_buffer, VL53L5CX_DCI_INT_TIME, 20);
+                (void) memcpy(&integration_time_us, &(this->temp_buffer[0x00]), 4);
+                LOG_COMPONENT_DEBUG("Laser",
+                                    "VL53L5X address 0x%02X integration time: %lu ms",
+                                    this->mAddress,
+                                    (unsigned long) (integration_time_us / 1000U));
+
+                status |= this->StartRanging();
+                (void) this->DataIsReady();
+
                 return status;
             }
 
@@ -486,8 +720,9 @@ namespace Component
                 uint8_t             cmd[] = {0x00, 0x03, 0x00, 0x00};
 
                 status |= this->MotionGetResolution(&resolution);
-                uint8_t data_read_size = 0;
+                uint32_t data_read_size = 0;
                 this->streamcount = 255;
+                this->mResolution = resolution;
 
                 /* Enable mandatory output (meta and common data) */
                 uint32_t output_bh_enable[] = {0x00000007U, 0x00000000U, 0x00000000U, 0xC0000000U};
@@ -506,42 +741,8 @@ namespace Component
                                      VL53L5CX_TARGET_STATUS_BH,
                                      VL53L5CX_MOTION_DETECT_BH};
 
-#define VL53L5CX_DISABLE_AMBIENT_PER_SPAD
-#define VL53L5CX_DISABLE_NB_SPADS_ENABLED
-// #define VL53L5CX_DISABLE_NB_TARGET_DETECTED
-#define VL53L5CX_DISABLE_SIGNAL_PER_SPAD
-#define VL53L5CX_DISABLE_RANGE_SIGMA_MM
-// #define VL53L5CX_DISABLE_DISTANCE_MM
-#define VL53L5CX_DISABLE_REFLECTANCE_PERCENT
-// #define VL53L5CX_DISABLE_TARGET_STATUS
-#define VL53L5CX_DISABLE_MOTION_INDICATOR
-#ifndef VL53L5CX_DISABLE_AMBIENT_PER_SPAD
-                output_bh_enable[0] += (uint32_t) 8;
-#endif
-#ifndef VL53L5CX_DISABLE_NB_SPADS_ENABLED
-                output_bh_enable[0] += (uint32_t) 16;
-#endif
-#ifndef VL53L5CX_DISABLE_NB_TARGET_DETECTED
-                output_bh_enable[0] += (uint32_t) 32;
-#endif
-#ifndef VL53L5CX_DISABLE_SIGNAL_PER_SPAD
-                output_bh_enable[0] += (uint32_t) 64;
-#endif
-#ifndef VL53L5CX_DISABLE_RANGE_SIGMA_MM
-                output_bh_enable[0] += (uint32_t) 128;
-#endif
-#ifndef VL53L5CX_DISABLE_DISTANCE_MM
-                output_bh_enable[0] += (uint32_t) 256;
-#endif
-#ifndef VL53L5CX_DISABLE_REFLECTANCE_PERCENT
-                output_bh_enable[0] += (uint32_t) 512;
-#endif
-#ifndef VL53L5CX_DISABLE_TARGET_STATUS
-                output_bh_enable[0] += (uint32_t) 1024;
-#endif
-#ifndef VL53L5CX_DISABLE_MOTION_INDICATOR
-                output_bh_enable[0] += (uint32_t) 2048;
-#endif
+                // Keep only the outputs consumed by this component.
+                output_bh_enable[0] += (uint32_t) (32U + 256U + 1024U);
 
                 /* Update data size */
                 for (i = 0; i < (uint32_t) (sizeof(output) / sizeof(uint32_t)); i++) {
@@ -568,6 +769,7 @@ namespace Component
                     data_read_size += (uint32_t) 4;
                 }
                 data_read_size += (uint32_t) 20;
+                this->mDataReadSize = data_read_size;
 
                 status |= this->DciWriteData(
                         (uint8_t *) &(output), VL53L5CX_DCI_OUTPUT_LIST, (uint16_t) sizeof(output));
@@ -596,20 +798,6 @@ namespace Component
                 status |= this->Poll(4, 1, VL53L5CX_UI_CMD_STATUS, 0xff, 0x03);
 
                 return status;
-            }
-
-            bool Vl53l5x::IsDataReady(void) {
-                this->mI2c.Read16Registers(this->mAddress, 0x0, this->temp_buffer, 4);
-
-                if ((this->temp_buffer[0] != this->streamcount) &&
-                    (this->temp_buffer[0] != (uint8_t) 255) &&
-                    (this->temp_buffer[1] == (uint8_t) 0x5) &&
-                    ((this->temp_buffer[2] & (uint8_t) 0x5) == (uint8_t) 0x5) &&
-                    ((this->temp_buffer[3] & (uint8_t) 0x10) == (uint8_t) 0x10)) {
-                    this->streamcount = this->temp_buffer[0];
-                    return true;
-                }
-                return false;
             }
 
 

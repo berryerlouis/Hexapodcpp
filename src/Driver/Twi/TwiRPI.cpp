@@ -71,8 +71,20 @@ namespace Driver
             }
             char addr[2] = {static_cast<char>((uint16_t) (reg >> 8U) & 0xFFU),
                             static_cast<char>(reg & 0xFFU)};
-            i2cWriteDevice(handle, addr, 2); // Send 16-bit address
-            data = i2cReadByte(handle); // Read 8-bit value
+            const int setAddrResult = i2cWriteDevice(handle, addr, 2); // Send 16-bit address
+            if (setAddrResult != 2) {
+                i2cClose(handle);
+                return false;
+            }
+
+            char value = 0;
+            const int readResult = i2cReadDevice(handle, &value, 1);
+            if (readResult != 1) {
+                i2cClose(handle);
+                return false;
+            }
+
+            data = static_cast<uint8_t>(value);
             i2cClose(handle);
             return true;
         }
@@ -177,20 +189,35 @@ namespace Driver
                                   uint8_t       *data,
                                   const uint16_t length) {
             int      handle;
-            uint16_t remaining = 0U;
             if (!OpenHandle(address, handle)) {
                 return false;
             }
-            char addr[2] = {static_cast<char>((uint16_t) (reg >> 8U) & 0xFFU),
-                            static_cast<char>(reg & 0xFFU)};
-            i2cWriteDevice(handle, addr, 2); // Send 16-bit address
-            while (remaining < length) {
-                data[remaining] = i2cReadByte(handle); // Read 8-bit value
-                remaining++;
+
+            uint16_t offset = 0U;
+            while (offset < length) {
+                const uint16_t currentReg = static_cast<uint16_t>(reg + offset);
+                char           addr[2] = {static_cast<char>((uint16_t) (currentReg >> 8U) & 0xFFU),
+                                static_cast<char>(currentReg & 0xFFU)};
+
+                const int setAddrResult = i2cWriteDevice(handle, addr, 2); // Send 16-bit address
+                if (setAddrResult != 2) {
+                    i2cClose(handle);
+                    return false;
+                }
+
+                const uint16_t chunk = ((length - offset) > 32U) ? 32U : (length - offset);
+                const int readResult =
+                        i2cReadDevice(handle, reinterpret_cast<char *>(data + offset), chunk);
+                if (readResult != static_cast<int>(chunk)) {
+                    i2cClose(handle);
+                    return false;
+                }
+
+                offset = static_cast<uint16_t>(offset + chunk);
             }
 
             i2cClose(handle);
-            return (true);
+            return true;
         }
 
 
@@ -218,12 +245,13 @@ namespace Driver
             if (!OpenHandle(address, handle)) {
                 return false;
             }
-            char addr[2] = {static_cast<char>((uint16_t) (reg >> 8U) & 0xFFU),
-                            static_cast<char>(reg & 0xFFU)};
-            i2cWriteDevice(handle, addr, 2); // Send 16-bit address
-            const int result = i2cWriteByte(handle, data); // Write 8-bit value
+
+            char payload[3] = {static_cast<char>((uint16_t) (reg >> 8U) & 0xFFU),
+                               static_cast<char>(reg & 0xFFU),
+                               static_cast<char>(data)};
+            const int result = i2cWriteDevice(handle, payload, 3);
             i2cClose(handle);
-            return (result >= 0);
+            return (result == 3);
         }
 
         bool Twi::WriteRegister16Bits(const uint8_t address, const uint8_t reg, uint16_t &data) {
@@ -296,20 +324,32 @@ namespace Driver
                                    uint8_t       *data,
                                    const uint16_t length) {
             int      handle;
-            uint16_t remaining = 0U;
             if (!OpenHandle(address, handle)) {
                 return false;
             }
-            char addr[2] = {static_cast<char>((uint16_t) (reg >> 8U) & 0xFFU),
-                            static_cast<char>(reg & 0xFFU)};
-            i2cWriteDevice(handle, addr, 2); // Send 16-bit address
-            while (remaining < length) {
-                i2cWriteByte(handle, data[remaining]); // Write 8-bit value
-                remaining++;
+
+            uint16_t offset = 0U;
+            while (offset < length) {
+                const uint16_t currentReg = static_cast<uint16_t>(reg + offset);
+                const uint16_t chunk = ((length - offset) > 30U) ? 30U : (length - offset);
+
+                uint8_t payload[32] = {0U};
+                payload[0] = static_cast<uint8_t>((uint16_t) (currentReg >> 8U) & 0xFFU);
+                payload[1] = static_cast<uint8_t>(currentReg & 0xFFU);
+                (void) memcpy(payload + 2, data + offset, chunk);
+
+                const int writeResult = i2cWriteDevice(
+                        handle, reinterpret_cast<char *>(payload), static_cast<unsigned>(chunk + 2));
+                if (writeResult != static_cast<int>(chunk + 2)) {
+                    i2cClose(handle);
+                    return false;
+                }
+
+                offset = static_cast<uint16_t>(offset + chunk);
             }
 
             i2cClose(handle);
-            return (true);
+            return true;
         }
     } // namespace Twi
 } // namespace Driver

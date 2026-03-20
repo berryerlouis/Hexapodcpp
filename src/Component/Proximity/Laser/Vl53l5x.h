@@ -34,6 +34,20 @@ namespace Component
 
                 uint16_t     GetThreshold(void) final override;
 
+                bool         DataIsReady(void);
+
+                void         ReadData(void);
+
+                uint8_t      GetPixelCount(void) const;
+
+                uint8_t      GetTargetStatus(const uint8_t pixel) const;
+
+                int16_t      GetDistanceMm(const uint8_t pixel) const;
+
+                uint8_t      GetTargetDetectedCount(const uint8_t pixel) const;
+
+                uint8_t      GetAmbientPerSpad(const uint8_t pixel) const;
+
                 auto         GetDistanceMatrix(void) const -> const uint16_t (*)[8U] override {
                     return this->mDistanceMatrix;
                 }
@@ -48,8 +62,17 @@ namespace Component
 
             private:
                 static constexpr uint16_t PAGE_SELECT = 0x7FFFU;
+                static constexpr uint8_t  MATRIX_SIDE = 8U;
                 static constexpr uint8_t  VL53L5CX_RESOLUTION_4X4 = ((uint8_t) 16U);
                 static constexpr uint8_t  VL53L5CX_RESOLUTION_8X8 = ((uint8_t) 64U);
+                static constexpr uint8_t  VL53L5CX_TARGET_ORDER_CLOSEST = ((uint8_t) 1U);
+                static constexpr uint8_t  VL53L5CX_RANGING_MODE_CONTINUOUS = ((uint8_t) 1U);
+                static constexpr uint8_t  VL53L5CX_RES_8X8_HZ_10 = ((uint8_t) 10U);
+
+                static constexpr uint8_t  DEFAULT_RESOLUTION = VL53L5CX_RESOLUTION_8X8;
+                static constexpr uint8_t  DEFAULT_RANGING_MODE = VL53L5CX_RANGING_MODE_CONTINUOUS;
+                static constexpr uint8_t  DEFAULT_FREQUENCY_HZ = VL53L5CX_RES_8X8_HZ_10;
+                static constexpr uint8_t  DEFAULT_TARGET_ORDER = VL53L5CX_TARGET_ORDER_CLOSEST;
 
 #define VL53L5CX_START_BH ((uint32_t) 0x0000000DU)
 #define VL53L5CX_METADATA_BH ((uint32_t) 0x54B400C0U)
@@ -124,6 +147,8 @@ namespace Component
                 uint8_t                       mAddress;
                 uint16_t                      mDistance;
                 uint16_t                      mThreshold;
+                uint8_t                       mResolution;
+                uint32_t                      mDataReadSize;
                 uint16_t                      mDistanceMatrix[8][8];
                 uint8_t                       temp_buffer[1024U] = {0U};
                 uint8_t                       xtalk_buffer[VL53L5CX_XTALK_BUFFER_SIZE] = {0U};
@@ -189,6 +214,8 @@ namespace Component
 
                 } VL53L5CX_ResultsData;
 
+                VL53L5CX_ResultsData mResults = {};
+
 
                 union Block_header {
                     uint32_t bytes;
@@ -202,6 +229,8 @@ namespace Component
                 bool    IsAlive(void) const;
 
                 bool    Start(void);
+
+                bool    InitSensor(void);
 
                 void    SwapBuffer(uint8_t *buffer, uint16_t size);
 
@@ -220,6 +249,12 @@ namespace Component
                                        uint16_t new_data_size,
                                        uint16_t new_data_pos);
 
+                void    ParseFrame(void);
+
+                void    ConvertResults(void);
+
+                void    UpdateDistanceMatrix(void);
+
                 bool    Poll(const uint8_t  size,
                              const uint8_t  pos,
                              const uint16_t reg,
@@ -232,7 +267,6 @@ namespace Component
                 uint8_t MotionSetDistance(uint16_t distance_min_mm, uint16_t distance_max_mm);
                 uint8_t MotionSetRangingFrequency(uint8_t frequency_hz);
                 uint8_t StartRanging(void);
-                bool    IsDataReady(void);
             };
         } // namespace Laser
     } // namespace Proximity

@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.22)
 set(
         TEST_FILE
         src/cmp/frame/UT_CMP_FRAME.cpp

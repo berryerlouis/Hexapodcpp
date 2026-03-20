@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.22)
 add_subdirectory(Adc)
 add_subdirectory(Gpio)
 add_subdirectory(InputCapture)

@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.22)
 set(
         SRC_FILES
         ../src/Cluster/Button/ClusterButton.cpp

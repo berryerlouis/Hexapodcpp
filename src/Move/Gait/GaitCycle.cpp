@@ -24,9 +24,10 @@ namespace Move
             return false;
         }
 
-        bool GaitCycle::Pause() const {
+        bool GaitCycle::Pause() {
             if (this->mGaitParams.IsRunning()) {
                 this->mGaitParams.SetRunning(false);
+                this->mStartTime = Driver::Timer::Tick::GetInstance().GetMs();
                 return true;
             }
             return false;
@@ -36,8 +37,12 @@ namespace Move
             if (this->mGaitParams.IsRunning()) {
                 this->mGaitParams.SetRunning(false);
                 this->mStartTime = Driver::Timer::Tick::GetInstance().GetMs();
+                this->mStepPositionIndex = 0U;
                 return true;
             }
+
+            this->mStartTime = Driver::Timer::Tick::GetInstance().GetMs();
+            this->mStepPositionIndex = 0U;
             return false;
         }
 
@@ -50,6 +55,10 @@ namespace Move
                 } else {
                     this->mGaitStrategy = std::make_unique<Move::Gait::GaitRipple>();
                 }
+
+                // Restart cycle phase when switching gait to avoid mixed-phase artifacts.
+                this->mStartTime = Driver::Timer::Tick::GetInstance().GetMs();
+                this->mStepPositionIndex = 0U;
                 return true;
             }
             return false;
@@ -112,8 +121,21 @@ namespace Move
         }
 
         void GaitCycle::AdvanceToNextCycle(const uint64_t currentTime) {
-            this->mStartTime = currentTime;
-            this->mStepPositionIndex = (this->mStepPositionIndex + 1U) % this->mPositions.size();
+            const uint16_t cycleDuration = this->mGaitParams.GetCycleDuration();
+            uint64_t       elapsed = currentTime - this->mStartTime;
+
+            if (cycleDuration == 0U) {
+                this->mStartTime = currentTime;
+                return;
+            }
+
+            const uint8_t positionsCount = static_cast<uint8_t>(this->mPositions.size());
+            while (elapsed >= cycleDuration) {
+                elapsed -= cycleDuration;
+                this->mStepPositionIndex = (this->mStepPositionIndex + 1U) % positionsCount;
+            }
+
+            this->mStartTime = currentTime - elapsed;
         }
     } // namespace Gait
 } // namespace Move

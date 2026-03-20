@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 
 #include "../../../mock/bot/MockBody.h"
-#include "../../../mock/clu/MockClusters.h"
 #include "../../../mock/cmp/MockLed.h"
 #include "../../../mock/cmp/MockSoftware.h"
 #include "../../../mock/drv/MockSocket.h"
@@ -27,10 +26,9 @@ namespace Component
             UT_CMP_COMMUNICATION()
                 : mMockBody()
                 , mMockSocket()
-                , mMockClusters()
                 , mMockLed()
                 , mClusterBody(mMockBody)
-                , mCommunication(mMockSocket, mMockClusters, mMockLed) {
+                , mCommunication(mMockSocket, mMockLed) {
             }
 
             virtual void SetUp() {
@@ -48,7 +46,6 @@ namespace Component
             /* Mocks */
             StrictMock<Bot::Body::MockBody>             mMockBody;
             StrictMock<Driver::Socket::MockSocket>      mMockSocket;
-            StrictMock<Cluster::Clusters::MockClusters> mMockClusters;
             StrictMock<Component::Led::MockLed>         mMockLed;
             Cluster::Body::ClusterBody                  mClusterBody;
 

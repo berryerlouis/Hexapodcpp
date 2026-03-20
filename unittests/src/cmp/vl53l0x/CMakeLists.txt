@@ -1,6 +1,7 @@
+cmake_minimum_required(VERSION 3.22)
 set(
         SRC_FILES
-        ../src/Component/Proximity/Laser/Vl53l0x.cpp
+        ../src/Component/Proximity/Laser/Vl53l5x.cpp
 )
 set(
         TEST_FILE

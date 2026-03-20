@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.22)
 add_subdirectory(Battery)
 add_subdirectory(Body)
 add_subdirectory(Button)

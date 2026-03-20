@@ -23,7 +23,7 @@ namespace Move
                            const Move::Gait::GaitParams                            &gaitParams,
                            const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
                            const uint8_t stepPositionIndex,
-                           const float   normalizedTime) const = 0;
+                           const float   normalizedTime) = 0;
         };
 
         class GaitTripod : public GaitStrategy {
@@ -35,13 +35,10 @@ namespace Move
                                 const Move::Gait::GaitParams             &gaitParams,
                                 const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
                                 const uint8_t stepPositionIndex,
-                                const float   normalizedTime) const override;
+                                const float   normalizedTime) override;
         };
 
         class GaitWave : public GaitStrategy {
-            inline static uint8_t activeLegId = 0U;
-            inline static bool    activeAllLegId = false;
-
         public:
             void doGaitStrategy(const bool                                isCycleComplete,
                                 const uint64_t                            currentTime,
@@ -50,7 +47,7 @@ namespace Move
                                 const Move::Gait::GaitParams             &gaitParams,
                                 const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
                                 const uint8_t stepPositionIndex,
-                                const float   normalizedTime) const override;
+                                const float   normalizedTime) override;
         };
 
         class GaitRipple : public GaitStrategy {
@@ -62,7 +59,7 @@ namespace Move
                                 const Move::Gait::GaitParams             &gaitParams,
                                 const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
                                 const uint8_t stepPositionIndex,
-                                const float   normalizedTime) const override;
+                                const float   normalizedTime) override;
         };
     } // namespace Gait
 } // namespace Move

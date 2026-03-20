@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.22)
 add_subdirectory(ads1115)
 add_subdirectory(ahrs)
 add_subdirectory(battery)

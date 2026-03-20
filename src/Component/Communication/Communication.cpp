@@ -10,7 +10,10 @@ namespace Component
             : mSocket(socket)
             , mLedStatus(ledStatus)
             , mBufferTx{0U}
-            , mReceivedFrames() {
+            , mReceivedFrames{}
+            , mRxReadIndex(0U)
+            , mRxWriteIndex(0U)
+            , mRxCount(0U) {
         }
 
         Core::Status Communication::Initialize() {
@@ -30,11 +33,17 @@ namespace Component
             while (this->mSocket.HasNewFrame()) {
                 // this->mLedStatus.On();
                 Frame              request;
-                Frame              response;
                 const Core::Status parsedStatus = Protocol::Decode(
                         const_cast<const char *>(this->mSocket.ReadIncomingData()), request);
                 if (parsedStatus == Core::Status::CORE_OK) {
-                    this->mReceivedFrames.push_back(request);
+                    if (this->PushReceivedFrame(request) != Core::Status::CORE_OK) {
+                        LOG_COMPONENT_WARNING("Communication",
+                                              "RX queue full, drop frame c=%u cmd=%u",
+                                              request.GetClusterId(),
+                                              request.GetCommandId());
+                    }
+                } else {
+                    LOG_COMPONENT_WARNING("Communication", "Failed to decode incoming frame.");
                 }
                 // this->mLedStatus.Off();
             }
@@ -42,12 +51,29 @@ namespace Component
 
 
         Core::Status Communication::GetMessage(Frame &message) {
-            if (!this->mReceivedFrames.empty()) {
-                message = this->mReceivedFrames.front();
-                this->mReceivedFrames.erase(this->mReceivedFrames.begin());
-                return Core::Status::CORE_OK;
+            return this->PopReceivedFrame(message);
+        }
+
+        Core::Status Communication::PushReceivedFrame(const Frame &frame) {
+            if (this->mRxCount >= RX_QUEUE_CAPACITY) {
+                return Core::Status::CORE_ERROR_OVERLOAD;
             }
-            return Core::Status::CORE_ERROR;
+
+            this->mReceivedFrames[this->mRxWriteIndex] = frame;
+            this->mRxWriteIndex = (this->mRxWriteIndex + 1U) % RX_QUEUE_CAPACITY;
+            this->mRxCount += 1U;
+            return Core::Status::CORE_OK;
+        }
+
+        Core::Status Communication::PopReceivedFrame(Frame &frame) {
+            if (this->mRxCount == 0U) {
+                return Core::Status::CORE_ERROR;
+            }
+
+            frame = this->mReceivedFrames[this->mRxReadIndex];
+            this->mRxReadIndex = (this->mRxReadIndex + 1U) % RX_QUEUE_CAPACITY;
+            this->mRxCount -= 1U;
+            return Core::Status::CORE_OK;
         }
 
         Core::Status Communication::SendMessage(const Frame &message) {

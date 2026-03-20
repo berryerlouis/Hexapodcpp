@@ -169,7 +169,7 @@ namespace Service
         }
 
         TEST_F(UT_SRV_DISPLAY, OnEvent_ProximityUSLeft) {
-            const Component::Proximity::SensorsStruct proxStruct({.id = SRF_LEFT, .distance = 10U});
+            const Component::Proximity::SensorsStruct proxStruct({.id = SRF_LEFT, .distance = 10U, .distanceArray = {}});
             const Event::Event                        event =
                     Event::Event(PROXIMITY, EventType::EVENT_SENSOR_UPDATE, proxStruct);
 
@@ -180,7 +180,7 @@ namespace Service
 
         TEST_F(UT_SRV_DISPLAY, OnEvent_ProximityUSRight) {
             const Component::Proximity::SensorsStruct proxStruct(
-                    {.id = SRF_RIGHT, .distance = 10U});
+                    {.id = SRF_RIGHT, .distance = 10U, .distanceArray = {}});
             const Event::Event event =
                     Event::Event(PROXIMITY, EventType::EVENT_SENSOR_UPDATE, proxStruct);
 
@@ -190,7 +190,7 @@ namespace Service
         }
 
         TEST_F(UT_SRV_DISPLAY, OnEvent_ProximityLaser) {
-            const Component::Proximity::SensorsStruct proxStruct({.id = VLX, .distance = 10U});
+            const Component::Proximity::SensorsStruct proxStruct({.id = VLX, .distance = 10U, .distanceArray = {}});
             const Event::Event                        event =
                     Event::Event(PROXIMITY, EventType::EVENT_SENSOR_UPDATE, proxStruct);
 
@@ -200,7 +200,7 @@ namespace Service
         }
 
         TEST_F(UT_SRV_DISPLAY, OnEvent_ProximityUSLeftFar) {
-            const Component::Proximity::SensorsStruct proxStruct({.id = SRF_LEFT, .distance = 40U});
+            const Component::Proximity::SensorsStruct proxStruct({.id = SRF_LEFT, .distance = 40U, .distanceArray = {}});
             const Event::Event                        event =
                     Event::Event(PROXIMITY, EventType::EVENT_SENSOR_UPDATE, proxStruct);
 
@@ -210,7 +210,7 @@ namespace Service
 
         TEST_F(UT_SRV_DISPLAY, OnEvent_ProximityUSRightFar) {
             const Component::Proximity::SensorsStruct proxStruct(
-                    {.id = SRF_RIGHT, .distance = 40U});
+                    {.id = SRF_RIGHT, .distance = 40U, .distanceArray = {}});
             const Event::Event event =
                     Event::Event(PROXIMITY, EventType::EVENT_SENSOR_UPDATE, proxStruct);
 
@@ -219,7 +219,7 @@ namespace Service
         }
 
         TEST_F(UT_SRV_DISPLAY, OnEvent_ProximityLaserFar) {
-            const Component::Proximity::SensorsStruct proxStruct({.id = VLX, .distance = 400U});
+            const Component::Proximity::SensorsStruct proxStruct({.id = VLX, .distance = 400U, .distanceArray = {}});
             const Event::Event                        event =
                     Event::Event(PROXIMITY, EventType::EVENT_SENSOR_UPDATE, proxStruct);
 

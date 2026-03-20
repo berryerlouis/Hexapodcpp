@@ -21,10 +21,11 @@ namespace Service
         protected:
             UT_SRV_COMMUNICATION()
                 : mMockCommunication()
+                , mMockClusters()
                 , mMockEventDispatcherInterface()
                 , mMockMessageInterface()
                 , mServiceCommunication(mMockCommunication,
-
+                                        mMockClusters,
                                         mMockMessageInterface,
                                         mMockEventDispatcherInterface) {
             }
@@ -48,6 +49,7 @@ namespace Service
 
             /* Mocks */
             StrictMock<Component::Communication::MockCommunication> mMockCommunication;
+            StrictMock<Cluster::Clusters::MockClusters>             mMockClusters;
             StrictMock<Event::MockEventDispatcherInterface>         mMockEventDispatcherInterface;
             StrictMock<Message::MockMessageInterface>               mMockMessageInterface;
 
@@ -57,6 +59,7 @@ namespace Service
 
         TEST_F(UT_SRV_COMMUNICATION, Initialize_Update) {
             EXPECT_CALL(mMockCommunication, Update(12450UL)).Times(1U);
+            EXPECT_CALL(mMockCommunication, GetMessage(_)).WillOnce(Return(Core::Status::CORE_ERROR));
             mServiceCommunication.Update(12450UL);
         }
 
