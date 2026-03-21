@@ -82,10 +82,12 @@ namespace Component
             }
 
             bool Vl53l5x::DataIsReady(void) {
-                const bool status = this->mI2c.Read16Registers(this->mAddress, 0x0, this->temp_buffer, 4);
+                const bool status =
+                        this->mI2c.Read16Registers(this->mAddress, 0x0, this->temp_buffer, 4);
                 if (!status) {
-                    LOG_COMPONENT_ERROR(
-                            "Laser", "VL53L5X address 0x%02X check data ready failed.", this->mAddress);
+                    LOG_COMPONENT_ERROR("Laser",
+                                        "VL53L5X address 0x%02X check data ready failed.",
+                                        this->mAddress);
                     return false;
                 }
 
@@ -108,8 +110,9 @@ namespace Component
 
                 if (!this->mI2c.Read16Registers(
                             this->mAddress, 0x0, this->temp_buffer, this->mDataReadSize)) {
-                    LOG_COMPONENT_ERROR(
-                            "Laser", "VL53L5X address 0x%02X read ranging data failed.", this->mAddress);
+                    LOG_COMPONENT_ERROR("Laser",
+                                        "VL53L5X address 0x%02X read ranging data failed.",
+                                        this->mAddress);
                     return;
                 }
 
@@ -124,8 +127,8 @@ namespace Component
                     union Block_header *bh_ptr = (union Block_header *) &(this->temp_buffer[i]);
                     uint32_t            msize =
                             ((bh_ptr->type > (uint32_t) 0x1) && (bh_ptr->type < (uint32_t) 0x0D))
-                                    ? (bh_ptr->type * bh_ptr->size)
-                                    : bh_ptr->size;
+                                               ? (bh_ptr->type * bh_ptr->size)
+                                               : bh_ptr->size;
 
                     switch (bh_ptr->idx) {
                         case VL53L5CX_AMBIENT_RATE_IDX:
@@ -180,7 +183,8 @@ namespace Component
 
                     this->mDistanceMatrix[row][col] = (distance > 0) ? (uint16_t) distance : 0U;
 
-                    if ((distance > 0) && ((min_distance == 0U) || ((uint16_t) distance < min_distance))) {
+                    if ((distance > 0) &&
+                        ((min_distance == 0U) || ((uint16_t) distance < min_distance))) {
                         min_distance = (uint16_t) distance;
                     }
                 }
@@ -197,7 +201,8 @@ namespace Component
                     return 0U;
                 }
 
-                return this->mResults.target_status[(uint8_t) (VL53L5CX_NB_TARGET_PER_ZONE * pixel)];
+                return this->mResults
+                        .target_status[(uint8_t) (VL53L5CX_NB_TARGET_PER_ZONE * pixel)];
             }
 
             int16_t Vl53l5x::GetDistanceMm(const uint8_t pixel) const {
@@ -238,10 +243,10 @@ namespace Component
                     Driver::Timer::Tick::GetInstance().DelayMs(10U);
 
                     if (timeout >= (uint8_t) 200U) { /* 2s timeout */
-                        status |= 1U; // timeout
+                        status = false; // timeout
                         break;
                     } else if ((size >= (uint8_t) 4U) && (buffer[2U] >= (uint8_t) 0x7f)) {
-                        status |= 1U; // MCU error
+                        status = false; // MCU error
                         break;
                     } else {
                         timeout++;
@@ -480,7 +485,7 @@ namespace Component
                                                       sizeof(VL53L5CX_GET_NVM_CMD));
                 status |= this->Poll(4, 0, VL53L5CX_UI_CMD_STATUS, 0xff, 2);
                 status |= this->mI2c.Read16Registers(
-                    this->mAddress, VL53L5CX_UI_CMD_START, nvm_buffer, VL53L5CX_NVM_DATA_SIZE);
+                        this->mAddress, VL53L5CX_UI_CMD_START, nvm_buffer, VL53L5CX_NVM_DATA_SIZE);
                 (void) memcpy(this->offset_buffer, nvm_buffer, VL53L5CX_OFFSET_BUFFER_SIZE);
                 status |= this->OffsetData(VL53L5CX_RESOLUTION_4X4);
 
