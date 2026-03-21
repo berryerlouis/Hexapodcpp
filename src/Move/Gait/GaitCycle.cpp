@@ -12,7 +12,7 @@ namespace Move
             , mGaitStrategy(std::make_unique<Move::Gait::GaitTripod>())
             , mStartTime(0UL)
             , mStepPositionIndex(0U) {
-            this->mGaitParams.SetRunning(true);
+            this->mGaitParams.SetRunning(false);
         }
 
         bool GaitCycle::Start() {

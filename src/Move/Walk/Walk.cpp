@@ -15,10 +15,6 @@ namespace Move
         }
 
         void Walk::UpdateStatus(const EWalkStatus status) {
-            if (this->mStatus == status) {
-                return;
-            }
-
             this->mStatus = status;
             if (this->mStatus == EWalkStatus::WALKING) {
                 this->mGaitCycle.Start();

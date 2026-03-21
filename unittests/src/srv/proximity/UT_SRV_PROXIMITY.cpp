@@ -63,10 +63,11 @@ namespace Service
             constexpr uint16_t  distance = 42U;
 
             Frame               response;
-            Cluster::Proximity::ClusterProximity::BuildFrameDistance(sensorId, distance, response);
+            Cluster::Proximity::ClusterProximity::BuildFrameDistanceUS(
+                    sensorId, distance, response);
             EXPECT_CALL(mMockMessageInterface, SendMessage(response)).Times(1U);
             EXPECT_CALL(mMockEventDispatcherInterface, DispatchEvent(_)).Times(1U);
-            mServiceProximity.Notified({sensorId, distance});
+            mServiceProximity.Notified({sensorId, distance, nullptr});
         }
 
         TEST_F(UT_SRV_PROXIMITY, OnEvent) {

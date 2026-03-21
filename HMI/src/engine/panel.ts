@@ -229,7 +229,7 @@ export default class Panel extends Pane {
                 this.socket.write(new Message(ClusterName.PROXIMITY, ClusterProximityCommands.US_LEFT));
             }
         });
-        laserFront.addBinding(this.hexapod.head.sensors.proximity, 'front', {readonly: true});
+        //laserFront.addBinding(this.hexapod.head.sensors.proximity, 'front', {readonly: true});
         laserFront.addButton({
             title: 'Get',
             label: 'status',   // optional

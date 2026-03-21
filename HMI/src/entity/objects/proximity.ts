@@ -11,7 +11,7 @@ export default class ProximityObject extends Object3D {
     y: number;
     z: number;
     proximityLeft: Mesh;
-    proximityCenter: Mesh;
+    proximityCenterGrid: Mesh[][];
     proximityRight: Mesh;
 
     constructor() {
@@ -20,26 +20,33 @@ export default class ProximityObject extends Object3D {
         this.y = 0;
         this.z = 0;
 
-        this.proximityLeft = this.createProximityObject();
+        this.proximityLeft = this.createProximityObject( new BoxGeometry(0.2, 1, 1));
         this.proximityLeft.geometry.translate(-1, 1, 0);
         this.proximityLeft.position.set(-0.1, 0, -1);
         this.proximityLeft.rotation.set(0, -1, 0);
 
-        this.proximityCenter = this.createProximityObject();
-        this.proximityCenter.geometry.translate(1, 1, 0);
-        this.proximityCenter.position.set(0, 0, -1);
-        this.proximityCenter.rotation.set(0, Math.PI / 2, 0);
+        this.proximityCenterGrid = [];
+        for (let i = 0; i < 8; i++) {
+            this.proximityCenterGrid[i] = [];
+            for (let j = 0; j < 8; j++) {
+                const mesh = this.createProximityObject( new BoxGeometry(0.2, 0.1, 0.1));
+                mesh.geometry.translate(1, 1, 0);
+                mesh.position.set((i - 3.5) * 0.5, (j - 3.5) * 0.5, -1);
+                mesh.rotation.set(0, Math.PI / 2, 0);
+                mesh.visible = false;
+                this.proximityCenterGrid[i][j] = mesh;
+                this.add(mesh);
+            }
+        }
 
-        this.proximityRight = this.createProximityObject();
+        this.proximityRight = this.createProximityObject( new BoxGeometry(0.2, 1, 1));
         this.proximityRight.geometry.translate(1, 1, 0);
         this.proximityRight.position.set(0.1, 0, -1);
         this.proximityRight.rotation.set(0, 1, 0);
 
         this.proximityLeft.visible = false;
-        this.proximityCenter.visible = false;
         this.proximityRight.visible = false;
         this.add(this.proximityLeft);
-        this.add(this.proximityCenter);
         this.add(this.proximityRight);
     }
 
@@ -50,8 +57,7 @@ export default class ProximityObject extends Object3D {
         console.log(this.proximityLeft.position.z);*/
     }
 
-    createProximityObject(): Mesh {
-        let geometry = new BoxGeometry(0.2, 1, 1);
+    createProximityObject(geometry: BoxGeometry): Mesh {
         const material = new MeshLambertMaterial({color: '#4364b6'});
         material.side = DoubleSide;
         let proximity = new Mesh(geometry, material);
@@ -59,41 +65,49 @@ export default class ProximityObject extends Object3D {
         return new Mesh(geometry, material);
     }
 
-    show(distance: number, side: ProximitySide) {
-        if (distance > 0 && distance < 30) {
-            if (side == ProximitySide.left) {
-                this.proximityLeft.visible = true;
-                clearInterval(this.proximityLeft.userData.interval);
-                this.proximityLeft.userData.interval = setTimeout(() => {
-                    this.proximityLeft.visible = false
-                }, 1000);
-            } else if (side == ProximitySide.center) {
-                this.proximityCenter.visible = true;
-                clearInterval(this.proximityCenter.userData.interval);
-                this.proximityCenter.userData.interval = setTimeout(() => {
-                    this.proximityCenter.visible = false
-                }, 1000);
-            } else {
-                this.proximityRight.visible = true;
-                clearInterval(this.proximityRight.userData.interval);
-                this.proximityRight.userData.interval = setTimeout(() => {
-                    this.proximityRight.visible = false
-                }, 1000);
+    show(distance: number | number[][], side: ProximitySide) {
+        if (side === ProximitySide.center && Array.isArray(distance)) {
+            // Handle 8x8 grid for center
+            for (let i = 0; i < 8; i++) {
+                for (let j = 0; j < 8; j++) {
+                    const dist = distance[i][j];
+                    const mesh = this.proximityCenterGrid[i][j];
+                    mesh.visible = true;
+                    mesh.position.z = -1 - dist / 10;
+                    clearTimeout(mesh.userData.interval);
+                    mesh.userData.interval = setTimeout(() => {
+                        mesh.visible = false;
+                    }, 1000);
+                }
             }
-        }
+        } else if (typeof distance === 'number') {
+            // Handle single distance for left/right
+            if (distance > 0 && distance < 30) {
+                let mesh: Mesh;
+                if (side === ProximitySide.left) {
+                    mesh = this.proximityLeft;
+                } else if (side === ProximitySide.right) {
+                    mesh = this.proximityRight;
+                } else {
+                    return; // Center handled above
+                }
+                mesh.visible = true;
+                clearTimeout(mesh.userData.interval);
+                mesh.userData.interval = setTimeout(() => {
+                    mesh.visible = false;
+                }, 1000);
 
-        switch (side) {
-            case ProximitySide.left:
-                this.proximityLeft.position.x = -0.1 - distance / 10;
-                this.proximityLeft.position.z = -1 - distance / 10;
-                break;
-            case ProximitySide.center:
-                this.proximityCenter.position.z = -1 - distance / 10;
-                break;
-            case ProximitySide.right:
-                this.proximityRight.position.x = -0.1 + distance / 10;
-                this.proximityRight.position.z = -1 - distance / 10;
-                break;
+                switch (side) {
+                    case ProximitySide.left:
+                        this.proximityLeft.position.x = -0.1 - distance / 10;
+                        this.proximityLeft.position.z = -1 - distance / 10;
+                        break;
+                    case ProximitySide.right:
+                        this.proximityRight.position.x = -0.1 + distance / 10;
+                        this.proximityRight.position.z = -1 - distance / 10;
+                        break;
+                }
+            }
         }
     }
 }

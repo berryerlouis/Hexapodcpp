@@ -16,7 +16,7 @@ namespace Component
             class Vl53l5x : public Vl53lxxInterface {
             public:
                 static constexpr uint8_t  VL53L5X_ADDRESS = 0x29U;
-                static constexpr uint16_t DISTANCE_THRESHOLD = 300U;
+                static constexpr uint16_t DISTANCE_THRESHOLD = 1000U;
 
                 explicit Vl53l5x(Twi::TwiInterface &i2c,
                                  Led::LedInterface &led,

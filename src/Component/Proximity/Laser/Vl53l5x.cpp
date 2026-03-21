@@ -61,7 +61,7 @@ namespace Component
                             this->mDistance != 0U && this->mDistance <= this->mThreshold;
                     if (detection) {
                         this->mLed.On();
-                        this->Notify({VLX, this->mDistance, this->mDistanceMatrix});
+                        this->Notify({VLX, this->mDistance, &this->mDistanceMatrix});
                     } else {
                         this->mLed.Off();
                     }

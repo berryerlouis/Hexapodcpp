@@ -36,17 +36,18 @@ namespace Component
         private:
             static constexpr size_t RX_QUEUE_CAPACITY = 16U;
 
-            Core::Status PushReceivedFrame(const Frame &frame);
+            Core::Status            PushReceivedFrame(const Frame &frame);
 
-            Core::Status PopReceivedFrame(Frame &frame);
+            Core::Status            PopReceivedFrame(Frame &frame);
 
             Socket::SocketInterface<1U, Socket::SocketStruct> &mSocket;
             Led::LedInterface                                 &mLedStatus;
-            volatile char                                      mBufferTx[50U];
-            std::array<Frame, RX_QUEUE_CAPACITY>              mReceivedFrames;
-            size_t                                             mRxReadIndex;
-            size_t                                             mRxWriteIndex;
-            size_t                                             mRxCount;
+            // 8 for clusterId, commandId, nbParams and frame delimiters
+            volatile char                        mBufferTx[FRAME_MAX_PARAMS * 2U + 3U * 8U];
+            std::array<Frame, RX_QUEUE_CAPACITY> mReceivedFrames;
+            size_t                               mRxReadIndex;
+            size_t                               mRxWriteIndex;
+            size_t                               mRxCount;
         };
     } // namespace Communication
 } // namespace Component

@@ -22,15 +22,15 @@ namespace Cluster
             if (request.GetCommandId() == EProximityCommands::LASER) {
                 const SensorsId sensorId = static_cast<SensorsId>(request.GetCommandId());
                 const uint16_t  distance = this->mProximity.GetDistance(sensorId);
-                success = BuildFrameDistance(sensorId, distance, response);
+                success = BuildFrameDistanceUS(sensorId, distance, response);
             } else if (request.GetCommandId() == EProximityCommands::US_LEFT) {
                 const SensorsId sensorId = static_cast<SensorsId>(request.GetCommandId());
                 const uint16_t  distance = this->mProximity.GetDistance(sensorId);
-                success = BuildFrameDistance(sensorId, distance, response);
+                success = BuildFrameDistanceUS(sensorId, distance, response);
             } else if (request.GetCommandId() == EProximityCommands::US_RIGHT) {
                 const SensorsId sensorId = static_cast<SensorsId>(request.GetCommandId());
                 const uint16_t  distance = this->mProximity.GetDistance(sensorId);
-                success = BuildFrameDistance(sensorId, distance, response);
+                success = BuildFrameDistanceUS(sensorId, distance, response);
             } else if (request.GetCommandId() == EProximityCommands::SET_THRESHOLD) {
                 const SensorsId sensorId = static_cast<SensorsId>(request.Get1ByteParam(0U));
                 const uint16_t  threshold = request.Get2BytesParam(1U);
@@ -40,12 +40,24 @@ namespace Cluster
             return success;
         }
 
-        Core::Status ClusterProximity::BuildFrameDistance(const SensorsId sensorId,
-                                                          const uint16_t  distance,
-                                                          Frame          &response) {
+        Core::Status ClusterProximity::BuildFrameDistanceUS(const SensorsId sensorId,
+                                                            const uint16_t  distance,
+                                                            Frame          &response) {
             const Core::Status success = response.Build(EClusters::PROXIMITY, sensorId);
             if (success == Core::Status::CORE_OK) {
                 response.Set2BytesParam(distance);
+            }
+            return (success);
+        }
+
+        Core::Status
+        ClusterProximity::BuildFrameDistanceVLX(const SensorsId sensorId,
+                                                const uint16_t (&distanceMatrix)[8U][8U],
+                                                Frame &response) {
+            const Core::Status success = response.Build(EClusters::PROXIMITY, sensorId);
+            if (success == Core::Status::CORE_OK) {
+                response.SetxBytesParam(64U * 2U,
+                                        reinterpret_cast<const uint8_t *>(distanceMatrix));
             }
             return (success);
         }

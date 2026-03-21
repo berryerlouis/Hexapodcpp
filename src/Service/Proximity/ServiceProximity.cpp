@@ -29,8 +29,13 @@ namespace Service
 
         void ServiceProximity::Notified(const SensorsStruct &sensor) {
             Frame response;
-            Cluster::Proximity::ClusterProximity::BuildFrameDistance(
-                    sensor.id, sensor.distance, response);
+            if (sensor.id == SensorsId::VLX) {
+                Cluster::Proximity::ClusterProximity::BuildFrameDistanceVLX(
+                        sensor.id, *sensor.distanceArray, response);
+            } else {
+                Cluster::Proximity::ClusterProximity::BuildFrameDistanceUS(
+                        sensor.id, sensor.distance, response);
+            }
             this->SendMessage(response);
             this->DispatchEvent<SensorsStruct>(EventType::EVENT_SENSOR_UPDATE, sensor);
         }
