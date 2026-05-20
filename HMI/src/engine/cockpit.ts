@@ -35,6 +35,6 @@ export default class Cockpit {
     }
 
     private enableCockpitDirection() {
-        this.cockpitDirection.setAttribute('style', 'display:block');
+        this.cockpitDirection.setAttribute('style', 'display:flex');
     }
 }

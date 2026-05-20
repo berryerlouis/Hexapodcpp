@@ -14,9 +14,12 @@ import Message from "./communication/message.ts";
 import { ClusterBodyCommands } from "./communication/clusters/clusterBody.ts";
 import { ClusterServoCommands } from "./communication/clusters/clusterServo.ts";
 import { ClusterBatteryCommands } from './communication/clusters/clusterBattery.ts';
+import { Target } from './connect-target.ts';
 
 
 export default class Ui {
+    private static readonly SETTINGS_DOCK_STORAGE_KEY = 'hexapod.settingsDockCollapsed';
+
     scene: Display;
     world: World;
     light: Light;
@@ -28,21 +31,35 @@ export default class Ui {
     panel: Panel;
     keyboard: Keyboard;
     version: HTMLElement;
+    settingsDock: HTMLElement;
+    settingsToggle: HTMLButtonElement;
 
-    constructor(socket: Socket) {
+    constructor(socket: Socket, target: Target) {
         this.socket = socket;
         this.scene = new Display();
         this.light = new Light()
-        this.hexapod = new Hexapod(socket);
+        this.hexapod = new Hexapod(socket, target);
         this.camera = new Camera(this.hexapod);
         this.graphic = new Graphic(this.scene, this.camera);
         this.control = new Control(this.camera, this.graphic);
         this.panel = new Panel(document.getElementById('panel')!, this.hexapod, this.socket);
         this.world = new World(20, 20, this.hexapod);
         this.version = document.getElementById('version')!;
+        this.settingsDock = document.getElementById('settings-dock')!;
+        this.settingsToggle = document.getElementById('toggle-settings') as HTMLButtonElement;
 
+        // Set camera for rotation circle
+        this.hexapod.setRotationCircleCamera(this.camera);
 
         this.keyboard = new Keyboard(this.hexapod);
+
+        const savedDockCollapsed = localStorage.getItem(Ui.SETTINGS_DOCK_STORAGE_KEY);
+        if (savedDockCollapsed === '1') {
+            this.settingsDock.classList.add('is-collapsed');
+        } else if (savedDockCollapsed === '0') {
+            this.settingsDock.classList.remove('is-collapsed');
+        }
+
         this.scene.add(this.world);
         this.scene.add(this.light);
         this.scene.add(this.hexapod);
@@ -50,10 +67,18 @@ export default class Ui {
             this.update(dt);
         });
         setInterval(() => this.panel.update(), 500);
+
+        this.settingsToggle.addEventListener('click', () => {
+            this.settingsDock.classList.toggle('is-collapsed');
+            localStorage.setItem(
+                Ui.SETTINGS_DOCK_STORAGE_KEY,
+                this.settingsDock.classList.contains('is-collapsed') ? '1' : '0',
+            );
+        });
+
         this.socket.addCallbackStarted(() => {
             this.initCom();
         });
-
 
         this.socket.addSpecificCallbackRead(ClusterName.GENERAL, ClusterGeneralCommands.VERSION, (message: Message) => {
             this.version.innerText = "V" + message.getValueUint8(0).toString() + "." + message.getValueUint8(1).toString();

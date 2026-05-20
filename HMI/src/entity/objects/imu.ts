@@ -64,6 +64,11 @@ export default class Imu {
             document.getElementById('yaw')!.innerText = (this.imuData.ypr.yaw).toFixed(2);
             document.getElementById('pitch')!.innerText = (this.imuData.ypr.pitch).toFixed(2);
             document.getElementById('roll')!.innerText = (this.imuData.ypr.roll).toFixed(2);
+
+            const rootStyle = document.documentElement.style;
+            rootStyle.setProperty('--imu-roll', `${this.imuData.ypr.roll.toFixed(2)}deg`);
+            rootStyle.setProperty('--imu-pitch', `${(this.imuData.ypr.pitch * 0.6).toFixed(2)}px`);
+            rootStyle.setProperty('--imu-yaw', `${this.imuData.ypr.yaw.toFixed(2)}deg`);
         });
 
         this.socket.addCallbackStopped(() => {

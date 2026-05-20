@@ -13,7 +13,17 @@ export default class DirectionArrow extends Object3D {
     left: HTMLElement;
     backward: HTMLElement;
     stop: HTMLElement;
+    frontLeft: HTMLElement | null;
+    frontRight: HTMLElement | null;
+    backLeft: HTMLElement | null;
+    backRight: HTMLElement | null;
     enable: HTMLElement;
+    speedControl: HTMLInputElement | null;
+    speedValue: HTMLElement | null;
+    rotationControl: HTMLInputElement | null;
+    rotationValue: HTMLElement | null;
+    gaitSelect: HTMLSelectElement | null;
+    directionButtons: HTMLElement[];
     circle: Mesh;
     hexapodStruct: HexapodStruct;
 
@@ -26,9 +36,30 @@ export default class DirectionArrow extends Object3D {
         this.left = document.getElementById('left')!;
         this.backward = document.getElementById('backward')!;
         this.stop = document.getElementById('stop')!;
+        this.frontLeft = document.getElementById('joy-nw');
+        this.frontRight = document.getElementById('joy-ne');
+        this.backLeft = document.getElementById('joy-sw');
+        this.backRight = document.getElementById('joy-se');
         this.enable = document.getElementById('enable')!;
+        this.speedControl = document.getElementById('cockpit-speed') as HTMLInputElement | null;
+        this.speedValue = document.getElementById('cockpit-speed-value');
+        this.rotationControl = document.getElementById('cockpit-rotation') as HTMLInputElement | null;
+        this.rotationValue = document.getElementById('cockpit-rotation-value');
+        this.gaitSelect = document.getElementById('cockpit-gait') as HTMLSelectElement | null;
+        this.directionButtons = [
+            this.frontLeft,
+            this.forward,
+            this.frontRight,
+            this.left,
+            this.stop,
+            this.right,
+            this.backLeft,
+            this.backward,
+            this.backRight,
+        ].filter((button): button is HTMLElement => button !== null);
 
         this.initializeButtons();
+        this.syncMotionControls();
 
         const geometry = new CircleGeometry(0.3, 32, -Math.PI / 2 - Math.PI / 16 / 2, Math.PI / 16);
         geometry.rotateX(Math.PI / 2);
@@ -43,65 +74,180 @@ export default class DirectionArrow extends Object3D {
         this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS, (message: Message) => {
             if (message.params && message.params.length === 9) {
                 this.setDirection(message.getValueUint16(2));
+                this.hexapodStruct.turningRate = message.getValueUint16(4);
+                this.hexapodStruct.clockwise = message.getValueUint8(6) === 1;
+                this.hexapodStruct.duration = message.getValueUint16(7);
+                this.syncMotionControls();
             }
         });
 
     }
 
+    private gaitToCode(gait: string): number {
+        if (gait === 'WAVE') return 1;
+        if (gait === 'RIPPLE') return 2;
+        if (gait === 'DOUBLE_WAVE') return 3;
+        return 0;
+    }
+
+    private setWalkStatus(walking: boolean) {
+        this.socket.write(
+            new Message(
+                ClusterName.BODY,
+                ClusterBodyCommands.SET_WALK_STATUS,
+                [walking ? 0 : 2, this.hexapodStruct.duration],
+                [0xFF, 0xFFFF],
+            ),
+        );
+    }
+
+    private updateDirectionSelection(selected: HTMLElement | null) {
+        this.directionButtons.forEach((button) => button.classList.remove('select'));
+        if (selected) {
+            selected.classList.add('select');
+        }
+    }
+
+    private sendDirection(angleDeg: number, selected: HTMLElement | null) {
+        this.updateDirectionSelection(selected);
+        this.hexapodStruct.turningRate = 0;
+        this.socket.write(
+            new Message(
+                ClusterName.BODY,
+                ClusterBodyCommands.SET_ROTATION,
+                [0, this.hexapodStruct.clockwise ? 1 : 0],
+                [0xFFFF, 0xFF],
+            ),
+        );
+        this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_DIRECTION, [angleDeg], [0xFFFF]));
+        this.setWalkStatus(true);
+        this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS));
+    }
+
+    private speedPercentFromDuration(duration: number): number {
+        const clampedDuration = Math.max(1000, Math.min(10000, duration));
+        return Math.round(((10000 - clampedDuration) / 9000) * 100);
+    }
+
+    private durationFromSpeedPercent(speedPercent: number): number {
+        const clampedSpeed = Math.max(0, Math.min(100, speedPercent));
+        return Math.round(10000 - ((9000 * clampedSpeed) / 100));
+    }
+
+    private signedRotation(): number {
+        const magnitude = this.hexapodStruct.turningRate;
+        return this.hexapodStruct.clockwise ? -magnitude : magnitude;
+    }
+
+    private formatSignedRotation(signed: number): string {
+        if (signed === 0) return '0';
+        return signed > 0 ? `↺ ${signed}` : `↻ ${Math.abs(signed)}`;
+    }
+
+    private syncMotionControls() {
+        if (this.speedControl) {
+            const speed = this.speedPercentFromDuration(this.hexapodStruct.duration);
+            this.speedControl.value = speed.toString();
+            if (this.speedValue) {
+                this.speedValue.innerText = `${speed}%`;
+            }
+        }
+
+        if (this.rotationControl) {
+            const signed = this.signedRotation();
+            this.rotationControl.value = signed.toString();
+            if (this.rotationValue) {
+                this.rotationValue.innerText = this.formatSignedRotation(signed);
+            }
+        }
+
+        if (this.gaitSelect) {
+            this.gaitSelect.value = this.hexapodStruct.gait;
+        }
+    }
+
     initializeButtons() {
         this.forward.addEventListener('click', () => {
-            this.forward.classList.toggle('select');
-            this.right.classList.remove('select');
-            this.left.classList.remove('select');
-            this.backward.classList.remove('select');
-            this.stop.classList.remove('select');
-            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_DIRECTION, [0], [0xFFFF]));
-            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_ROTATION, [0, 0], [0xFFFF, 0xFF]));
-            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS, [0, this.hexapodStruct.duration], [0xFF, 0xFFFF]));
-            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS));
+            this.sendDirection(0, this.forward);
+        });
+        this.frontRight?.addEventListener('click', () => {
+            this.sendDirection(315, this.frontRight);
         });
         this.right.addEventListener('click', () => {
-            this.forward.classList.remove('select');
-            this.right.classList.toggle('select');
-            this.left.classList.remove('select');
-            this.backward.classList.remove('select');
-            this.stop.classList.remove('select');
-            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_ROTATION, [1, 1], [0xFFFF, 0xFF]));
-            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS, [0, this.hexapodStruct.duration], [0xFF, 0xFFFF]));
-            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS));
+            this.sendDirection(270, this.right);
+        });
+        this.backRight?.addEventListener('click', () => {
+            this.sendDirection(225, this.backRight);
         });
         this.left.addEventListener('click', () => {
-            this.forward.classList.remove('select');
-            this.right.classList.remove('select');
-            this.left.classList.toggle('select');
-            this.backward.classList.remove('select');
-            this.stop.classList.remove('select');
-            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_ROTATION, [1, 0], [0xFFFF, 0xFF]));
-            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS, [0, this.hexapodStruct.duration], [0xFF, 0xFFFF]));
-            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS));
+            this.sendDirection(90, this.left);
+        });
+        this.frontLeft?.addEventListener('click', () => {
+            this.sendDirection(45, this.frontLeft);
         });
         this.backward.addEventListener('click', () => {
-            this.forward.classList.remove('select');
-            this.right.classList.remove('select');
-            this.left.classList.remove('select');
-            this.backward.classList.toggle('select');
-            this.stop.classList.remove('select');
-            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_DIRECTION, [180], [0xFFFF]));
-            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_ROTATION, [0, 0], [0xFFFF, 0xFF]));
-            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS, [0, this.hexapodStruct.duration], [0xFF, 0xFFFF]));
-            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS));
+            this.sendDirection(180, this.backward);
+        });
+        this.backLeft?.addEventListener('click', () => {
+            this.sendDirection(135, this.backLeft);
         });
         this.stop.addEventListener('click', () => {
-            this.forward.classList.remove('select');
-            this.right.classList.remove('select');
-            this.left.classList.remove('select');
-            this.backward.classList.remove('select');
-            this.stop.classList.toggle('select');
+            this.updateDirectionSelection(this.stop);
             this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_DIRECTION, [0], [0xFFFF]));
-            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_ROTATION, [0, 0], [0xFFFF, 0xFF]));
-            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS, [2, this.hexapodStruct.duration], [0xFF, 0xFFFF]));
+            this.setWalkStatus(false);
             this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS));
         });
+
+        this.speedControl?.addEventListener('input', () => {
+            if (!this.speedControl || !this.speedValue) {
+                return;
+            }
+            this.speedValue.innerText = `${this.speedControl.value}%`;
+        });
+        this.speedControl?.addEventListener('change', () => {
+            if (!this.speedControl) {
+                return;
+            }
+            const speed = Number(this.speedControl.value);
+            const duration = this.durationFromSpeedPercent(speed);
+            this.hexapodStruct.duration = duration;
+            this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_DURATION, [duration], [0xFFFF]));
+        });
+
+        this.rotationControl?.addEventListener('input', () => {
+            if (!this.rotationControl || !this.rotationValue) {
+                return;
+            }
+            const signed = Number(this.rotationControl.value);
+            this.rotationValue.innerText = this.formatSignedRotation(signed);
+        });
+        this.rotationControl?.addEventListener('change', () => {
+            if (!this.rotationControl) {
+                return;
+            }
+            const signed = Number(this.rotationControl.value);
+            this.hexapodStruct.turningRate = Math.abs(signed);
+            this.hexapodStruct.clockwise = signed < 0;
+            this.socket.write(
+                new Message(
+                    ClusterName.BODY,
+                    ClusterBodyCommands.SET_ROTATION,
+                    [this.hexapodStruct.turningRate, this.hexapodStruct.clockwise ? 1 : 0],
+                    [0xFFFF, 0xFF],
+                ),
+            );
+        });
+
+        this.gaitSelect?.addEventListener('change', () => {
+            if (!this.gaitSelect) {
+                return;
+            }
+            this.hexapodStruct.gait = this.gaitSelect.value as HexapodStruct['gait'];
+            this.socket.write(
+                new Message(ClusterName.BODY, ClusterBodyCommands.SET_GAIT, [this.gaitToCode(this.hexapodStruct.gait)]),
+            );
+        });
+
         this.enable.addEventListener('click', () => {
             this.enable.classList.toggle('select');
             if (this.enable.classList.contains('select')) {
@@ -117,6 +263,8 @@ export default class DirectionArrow extends Object3D {
     }
 
     setDirection(direction: number) {
+        // Geometry pre-rotated by π to start at -Z (forward). degToRad rotates CCW matching convention.
+        // Convention: 0°=forward, 90°=left, 180°=back, 270°=right.
         this.circle.rotation.y = (MathUtils.degToRad(direction));
     }
 

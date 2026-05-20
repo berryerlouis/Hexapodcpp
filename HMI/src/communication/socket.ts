@@ -1,5 +1,5 @@
 import Message from "./message.ts";
-import Protocol, { Direction } from "./protocol.ts";
+import Protocol, { MessageDirection } from "./protocol.ts";
 import { clearAllPopups, openPopupError, openPopupInfo, openPopupWarning } from "../engine/popup.ts";
 import { ClusterGenericCommands, ClusterName, CommandName } from "./clusters/clusterType.ts";
 import { getErrorName } from "./clusters/clusters.ts";
@@ -83,7 +83,7 @@ export default class Socket {
         socket.addEventListener('message', (event) => {
             try {
                 let frame = Protocol.decode(event.data);
-                frame.direction = Direction.RX;
+                frame.direction = MessageDirection.RX;
                 frame.setDate();
                 this.notifyRead(frame);
 
@@ -115,6 +115,7 @@ export default class Socket {
             openPopupWarning('WebSocket disconnected!');
             this.notifyCallbackStopped();
             this.messagesList = [];
+            this.updateProgressBar();
 
             // Attempt reconnection if enabled
             if (this.shouldReconnect) {
@@ -177,7 +178,7 @@ export default class Socket {
         });
     }
 
-    addCallbackStopped(cb: CallbackStarted) {
+    addCallbackStopped(cb: CallbackStopped) {
         this.listOfCallbackStopped.push(cb);
     }
 

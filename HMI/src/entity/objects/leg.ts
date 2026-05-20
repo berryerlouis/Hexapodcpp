@@ -58,6 +58,8 @@ export default class Leg extends Object3D {
     }
 
     setDirection(direction: number) {
+        // Dot starts at +X in local space; body's rotation.y=π/2 maps it to -Z (forward) in world.
+        // Convention: 0°=forward, 90°=left, 180°=back, 270°=right (CCW from above).
         this.direction.rotation.y = (MathUtils.degToRad(direction));
     }
 
