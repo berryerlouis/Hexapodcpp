@@ -60,7 +60,7 @@ namespace Bot
                                            const bool               isRotated,
                                            const float              rotation,
                                            const bool               clockWize,
-                                           const uint64_t timeStamp) final override;
+                                           const uint64_t           timeStamp) final override;
 
             Legs::ELeg   GetId(void) const final override;
 
@@ -69,26 +69,23 @@ namespace Bot
 
             Core::Status SetLegBodyIk(const Position3d &position,
                                       const Position3d &bodyIk,
-                                      const uint16_t travelTime) final override;
+                                      const uint16_t    travelTime) final override;
 
-            void         ComputeDirection(Position3d &position,
-                                          float angleDirection) const final override;
+            void ComputeDirection(Position3d &position, float angleDirection) const final override;
 
-            void         ComputeRotation(Position3d &position,
-                                         float       angleRotation,
-                                         bool        clockwize) const final override;
+            void ComputeRotation(Position3d &position,
+                                 float       angleRotation,
+                                 bool        clockwize) const final override;
 
-            void         ComputeAmplitude(Position3d &position,
-                                          uint8_t     amplitude) final override;
+            void ComputeAmplitude(Position3d &position, uint8_t amplitude) final override;
 
-            void         ComputeElevation(Position3d &position,
-                                          uint8_t     elevation) final override;
+            void ComputeElevation(Position3d &position, uint8_t elevation) final override;
 
-            Position3d   GetFootPosition(void) const final override;
+            Position3d GetFootPosition(void) const final override;
 
-            float        GetBodyCenterOffsetX(void) const final override;
+            float      GetBodyCenterOffsetX(void) const final override;
 
-            float        GetBodyCenterOffsetY(void) const final override;
+            float      GetBodyCenterOffsetY(void) const final override;
 
         public:
             float      mBodyCenterOffsetX;

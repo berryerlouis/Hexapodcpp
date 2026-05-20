@@ -72,7 +72,7 @@
             "preLaunchTask": "Test X64"
         },
         {
-            "name": "Remote Debug RPi",
+            "name": "Build and Debug RPi",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/hexapod-RPI-DEBUG/src/Hexapodcpp",
@@ -108,6 +108,44 @@
                 }
             },
             "preLaunchTask": "Build, Deploy & Debug RPi"
+        },
+        {
+            "name": "Remote Debug RPi",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/hexapod-RPI-DEBUG/src/Hexapodcpp",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": true,
+            "MIMode": "gdb",
+            "miDebuggerServerAddress": "192.168.1.170:2345",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "linux": {
+                "miDebuggerPath": "/usr/bin/gdb-multiarch",
+                "sourceFileMap": {
+                    "/workspace": "${workspaceFolder}"
+                }
+            },
+            "windows": {
+                "miDebuggerPath": "/usr/bin/gdb-multiarch",
+                "pipeTransport": {
+                    "debuggerPath": "/usr/bin/gdb-multiarch",
+                    "pipeProgram": "C:\\Windows\\System32\\wsl.exe",
+                    "pipeArgs": [],
+                    "pipeCwd": ""
+                },
+                "sourceFileMap": {
+                    "/mnt/c": "C:\\",
+                    "/workspace": "${workspaceFolder}"
+                }
+            },
+            "preLaunchTask": "Deploy & Debug RPi"
         }
     ]
 }

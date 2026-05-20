@@ -17,12 +17,12 @@ namespace Component
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual ButtonState Get(void) const final override;
+            virtual ButtonState  Get(void) const final override;
 
 
-            void                Hit(void);
+            void                 Hit(void);
 
         private:
             Driver::Gpio::GpioInterface &mGpioButton;

@@ -6,8 +6,8 @@ namespace Component
     {
         SensorProximity::SensorProximity(SensorProximityInterface &srf05Left,
                                          SensorProximityInterface &srf05Right,
-                                         SensorProximityInterface &Vl53l0x)
-            : mSensors{&srf05Left, &srf05Right, &Vl53l0x} {
+                                         SensorProximityInterface &vl53lxx)
+            : mSensors{&srf05Left, &srf05Right, &vl53lxx} {
         }
 
         Core::Status SensorProximity::Initialize() {

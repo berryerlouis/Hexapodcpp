@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.22)
 
+# Explicitly build all internal libraries as static to avoid runtime .so dependencies.
+# This keeps the deployed Hexapodcpp executable self-contained (no libApp.so/libBot.so/etc).
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build libraries as static" FORCE)
+
 # Build information
 if (CMAKE_CROSSCOMPILING)
     message(STATUS "Cross-compiling ${PROJECT_NAME} for ${TARGET} in ${CMAKE_BUILD_TYPE} mode")
@@ -7,24 +11,26 @@ else ()
     message(STATUS "Native compilation ${PROJECT_NAME} for ${TARGET} in ${CMAKE_BUILD_TYPE} mode")
 endif ()
 
-
 # Platform-specific dependencies
 include(FetchContent)
 
-if (${TARGET} STREQUAL "X64")
-    # TinyWebsockets for X64
-    FetchContent_Declare(
-            TinyWebsockets
-            GIT_REPOSITORY https://github.com/berryerlouis/TinyWebsockets.git
-            GIT_TAG master
-            GIT_SHALLOW TRUE
-    )
-    FetchContent_MakeAvailable(TinyWebsockets)
+# TinyWebsockets for RPI
+FetchContent_Declare(
+        TinyWebsockets
+        GIT_REPOSITORY https://github.com/berryerlouis/TinyWebsockets.git
+        GIT_TAG master
+        GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(TinyWebsockets)
 
+if (${TARGET} STREQUAL "X64")
     add_compile_definitions(X64)
     message(STATUS "Configured for X64 platform")
 
 elseif (${TARGET} STREQUAL "RPI")
+    add_compile_definitions(RPI)
+    message(STATUS "Configured for Raspberry Pi platform")
+
     # WiringPi for Raspberry Pi
     FetchContent_Declare(
             wiringPi
@@ -33,18 +39,15 @@ elseif (${TARGET} STREQUAL "RPI")
             GIT_SHALLOW TRUE
     )
     FetchContent_MakeAvailable(wiringPi)
-
-    # TinyWebsockets for RPI
+    
+    # pigpio
     FetchContent_Declare(
-            TinyWebsockets
-            GIT_REPOSITORY https://github.com/berryerlouis/TinyWebsockets.git
-            GIT_TAG master
+            pigpio
+            GIT_REPOSITORY https://github.com/joan2937/pigpio.git
+            GIT_TAG "v79"
             GIT_SHALLOW TRUE
     )
-    FetchContent_MakeAvailable(TinyWebsockets)
-
-    add_compile_definitions(RPI)
-    message(STATUS "Configured for Raspberry Pi platform")
+    FetchContent_MakeAvailable(pigpio)
 else ()
     message(FATAL_ERROR "Unknown TARGET: ${TARGET}. Must be X64 or RPI")
 endif ()
@@ -100,18 +103,11 @@ target_link_libraries(${PROJECT_NAME}
         Component
         Core
         Driver
-        Misc
         Move
         Service
+        Misc
 )
 
-if (${TARGET} STREQUAL "RPI")
-    target_include_directories(${PROJECT_NAME} PRIVATE ${wiringpi_SOURCE_DIR})
-    target_link_libraries(${PROJECT_NAME}
-            PRIVATE
-            wiringPi
-    )
-endif ()
 # Linker options for size optimization
 target_link_options(${PROJECT_NAME} PRIVATE
         -Wl,--gc-sections

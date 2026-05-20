@@ -32,8 +32,7 @@ namespace Component
         TEST_F(UT_CMP_PROTOCOL, Decode_NullPtrBufferData) {
             Frame              request;
 
-            const Core::Status parsedStatus =
-                    Protocol::Decode(nullptr, request);
+            const Core::Status parsedStatus = Protocol::Decode(nullptr, request);
 
             EXPECT_EQ(parsedStatus, Core::Status::CORE_ERROR_NULLPTR);
             EXPECT_EQ(request.GetClusterId(), 0U);
@@ -47,8 +46,7 @@ namespace Component
         TEST_F(UT_CMP_PROTOCOL, Decode_NoBufferData) {
             Frame              request;
             constexpr char     bufferRx[] = "";
-            const Core::Status parsedStatus =
-                    Protocol::Decode(bufferRx, request);
+            const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
 
             EXPECT_NE(parsedStatus, Core::Status::CORE_OK);
             EXPECT_EQ(request.GetClusterId(), 0U);
@@ -62,8 +60,7 @@ namespace Component
         TEST_F(UT_CMP_PROTOCOL, Decode_BufferDataWhitoutParam) {
             Frame              request;
             constexpr char     bufferRx[] = "010400";
-            const Core::Status parsedStatus =
-                    Protocol::Decode(bufferRx, request);
+            const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
 
             EXPECT_EQ(parsedStatus, Core::Status::CORE_OK);
             EXPECT_EQ(request.GetClusterId(), 1U);
@@ -77,8 +74,7 @@ namespace Component
         TEST_F(UT_CMP_PROTOCOL, Decode_BufferDataWhitParam) {
             Frame              request;
             constexpr char     bufferRx[] = "0608020102";
-            const Core::Status parsedStatus =
-                    Protocol::Decode(bufferRx, request);
+            const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
 
             EXPECT_EQ(parsedStatus, Core::Status::CORE_OK);
             EXPECT_EQ(request.GetClusterId(), 6U);
@@ -95,8 +91,7 @@ namespace Component
         TEST_F(UT_CMP_PROTOCOL, Decode_BufferDataTooSmall) {
             Frame              request;
             constexpr char     bufferRx[] = "00000";
-            const Core::Status parsedStatus =
-                    Protocol::Decode(bufferRx, request);
+            const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
 
             EXPECT_EQ(parsedStatus, Core::Status::CORE_ERROR_SIZE);
             EXPECT_EQ(request.GetClusterId(), 0U);
@@ -110,8 +105,7 @@ namespace Component
         TEST_F(UT_CMP_PROTOCOL, Decode_BufferDataTooBig) {
             Frame              request;
             constexpr char     bufferRx[] = "0000000";
-            const Core::Status parsedStatus =
-                    Protocol::Decode(bufferRx, request);
+            const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
 
             EXPECT_EQ(parsedStatus, Core::Status::CORE_ERROR_SIZE);
             EXPECT_EQ(request.GetClusterId(), 0U);
@@ -125,8 +119,7 @@ namespace Component
         TEST_F(UT_CMP_PROTOCOL, Decode_BufferDataSizeError) {
             Frame              request;
             constexpr char     bufferRx[] = "000001";
-            const Core::Status parsedStatus =
-                    Protocol::Decode(bufferRx, request);
+            const Core::Status parsedStatus = Protocol::Decode(bufferRx, request);
 
             EXPECT_EQ(parsedStatus, Core::Status::CORE_ERROR_OVERLOAD);
             EXPECT_EQ(request.GetClusterId(), 0U);

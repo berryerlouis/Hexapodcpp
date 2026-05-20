@@ -49,12 +49,11 @@ namespace Component
                     this->mIsMoving = false;
                 }
                 if (this->mEnable) {
-                    const uint16_t pwm =
-                            Misc::Utils::Map(this->mAngle + this->mOffset,
-                                             Servo::SERVO_ANGLE_MIN,
-                                             Servo::SERVO_ANGLE_MAX,
-                                             Servo::SERVO_PWM_MIN,
-                                             Servo::SERVO_PWM_MAX);
+                    const uint16_t pwm = Misc::Utils::Map(this->mAngle + this->mOffset,
+                                                          Servo::SERVO_ANGLE_MIN,
+                                                          Servo::SERVO_ANGLE_MAX,
+                                                          Servo::SERVO_PWM_MIN,
+                                                          Servo::SERVO_PWM_MAX);
                     this->mPca9685.SetPwm(this->mServoId, pwm);
                 }
             }
@@ -65,10 +64,8 @@ namespace Component
 
             if (currentTime < endTime) {
                 float deltaTime = 1.0F;
-                deltaTime -= ((endTime - currentTime) /
-                              static_cast<float>(this->mSpeed));
-                return (Misc::Utils::Lerp<uint8_t>(
-                        this->mAngle, this->mTargetAngle, deltaTime));
+                deltaTime -= ((endTime - currentTime) / static_cast<float>(this->mSpeed));
+                return (Misc::Utils::Lerp<uint8_t>(this->mAngle, this->mTargetAngle, deltaTime));
             }
             this->mIsMoving = false;
             return (this->mTargetAngle);
@@ -78,8 +75,7 @@ namespace Component
             return (this->mIsMoving);
         }
 
-        Core::Status Servo::SetAngle(const uint8_t  angle,
-                                     const uint16_t travelTime) {
+        Core::Status Servo::SetAngle(const uint8_t angle, const uint16_t travelTime) {
             if (angle < this->mMin) {
                 this->mIsMoving = false;
                 return (Core::Status::CORE_ERROR_MIN);
@@ -99,8 +95,7 @@ namespace Component
                     this->mSpeed = 0U;
                 } else {
                     this->mSpeed = travelTime;
-                    this->mStartTime =
-                            Driver::Timer::Tick::GetInstance().GetMs();
+                    this->mStartTime = Driver::Timer::Tick::GetInstance().GetMs();
                 }
                 this->mIsMoving = true;
             }

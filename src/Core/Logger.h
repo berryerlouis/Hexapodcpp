@@ -52,10 +52,8 @@ namespace Core
 #define LOG(level, ...) Core::Logger::Log(level, __VA_ARGS__)
 #define LOG_DEBUG(...) Core::Logger::Log(Core::LogLevel::LOG_DEBUG, __VA_ARGS__)
 #define LOG_INFO(...) Core::Logger::Log(Core::LogLevel::LOG_INFO, __VA_ARGS__)
-#define LOG_WARNING(...) \
-    Core::Logger::Log(Core::LogLevel::LOG_WARNING, __VA_ARGS__)
+#define LOG_WARNING(...) Core::Logger::Log(Core::LogLevel::LOG_WARNING, __VA_ARGS__)
 #define LOG_ERROR(...) Core::Logger::Log(Core::LogLevel::LOG_ERROR, __VA_ARGS__)
 
-#define LOG_GENERIC(level, component, ...) \
-    LOG_##level("[" #component "] " __VA_ARGS__)
+#define LOG_GENERIC(level, component, ...) LOG_##level("[" #component "] " __VA_ARGS__)
 } // namespace Core

@@ -1,4 +1,5 @@
 #include "Socket.h"
+#include <stdint.h>
 #include "tiny_websockets/server.hpp"
 
 namespace Driver
@@ -9,11 +10,16 @@ namespace Driver
         websockets::WebsocketsClient         client;
         static websockets::WSInterfaceString bufferMessage;
         static bool                          once = false;
+        static volatile char                 sBufferRx[50U] = {0U};
+        static uint8_t                       sIndexBufferRx = 0U;
+        static bool                          sBeginIncomingFrame = false;
+        static bool                          sHasNewFrame = false;
 
         void Socket::onMessage(const websockets::WebsocketsClient &client,
                                websockets::WebsocketsMessage       message) {
             (void) client;
             bufferMessage += message.data();
+            sHasNewFrame = ReceivedStringFrame();
         }
 
         void Socket::onEvent(const websockets::WebsocketsClient &client,
@@ -65,8 +71,18 @@ namespace Driver
             }
         }
 
+        bool Socket::HasNewFrame(void) {
+            bool hasNewFrame = sHasNewFrame;
+            sHasNewFrame = false;
+            return hasNewFrame;
+        }
+
+        volatile char *Socket::ReadIncomingData(void) {
+            return reinterpret_cast<volatile char *>(sBufferRx);
+        }
+
         uint8_t Socket::Read() {
-            if (!bufferMessage.empty()) {
+            if (false == bufferMessage.empty()) {
                 const uint8_t value = bufferMessage.c_str()[0U];
                 bufferMessage = bufferMessage.substr(1);
                 return value;
@@ -74,8 +90,39 @@ namespace Driver
             return 0xFFU;
         }
 
-        uint8_t Socket::DataAvailable() {
-            return bufferMessage.length();
+        bool Socket::ReceivedStringFrame() {
+            uint8_t nbData = bufferMessage.length();
+            while (nbData != 0U) {
+                nbData--;
+                const volatile uint8_t rc = Read();
+                if (rc == '<') {
+                    sBeginIncomingFrame = true;
+                    sIndexBufferRx = 0U;
+                } else if (rc != '>') {
+                    if ((rc >= '0' && rc <= '9') || (rc >= 'A' && rc <= 'F')) {
+                        if (sIndexBufferRx < sizeof(sBufferRx) - 1) {
+                            sBufferRx[sIndexBufferRx++] = rc;
+                        } else {
+                            sIndexBufferRx = 0U;
+                            sBeginIncomingFrame = false;
+                        }
+                    } else {
+                        sIndexBufferRx = 0U;
+                        sBeginIncomingFrame = false;
+                    }
+                } else {
+                    if (sBeginIncomingFrame && sIndexBufferRx >= 6U &&
+                        (sIndexBufferRx & 0x01U) == 0U) {
+                        sBufferRx[sIndexBufferRx] = '\0';
+                        sIndexBufferRx = 0U;
+                        sBeginIncomingFrame = false;
+                        return (true);
+                    }
+                    sIndexBufferRx = 0U;
+                    sBeginIncomingFrame = false;
+                }
+            }
+            return (false);
         }
     } // namespace Socket
 } // namespace Driver

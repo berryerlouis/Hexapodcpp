@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../../Cluster/Clusters/ClustersInterface.h"
-#include "../../Cluster/Constants.h"
+#include <array>
 #include "../../Driver/Socket/SocketInterface.h"
 #include "../Led/LedInterface.h"
 #include "CommunicationInterface.h"
@@ -18,34 +17,37 @@ namespace Component
         class Communication : public CommunicationInterface,
                               Core::ObserverInterface<Socket::SocketStruct> {
         public:
-            Communication(
-                    Socket::SocketInterface<1U, Socket::SocketStruct> &socket,
-                    Clusters::ClustersInterface                       &clusters,
-                    Led::LedInterface &ledStatus);
+            Communication(Socket::SocketInterface<1U, Socket::SocketStruct> &socket,
+                          Led::LedInterface                                 &ledStatus);
 
             ~Communication() = default;
 
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual Core::Status
-            SendMessage(const Frame &message) final override;
+            virtual Core::Status SendMessage(const Frame &message) final override;
 
-            virtual void
-            Notified(const Socket::SocketStruct &state) final override;
+            virtual Core::Status GetMessage(Frame &message) final override;
+
+            virtual void         Notified(const Socket::SocketStruct &state) final override;
 
         private:
-            bool ReceivedStringFrame(void);
+            static constexpr size_t RX_QUEUE_CAPACITY = 16U;
+
+            Core::Status            PushReceivedFrame(const Frame &frame);
+
+            Core::Status            PopReceivedFrame(Frame &frame);
 
             Socket::SocketInterface<1U, Socket::SocketStruct> &mSocket;
-            Clusters::ClustersInterface                       &mClusters;
             Led::LedInterface                                 &mLedStatus;
-            volatile char                                      mBufferRx[50U];
-            volatile char                                      mBufferTx[50U];
-            uint8_t                                            mIndexBufferRx;
-            bool mBeginIncomingFrame;
+            // 8 for clusterId, commandId, nbParams and frame delimiters
+            volatile char                        mBufferTx[FRAME_MAX_PARAMS * 2U + 3U * 8U];
+            std::array<Frame, RX_QUEUE_CAPACITY> mReceivedFrames;
+            size_t                               mRxReadIndex;
+            size_t                               mRxWriteIndex;
+            size_t                               mRxCount;
         };
     } // namespace Communication
 } // namespace Component

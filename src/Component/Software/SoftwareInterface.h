@@ -6,8 +6,7 @@ namespace Component
 {
     namespace Software
     {
-        class SoftwareInterface
-            : public ComponentInterface<0U, std::nullptr_t> {
+        class SoftwareInterface : public ComponentInterface<0U, std::nullptr_t> {
         public:
             struct Version {
                 uint8_t major;

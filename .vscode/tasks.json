@@ -234,7 +234,34 @@
             }
         },
         {
-            "label": "Static Anlysis",
+            "label": "GraphViz",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "bin/dev/graphviz.sh"
+                ]
+            },
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "bash",
+                    "bin/dev/graphviz.sh"
+                ]
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Static Analysis",
             "type": "shell",
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -359,6 +386,14 @@
             "label": "Build, Deploy & Debug RPi",
             "dependsOn": [
                 "Build RPI Debug (Docker Cross-Compile)",
+                "Deploy to RPi",
+                "Start GDB Server on RPi"
+            ],
+            "dependsOrder": "sequence"
+        },
+        {
+            "label": "Deploy & Debug RPi",
+            "dependsOn": [
                 "Deploy to RPi",
                 "Start GDB Server on RPi"
             ],

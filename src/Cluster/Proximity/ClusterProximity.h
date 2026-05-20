@@ -11,17 +11,19 @@ namespace Cluster
 
         class ClusterProximity : public ClusterBase, ClusterCommand {
         public:
-            explicit ClusterProximity(
-                    SensorProximityMultipleInterface &proximity);
+            explicit ClusterProximity(SensorProximityMultipleInterface &proximity);
 
             ~ClusterProximity() = default;
 
-            virtual Core::Status ExecuteFrame(const Frame &request,
-                                              Frame       &response) override;
+            virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override;
 
-            static Core::Status  BuildFrameDistance(const SensorsId sensorId,
-                                                    const uint16_t  distance,
-                                                    Frame          &response);
+            static Core::Status  BuildFrameDistanceUS(const SensorsId sensorId,
+                                                      const uint16_t  distance,
+                                                      Frame          &response);
+
+            static Core::Status  BuildFrameDistanceVLX(const SensorsId sensorId,
+                                                       const uint16_t (&distanceMatrix)[8U][8U],
+                                                       Frame &response);
 
             static Core::Status  BuildFrameThreshold(const SensorsId sensorId,
                                                      const uint16_t  threshold,

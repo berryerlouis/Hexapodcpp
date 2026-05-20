@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.22)
 add_library(App 
     App.cpp
 )
@@ -9,13 +10,6 @@ target_include_directories(App
 
 target_link_libraries(App
     PUBLIC
+        Driver
         tiny_websockets_lib
 )
-
-if (${TARGET} STREQUAL "RPI")
-    target_include_directories(App PUBLIC ${wiringpi_SOURCE_DIR})
-    target_link_libraries(App
-        PUBLIC
-            wiringPi
-    )
-endif ()

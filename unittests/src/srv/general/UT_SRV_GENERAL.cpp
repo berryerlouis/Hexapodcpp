@@ -32,24 +32,16 @@ namespace Service
             }
 
             virtual void SetUp() {
-                EXPECT_CALL(mMockLedPwm, Initialize())
-                        .WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockSoftware, Initialize())
-                        .WillOnce(Return(Core::Status::CORE_ERROR));
-                EXPECT_EQ(Core::Status::CORE_ERROR,
-                          mServiceGeneral.Initialize());
+                EXPECT_CALL(mMockLedPwm, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockSoftware, Initialize()).WillOnce(Return(Core::Status::CORE_ERROR));
+                EXPECT_EQ(Core::Status::CORE_ERROR, mServiceGeneral.Initialize());
 
-                EXPECT_CALL(mMockLedPwm, Initialize())
-                        .WillOnce(Return(Core::Status::CORE_ERROR));
-                EXPECT_CALL(mMockSoftware, Initialize())
-                        .WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_EQ(Core::Status::CORE_ERROR,
-                          mServiceGeneral.Initialize());
+                EXPECT_CALL(mMockLedPwm, Initialize()).WillOnce(Return(Core::Status::CORE_ERROR));
+                EXPECT_CALL(mMockSoftware, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_EQ(Core::Status::CORE_ERROR, mServiceGeneral.Initialize());
 
-                EXPECT_CALL(mMockLedPwm, Initialize())
-                        .WillOnce(Return(Core::Status::CORE_OK));
-                EXPECT_CALL(mMockSoftware, Initialize())
-                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockLedPwm, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockSoftware, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockEventDispatcherInterface, AddListener(_));
                 EXPECT_EQ(Core::Status::CORE_OK, mServiceGeneral.Initialize());
             }
@@ -60,11 +52,10 @@ namespace Service
             virtual ~UT_SRV_GENERAL() = default;
 
             /* Mocks */
-            StrictMock<Component::LedPwm::MockLedPwm>     mMockLedPwm;
-            StrictMock<Component::Software::MockSoftware> mMockSoftware;
-            StrictMock<Event::MockEventDispatcherInterface>
-                    mMockEventDispatcherInterface;
-            StrictMock<Message::MockMessageInterface> mMockMessageInterface;
+            StrictMock<Component::LedPwm::MockLedPwm>       mMockLedPwm;
+            StrictMock<Component::Software::MockSoftware>   mMockSoftware;
+            StrictMock<Event::MockEventDispatcherInterface> mMockEventDispatcherInterface;
+            StrictMock<Message::MockMessageInterface>       mMockMessageInterface;
 
             /* Test class */
             ServiceGeneral mServiceGeneral;
@@ -78,10 +69,8 @@ namespace Service
 
         TEST_F(UT_SRV_GENERAL, OnEventButton) {
             const Component::Button::ButtonStruct button(
-                    {.state = Component::Button::ButtonState::PUSH,
-                     .delayMs = 10U});
-            const Event::Event event = Event::Event(
-                    BUTTON, EventType::EVENT_BUTTON_UPDATE, button);
+                    {.state = Component::Button::ButtonState::PUSH, .delayMs = 10U});
+            const Event::Event event = Event::Event(BUTTON, EventType::EVENT_BUTTON_UPDATE, button);
 
             EXPECT_CALL(mMockLedPwm, UpdateFrequency(5U)).Times(1U);
 
@@ -90,18 +79,14 @@ namespace Service
 
         TEST_F(UT_SRV_GENERAL, OnEventInit) {
             const Event::Event event =
-                    Event::Event(BUTTON,
-                                 EventType::EVENT_INIT_UPDATE,
-                                 Core::Status::CORE_OK);
+                    Event::Event(BUTTON, EventType::EVENT_INIT_UPDATE, Core::Status::CORE_OK);
 
             mServiceGeneral.OnEvent(event);
         }
 
         TEST_F(UT_SRV_GENERAL, OnEventInitFail) {
             const Event::Event event =
-                    Event::Event(BUTTON,
-                                 EventType::EVENT_INIT_UPDATE,
-                                 Core::Status::CORE_ERROR);
+                    Event::Event(BUTTON, EventType::EVENT_INIT_UPDATE, Core::Status::CORE_ERROR);
 
             mServiceGeneral.OnEvent(event);
         }

@@ -13,10 +13,8 @@ namespace Driver
                 wiringPiSetupGpio();
                 once = true;
             }
-            if ((portDirection == EPortDirection::IN) ||
-                (portDirection == EPortDirection::OUT)) {
-                pinMode(this->mGpio.pin,
-                        portDirection == EPortDirection::IN ? INPUT : OUTPUT);
+            if ((portDirection == EPortDirection::IN) || (portDirection == EPortDirection::OUT)) {
+                pinMode(this->mGpio.pin, portDirection == EPortDirection::IN ? INPUT : OUTPUT);
             } else {
                 pinMode(this->mGpio.pin, PWM_OUTPUT);
             }

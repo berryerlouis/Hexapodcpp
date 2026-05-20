@@ -18,12 +18,11 @@ namespace Component
     }
 
     bool Frame::operator==(const Frame &other) const {
-        return ((clusterId == other.clusterId) &&
-                (commandId == other.commandId) && (nbParams == other.nbParams));
+        return ((clusterId == other.clusterId) && (commandId == other.commandId) &&
+                (nbParams == other.nbParams));
     }
 
-    Core::Status Frame::Build(const uint8_t clusterId,
-                              const uint8_t commandId) {
+    Core::Status Frame::Build(const uint8_t clusterId, const uint8_t commandId) {
         this->clusterId = clusterId;
         this->commandId = commandId;
         this->nbParams = 0U;
@@ -44,9 +43,7 @@ namespace Component
                 this->commandId = commandId;
                 this->nbParams = nbParams;
 
-                memcpy(reinterpret_cast<void *>(this->params),
-                       params,
-                       nbParams);
+                memcpy(reinterpret_cast<void *>(this->params), params, nbParams);
                 success = Core::Status::CORE_OK;
             }
         }

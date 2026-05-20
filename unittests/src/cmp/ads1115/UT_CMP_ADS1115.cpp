@@ -46,21 +46,12 @@ namespace Component
             uint8_t buffer[2U] = {0x80U, 0x00U};
 
             for (size_t i = 0U; i < 4U; i++) {
-                EXPECT_CALL(
-                        mMockTwi,
-                        WriteRegisters(_, ADS1115_REG_POINTER_CONFIG, _, 2U))
+                EXPECT_CALL(mMockTwi, WriteRegisters(_, ADS1115_REG_POINTER_CONFIG, _, 2U))
                         .WillOnce(Return(true));
-                EXPECT_CALL(mMockTwi,
-                            ReadRegisters(_, ADS1115_REG_POINTER_CONFIG, _, 2U))
-                        .WillOnce(
-                                DoAll(SetArrayArgument<2U>(buffer, buffer + 2U),
-                                      Return(true)));
-                EXPECT_CALL(
-                        mMockTwi,
-                        ReadRegisters(_, ADS1115_REG_POINTER_CONVERT, _, 2U))
-                        .WillOnce(
-                                DoAll(SetArrayArgument<2U>(buffer, buffer + 2U),
-                                      Return(true)));
+                EXPECT_CALL(mMockTwi, ReadRegisters(_, ADS1115_REG_POINTER_CONFIG, _, 2U))
+                        .WillOnce(DoAll(SetArrayArgument<2U>(buffer, buffer + 2U), Return(true)));
+                EXPECT_CALL(mMockTwi, ReadRegisters(_, ADS1115_REG_POINTER_CONVERT, _, 2U))
+                        .WillOnce(DoAll(SetArrayArgument<2U>(buffer, buffer + 2U), Return(true)));
 
                 EXPECT_EQ(6144.0F, mAds1115.ReadADC((Ads1115Pin) i));
             }

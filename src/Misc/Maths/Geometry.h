@@ -86,8 +86,7 @@ namespace Misc
             float angleZ;
 
             bool  operator==(const Rotation3d &other) const {
-                return (angleX == other.angleX && angleY == other.angleY &&
-                        angleZ == other.angleZ);
+                return (angleX == other.angleX && angleY == other.angleY && angleZ == other.angleZ);
             }
         };
 

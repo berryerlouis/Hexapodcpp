@@ -1,4 +1,9 @@
-set(SRC_FILES_SOFTWARE
-    ${CMAKE_CURRENT_SOURCE_DIR}/Software.cpp
-    PARENT_SCOPE
+cmake_minimum_required(VERSION 3.22)
+add_library(Software
+    Software.cpp
+)
+
+target_include_directories(Software
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )

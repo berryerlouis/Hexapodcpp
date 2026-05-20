@@ -35,9 +35,7 @@ namespace Component
             } else {
                 if (this->mState == PUSH) {
                     this->mState = RELEASE;
-                    const uint64_t delayMs =
-                            Timer::Tick::GetInstance().GetUs() -
-                            this->mPushTime;
+                    const uint64_t delayMs = Timer::Tick::GetInstance().GetUs() - this->mPushTime;
                     this->Notify({this->mState, delayMs});
                 }
             }

@@ -6,14 +6,10 @@ namespace Move
 {
     namespace Walk
     {
-#define LOG_WALK_DEBUG(cmp, ...) \
-    LOG_GENERIC(DEBUG, WALK, "[" cmp "] " __VA_ARGS__)
-#define LOG_WALK_INFO(cmp, ...) \
-    LOG_GENERIC(INFO, WALK, "[" cmp "] " __VA_ARGS__)
-#define LOG_WALK_WARNING(cmp, ...) \
-    LOG_GENERIC(WARNING, WALK, "[" cmp "] " __VA_ARGS__)
-#define LOG_WALK_ERROR(cmp, ...) \
-    LOG_GENERIC(ERROR, WALK, "[" cmp "] " __VA_ARGS__)
+#define LOG_WALK_DEBUG(cmp, ...) LOG_GENERIC(DEBUG, WALK, "[" cmp "] " __VA_ARGS__)
+#define LOG_WALK_INFO(cmp, ...) LOG_GENERIC(INFO, WALK, "[" cmp "] " __VA_ARGS__)
+#define LOG_WALK_WARNING(cmp, ...) LOG_GENERIC(WARNING, WALK, "[" cmp "] " __VA_ARGS__)
+#define LOG_WALK_ERROR(cmp, ...) LOG_GENERIC(ERROR, WALK, "[" cmp "] " __VA_ARGS__)
 
         enum class EWalkStatus : uint8_t {
             WALKING = 0x00U,

@@ -15,57 +15,51 @@ namespace Move
         public:
             virtual ~GaitStrategy() = default;
 
-            virtual void doGaitStrategy(
-                    const bool                                isCycleComplete,
-                    const uint64_t                            currentTime,
-                    std::map<Bot::Legs::ELeg, Bot::Leg::Leg> &legs,
-                    const Move::Gait::GaitParams             &gaitParams,
-                    const std::vector<std::vector<Misc::Maths::Position3d>>
-                                 &positions,
-                    const uint8_t stepPositionIndex,
-                    const float   normalizedTime) const = 0;
+            virtual void
+            doGaitStrategy(const bool                                isCycleComplete,
+                           const uint64_t                            currentTime,
+                           const uint64_t                            transitionStartTime,
+                           std::map<Bot::Legs::ELeg, Bot::Leg::Leg> &legs,
+                           const Move::Gait::GaitParams             &gaitParams,
+                           const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
+                           const uint8_t stepPositionIndex,
+                           const float   normalizedTime) = 0;
         };
 
         class GaitTripod : public GaitStrategy {
         public:
-            void doGaitStrategy(
-                    const bool                                isCycleComplete,
-                    const uint64_t                            currentTime,
-                    std::map<Bot::Legs::ELeg, Bot::Leg::Leg> &legs,
-                    const Move::Gait::GaitParams             &gaitParams,
-                    const std::vector<std::vector<Misc::Maths::Position3d>>
-                                 &positions,
-                    const uint8_t stepPositionIndex,
-                    const float   normalizedTime) const override;
+            void doGaitStrategy(const bool                                isCycleComplete,
+                                const uint64_t                            currentTime,
+                                const uint64_t                            transitionStartTime,
+                                std::map<Bot::Legs::ELeg, Bot::Leg::Leg> &legs,
+                                const Move::Gait::GaitParams             &gaitParams,
+                                const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
+                                const uint8_t stepPositionIndex,
+                                const float   normalizedTime) override;
         };
 
         class GaitWave : public GaitStrategy {
-            inline static uint8_t activeLegId = 0U;
-            inline static bool    activeAllLegId = false;
-
         public:
-            void doGaitStrategy(
-                    const bool                                isCycleComplete,
-                    const uint64_t                            currentTime,
-                    std::map<Bot::Legs::ELeg, Bot::Leg::Leg> &legs,
-                    const Move::Gait::GaitParams             &gaitParams,
-                    const std::vector<std::vector<Misc::Maths::Position3d>>
-                                 &positions,
-                    const uint8_t stepPositionIndex,
-                    const float   normalizedTime) const override;
+            void doGaitStrategy(const bool                                isCycleComplete,
+                                const uint64_t                            currentTime,
+                                const uint64_t                            transitionStartTime,
+                                std::map<Bot::Legs::ELeg, Bot::Leg::Leg> &legs,
+                                const Move::Gait::GaitParams             &gaitParams,
+                                const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
+                                const uint8_t stepPositionIndex,
+                                const float   normalizedTime) override;
         };
 
         class GaitRipple : public GaitStrategy {
         public:
-            void doGaitStrategy(
-                    const bool                                isCycleComplete,
-                    const uint64_t                            currentTime,
-                    std::map<Bot::Legs::ELeg, Bot::Leg::Leg> &legs,
-                    const Move::Gait::GaitParams             &gaitParams,
-                    const std::vector<std::vector<Misc::Maths::Position3d>>
-                                 &positions,
-                    const uint8_t stepPositionIndex,
-                    const float   normalizedTime) const override;
+            void doGaitStrategy(const bool                                isCycleComplete,
+                                const uint64_t                            currentTime,
+                                const uint64_t                            transitionStartTime,
+                                std::map<Bot::Legs::ELeg, Bot::Leg::Leg> &legs,
+                                const Move::Gait::GaitParams             &gaitParams,
+                                const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
+                                const uint8_t stepPositionIndex,
+                                const float   normalizedTime) override;
         };
     } // namespace Gait
 } // namespace Move

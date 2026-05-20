@@ -7,8 +7,7 @@ namespace Component
 {
     namespace Proximity
     {
-        class SensorProximityInterface
-            : public ComponentInterface<5U, SensorsStruct> {
+        class SensorProximityInterface : public ComponentInterface<5U, SensorsStruct> {
         public:
             SensorProximityInterface(void) = default;
 
@@ -21,8 +20,7 @@ namespace Component
             virtual Core::Status SetThreshold(const uint16_t threshold) = 0;
         };
 
-        class SensorProximityMultipleInterface
-            : public ComponentInterface<5U, SensorsStruct> {
+        class SensorProximityMultipleInterface : public ComponentInterface<5U, SensorsStruct> {
         public:
             SensorProximityMultipleInterface(void) = default;
 

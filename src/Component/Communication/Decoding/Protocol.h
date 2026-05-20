@@ -14,7 +14,7 @@ namespace Component
 
             static Core::Status Decode(const char *frameBuffer, Frame &frame);
 
-            static uint8_t      Encode(const Frame &response, char *buffer);
+            static uint16_t     Encode(const Frame &response, char *buffer);
         };
     } // namespace Decoding
 } // namespace Component

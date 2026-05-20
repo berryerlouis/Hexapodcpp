@@ -13,6 +13,8 @@ namespace Component
             MOCK_METHOD1(Update, void(const uint64_t));
 
             MOCK_METHOD1(SendMessage, Core::Status(const Frame &));
+
+            MOCK_METHOD1(GetMessage, Core::Status(Frame &));
         };
     } // namespace Communication
 } // namespace Component

@@ -1,4 +1,9 @@
-set(SRC_FILES_MESSAGE
-    ${CMAKE_CURRENT_SOURCE_DIR}/MessageListener.cpp
-    PARENT_SCOPE
+cmake_minimum_required(VERSION 3.22)
+add_library(ServiceMessage
+    MessageListener.cpp
+)
+
+target_include_directories(ServiceMessage
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )

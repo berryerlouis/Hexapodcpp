@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.22)
 add_subdirectory(Adc)
 add_subdirectory(Barometer)
 add_subdirectory(Battery)
@@ -14,47 +15,28 @@ add_subdirectory(ServosController)
 add_subdirectory(Software)
 add_subdirectory(Sound)
 
-add_library(Component 
-    ${SRC_FILES_ADC}
-    ${SRC_FILES_BAROMETER}
-    ${SRC_FILES_BATTERY}
-    ${SRC_FILES_BUTTON}
-    ${SRC_FILES_COMMUNICATION}
-    ${SRC_FILES_DISPLAY}
-    ${SRC_FILES_IMU}
-    ${SRC_FILES_LED}
-    ${SRC_FILES_LEDPWM}
-    ${SRC_FILES_PROXIMITY}
-    ${SRC_FILES_SERVO}
-    ${SRC_FILES_SERVOS}
-    ${SRC_FILES_SERVOSCONTROLLER}
-    ${SRC_FILES_SOFTWARE}
-    ${SRC_FILES_SOUND}
+add_library(Component INTERFACE)
+
+target_include_directories(Component 
+    INTERFACE
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_include_directories(Component
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/Adc
-        ${CMAKE_CURRENT_SOURCE_DIR}/Barometer
-        ${CMAKE_CURRENT_SOURCE_DIR}/Battery
-        ${CMAKE_CURRENT_SOURCE_DIR}/Button
-        ${CMAKE_CURRENT_SOURCE_DIR}/Communication
-        ${CMAKE_CURRENT_SOURCE_DIR}/Display
-        ${CMAKE_CURRENT_SOURCE_DIR}/Imu
-        ${CMAKE_CURRENT_SOURCE_DIR}/Led
-        ${CMAKE_CURRENT_SOURCE_DIR}/LedPwm
-        ${CMAKE_CURRENT_SOURCE_DIR}/Proximity
-        ${CMAKE_CURRENT_SOURCE_DIR}/Servo
-        ${CMAKE_CURRENT_SOURCE_DIR}/Servos
-        ${CMAKE_CURRENT_SOURCE_DIR}/ServosController
-        ${CMAKE_CURRENT_SOURCE_DIR}/Software
-        ${CMAKE_CURRENT_SOURCE_DIR}/Sound
+target_link_libraries(Component 
+    INTERFACE
+        Adc
+        Barometer
+        Battery
+        Button
+        Communication
+        Display
+        Imu
+        Led
+        LedPwm
+        Proximity
+        Servo
+        Servos
+        ServosController
+        Software
+        Sound          
 )
-
-if (${TARGET} STREQUAL "RPI")
-    target_include_directories(Component PUBLIC ${wiringpi_SOURCE_DIR})
-    target_link_libraries(Component
-        PUBLIC
-            wiringPi
-    )
-endif ()

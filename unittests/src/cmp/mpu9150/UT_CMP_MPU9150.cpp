@@ -26,26 +26,17 @@ namespace Component
             virtual void SetUp() {
                 Core::Status success = Core::Status::CORE_ERROR;
 
-                EXPECT_CALL(mMockTwi, ReadRegister(_, _, _))
-                        .WillRepeatedly(Return(true));
-                EXPECT_CALL(mMockTwi, WriteRegister(_, _, _))
-                        .WillRepeatedly(Return(true));
+                EXPECT_CALL(mMockTwi, ReadRegister(_, _, _)).WillRepeatedly(Return(true));
+                EXPECT_CALL(mMockTwi, WriteRegister(_, _, _)).WillRepeatedly(Return(true));
 
-                EXPECT_CALL(mMockTwi,
-                            ReadRegister(Mpu9150::MPU9150_I2C_ADDRESS,
-                                         Mpu9150::ERegister::WHO_AM_I,
-                                         _))
-                        .WillOnce(
-                                DoAll(SetArgReferee<2U>(
-                                              Mpu9150::MPU9150_I2C_ADDRESS - 1),
-                                      Return(true)));
-                EXPECT_CALL(mMockTwi,
-                            ReadRegister(Mpu9150::AK8963_I2C_ADDRESS, 0, _))
-                        .WillOnce(
-                                DoAll(SetArgReferee<2U>(0x48U), Return(true)));
                 EXPECT_CALL(
                         mMockTwi,
-                        ReadRegisters(Mpu9150::AK8963_I2C_ADDRESS, 0x10, _, 3))
+                        ReadRegister(Mpu9150::MPU9150_I2C_ADDRESS, Mpu9150::ERegister::WHO_AM_I, _))
+                        .WillOnce(DoAll(SetArgReferee<2U>(Mpu9150::MPU9150_I2C_ADDRESS - 1),
+                                        Return(true)));
+                EXPECT_CALL(mMockTwi, ReadRegister(Mpu9150::AK8963_I2C_ADDRESS, 0, _))
+                        .WillOnce(DoAll(SetArgReferee<2U>(0x48U), Return(true)));
+                EXPECT_CALL(mMockTwi, ReadRegisters(Mpu9150::AK8963_I2C_ADDRESS, 0x10, _, 3))
                         .WillRepeatedly(Return(true));
                 success = mMpu9150.Initialize();
 
@@ -69,35 +60,26 @@ namespace Component
         }
 
         TEST_F(UT_CMP_MPU9150, UpdateNoCalib_Ok) {
-            EXPECT_CALL(mMockTwi,
-                        ReadRegister(_, Mpu9150::ERegister::INT_ENABLE, _))
+            EXPECT_CALL(mMockTwi, ReadRegister(_, Mpu9150::ERegister::INT_ENABLE, _))
                     .WillOnce(DoAll(SetArgReferee<2U>(true), Return(true)));
-            EXPECT_CALL(
-                    mMockTwi,
-                    ReadRegisters(_, Mpu9150::ERegister::ACCEL_XOUT_H, _, 14U))
+            EXPECT_CALL(mMockTwi, ReadRegisters(_, Mpu9150::ERegister::ACCEL_XOUT_H, _, 14U))
                     .WillOnce(Return(true));
 
             EXPECT_CALL(mMockTwi, ReadRegister(_, 0x02U, _))
                     .WillOnce(DoAll(SetArgReferee<2U>(1U), Return(true)));
-            EXPECT_CALL(mMockTwi, ReadRegisters(_, 0x03U, _, 6U))
-                    .WillOnce(Return(true));
-            EXPECT_CALL(mMockTwi, WriteRegister(_, 0x0AU, 0x01U))
-                    .WillOnce(Return(true));
+            EXPECT_CALL(mMockTwi, ReadRegisters(_, 0x03U, _, 6U)).WillOnce(Return(true));
+            EXPECT_CALL(mMockTwi, WriteRegister(_, 0x0AU, 0x01U)).WillOnce(Return(true));
 
-            EXPECT_CALL(mMockTwi,
-                        ReadRegister(_, Mpu9150::ERegister::TEMP_OUT_H, _))
+            EXPECT_CALL(mMockTwi, ReadRegister(_, Mpu9150::ERegister::TEMP_OUT_H, _))
                     .WillOnce(Return(true));
-            EXPECT_CALL(mMockTwi,
-                        ReadRegister(_, Mpu9150::ERegister::TEMP_OUT_L, _))
+            EXPECT_CALL(mMockTwi, ReadRegister(_, Mpu9150::ERegister::TEMP_OUT_L, _))
                     .WillOnce(Return(true));
             mMpu9150.Update(0UL);
         }
 
         TEST_F(UT_CMP_MPU9150, UpdateCalibAcc_Ok) {
             mMpu9150.StartCalibration(SensorsImu::ACCEL);
-            EXPECT_CALL(
-                    mMockTwi,
-                    ReadRegisters(_, Mpu9150::ERegister::ACCEL_XOUT_H, _, 6U))
+            EXPECT_CALL(mMockTwi, ReadRegisters(_, Mpu9150::ERegister::ACCEL_XOUT_H, _, 6U))
                     .WillOnce(Return(true));
 
             mMpu9150.Update(0UL);
@@ -106,26 +88,20 @@ namespace Component
         TEST_F(UT_CMP_MPU9150, UpdateCalibAcc100_Ok) {
             mMpu9150.StartCalibration(SensorsImu::ACCEL);
             for (size_t i = 0U; i < 99U; i++) {
-                EXPECT_CALL(mMockTwi,
-                            ReadRegisters(
-                                    _, Mpu9150::ERegister::ACCEL_XOUT_H, _, 6U))
+                EXPECT_CALL(mMockTwi, ReadRegisters(_, Mpu9150::ERegister::ACCEL_XOUT_H, _, 6U))
                         .WillOnce(Return(true));
 
                 mMpu9150.Update(0UL);
             }
 
-            EXPECT_CALL(
-                    mMockTwi,
-                    ReadRegisters(_, Mpu9150::ERegister::ACCEL_XOUT_H, _, 6U))
+            EXPECT_CALL(mMockTwi, ReadRegisters(_, Mpu9150::ERegister::ACCEL_XOUT_H, _, 6U))
                     .WillOnce(Return(true));
             mMpu9150.Update(0UL);
         }
 
         TEST_F(UT_CMP_MPU9150, UpdateCalibGyr_Ok) {
             mMpu9150.StartCalibration(SensorsImu::GYRO);
-            EXPECT_CALL(
-                    mMockTwi,
-                    ReadRegisters(_, Mpu9150::ERegister::GYRO_XOUT_H, _, 6U))
+            EXPECT_CALL(mMockTwi, ReadRegisters(_, Mpu9150::ERegister::GYRO_XOUT_H, _, 6U))
                     .WillOnce(Return(true));
 
             mMpu9150.Update(0UL);
@@ -134,17 +110,13 @@ namespace Component
         TEST_F(UT_CMP_MPU9150, UpdateCalibGyr100_Ok) {
             mMpu9150.StartCalibration(SensorsImu::GYRO);
             for (size_t i = 0U; i < 99U; i++) {
-                EXPECT_CALL(mMockTwi,
-                            ReadRegisters(
-                                    _, Mpu9150::ERegister::GYRO_XOUT_H, _, 6U))
+                EXPECT_CALL(mMockTwi, ReadRegisters(_, Mpu9150::ERegister::GYRO_XOUT_H, _, 6U))
                         .WillOnce(Return(true));
 
                 mMpu9150.Update(0UL);
             }
 
-            EXPECT_CALL(
-                    mMockTwi,
-                    ReadRegisters(_, Mpu9150::ERegister::GYRO_XOUT_H, _, 6U))
+            EXPECT_CALL(mMockTwi, ReadRegisters(_, Mpu9150::ERegister::GYRO_XOUT_H, _, 6U))
                     .WillOnce(Return(true));
             mMpu9150.Update(0UL);
         }
@@ -155,10 +127,8 @@ namespace Component
             EXPECT_CALL(mMockTwi, ReadRegister(_, 0x02U, _))
                     .WillOnce(DoAll(SetArgReferee<2U>(1U), Return(true)));
             EXPECT_CALL(mMockTwi, ReadRegisters(_, 0x03U, _, 6U))
-                    .WillOnce(DoAll(SetArrayArgument<2U>(magRaw, magRaw + 6U),
-                                    Return(true)));
-            EXPECT_CALL(mMockTwi, WriteRegister(_, 0x0AU, 0x01U))
-                    .WillOnce(Return(true));
+                    .WillOnce(DoAll(SetArrayArgument<2U>(magRaw, magRaw + 6U), Return(true)));
+            EXPECT_CALL(mMockTwi, WriteRegister(_, 0x0AU, 0x01U)).WillOnce(Return(true));
 
             mMpu9150.Update(0UL);
         }
@@ -171,11 +141,8 @@ namespace Component
                 EXPECT_CALL(mMockTwi, ReadRegister(_, 0x02U, _))
                         .WillOnce(DoAll(SetArgReferee<2U>(1U), Return(true)));
                 EXPECT_CALL(mMockTwi, ReadRegisters(_, 0x03U, _, 6U))
-                        .WillOnce(
-                                DoAll(SetArrayArgument<2U>(magRaw, magRaw + 6U),
-                                      Return(true)));
-                EXPECT_CALL(mMockTwi, WriteRegister(_, 0x0AU, 0x01U))
-                        .WillOnce(Return(true));
+                        .WillOnce(DoAll(SetArrayArgument<2U>(magRaw, magRaw + 6U), Return(true)));
+                EXPECT_CALL(mMockTwi, WriteRegister(_, 0x0AU, 0x01U)).WillOnce(Return(true));
 
                 mMpu9150.Update(0UL);
             }
@@ -183,10 +150,8 @@ namespace Component
             EXPECT_CALL(mMockTwi, ReadRegister(_, 0x02U, _))
                     .WillOnce(DoAll(SetArgReferee<2U>(1U), Return(true)));
             EXPECT_CALL(mMockTwi, ReadRegisters(_, 0x03U, _, 6U))
-                    .WillOnce(DoAll(SetArrayArgument<2U>(magRaw, magRaw + 6U),
-                                    Return(true)));
-            EXPECT_CALL(mMockTwi, WriteRegister(_, 0x0AU, 0x01U))
-                    .WillOnce(Return(true));
+                    .WillOnce(DoAll(SetArrayArgument<2U>(magRaw, magRaw + 6U), Return(true)));
+            EXPECT_CALL(mMockTwi, WriteRegister(_, 0x0AU, 0x01U)).WillOnce(Return(true));
             mMpu9150.Update(0UL);
         }
 

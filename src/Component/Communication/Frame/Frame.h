@@ -8,7 +8,7 @@
 
 namespace Component
 {
-#define FRAME_MAX_PARAMS 20U
+#define FRAME_MAX_PARAMS 255U
 
     class Frame {
     public:

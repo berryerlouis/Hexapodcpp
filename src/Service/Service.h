@@ -23,21 +23,20 @@ namespace Service
             , mPreviousTime(0UL)
             , mMinDeltaTime(10000UL)
             , mMaxDeltaTime(0UL)
+            , mLastTimingReportTime(0UL)
             , mMessageListener(messageListener)
             , mEventDispatcher(eventDispatcher) {
             if (updateTime < 10U) {
-                LOG_SERVICE_WARNING(
-                        "%s(%d) each %dms is too fast, min "
-                        "10ms.",
-                        EServicesStruct::ServiceIdToString(serviceId).c_str(),
-                        serviceId,
-                        updateTime);
+                LOG_SERVICE_WARNING("%s(%d) each %dms is too fast, min "
+                                    "10ms.",
+                                    EServicesStruct::ServiceIdToString(serviceId).c_str(),
+                                    serviceId,
+                                    updateTime);
             }
-            LOG_SERVICE_DEBUG(
-                    "%s(%d) each %dms.",
-                    EServicesStruct::ServiceIdToString(serviceId).c_str(),
-                    serviceId,
-                    updateTime);
+            LOG_SERVICE_DEBUG("%s(%d) each %dms.",
+                              EServicesStruct::ServiceIdToString(serviceId).c_str(),
+                              serviceId,
+                              updateTime);
         }
 
         ~Service() = default;
@@ -46,14 +45,11 @@ namespace Service
         void DispatchEvent(const EServices eventService,
                            const EventType eventType,
                            const T         eventArg) const {
-            this->mEventDispatcher.DispatchEvent(
-                    Event::Event(eventService, eventType, eventArg));
+            this->mEventDispatcher.DispatchEvent(Event::Event(eventService, eventType, eventArg));
         }
 
-        void DispatchEvent(const EServices eventService,
-                           const EventType eventType) const {
-            this->mEventDispatcher.DispatchEvent(
-                    Event::Event(eventService, eventType, 0U));
+        void DispatchEvent(const EServices eventService, const EventType eventType) const {
+            this->mEventDispatcher.DispatchEvent(Event::Event(eventService, eventType, 0U));
         }
 
         template<typename T>
@@ -63,8 +59,7 @@ namespace Service
         }
 
         void DispatchEvent(const EventType eventType) const {
-            this->mEventDispatcher.DispatchEvent(
-                    Event::Event(this->GetServiceId(), eventType, 0U));
+            this->mEventDispatcher.DispatchEvent(Event::Event(this->GetServiceId(), eventType, 0U));
         }
 
         Event::EventDispatcherInterface &GetEventDispatcher(void) const {
@@ -74,14 +69,12 @@ namespace Service
         void UpdateService(const uint64_t currentTime) {
             if (this->NeedUpdate(currentTime) == Core::Status::CORE_OK) {
                 this->Update(currentTime);
-                this->SetNewUpdateTime(
-                        Driver::Timer::Tick::GetInstance().GetMs());
+                this->SetNewUpdateTime(Driver::Timer::Tick::GetInstance().GetMs());
             }
         }
 
         Core::Status NeedUpdate(const uint64_t currentTime) const {
-            return ((currentTime - this->mPreviousTime) >= this->mUpdateTime &&
-                    this->mInitialized)
+            return ((currentTime - this->mPreviousTime) >= this->mUpdateTime && this->mInitialized)
                            ? Core::Status::CORE_OK
                            : Core::Status::CORE_ERROR;
         }
@@ -99,16 +92,22 @@ namespace Service
             this->mPreviousTime = currentTime;
             if (this->mDeltaTime < this->mMinDeltaTime) {
                 this->SetMinTime(this->mDeltaTime);
-                Frame response;
-                Cluster::General::ClusterGeneral::BuildFrameGetMinTime(
-                        this->mServiceId, this->mDeltaTime, response);
-                this->SendMessage(response);
+                if ((currentTime - this->mLastTimingReportTime) >= 1000U) {
+                    Frame response;
+                    Cluster::General::ClusterGeneral::BuildFrameGetMinTime(
+                            this->mServiceId, this->mDeltaTime, response);
+                    this->SendMessage(response);
+                    this->mLastTimingReportTime = currentTime;
+                }
             } else if (this->mDeltaTime > this->mMaxDeltaTime) {
                 this->SetMaxTime(this->mDeltaTime);
-                Frame response;
-                Cluster::General::ClusterGeneral::BuildFrameGetMaxTime(
-                        this->mServiceId, this->mDeltaTime, response);
-                this->SendMessage(response);
+                if ((currentTime - this->mLastTimingReportTime) >= 1000U) {
+                    Frame response;
+                    Cluster::General::ClusterGeneral::BuildFrameGetMaxTime(
+                            this->mServiceId, this->mDeltaTime, response);
+                    this->SendMessage(response);
+                    this->mLastTimingReportTime = currentTime;
+                }
             }
         }
 
@@ -159,6 +158,7 @@ namespace Service
         volatile uint64_t                mPreviousTime;
         volatile uint64_t                mMinDeltaTime;
         volatile uint64_t                mMaxDeltaTime;
+        volatile uint64_t                mLastTimingReportTime;
         Message::MessageInterface       &mMessageListener;
         Event::EventDispatcherInterface &mEventDispatcher;
     };

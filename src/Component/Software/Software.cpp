@@ -44,8 +44,7 @@ namespace Component
         }
 
         SoftwareInterface::Version Software::GetVersion() {
-            constexpr Version version = {.major = VERSION_MAJOR,
-                                         .minor = VERSION_MINOR};
+            constexpr Version version = {.major = VERSION_MAJOR, .minor = VERSION_MINOR};
             return (version);
         }
 

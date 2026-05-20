@@ -16,14 +16,15 @@ namespace Component
 
         using namespace Cluster;
 
-        class CommunicationInterface
-            : public ComponentInterface<1U, CommunicationStruct> {
+        class CommunicationInterface : public ComponentInterface<1U, CommunicationStruct> {
         public:
             CommunicationInterface(void) = default;
 
             ~CommunicationInterface() = default;
 
             virtual Core::Status SendMessage(const Frame &message) = 0;
+
+            virtual Core::Status GetMessage(Frame &message) = 0;
         };
     } // namespace Communication
 } // namespace Component

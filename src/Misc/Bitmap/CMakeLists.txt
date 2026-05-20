@@ -1,4 +1,9 @@
-set(SRC_FILES_BITMAP
-    ${CMAKE_CURRENT_SOURCE_DIR}/Bitmaps.cpp
-    PARENT_SCOPE
+cmake_minimum_required(VERSION 3.22)
+add_library(Bitmaps
+    Bitmaps.cpp
+)
+
+target_include_directories(Bitmaps
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )

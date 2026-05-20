@@ -17,8 +17,7 @@ namespace Core
 
         ~Observable() = default;
 
-        virtual Core::Status
-        Attach(ObserverInterface<T> *observer) final override {
+        virtual Core::Status Attach(ObserverInterface<T> *observer) final override {
             Core::Status success = Core::Status::CORE_ERROR;
             if (this->mIndexList != MAX_OBSERVERS) {
                 this->mListObserver[this->mIndexList] = observer;

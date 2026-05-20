@@ -1,4 +1,9 @@
-set(SRC_FILES_DISPLAY
-    ${CMAKE_CURRENT_SOURCE_DIR}/Ssd1306.cpp
-    PARENT_SCOPE
+cmake_minimum_required(VERSION 3.22)
+add_library(Display
+    Ssd1306.cpp 
+)
+
+target_include_directories(Display
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )

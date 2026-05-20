@@ -8,6 +8,7 @@ HMI/coverage
 node_modules/
 /HMI-copy/
 Hexapodcpp
+clang-tidy-report/
 coverage-report/
 coverage.info
 /cppcheck-report.xml

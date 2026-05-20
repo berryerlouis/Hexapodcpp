@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.22)
 # Battery component unit tests
 
 # Source files under test

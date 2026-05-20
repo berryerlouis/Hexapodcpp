@@ -32,7 +32,7 @@ export default class World extends Object3D {
                 mesh.rotation.x = -Math.PI / 2;
                 mesh.position.x = -(this.width / 2) + 1 / 2 + j;
                 mesh.position.z = (this.height / 2) - 1 / 2 - i;
-                mesh.castShadow = true
+                mesh.castShadow = false
                 mesh.receiveShadow = true;
                 this.meshes.push(mesh);
             }

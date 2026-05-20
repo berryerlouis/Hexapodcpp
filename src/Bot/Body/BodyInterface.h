@@ -12,22 +12,20 @@ namespace Bot
     {
         using namespace Misc::Maths;
 
-        class BodyInterface
-            : public Component::ComponentInterface<0U, std::nullptr_t> {
+        class BodyInterface : public Component::ComponentInterface<0U, std::nullptr_t> {
         public:
             BodyInterface() = default;
 
             ~BodyInterface() = default;
 
-            virtual void UpdateWalkStatus(const Move::Walk::EWalkStatus status,
-                                          const uint16_t duration) = 0;
+            virtual void                    UpdateWalkStatus(const Move::Walk::EWalkStatus status,
+                                                             const uint16_t                duration) = 0;
 
             virtual Move::Walk::EWalkStatus GetWalkStatus(void) = 0;
 
-            virtual bool     SetDirection(const float directionAngle) = 0;
+            virtual bool                    SetDirection(const float directionAngle) = 0;
 
-            virtual bool     SetRotation(const float rotationAngle,
-                                         const bool  clockWize) = 0;
+            virtual bool     SetRotation(const float rotationAngle, const bool clockWize) = 0;
 
             virtual bool     SetAmplitude(const float amplitude) = 0;
 
@@ -51,15 +49,13 @@ namespace Bot
 
             virtual Move::Gait::GaitType GetGait(void) = 0;
 
-            virtual uint32_t
-            SetBodyPositionRotation(const Position3d &position,
-                                    const Rotation3d &rotation,
-                                    const uint16_t    travelTime) = 0;
+            virtual uint32_t             SetBodyPositionRotation(const Position3d &position,
+                                                                 const Rotation3d &rotation,
+                                                                 const uint16_t    travelTime) = 0;
 
-            virtual uint32_t
-            SetLegPositionRotation(const uint8_t    &legId,
-                                   const Position3d &position,
-                                   const uint16_t    travelTime) = 0;
+            virtual uint32_t             SetLegPositionRotation(const uint8_t    &legId,
+                                                                const Position3d &position,
+                                                                const uint16_t    travelTime) = 0;
         };
     } // namespace Body
 } // namespace Bot

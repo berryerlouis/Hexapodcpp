@@ -1,4 +1,9 @@
-set(SRC_FILES_SOUND
-    ${CMAKE_CURRENT_SOURCE_DIR}/Sound.cpp
-    PARENT_SCOPE
+cmake_minimum_required(VERSION 3.22)
+add_library(Sound
+    Sound.cpp
+)
+
+target_include_directories(Sound
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )

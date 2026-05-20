@@ -10,8 +10,7 @@ namespace Cluster
 
         bool                 AddClusterItem(const ClusterItem clusterItem);
 
-        virtual Core::Status ExecuteFrame(const Frame &request,
-                                          Frame       &response) = 0;
+        virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) = 0;
 
         Core::Status         Execute(const Frame &request, Frame &response);
 

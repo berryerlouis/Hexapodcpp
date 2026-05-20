@@ -20,9 +20,8 @@ namespace Driver
 #ifdef GTEST
             return mFakeUs;
 #else
-            const auto duration =
-                    std::chrono::duration_cast<std::chrono::microseconds>(
-                            clock::now() - this->mStart);
+            const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
+                    clock::now() - this->mStart);
             return static_cast<uint64_t>(duration.count());
 #endif
         }
@@ -31,9 +30,8 @@ namespace Driver
 #ifdef GTEST
             return mFakeMs;
 #else
-            const auto duration =
-                    std::chrono::duration_cast<std::chrono::milliseconds>(
-                            clock::now() - this->mStart);
+            const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+                    clock::now() - this->mStart);
             return static_cast<uint64_t>(duration.count());
 #endif
         }

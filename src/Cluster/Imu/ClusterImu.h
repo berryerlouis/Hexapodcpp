@@ -18,8 +18,7 @@ namespace Cluster
 
             ~ClusterImu() = default;
 
-            virtual Core::Status ExecuteFrame(const Frame &request,
-                                              Frame       &response) override;
+            virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override;
 
             static Core::Status  BuildFrameAll(const Vector3 &acc,
                                                const Vector3 &gyr,
@@ -27,29 +26,21 @@ namespace Cluster
                                                const uint16_t temp,
                                                Frame         &response);
 
-            static Core::Status  BuildFrameAcc(const Vector3 &acc,
-                                               Frame         &response);
+            static Core::Status  BuildFrameAcc(const Vector3 &acc, Frame &response);
 
-            static Core::Status  BuildFrameGyr(const Vector3 &gyr,
-                                               Frame         &response);
+            static Core::Status  BuildFrameGyr(const Vector3 &gyr, Frame &response);
 
-            static Core::Status  BuildFrameMag(const Vector3 &mag,
-                                               Frame         &response);
+            static Core::Status  BuildFrameMag(const Vector3 &mag, Frame &response);
 
-            static Core::Status  BuildFrameTmp(const uint16_t temp,
-                                               Frame         &response);
+            static Core::Status  BuildFrameTmp(const uint16_t temp, Frame &response);
 
-            static Core::Status  BuildFrameYawPitchRoll(const Imu3d ypr,
-                                                        Frame      &response);
+            static Core::Status  BuildFrameYawPitchRoll(const Imu3d ypr, Frame &response);
 
-            static Core::Status  BuildFramePressure(const int32_t pressure,
-                                                    Frame        &response);
+            static Core::Status  BuildFramePressure(const int32_t pressure, Frame &response);
 
-            static Core::Status  BuildFrameSeaLevel(const uint16_t seaLevel,
-                                                    Frame         &response);
+            static Core::Status  BuildFrameSeaLevel(const uint16_t seaLevel, Frame &response);
 
-            static Core::Status  BuildFrameTmpBar(const int16_t temp,
-                                                  Frame        &response);
+            static Core::Status  BuildFrameTmpBar(const int16_t temp, Frame &response);
 
             static Core::Status  BuildFrameStartCalibMag(Frame &response);
 

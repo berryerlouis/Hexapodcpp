@@ -14,6 +14,6 @@ echo "  Stopping running process on hexabot..."
 ssh hexabot "sudo systemctl stop hexabot.service 2>/dev/null; sudo pkill -9 gdbserver 2>/dev/null; sudo killall -9 Hexapodcpp 2>/dev/null; sleep 0.5; true"
 echo "  Copying binary..."
 scp Hexapodcpp hexabot:/home/hexabot/
-printf ho " ${GREEN}Deployment complete!${NC}\n"
+printf " ${GREEN}Deployment complete!${NC}\n"
 echo ""
 

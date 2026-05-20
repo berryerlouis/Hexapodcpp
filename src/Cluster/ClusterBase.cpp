@@ -2,8 +2,7 @@
 
 namespace Cluster
 {
-    ClusterBase::ClusterBase(const EClusters clusterId,
-                             ClusterCommand &strategyCluster)
+    ClusterBase::ClusterBase(const EClusters clusterId, ClusterCommand &strategyCluster)
         : mClusterId(clusterId)
         , mClusterCommand(strategyCluster) {
     }

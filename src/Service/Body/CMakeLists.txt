@@ -1,4 +1,9 @@
-set(SRC_FILES_BODY
-    ${CMAKE_CURRENT_SOURCE_DIR}/ServiceBody.cpp
-    PARENT_SCOPE
+cmake_minimum_required(VERSION 3.22)
+add_library(ServiceBody 
+    ServiceBody.cpp
+)
+
+target_include_directories(ServiceBody
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )

@@ -9,7 +9,7 @@ import ProximityObject, {ProximitySide} from "./proximity.ts";
 
 interface Proximity {
     left: number;
-    front: number;
+    front: number[][];
     right: number;
 }
 
@@ -28,7 +28,7 @@ export default class Head extends Object3D {
         proximity: {
             left: 0,
             right: 0,
-            front: 0
+            front: Array.from({ length: 8 }, () => Array(8).fill(0))
         },
         sound: {
             left: 0,
@@ -67,7 +67,11 @@ export default class Head extends Object3D {
         });
         this.socket.addSpecificCallbackRead(ClusterName.PROXIMITY, ClusterProximityCommands.LASER, (message: Message) => {
             if (message.params) {
-                this.sensors.proximity.front = message.getValueUint16(0) / 10;
+                for (let i = 0; i < 8; i++) {
+                    for (let j = 0; j < 8; j++) {
+                        this.sensors.proximity.front[i][j] = message.getValueUint16((i * 8 + j) * 2) / 10;
+                    }
+                }
                 this.proximity.show(this.sensors.proximity.front, ProximitySide.center);
             }
         });

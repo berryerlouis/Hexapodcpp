@@ -16,9 +16,9 @@ namespace Driver
 
             MOCK_METHOD1(Send, void(const uint8_t));
 
-            MOCK_METHOD0(Read, uint8_t(void));
+            MOCK_METHOD0(ReadIncomingData, volatile char *(void) );
 
-            MOCK_METHOD0(DataAvailable, uint8_t(void));
+            MOCK_METHOD0(HasNewFrame, bool(void));
         };
     } // namespace Socket
 } // namespace Driver

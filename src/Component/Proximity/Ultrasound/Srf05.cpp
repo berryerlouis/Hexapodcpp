@@ -6,8 +6,8 @@ namespace Component
     {
         namespace Ultrasound
         {
-            Srf05::Srf05(const Cluster::EProximityCommands side,
-                         Driver::Gpio::GpioInterface      &gpioTrigger,
+            Srf05::Srf05(const Cluster::EProximityCommands            side,
+                         Driver::Gpio::GpioInterface                 &gpioTrigger,
                          Driver::InputCapture::InputCaptureInterface &gpioEcho,
                          Led::LedInterface                           &led)
                 : mSide(side)
@@ -30,12 +30,10 @@ namespace Component
                 (void) currentTime;
                 this->SendPulse();
                 const uint16_t distance = this->GetDistance();
-                const bool     detection =
-                        (distance != 0U && distance <= this->mThreshold);
+                const bool     detection = (distance != 0U && distance <= this->mThreshold);
                 if (detection) {
                     this->mLed.On();
-                    this->Notify(
-                            {static_cast<SensorsId>(this->mSide), distance});
+                    this->Notify({static_cast<SensorsId>(this->mSide), distance, {}});
                 } else {
                     this->mLed.Off();
                 }

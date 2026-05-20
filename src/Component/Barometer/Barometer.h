@@ -19,16 +19,15 @@ namespace Component
 
         class Barometer : public BarometerInterface {
         public:
-            explicit Barometer(
-                    Driver::Twi::TwiInterface &i2c,
-                    const uint8_t              address = MS5611_I2C_ADDRESS,
-                    const BarometerResolution  resolution = MS5611_STANDARD);
+            explicit Barometer(Driver::Twi::TwiInterface &i2c,
+                               const uint8_t              address = MS5611_I2C_ADDRESS,
+                               const BarometerResolution  resolution = MS5611_STANDARD);
 
             ~Barometer() = default;
 
-            virtual Core::Status Initialize(void) final override;
+            virtual Core::Status   Initialize(void) final override;
 
-            virtual void Update(const uint64_t currentTime) final override;
+            virtual void           Update(const uint64_t currentTime) final override;
 
             inline virtual int16_t GetTemp(void) final override {
                 return (this->mTemp);
@@ -39,8 +38,7 @@ namespace Component
             }
 
             inline virtual uint16_t GetAltitude(void) final override {
-                return ((pow((101325.0F / this->mPressure), 1.0F / 5.257F) -
-                         1.0F) *
+                return ((pow((101325.0F / this->mPressure), 1.0F / 5.257F) - 1.0F) *
                         (this->mTemp * 0.01F + 273.15F)) /
                        0.0065F;
             }

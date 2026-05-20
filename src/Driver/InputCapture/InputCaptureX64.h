@@ -16,13 +16,13 @@ namespace Driver
 
             virtual Core::Status Initialize(void) final override;
 
-            virtual void     Update(const uint64_t currentTime) final override;
+            virtual void         Update(const uint64_t currentTime) final override;
 
-            virtual void     EdgeChange(void) final override;
+            virtual void         EdgeChange(void) final override;
 
-            virtual uint64_t GetInputCaptureTime(void) final override;
+            virtual uint64_t     GetInputCaptureTime(void) final override;
 
-            virtual void     ResetInputCaptureTime(void) final override;
+            virtual void         ResetInputCaptureTime(void) final override;
 
         private:
             Gpio::GpioInterface &mGpio;

@@ -106,9 +106,10 @@ namespace Cluster
         US_RIGHT,
         LASER,
         SET_THRESHOLD,
+        LASER_5X,
     };
 
-    static constexpr uint8_t NB_COMMANDS_PROXIMITY = 4U;
+    static constexpr uint8_t NB_COMMANDS_PROXIMITY = 5U;
 
 
     enum EButtonCommands {

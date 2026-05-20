@@ -33,12 +33,10 @@ namespace Component
     TEST_F(UT_CMP_FRAME, BuildNoArg_Ok) {
         Core::Status success = Core::Status::CORE_ERROR;
 
-        success = mFrame.Build(Cluster::BATTERY,
-                               Cluster::EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(Cluster::BATTERY, Cluster::EBatteryCommands::GET_VOLTAGE);
 
         EXPECT_EQ(mFrame.GetClusterId(), Cluster::BATTERY);
-        EXPECT_EQ(mFrame.GetCommandId(),
-                  Cluster::EBatteryCommands::GET_VOLTAGE);
+        EXPECT_EQ(mFrame.GetCommandId(), Cluster::EBatteryCommands::GET_VOLTAGE);
         EXPECT_EQ(mFrame.GetNbParams(), 0U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 0U);
         EXPECT_EQ(success, Core::Status::CORE_OK);
@@ -47,8 +45,7 @@ namespace Component
     TEST_F(UT_CMP_FRAME, BuildTooMuchArgs_Error) {
         Core::Status      success = Core::Status::CORE_ERROR;
         constexpr uint8_t params[FRAME_MAX_PARAMS + 1U] = {0U};
-        success = mFrame.Build(Cluster::BATTERY,
-                               Cluster::EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(Cluster::BATTERY, Cluster::EBatteryCommands::GET_VOLTAGE);
         mFrame.SetxBytesParam(FRAME_MAX_PARAMS + 1U, params);
         EXPECT_EQ(success, Core::Status::CORE_OK);
     }
@@ -57,14 +54,11 @@ namespace Component
     TEST_F(UT_CMP_FRAME, BuildNoArgNullptr_Ok) {
         Core::Status success = Core::Status::CORE_ERROR;
 
-        success = mFrame.Build(Cluster::BATTERY,
-                               Cluster::EBatteryCommands::GET_VOLTAGE,
-                               nullptr,
-                               0U);
+        success =
+                mFrame.Build(Cluster::BATTERY, Cluster::EBatteryCommands::GET_VOLTAGE, nullptr, 0U);
 
         EXPECT_EQ(mFrame.GetClusterId(), Cluster::BATTERY);
-        EXPECT_EQ(mFrame.GetCommandId(),
-                  Cluster::EBatteryCommands::GET_VOLTAGE);
+        EXPECT_EQ(mFrame.GetCommandId(), Cluster::EBatteryCommands::GET_VOLTAGE);
         EXPECT_EQ(mFrame.GetNbParams(), 0U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 0U);
         EXPECT_EQ(success, Core::Status::CORE_OK);
@@ -74,14 +68,11 @@ namespace Component
         Core::Status      success = Core::Status::CORE_ERROR;
 
         constexpr uint8_t params = 42;
-        success = mFrame.Build(Cluster::BATTERY,
-                               Cluster::EBatteryCommands::GET_VOLTAGE,
-                               &params,
-                               1U);
+        success =
+                mFrame.Build(Cluster::BATTERY, Cluster::EBatteryCommands::GET_VOLTAGE, &params, 1U);
 
         EXPECT_EQ(mFrame.GetClusterId(), Cluster::BATTERY);
-        EXPECT_EQ(mFrame.GetCommandId(),
-                  Cluster::EBatteryCommands::GET_VOLTAGE);
+        EXPECT_EQ(mFrame.GetCommandId(), Cluster::EBatteryCommands::GET_VOLTAGE);
         EXPECT_EQ(mFrame.GetNbParams(), 1U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
@@ -91,13 +82,11 @@ namespace Component
     TEST_F(UT_CMP_FRAME, BuildAndAdd1ByteArg_Ok) {
         Core::Status success = Core::Status::CORE_ERROR;
 
-        success = mFrame.Build(Cluster::BATTERY,
-                               Cluster::EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(Cluster::BATTERY, Cluster::EBatteryCommands::GET_VOLTAGE);
         mFrame.Set1ByteParam(42U);
 
         EXPECT_EQ(mFrame.GetClusterId(), Cluster::BATTERY);
-        EXPECT_EQ(mFrame.GetCommandId(),
-                  Cluster::EBatteryCommands::GET_VOLTAGE);
+        EXPECT_EQ(mFrame.GetCommandId(), Cluster::EBatteryCommands::GET_VOLTAGE);
         EXPECT_EQ(mFrame.GetNbParams(), 1U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
@@ -107,8 +96,7 @@ namespace Component
     TEST_F(UT_CMP_FRAME, BuildAndAddMultiple1ByteArg_Ok) {
         Core::Status success = Core::Status::CORE_ERROR;
 
-        success = mFrame.Build(Cluster::BATTERY,
-                               Cluster::EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(Cluster::BATTERY, Cluster::EBatteryCommands::GET_VOLTAGE);
         mFrame.Set1ByteParam(42U);
         mFrame.Set1ByteParam(24U);
         mFrame.Set1ByteParam(55U);
@@ -116,8 +104,7 @@ namespace Component
         mFrame.Set1ByteParam(15U);
 
         EXPECT_EQ(mFrame.GetClusterId(), Cluster::BATTERY);
-        EXPECT_EQ(mFrame.GetCommandId(),
-                  Cluster::EBatteryCommands::GET_VOLTAGE);
+        EXPECT_EQ(mFrame.GetCommandId(), Cluster::EBatteryCommands::GET_VOLTAGE);
         EXPECT_EQ(mFrame.GetNbParams(), 5U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
@@ -136,14 +123,11 @@ namespace Component
         Core::Status       success = Core::Status::CORE_ERROR;
 
         constexpr uint16_t params = 42;
-        success = mFrame.Build(Cluster::BATTERY,
-                               Cluster::EBatteryCommands::GET_VOLTAGE,
-                               (uint8_t *) &params,
-                               2U);
+        success = mFrame.Build(
+                Cluster::BATTERY, Cluster::EBatteryCommands::GET_VOLTAGE, (uint8_t *) &params, 2U);
 
         EXPECT_EQ(mFrame.GetClusterId(), Cluster::BATTERY);
-        EXPECT_EQ(mFrame.GetCommandId(),
-                  Cluster::EBatteryCommands::GET_VOLTAGE);
+        EXPECT_EQ(mFrame.GetCommandId(), Cluster::EBatteryCommands::GET_VOLTAGE);
         EXPECT_EQ(mFrame.GetNbParams(), 2U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
         EXPECT_EQ(mFrame.Get1ByteParam(1U), 0U);
@@ -154,13 +138,11 @@ namespace Component
     TEST_F(UT_CMP_FRAME, BuildAndAdd2BytesArg_Ok) {
         Core::Status success = Core::Status::CORE_ERROR;
 
-        success = mFrame.Build(Cluster::BATTERY,
-                               Cluster::EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(Cluster::BATTERY, Cluster::EBatteryCommands::GET_VOLTAGE);
         mFrame.Set2BytesParam(42U);
 
         EXPECT_EQ(mFrame.GetClusterId(), Cluster::BATTERY);
-        EXPECT_EQ(mFrame.GetCommandId(),
-                  Cluster::EBatteryCommands::GET_VOLTAGE);
+        EXPECT_EQ(mFrame.GetCommandId(), Cluster::EBatteryCommands::GET_VOLTAGE);
         EXPECT_EQ(mFrame.GetNbParams(), 2U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
         EXPECT_EQ(mFrame.Get1ByteParam(1U), 0U);
@@ -171,8 +153,7 @@ namespace Component
     TEST_F(UT_CMP_FRAME, BuildAndAddMultiple2BytesArg_Ok) {
         Core::Status success = Core::Status::CORE_ERROR;
 
-        success = mFrame.Build(Cluster::BATTERY,
-                               Cluster::EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(Cluster::BATTERY, Cluster::EBatteryCommands::GET_VOLTAGE);
         mFrame.Set2BytesParam(42U);
         mFrame.Set2BytesParam(24U);
         mFrame.Set2BytesParam(55U);
@@ -180,8 +161,7 @@ namespace Component
         mFrame.Set2BytesParam(0x1500U);
 
         EXPECT_EQ(mFrame.GetClusterId(), Cluster::BATTERY);
-        EXPECT_EQ(mFrame.GetCommandId(),
-                  Cluster::EBatteryCommands::GET_VOLTAGE);
+        EXPECT_EQ(mFrame.GetCommandId(), Cluster::EBatteryCommands::GET_VOLTAGE);
         EXPECT_EQ(mFrame.GetNbParams(), 10U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 42U);
         EXPECT_EQ(mFrame.Get1ByteParam(1U), 0U);
@@ -205,13 +185,11 @@ namespace Component
         Core::Status       success = Core::Status::CORE_ERROR;
 
         constexpr uint32_t params = 0x424140;
-        success = mFrame.Build(Cluster::BATTERY,
-                               Cluster::EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(Cluster::BATTERY, Cluster::EBatteryCommands::GET_VOLTAGE);
         mFrame.Set3BytesParam(params);
 
         EXPECT_EQ(mFrame.GetClusterId(), Cluster::BATTERY);
-        EXPECT_EQ(mFrame.GetCommandId(),
-                  Cluster::EBatteryCommands::GET_VOLTAGE);
+        EXPECT_EQ(mFrame.GetCommandId(), Cluster::EBatteryCommands::GET_VOLTAGE);
         EXPECT_EQ(mFrame.GetNbParams(), 3U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 0x40U);
         EXPECT_EQ(mFrame.Get1ByteParam(1U), 0x41U);
@@ -226,15 +204,13 @@ namespace Component
         constexpr uint32_t params24 = 0x424140U;
         constexpr uint16_t params16 = 0x5533U;
         constexpr uint8_t  params8 = 0xAAU;
-        success = mFrame.Build(Cluster::BATTERY,
-                               Cluster::EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(Cluster::BATTERY, Cluster::EBatteryCommands::GET_VOLTAGE);
         mFrame.Set3BytesParam(params24);
         mFrame.Set2BytesParam(params16);
         mFrame.Set1ByteParam(params8);
 
         EXPECT_EQ(mFrame.GetClusterId(), Cluster::BATTERY);
-        EXPECT_EQ(mFrame.GetCommandId(),
-                  Cluster::EBatteryCommands::GET_VOLTAGE);
+        EXPECT_EQ(mFrame.GetCommandId(), Cluster::EBatteryCommands::GET_VOLTAGE);
         EXPECT_EQ(mFrame.GetNbParams(), 6U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 0x40U);
         EXPECT_EQ(mFrame.Get1ByteParam(1U), 0x41U);
@@ -252,13 +228,11 @@ namespace Component
         Core::Status       success = Core::Status::CORE_ERROR;
 
         constexpr uint32_t params = 0x42414039;
-        success = mFrame.Build(Cluster::BATTERY,
-                               Cluster::EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(Cluster::BATTERY, Cluster::EBatteryCommands::GET_VOLTAGE);
         mFrame.Set4BytesParam(params);
 
         EXPECT_EQ(mFrame.GetClusterId(), Cluster::BATTERY);
-        EXPECT_EQ(mFrame.GetCommandId(),
-                  Cluster::EBatteryCommands::GET_VOLTAGE);
+        EXPECT_EQ(mFrame.GetCommandId(), Cluster::EBatteryCommands::GET_VOLTAGE);
         EXPECT_EQ(mFrame.GetNbParams(), 4U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 0x39U);
         EXPECT_EQ(mFrame.Get1ByteParam(1U), 0x40U);
@@ -275,16 +249,14 @@ namespace Component
         constexpr uint32_t params24 = 0x424140U;
         constexpr uint16_t params16 = 0x5533U;
         constexpr uint8_t  params8 = 0xAAU;
-        success = mFrame.Build(Cluster::BATTERY,
-                               Cluster::EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(Cluster::BATTERY, Cluster::EBatteryCommands::GET_VOLTAGE);
         mFrame.Set3BytesParam(params24);
         mFrame.Set2BytesParam(params16);
         mFrame.Set1ByteParam(params8);
         mFrame.Set4BytesParam(params32);
 
         EXPECT_EQ(mFrame.GetClusterId(), Cluster::BATTERY);
-        EXPECT_EQ(mFrame.GetCommandId(),
-                  Cluster::EBatteryCommands::GET_VOLTAGE);
+        EXPECT_EQ(mFrame.GetCommandId(), Cluster::EBatteryCommands::GET_VOLTAGE);
         EXPECT_EQ(mFrame.GetNbParams(), 10U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 0x40U);
         EXPECT_EQ(mFrame.Get1ByteParam(1U), 0x41U);
@@ -307,13 +279,11 @@ namespace Component
         Core::Status       success = Core::Status::CORE_ERROR;
 
         constexpr uint64_t params = 0x424140394241U;
-        success = mFrame.Build(Cluster::BATTERY,
-                               Cluster::EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(Cluster::BATTERY, Cluster::EBatteryCommands::GET_VOLTAGE);
         mFrame.Set6BytesParam(params);
 
         EXPECT_EQ(mFrame.GetClusterId(), Cluster::BATTERY);
-        EXPECT_EQ(mFrame.GetCommandId(),
-                  Cluster::EBatteryCommands::GET_VOLTAGE);
+        EXPECT_EQ(mFrame.GetCommandId(), Cluster::EBatteryCommands::GET_VOLTAGE);
         EXPECT_EQ(mFrame.GetNbParams(), 6U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 0x41U);
         EXPECT_EQ(mFrame.Get1ByteParam(1U), 0x42U);
@@ -329,13 +299,11 @@ namespace Component
         Core::Status       success = Core::Status::CORE_ERROR;
 
         constexpr uint64_t params = 0x4241403942414039U;
-        success = mFrame.Build(Cluster::BATTERY,
-                               Cluster::EBatteryCommands::GET_VOLTAGE);
+        success = mFrame.Build(Cluster::BATTERY, Cluster::EBatteryCommands::GET_VOLTAGE);
         mFrame.Set8BytesParam(params);
 
         EXPECT_EQ(mFrame.GetClusterId(), Cluster::BATTERY);
-        EXPECT_EQ(mFrame.GetCommandId(),
-                  Cluster::EBatteryCommands::GET_VOLTAGE);
+        EXPECT_EQ(mFrame.GetCommandId(), Cluster::EBatteryCommands::GET_VOLTAGE);
         EXPECT_EQ(mFrame.GetNbParams(), 8U);
         EXPECT_EQ(mFrame.Get1ByteParam(0U), 0x39U);
         EXPECT_EQ(mFrame.Get1ByteParam(1U), 0x40U);

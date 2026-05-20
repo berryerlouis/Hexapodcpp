@@ -22,18 +22,14 @@ namespace Service
                 : mMockEventDispatcherInterface()
                 , mMockMessageInterface()
                 , mMockBody()
-                , mServiceBody(mMockBody,
-                               mMockMessageInterface,
-                               mMockEventDispatcherInterface) {
+                , mServiceBody(mMockBody, mMockMessageInterface, mMockEventDispatcherInterface) {
             }
 
             virtual void SetUp() {
-                EXPECT_CALL(mMockBody, Initialize())
-                        .WillOnce(Return(Core::Status::CORE_ERROR));
+                EXPECT_CALL(mMockBody, Initialize()).WillOnce(Return(Core::Status::CORE_ERROR));
                 EXPECT_EQ(Core::Status::CORE_ERROR, mServiceBody.Initialize());
 
-                EXPECT_CALL(mMockBody, Initialize())
-                        .WillOnce(Return(Core::Status::CORE_OK));
+                EXPECT_CALL(mMockBody, Initialize()).WillOnce(Return(Core::Status::CORE_OK));
                 EXPECT_CALL(mMockEventDispatcherInterface, AddListener(_));
                 EXPECT_EQ(Core::Status::CORE_OK, mServiceBody.Initialize());
             }
@@ -44,10 +40,9 @@ namespace Service
             virtual ~UT_SRV_BODY() = default;
 
             /* Mocks */
-            StrictMock<Event::MockEventDispatcherInterface>
-                    mMockEventDispatcherInterface;
-            StrictMock<Message::MockMessageInterface> mMockMessageInterface;
-            StrictMock<::Bot::Body::MockBody>         mMockBody;
+            StrictMock<Event::MockEventDispatcherInterface> mMockEventDispatcherInterface;
+            StrictMock<Message::MockMessageInterface>       mMockMessageInterface;
+            StrictMock<::Bot::Body::MockBody>               mMockBody;
 
             /* Test class */
             ServiceBody mServiceBody;

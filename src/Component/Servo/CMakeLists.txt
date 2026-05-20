@@ -1,4 +1,9 @@
-set(SRC_FILES_SERVO
-    ${CMAKE_CURRENT_SOURCE_DIR}/Servo.cpp
-    PARENT_SCOPE
+cmake_minimum_required(VERSION 3.22)
+add_library(Servo
+    Servo.cpp
+)
+
+target_include_directories(Servo
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )
