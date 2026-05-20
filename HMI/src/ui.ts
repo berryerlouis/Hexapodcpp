@@ -49,6 +49,7 @@ export default class Ui {
         this.graphic.onUpdate(dt => {
             this.update(dt);
         });
+        setInterval(() => this.panel.update(), 500);
         this.socket.addCallbackStarted(() => {
             this.initCom();
         });
@@ -79,7 +80,6 @@ export default class Ui {
         this.control.update(dt);
         this.world.update();
         this.hexapod.update(dt);
-        this.panel.update();
         this.camera.update();
         this.light.update(this.hexapod);
     }

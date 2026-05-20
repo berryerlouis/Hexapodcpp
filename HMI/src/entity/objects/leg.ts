@@ -1,4 +1,4 @@
-import {CircleGeometry, DoubleSide, MathUtils, Mesh, MeshBasicMaterial, Object3D, RingGeometry} from 'three'
+import {CircleGeometry, DoubleSide, MathUtils, Mesh, MeshBasicMaterial, Object3D, RingGeometry, Vector3} from 'three'
 import Coxys from "./coxys.ts";
 import {ServoStruct} from "./servo.ts";
 import Socket from "../../communication/socket.ts";
@@ -77,5 +77,10 @@ export default class Leg extends Object3D {
         this.coxys.update();
         this.coxys.femur.update();
         this.coxys.femur.tibia.update();
+    }
+
+    getFootWorldPosition(target: Vector3): Vector3 {
+        target.set(0, this.coxys.femur.tibia.height, 0);
+        return this.coxys.femur.tibia.tibiaBody.localToWorld(target);
     }
 }

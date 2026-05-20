@@ -1,4 +1,4 @@
-import { Object3D } from 'three'
+import { Box3, Object3D } from 'three'
 import Socket from "../communication/socket.ts";
 import Body from "./objects/body.ts";
 import Head from "./objects/head.ts";
@@ -49,6 +49,9 @@ export default class Hexapod extends Object3D {
     directionArrow: DirectionArrow;
     listOfCallbackMove: CallbackMove[];
     isMoving: boolean;
+    readonly groundBounds: Box3;
+    legSpeedScale: number;
+    previousServoAngles: number[];
 
     constructor(socket: Socket) {
         super();
@@ -56,17 +59,23 @@ export default class Hexapod extends Object3D {
         this.button = new Button(this.socket);
         this.head = new Head(this.socket);
         this.directionArrow = new DirectionArrow(this.socket, this.hexapodStruct);
-        this.body = new Body(0, 1, 0, this.socket, 100);
-        this.imu = new Imu(this.socket, 1000);
-        this.battery = new Battery(this.socket, 1000);
+        this.body = new Body(0, 1, 0, this.socket, 50);
+        this.imu = new Imu(this.socket, 2000);
+        this.battery = new Battery(this.socket, 5000);
         this.loopTime = new LoopTime(this.socket, 1000);
         this.isMoving = false;
+        this.groundBounds = new Box3();
+        this.legSpeedScale = 0;
+        this.previousServoAngles = [];
         this.listOfCallbackMove = [];
 
         this.body.rotation.y = Math.PI / 2;
         this.add(this.body);
         this.add(this.head);
         this.add(this.directionArrow);
+
+        // Spawn with feet/body resting on the world plane.
+        this.alignToGround();
 
 
         this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS, (message: Message) => {
@@ -96,6 +105,11 @@ export default class Hexapod extends Object3D {
                 this.hexapodStruct.elevation = message.getValueUint8(0);
             }
         });
+        this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_GAIT, (message: Message) => {
+            if (message.params && message.params.length === 1) {
+                this.hexapodStruct.gait = this.gaitFromId(message.getValueUint8(0));
+            }
+        });
         this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS, (message: Message) => {
             if (message.params && message.params.length === 1) {
                 this.isMoving = message.getValueUint8(0) !== 2;
@@ -117,54 +131,104 @@ export default class Hexapod extends Object3D {
         });
     }
 
+    private gaitFromId(gaitId: number): Gait {
+        if (gaitId === 1) return 'WAVE';
+        if (gaitId === 2) return 'RIPPLE';
+        if (gaitId === 3) return 'DOUBLE_WAVE';
+        return 'TRIPOD';
+    }
+
+    private alignToGround() {
+        this.updateMatrixWorld(true);
+        this.groundBounds.setFromObject(this.body);
+        const minY = this.groundBounds.min.y;
+        if (!Number.isFinite(minY)) {
+            return;
+        }
+
+        const correction = -minY;
+        if (Math.abs(correction) > 1e-4) {
+            this.position.y += correction;
+        }
+    }
+
+    private getCurrentServoAngles(): number[] {
+        const angles: number[] = [];
+        const legs = this.body.members.legs.leg;
+        for (let i = 0; i < legs.length; i++) {
+            for (let j = 0; j < legs[i].legData.servos.length; j++) {
+                angles.push(legs[i].legData.servos[j].angle);
+            }
+        }
+        return angles;
+    }
+
+    private updateLegSpeedScale(dt: number): number {
+        const angles = this.getCurrentServoAngles();
+        if (angles.length === 0) {
+            this.legSpeedScale = 0;
+            return 0;
+        }
+
+        if (this.previousServoAngles.length !== angles.length) {
+            this.previousServoAngles = angles;
+            this.legSpeedScale = 0;
+            return 0;
+        }
+
+        const deltas: number[] = [];
+        for (let i = 0; i < angles.length; i++) {
+            deltas.push(Math.abs(angles[i] - this.previousServoAngles[i]));
+        }
+
+        this.previousServoAngles = angles;
+
+        deltas.sort((a, b) => b - a);
+        const activeServoCount = Math.max(6, Math.floor(deltas.length / 2));
+        let activeDeltaSum = 0;
+        for (let i = 0; i < activeServoCount; i++) {
+            activeDeltaSum += deltas[i];
+        }
+
+        const averageActiveDeltaDeg = activeDeltaSum / activeServoCount;
+        const degreesPerSecond = averageActiveDeltaDeg / Math.max(dt, 0.001);
+
+        // Active legs at ~8 deg/s map to 1.0x body speed.
+        const targetScale = Math.min(6, Math.max(0, degreesPerSecond / 8));
+        const smoothing = Math.min(1, dt * 12);
+        this.legSpeedScale += (targetScale - this.legSpeedScale) * smoothing;
+        return this.legSpeedScale;
+    }
+
     update(deltaTime: number = 1 / 60) {
-        deltaTime;
+        const dt = Math.min(Math.max(deltaTime, 0), 0.1);
         this.body.update();
         this.head.update();
 
-        /*if (this.isMoving) {
-            // Calculate actual speed based on amplitude and duration
-            // amplitude is in mm, duration is the time for one step cycle in ms
-            // Convert to meters per second: (amplitude in mm / 1000) / (duration in ms / 1000)
-            const speedMetersPerSecond = (this.hexapodStruct.amplitude / 1000) / (this.hexapodStruct.duration / 1000);
+        if (!this.isMoving) {
+            return;
+        }
 
-            if (this.hexapodStruct.rotation === 0) {
-                // Linear movement: forward/backward based on direction
-                // The hexapod's local forward direction
-                const directionRadians = (this.hexapodStruct.direction * Math.PI) / 180;
-                const hexapodYaw = this.rotation.y;
+        const speedScale = this.updateLegSpeedScale(dt);
 
-                // Calculate world space direction
-                // Combine the hexapod's rotation with the movement direction
-                const worldAngle = hexapodYaw + directionRadians;
+        const durationS = Math.max(this.hexapodStruct.duration, 200) / 1000;
+        const directionRad = (-this.hexapodStruct.direction * Math.PI) / 180;
 
-                // Calculate displacement based on speed and delta time
-                const displacement = speedMetersPerSecond * deltaTime;
+        const effectiveSpeedScale = Math.max(1, speedScale);
 
-                // Update position in world coordinates
-                // Note: In Three.js, -Z is forward for default orientation
-                this.position.x += Math.sin(worldAngle) * displacement;
-                this.position.z += Math.cos(worldAngle) * displacement;
-            } else {
-                // Rotational movement: turn in place
-                // rotation value represents the rotation angle per step
-                // Calculate angular velocity based on rotation value and duration
-                // rotation is in degrees, duration is in ms
-                const rotationDegreesPerSecond = (this.hexapodStruct.rotation / (this.hexapodStruct.duration / 1000));
-                const rotationRadiansPerSecond = (rotationDegreesPerSecond * Math.PI) / 180;
+        const speedBoost = 30;
+        const linearSpeed = ((this.hexapodStruct.amplitude / 1000) / durationS) * effectiveSpeedScale * speedBoost;
+        const worldAngle = this.rotation.y + directionRad;
 
-                // Apply rotation (clockwise = negative rotation)
-                const angularDisplacement = rotationRadiansPerSecond * deltaTime * (this.hexapodStruct.clockwise ? -1 : 1);
-                this.rotation.y += angularDisplacement;
+        this.position.x += Math.sin(worldAngle) * linearSpeed * dt;
+        this.position.z -= Math.cos(worldAngle) * linearSpeed * dt;
 
-                // Normalize rotation to keep it within -PI to PI range
-                while (this.rotation.y > Math.PI) this.rotation.y -= 2 * Math.PI;
-                while (this.rotation.y < -Math.PI) this.rotation.y += 2 * Math.PI;
-            }
+        const angularSpeed = (((this.hexapodStruct.rotation * Math.PI) / 180) / durationS) * effectiveSpeedScale * speedBoost;
+        const turnSign = this.hexapodStruct.clockwise ? -1 : 1;
+        this.rotation.y += angularSpeed * turnSign * dt;
+        this.rotation.y = Math.atan2(Math.sin(this.rotation.y), Math.cos(this.rotation.y));
 
-            // Notify movement callbacks
-            this.notifyCallbackMove();
-        }*/
+        this.notifyCallbackMove();
     }
 
     setDirection(direction: number) {

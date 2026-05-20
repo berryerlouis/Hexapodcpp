@@ -11,7 +11,7 @@ import {ClusterImuCommands} from "../communication/clusters/clusterImu.ts";
 import {ClusterBodyCommands} from "../communication/clusters/clusterBody.ts";
 
 export default class Panel extends Pane {
-    private static readonly REFRESH_INTERVAL_MS = 120;
+    private static readonly REFRESH_INTERVAL_MS = 0;
     hexapod: Hexapod;
     socket: Socket;
     initDone: boolean;
@@ -157,9 +157,7 @@ export default class Panel extends Pane {
                     min: 0, max: 180, step: 1
                 }).on('change', (ev) => {
                     if (this.initDone && ev.last) {
-                        if (ev.last) {
-                            this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.SET_MIN, [servoId, ev.value]));
-                        }
+                        this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.SET_MIN, [servoId, ev.value]));
                     }
                 });
 
@@ -167,9 +165,7 @@ export default class Panel extends Pane {
                     min: 0, max: 180, step: 1
                 }).on('change', (ev) => {
                     if (this.initDone && ev.last) {
-                        if (ev.last) {
-                            this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.SET_MAX, [servoId, ev.value]));
-                        }
+                        this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.SET_MAX, [servoId, ev.value]));
                     }
                 });
 
@@ -177,9 +173,7 @@ export default class Panel extends Pane {
                     min: 0, max: 180, step: 1
                 }).on('change', (ev) => {
                     if (this.initDone && ev.last && this.hexapod.body.members.legs.leg[i].legData.servos[j].status) {
-                        if (ev.last) {
-                            this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_ANGLE, [servoId, ev.value]));
-                        }
+                        //this.socket.write(new Message( ClusterName.SERVO, ClusterServoCommands.SET_ANGLE, [servoId, ev.value]));
                     }
                 });
 
@@ -656,6 +650,14 @@ export default class Panel extends Pane {
         });
         bodyGaitFolder.on('change', (ev) => {
             if (this.initDone && ev.last) {
+                const gaitValue = String(ev.value);
+                this.hexapod.hexapodStruct.gait = gaitValue === 'WAVE'
+                    ? 'WAVE'
+                    : gaitValue === 'RIPPLE'
+                        ? 'RIPPLE'
+                        : gaitValue === 'DOUBLE_WAVE'
+                            ? 'DOUBLE_WAVE'
+                            : 'TRIPOD';
                 this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_GAIT,
                     [ev.value == 'TRIPOD' ? 0 : ev.value == 'WAVE' ? 1 : ev.value == 'RIPPLE' ? 2 : 3]));
             }

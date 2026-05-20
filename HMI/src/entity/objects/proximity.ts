@@ -21,7 +21,7 @@ export default class ProximityObject extends Object3D {
         this.z = 0;
 
         this.proximityLeft = this.createProximityObject( new BoxGeometry(0.2, 1, 1));
-        this.proximityLeft.geometry.translate(-1, 1, 0);
+        this.proximityLeft.geometry.translate(-1, 2, 0);
         this.proximityLeft.position.set(-0.1, 0, -1);
         this.proximityLeft.rotation.set(0, -1, 0);
 
@@ -30,7 +30,7 @@ export default class ProximityObject extends Object3D {
             this.proximityCenterGrid[i] = [];
             for (let j = 0; j < 8; j++) {
                 const mesh = this.createProximityObject( new BoxGeometry(0.2, 0.1, 0.1));
-                mesh.geometry.translate(1, 1, 0);
+                mesh.geometry.translate(1, 2, 0);
                 mesh.position.set((i - 3.5) * 0.5, (j - 3.5) * 0.5, -1);
                 mesh.rotation.set(0, Math.PI / 2, 0);
                 mesh.visible = false;
