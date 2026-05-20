@@ -51,10 +51,10 @@ namespace
         }
     }
 
-    void ApplyLegTarget(const uint64_t                                           currentTime,
-                        const uint64_t                                           transitionStartTime,
-                        Bot::Leg::Leg                                           &leg,
-                        const Move::Gait::GaitParams                            &gaitParams,
+    void ApplyLegTarget(const uint64_t                currentTime,
+                        const uint64_t                transitionStartTime,
+                        Bot::Leg::Leg                &leg,
+                        const Move::Gait::GaitParams &gaitParams,
                         const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
                         const uint8_t                                            stepPositionIndex,
                         const float                                              normalizedTime) {
@@ -77,13 +77,13 @@ namespace
         leg.SetTarget(position);
     }
 
-    void ApplyLegTargetWithDuty(const uint64_t                                           currentTime,
-                                const uint64_t                                           transitionStartTime,
-                                Bot::Leg::Leg                                           &leg,
-                                const Move::Gait::GaitParams                            &gaitParams,
+    void ApplyLegTargetWithDuty(const uint64_t                currentTime,
+                                const uint64_t                transitionStartTime,
+                                Bot::Leg::Leg                &leg,
+                                const Move::Gait::GaitParams &gaitParams,
                                 const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
                                 const float                                              legPhase,
-                                const float                                              swingDuty) {
+                                const float swingDuty) {
         if (positions.size() < 2U) {
             return;
         }
@@ -91,7 +91,7 @@ namespace
         const float cycleLength = static_cast<float>(positions.size());
         const float wrappedPhase = WrapPhase(legPhase, cycleLength);
 
-        float boundedSwingDuty = swingDuty;
+        float       boundedSwingDuty = swingDuty;
         if (boundedSwingDuty < 0.01F) {
             boundedSwingDuty = 0.01F;
         }
@@ -104,22 +104,12 @@ namespace
 
         if (wrappedPhase < swingSpan) {
             const float swingTime = wrappedPhase / swingSpan;
-            ApplyLegTarget(currentTime,
-                           transitionStartTime,
-                           leg,
-                           gaitParams,
-                           positions,
-                           0U,
-                           swingTime);
+            ApplyLegTarget(
+                    currentTime, transitionStartTime, leg, gaitParams, positions, 0U, swingTime);
         } else {
             const float stanceTime = (wrappedPhase - swingSpan) / stanceSpan;
-            ApplyLegTarget(currentTime,
-                           transitionStartTime,
-                           leg,
-                           gaitParams,
-                           positions,
-                           1U,
-                           stanceTime);
+            ApplyLegTarget(
+                    currentTime, transitionStartTime, leg, gaitParams, positions, 1U, stanceTime);
         }
     }
 } // namespace
@@ -142,7 +132,7 @@ namespace Move
             const float globalPhase = static_cast<float>(stepPositionIndex) + normalizedTime;
             for (auto &leg: legs) {
                 const uint8_t legId = static_cast<uint8_t>(leg.second.GetId());
-                const float phaseOffset = ((legId % 2U) == 0U) ? 0.0F : 1.0F;
+                const float   phaseOffset = ((legId % 2U) == 0U) ? 0.0F : 1.0F;
                 ApplyLegTargetWithDuty(currentTime,
                                        transitionStartTime,
                                        leg.second,
@@ -153,14 +143,15 @@ namespace Move
             }
         }
 
-        void GaitWave::doGaitStrategy(const bool                                isCycleComplete,
-                                      const uint64_t                            currentTime,
-                                      const uint64_t                            transitionStartTime,
-                                      std::map<Bot::Legs::ELeg, Bot::Leg::Leg> &legs,
-                                      const Move::Gait::GaitParams             &gaitParams,
-                                      const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
-                                      const uint8_t stepPositionIndex,
-                                      const float   normalizedTime) {
+        void
+        GaitWave::doGaitStrategy(const bool                                isCycleComplete,
+                                 const uint64_t                            currentTime,
+                                 const uint64_t                            transitionStartTime,
+                                 std::map<Bot::Legs::ELeg, Bot::Leg::Leg> &legs,
+                                 const Move::Gait::GaitParams             &gaitParams,
+                                 const std::vector<std::vector<Misc::Maths::Position3d>> &positions,
+                                 const uint8_t stepPositionIndex,
+                                 const float   normalizedTime) {
             (void) isCycleComplete;
 
             const float globalPhase = static_cast<float>(stepPositionIndex) + normalizedTime;
@@ -169,7 +160,7 @@ namespace Move
 
             for (auto &leg: legs) {
                 const uint8_t phaseRank = GetWavePhaseRank(leg.second.GetId());
-                const float phaseOffset = offsetPerLeg * static_cast<float>(phaseRank);
+                const float   phaseOffset = offsetPerLeg * static_cast<float>(phaseRank);
                 ApplyLegTargetWithDuty(currentTime,
                                        transitionStartTime,
                                        leg.second,
@@ -197,7 +188,7 @@ namespace Move
 
             for (auto &leg: legs) {
                 const uint8_t phaseRank = GetRipplePhaseRank(leg.second.GetId());
-                const float phaseOffset = offsetPerLeg * static_cast<float>(phaseRank);
+                const float   phaseOffset = offsetPerLeg * static_cast<float>(phaseRank);
                 ApplyLegTargetWithDuty(currentTime,
                                        transitionStartTime,
                                        leg.second,

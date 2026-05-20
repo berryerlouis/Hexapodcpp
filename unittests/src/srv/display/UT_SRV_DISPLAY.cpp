@@ -169,8 +169,9 @@ namespace Service
         }
 
         TEST_F(UT_SRV_DISPLAY, OnEvent_ProximityUSLeft) {
-            const Component::Proximity::SensorsStruct proxStruct({.id = SRF_LEFT, .distance = 10U, .distanceArray = {}});
-            const Event::Event                        event =
+            const Component::Proximity::SensorsStruct proxStruct(
+                    {.id = SRF_LEFT, .distance = 10U, .distanceArray = {}});
+            const Event::Event event =
                     Event::Event(PROXIMITY, EventType::EVENT_SENSOR_UPDATE, proxStruct);
 
             EXPECT_CALL(mMockSsd1306, DrawBitmap(_, 0U, 22U, Bitmap::Bitmaps::Color::COLOR_WHITE))
@@ -190,8 +191,9 @@ namespace Service
         }
 
         TEST_F(UT_SRV_DISPLAY, OnEvent_ProximityLaser) {
-            const Component::Proximity::SensorsStruct proxStruct({.id = VLX, .distance = 10U, .distanceArray = {}});
-            const Event::Event                        event =
+            const Component::Proximity::SensorsStruct proxStruct(
+                    {.id = VLX, .distance = 10U, .distanceArray = {}});
+            const Event::Event event =
                     Event::Event(PROXIMITY, EventType::EVENT_SENSOR_UPDATE, proxStruct);
 
             EXPECT_CALL(mMockSsd1306, DrawBitmap(_, 56U, 22U, Bitmap::Bitmaps::Color::COLOR_WHITE))
@@ -200,8 +202,9 @@ namespace Service
         }
 
         TEST_F(UT_SRV_DISPLAY, OnEvent_ProximityUSLeftFar) {
-            const Component::Proximity::SensorsStruct proxStruct({.id = SRF_LEFT, .distance = 40U, .distanceArray = {}});
-            const Event::Event                        event =
+            const Component::Proximity::SensorsStruct proxStruct(
+                    {.id = SRF_LEFT, .distance = 40U, .distanceArray = {}});
+            const Event::Event event =
                     Event::Event(PROXIMITY, EventType::EVENT_SENSOR_UPDATE, proxStruct);
 
             EXPECT_CALL(mMockSsd1306, EraseArea(0U, 22U, 16U, 8U)).Times(1U);
@@ -219,8 +222,9 @@ namespace Service
         }
 
         TEST_F(UT_SRV_DISPLAY, OnEvent_ProximityLaserFar) {
-            const Component::Proximity::SensorsStruct proxStruct({.id = VLX, .distance = 400U, .distanceArray = {}});
-            const Event::Event                        event =
+            const Component::Proximity::SensorsStruct proxStruct(
+                    {.id = VLX, .distance = 400U, .distanceArray = {}});
+            const Event::Event event =
                     Event::Event(PROXIMITY, EventType::EVENT_SENSOR_UPDATE, proxStruct);
 
             EXPECT_CALL(mMockSsd1306, EraseArea(56U, 22U, 16U, 8U)).Times(1U);

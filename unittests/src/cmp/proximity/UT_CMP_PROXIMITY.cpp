@@ -104,7 +104,7 @@ namespace Component
         }
 
         TEST_F(UT_CMP_PROXIMITY, Notified_Ok) {
-            const SensorsStruct sensor({.id = SRF_LEFT, .distance = 10U});
+            const SensorsStruct sensor({.id = SRF_LEFT, .distance = 10U, .distanceArray = {}});
             mSensorProximity.Notified(sensor);
         }
     } // namespace Proximity

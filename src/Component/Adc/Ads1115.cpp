@@ -47,7 +47,6 @@ namespace Component
 
         bool Ads1115::IsReady() const {
             uint8_t                  buffer[2U];
-            uint16_t                 value = 0U;
 
             static constexpr uint8_t kPollCount = 12U;
             const uint32_t           conversionDelayUs = GetConversionDelayUs(this->mSps);
@@ -58,6 +57,7 @@ namespace Component
             }
 
             for (uint8_t timeout = 0U; timeout < kPollCount; timeout++) {
+                uint16_t value = 0U;
                 this->mTwi.ReadRegisters(this->mAddress, ADS1115_REG_POINTER_CONFIG, buffer, 2U);
                 value = (static_cast<uint16_t>(buffer[0U]) << 8U) +
                         static_cast<uint16_t>(buffer[1U]);

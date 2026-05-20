@@ -71,8 +71,9 @@ namespace Service
         }
 
         TEST_F(UT_SRV_PROXIMITY, OnEvent) {
-            const SensorsStruct sensor({.id = SensorsId::SRF_LEFT, .distance = 10U});
-            const Event::Event  event =
+            const SensorsStruct sensor(
+                    {.id = SensorsId::SRF_LEFT, .distance = 10U, .distanceArray = nullptr});
+            const Event::Event event =
                     Event::Event(BATTERY, EventType::EVENT_SENSOR_UPDATE, sensor);
             mServiceProximity.OnEvent(event);
         }

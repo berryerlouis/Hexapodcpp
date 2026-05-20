@@ -78,7 +78,9 @@ namespace Service
         }
         TEST_F(UT_SRV_SOUND, OnEvent) {
             const Component::Proximity::SensorsStruct sensor(
-                    {.id = Component::Proximity::SensorsId::SRF_LEFT, .distance = 10U});
+                    {.id = Component::Proximity::SensorsId::SRF_LEFT,
+                     .distance = 10U,
+                     .distanceArray = {}});
             const Event::Event event =
                     Event::Event(BATTERY, EventType::EVENT_SENSOR_UPDATE, sensor);
             mServiceSound.OnEvent(event);

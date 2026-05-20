@@ -44,10 +44,10 @@ namespace Component
             virtual ~UT_CMP_COMMUNICATION() = default;
 
             /* Mocks */
-            StrictMock<Bot::Body::MockBody>             mMockBody;
-            StrictMock<Driver::Socket::MockSocket>      mMockSocket;
-            StrictMock<Component::Led::MockLed>         mMockLed;
-            Cluster::Body::ClusterBody                  mClusterBody;
+            StrictMock<Bot::Body::MockBody>        mMockBody;
+            StrictMock<Driver::Socket::MockSocket> mMockSocket;
+            StrictMock<Component::Led::MockLed>    mMockLed;
+            Cluster::Body::ClusterBody             mClusterBody;
 
             /* Test class */
             Communication mCommunication;

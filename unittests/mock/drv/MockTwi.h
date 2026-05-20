@@ -35,11 +35,11 @@ namespace Driver
                               uint8_t      *data,
                               const uint8_t length));
 
-              MOCK_METHOD4(Read16Registers,
-                        bool(const uint8_t  address,
-                            const uint16_t reg,
-                            uint8_t       *data,
-                            const uint16_t length));
+            MOCK_METHOD4(Read16Registers,
+                         bool(const uint8_t  address,
+                              const uint16_t reg,
+                              uint8_t       *data,
+                              const uint16_t length));
 
             MOCK_METHOD2(Write, bool(const uint8_t address, const uint8_t reg));
 
@@ -61,11 +61,11 @@ namespace Driver
                               uint8_t      *data,
                               const uint8_t length));
 
-              MOCK_METHOD4(Write16Registers,
-                        bool(const uint8_t  address,
-                            const uint16_t reg,
-                            uint8_t       *data,
-                            const uint16_t length));
+            MOCK_METHOD4(Write16Registers,
+                         bool(const uint8_t  address,
+                              const uint16_t reg,
+                              uint8_t       *data,
+                              const uint16_t length));
         };
     } // namespace Twi
 } // namespace Driver

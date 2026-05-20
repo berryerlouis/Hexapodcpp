@@ -10,7 +10,6 @@ namespace Component
         class SensorProximity : public SensorProximityMultipleInterface,
                                 Core::ObserverInterface<SensorsStruct> {
         public:
-
             SensorProximity(SensorProximityInterface &srf05Left,
                             SensorProximityInterface &srf05Right,
                             SensorProximityInterface &vl53lxx);

@@ -28,7 +28,7 @@ namespace Service
 
             constexpr uint8_t MAX_MESSAGES_PER_UPDATE = 8U;
             uint8_t           processedMessages = 0U;
-            Frame message;
+            Frame             message;
             while (processedMessages < MAX_MESSAGES_PER_UPDATE &&
                    this->mCommunication.GetMessage(message) == Core::Status::CORE_OK) {
                 this->DispatchToClusters(message);

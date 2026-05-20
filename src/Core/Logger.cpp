@@ -95,12 +95,12 @@ namespace Core
                 std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) %
                 1000;
 
-        std::tm localTm {};
-    #ifdef _WIN32
+        std::tm localTm{};
+#ifdef _WIN32
         localtime_s(&localTm, &now_time_t);
-    #else
+#else
         localtime_r(&now_time_t, &localTm);
-    #endif
+#endif
 
         std::ostringstream oss;
         oss << std::put_time(&localTm, "%Y-%m-%d %H:%M:%S");

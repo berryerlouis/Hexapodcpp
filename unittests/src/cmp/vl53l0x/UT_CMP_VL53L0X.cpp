@@ -1,9 +1,9 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "../../../mock/drv/MockTwi.h"
-#include "../../../mock/cmp/MockLed.h"
 #include "../../../../src/Component/Proximity/Laser/Vl53l5x.h"
+#include "../../../mock/cmp/MockLed.h"
+#include "../../../mock/drv/MockTwi.h"
 
 using ::testing::_;
 using ::testing::StrictMock;
@@ -35,12 +35,12 @@ namespace Component
                 StrictMock<Driver::Twi::MockTwi>    mMockTwi;
 
                 /* Test class */
-                                Vl53l5x mVl53l5x;
+                Vl53l5x mVl53l5x;
             };
 
             TEST_F(UT_CMP_VL53L0X, SetThreshold) {
-                                EXPECT_EQ(Core::Status::CORE_OK, mVl53l5x.SetThreshold(350U));
-                                EXPECT_EQ(350U, mVl53l5x.GetThreshold());
+                EXPECT_EQ(Core::Status::CORE_OK, mVl53l5x.SetThreshold(350U));
+                EXPECT_EQ(350U, mVl53l5x.GetThreshold());
             }
         } // namespace Laser
     } // namespace Proximity

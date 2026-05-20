@@ -226,47 +226,47 @@ namespace Component
                     };
                 };
 
-                bool    IsAlive(void) const;
+                bool        IsAlive(void) const;
 
-                bool    Start(void);
+                bool        Start(void);
 
-                bool    InitSensor(void);
+                bool        InitSensor(void);
 
-                void    SwapBuffer(uint8_t *buffer, uint16_t size);
+                static void SwapBuffer(uint8_t *buffer, uint16_t size);
 
-                uint8_t OffsetData(uint8_t resolution);
+                uint8_t     OffsetData(uint8_t resolution);
 
-                uint8_t SendXtalkData(uint8_t resolution);
+                uint8_t     SendXtalkData(uint8_t resolution);
 
-                uint8_t DciWriteData(uint8_t *data, uint32_t index, uint16_t data_size);
+                uint8_t     DciWriteData(const uint8_t *data, uint32_t index, uint16_t data_size);
 
-                uint8_t DciReadData(uint8_t *data, uint32_t index, uint16_t data_size);
+                uint8_t     DciReadData(uint8_t *data, uint32_t index, uint16_t data_size);
 
-                uint8_t DciReplaceData(uint8_t *data,
-                                       uint32_t index,
-                                       uint16_t data_size,
-                                       uint8_t *new_data,
-                                       uint16_t new_data_size,
-                                       uint16_t new_data_pos);
+                uint8_t     DciReplaceData(uint8_t       *data,
+                                           uint32_t       index,
+                                           uint16_t       data_size,
+                                           const uint8_t *new_data,
+                                           uint16_t       new_data_size,
+                                           uint16_t       new_data_pos);
 
-                void    ParseFrame(void);
+                void        ParseFrame(void);
 
-                void    ConvertResults(void);
+                void        ConvertResults(void);
 
-                void    UpdateDistanceMatrix(void);
+                void        UpdateDistanceMatrix(void);
 
-                bool    Poll(const uint8_t  size,
-                             const uint8_t  pos,
-                             const uint16_t reg,
-                             const uint8_t  mask,
-                             const uint8_t  expected_value) const;
+                bool        Poll(const uint8_t  size,
+                                 const uint8_t  pos,
+                                 const uint16_t reg,
+                                 const uint8_t  mask,
+                                 const uint8_t  expected_value) const;
 
-                uint8_t MotionIndicatorInit(uint8_t resolution);
-                uint8_t MotionSetResolution(uint8_t resolution);
-                uint8_t MotionGetResolution(uint8_t *p_resolution);
-                uint8_t MotionSetDistance(uint16_t distance_min_mm, uint16_t distance_max_mm);
-                uint8_t MotionSetRangingFrequency(uint8_t frequency_hz);
-                uint8_t StartRanging(void);
+                uint8_t     MotionIndicatorInit(uint8_t resolution);
+                uint8_t     MotionSetResolution(uint8_t resolution);
+                uint8_t     MotionGetResolution(uint8_t *p_resolution);
+                uint8_t     MotionSetDistance(uint16_t distance_min_mm, uint16_t distance_max_mm);
+                uint8_t     MotionSetRangingFrequency(uint8_t frequency_hz);
+                uint8_t     StartRanging(void);
             };
         } // namespace Laser
     } // namespace Proximity

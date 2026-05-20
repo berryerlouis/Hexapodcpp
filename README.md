@@ -262,6 +262,7 @@ cmake --build ./build/hexapodTest --target HexapodcppTest -- -$(nproc)
 ## Architecture
 
 ![Architecture Diagram](images/architecture.svg)
+![CMake Architecture Diagram](cmake-graph.png)
 
 The system follows a layered architecture:
 
@@ -278,6 +279,12 @@ The system follows a layered architecture:
 
 ```bash
 docker run --rm -v $PWD:/ws -w /ws plantuml/plantuml -tsvg images/architecture.puml
+```
+
+### Regenerate Architecture Diagram from cmake
+
+```bash
+bin/dev/graphviz.sh
 ```
 
 ---

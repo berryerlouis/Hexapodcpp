@@ -59,7 +59,8 @@ namespace Service
 
         TEST_F(UT_SRV_COMMUNICATION, Initialize_Update) {
             EXPECT_CALL(mMockCommunication, Update(12450UL)).Times(1U);
-            EXPECT_CALL(mMockCommunication, GetMessage(_)).WillOnce(Return(Core::Status::CORE_ERROR));
+            EXPECT_CALL(mMockCommunication, GetMessage(_))
+                    .WillOnce(Return(Core::Status::CORE_ERROR));
             mServiceCommunication.Update(12450UL);
         }
 

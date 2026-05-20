@@ -53,7 +53,7 @@ namespace Service
 
         private:
             std::array<std::pair<EServices, Service *>, 10U> mServices;
-            Message::MessageInterface     &mMessageListener;
+            Message::MessageInterface                       &mMessageListener;
         };
     } // namespace Services
 } // namespace Service

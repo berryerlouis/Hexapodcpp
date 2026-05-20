@@ -281,18 +281,18 @@ namespace Component
 
 
             uint8_t Vl53l5x::OffsetData(uint8_t resolution) {
-                uint8_t  status = 0U;
-                uint32_t signal_grid[64];
-                int16_t  range_grid[64];
-                uint8_t  dss_4x4[] = {0x0F, 0x04, 0x04, 0x00, 0x08, 0x10, 0x10, 0x07};
-                uint8_t  footer[] = {0x00, 0x00, 0x00, 0x0F, 0x03, 0x01, 0x01, 0xE4};
-                int8_t   i, j;
-                uint16_t k;
+                uint8_t           status = 0U;
+                uint32_t          signal_grid[64];
+                int16_t           range_grid[64];
+                uint8_t           dss_4x4[] = {0x0F, 0x04, 0x04, 0x00, 0x08, 0x10, 0x10, 0x07};
+                constexpr uint8_t footer[] = {0x00, 0x00, 0x00, 0x0F, 0x03, 0x01, 0x01, 0xE4};
+                uint16_t          k;
 
                 (void) memcpy(this->temp_buffer, this->offset_buffer, VL53L5CX_OFFSET_BUFFER_SIZE);
 
                 /* Data extrapolation is required for 4X4 offset */
                 if (resolution == (uint8_t) VL53L5CX_RESOLUTION_4X4) {
+                    int8_t i, j;
                     (void) memcpy(&(this->temp_buffer[0x10]), dss_4x4, sizeof(dss_4x4));
                     SwapBuffer(this->temp_buffer, VL53L5CX_OFFSET_BUFFER_SIZE);
                     (void) memcpy(signal_grid, &(this->temp_buffer[0x3C]), sizeof(signal_grid));
@@ -336,14 +336,14 @@ namespace Component
                 uint8_t  res4x4[] = {0x0F, 0x04, 0x04, 0x17, 0x08, 0x10, 0x10, 0x07};
                 uint8_t  dss_4x4[] = {0x00, 0x78, 0x00, 0x08, 0x00, 0x00, 0x00, 0x08};
                 uint8_t  profile_4x4[] = {0xA0, 0xFC, 0x01, 0x00};
-                uint32_t signal_grid[64];
-                int8_t   i, j;
+                uint32_t signal_grid[64U];
 
                 (void) memcpy(
                         this->temp_buffer, &(this->xtalk_buffer[0]), VL53L5CX_XTALK_BUFFER_SIZE);
 
                 /* Data extrapolation is required for 4X4 Xtalk */
                 if (resolution == (uint8_t) VL53L5CX_RESOLUTION_4X4) {
+                    int8_t i, j;
                     (void) memcpy(&(this->temp_buffer[0x8]), res4x4, sizeof(res4x4));
                     (void) memcpy(&(this->temp_buffer[0x020]), dss_4x4, sizeof(dss_4x4));
 
@@ -449,13 +449,19 @@ namespace Component
                 status |= this->mI2c.Write16Register(this->mAddress, PAGE_SELECT, 0x09);
 
                 status |= this->mI2c.Write16Registers(
-                        this->mAddress, 0, (uint8_t *) &VL53L5CX_FIRMWARE[0], 0x8000);
+                        this->mAddress, 0, const_cast<uint8_t *>(&VL53L5CX_FIRMWARE[0]), 0x8000);
                 status |= this->mI2c.Write16Register(this->mAddress, PAGE_SELECT, 0x0a);
                 status |= this->mI2c.Write16Registers(
-                        this->mAddress, 0, (uint8_t *) &VL53L5CX_FIRMWARE[0x8000], 0x8000);
+                        this->mAddress,
+                        0,
+                        const_cast<uint8_t *>(&VL53L5CX_FIRMWARE[0x8000]),
+                        0x8000);
                 status |= this->mI2c.Write16Register(this->mAddress, PAGE_SELECT, 0x0b);
                 status |= this->mI2c.Write16Registers(
-                        this->mAddress, 0, (uint8_t *) &VL53L5CX_FIRMWARE[0x10000], 0x5000);
+                        this->mAddress,
+                        0,
+                        const_cast<uint8_t *>(&VL53L5CX_FIRMWARE[0x10000]),
+                        0x5000);
                 status |= this->mI2c.Write16Register(this->mAddress, PAGE_SELECT, 0x01);
 
                 /* Check if FW correctly downloaded */
@@ -479,10 +485,11 @@ namespace Component
                 status |= this->mI2c.Write16Register(this->mAddress, PAGE_SELECT, 0x02);
 
                 /* Get offset NVM data and store them into the offset buffer */
-                status |= this->mI2c.Write16Registers(this->mAddress,
-                                                      0x2fd8,
-                                                      (uint8_t *) VL53L5CX_GET_NVM_CMD,
-                                                      sizeof(VL53L5CX_GET_NVM_CMD));
+                status |= this->mI2c.Write16Registers(
+                        this->mAddress,
+                        0x2fd8,
+                        const_cast<uint8_t *>(&VL53L5CX_GET_NVM_CMD[0U]),
+                        sizeof(VL53L5CX_GET_NVM_CMD));
                 status |= this->Poll(4, 0, VL53L5CX_UI_CMD_STATUS, 0xff, 2);
                 status |= this->mI2c.Read16Registers(
                         this->mAddress, VL53L5CX_UI_CMD_START, nvm_buffer, VL53L5CX_NVM_DATA_SIZE);
@@ -491,14 +498,14 @@ namespace Component
 
                 /* Set default Xtalk shape. Send Xtalk to sensor */
                 (void) memcpy(this->xtalk_buffer,
-                              (uint8_t *) VL53L5CX_DEFAULT_XTALK,
+                              const_cast<uint8_t *>(VL53L5CX_DEFAULT_XTALK),
                               VL53L5CX_XTALK_BUFFER_SIZE);
                 status |= this->SendXtalkData(VL53L5CX_RESOLUTION_4X4);
 
                 /* Send default configuration to VL53L5CX firmware */
                 uint8_t default_configuration[sizeof(VL53L5CX_DEFAULT_CONFIGURATION)] = {0U};
                 (void) memcpy(default_configuration,
-                              (uint8_t *) VL53L5CX_DEFAULT_CONFIGURATION,
+                              const_cast<uint8_t *>(VL53L5CX_DEFAULT_CONFIGURATION),
                               sizeof(VL53L5CX_DEFAULT_CONFIGURATION));
 
                 status |= this->mI2c.Write16Registers(this->mAddress,
@@ -507,20 +514,21 @@ namespace Component
                                                       sizeof(VL53L5CX_DEFAULT_CONFIGURATION));
                 status |= this->Poll(4, 1, VL53L5CX_UI_CMD_STATUS, 0xff, 0x03);
 
-                status |= this->DciWriteData((uint8_t *) &pipe_ctrl,
-                                             VL53L5CX_DCI_PIPE_CONTROL,
-                                             (uint16_t) sizeof(pipe_ctrl));
+                status |= this->DciWriteData(
+                        &pipe_ctrl[0U], VL53L5CX_DCI_PIPE_CONTROL, (uint16_t) sizeof(pipe_ctrl));
 #if VL53L5CX_NB_TARGET_PER_ZONE != 1
                 tmp = VL53L5CX_NB_TARGET_PER_ZONE;
                 status |= this->DciReplaceData(this->temp_buffer,
                                                VL53L5CX_DCI_FW_NB_TARGET,
                                                16,
-                                               (uint8_t *) &tmp,
+                                               const_cast<uint8_t *>(&tmp),
                                                1,
                                                0x0C);
 #endif
 
-                status |= this->DciWriteData((uint8_t *) &single_range,
+                uint8_t single_range_bytes[sizeof(uint32_t)];
+                (void) memcpy(single_range_bytes, &single_range, sizeof(single_range));
+                status |= this->DciWriteData(single_range_bytes,
                                              VL53L5CX_DCI_SINGLE_RANGE,
                                              (uint16_t) sizeof(single_range));
                 return status;
@@ -580,21 +588,25 @@ namespace Component
                     single_range = 0x01U;
                 }
                 status |= this->DciWriteData(this->temp_buffer, VL53L5CX_DCI_RANGING_MODE, 8);
-                status |= this->DciWriteData((uint8_t *) &single_range,
-                                             VL53L5CX_DCI_SINGLE_RANGE,
-                                             (uint16_t) sizeof(single_range));
+                {
+                    uint8_t single_range_bytes[sizeof(uint32_t)];
+                    (void) memcpy(single_range_bytes, &single_range, sizeof(single_range));
+                    status |= this->DciWriteData(single_range_bytes,
+                                                 VL53L5CX_DCI_SINGLE_RANGE,
+                                                 (uint16_t) sizeof(single_range));
+                }
 
                 status |= this->DciReplaceData(this->temp_buffer,
                                                VL53L5CX_DCI_FREQ_HZ,
                                                4,
-                                               (uint8_t *) &frequency_hz,
+                                               reinterpret_cast<const uint8_t *>(&frequency_hz),
                                                1,
                                                0x01);
 
                 status |= this->DciReplaceData(this->temp_buffer,
                                                VL53L5CX_DCI_TARGET_ORDER,
                                                4,
-                                               (uint8_t *) &target_order,
+                                               reinterpret_cast<const uint8_t *>(&target_order),
                                                1,
                                                0x00);
 
@@ -612,9 +624,8 @@ namespace Component
             }
 
 
-            uint8_t Vl53l5x::DciWriteData(uint8_t *data, uint32_t index, uint16_t data_size) {
+            uint8_t Vl53l5x::DciWriteData(const uint8_t *data, uint32_t index, uint16_t data_size) {
                 uint8_t  status = 0U;
-                int16_t  i;
 
                 uint8_t  headers[] = {0x00, 0x00, 0x00, 0x00};
                 uint8_t  footer[] = {0x00,
@@ -639,9 +650,11 @@ namespace Component
                     headers[3] = (uint8_t) ((data_size & (uint16_t) 0xf) << 4);
 
                     /* Copy data from structure to FW format (+4 bytes to add header) */
-                    SwapBuffer(data, data_size);
-                    for (i = (int16_t) data_size - (int16_t) 1; i >= 0; i--) {
-                        this->temp_buffer[i + 4] = data[i];
+                    uint8_t local_data[1024];
+                    (void) memcpy(local_data, data, data_size);
+                    SwapBuffer(local_data, data_size);
+                    for (uint16_t i = 0; i < data_size; i++) {
+                        this->temp_buffer[i + 4] = local_data[i];
                     }
 
                     /* Add headers and footer */
@@ -656,24 +669,22 @@ namespace Component
                             this->temp_buffer,
                             (uint32_t) ((uint32_t) data_size + (uint32_t) 12));
                     status |= this->Poll(4, 1, VL53L5CX_UI_CMD_STATUS, 0xff, 0x03);
-
-                    SwapBuffer(data, data_size);
                 }
 
                 return status;
             }
 
             uint8_t Vl53l5x::DciReadData(uint8_t *data, uint32_t index, uint16_t data_size) {
-                int16_t  i;
                 uint8_t  status = 0U;
                 uint32_t rd_size = (uint32_t) data_size + (uint32_t) 12;
-                uint8_t  cmd[] = {
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0f, 0x00, 0x02, 0x00, 0x08};
 
                 /* Check if tmp buffer is large enough */
                 if ((data_size + (uint16_t) 12) > (uint16_t) 1024) {
                     status |= 1U;
                 } else {
+                    uint8_t cmd[] = {
+                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0f, 0x00, 0x02, 0x00, 0x08};
+
                     cmd[0] = (uint8_t) (index >> 8);
                     cmd[1] = (uint8_t) (index & (uint32_t) 0xff);
                     cmd[2] = (uint8_t) ((data_size & (uint16_t) 0xff0) >> 4);
@@ -692,7 +703,7 @@ namespace Component
                     SwapBuffer(this->temp_buffer, data_size + (uint16_t) 12);
 
                     /* Copy data from FW into input structure (-4 bytes to remove header) */
-                    for (i = 0; i < (int16_t) data_size; i++) {
+                    for (int16_t i = 0; i < (int16_t) data_size; i++) {
                         data[i] = this->temp_buffer[i + 4];
                     }
                 }
@@ -700,12 +711,12 @@ namespace Component
                 return status;
             }
 
-            uint8_t Vl53l5x::DciReplaceData(uint8_t *data,
-                                            uint32_t index,
-                                            uint16_t data_size,
-                                            uint8_t *new_data,
-                                            uint16_t new_data_size,
-                                            uint16_t new_data_pos) {
+            uint8_t Vl53l5x::DciReplaceData(uint8_t       *data,
+                                            uint32_t       index,
+                                            uint16_t       data_size,
+                                            const uint8_t *new_data,
+                                            uint16_t       new_data_size,
+                                            uint16_t       new_data_pos) {
                 uint8_t status = 0U;
 
                 status |= this->DciReadData(data, index, data_size);
@@ -776,17 +787,18 @@ namespace Component
                 data_read_size += (uint32_t) 20;
                 this->mDataReadSize = data_read_size;
 
-                status |= this->DciWriteData(
-                        (uint8_t *) &(output), VL53L5CX_DCI_OUTPUT_LIST, (uint16_t) sizeof(output));
+                status |= this->DciWriteData(reinterpret_cast<const uint8_t *>(&(output[0U])),
+                                             VL53L5CX_DCI_OUTPUT_LIST,
+                                             (uint16_t) sizeof(output));
 
                 header_config[0] = data_read_size;
                 header_config[1] = i + (uint32_t) 1;
 
-                status |= this->DciWriteData((uint8_t *) &(header_config),
+                status |= this->DciWriteData(reinterpret_cast<const uint8_t *>(&(header_config)),
                                              VL53L5CX_DCI_OUTPUT_CONFIG,
                                              (uint16_t) sizeof(header_config));
 
-                status |= this->DciWriteData((uint8_t *) &(output_bh_enable),
+                status |= this->DciWriteData(reinterpret_cast<const uint8_t *>(&(output_bh_enable)),
                                              VL53L5CX_DCI_OUTPUT_ENABLES,
                                              (uint16_t) sizeof(output_bh_enable));
 
@@ -798,7 +810,7 @@ namespace Component
                 /* Start ranging session */
                 status |= this->mI2c.Write16Registers(this->mAddress,
                                                       VL53L5CX_UI_CMD_END - (uint16_t) (4 - 1),
-                                                      (uint8_t *) cmd,
+                                                      reinterpret_cast<uint8_t *>(cmd),
                                                       sizeof(cmd));
                 status |= this->Poll(4, 1, VL53L5CX_UI_CMD_STATUS, 0xff, 0x03);
 
@@ -865,21 +877,22 @@ namespace Component
                 }
 
                 if (status == (uint8_t) 0) {
-                    status |= this->DciWriteData((uint8_t *) (&motion_config),
-                                                 VL53L5CX_DCI_MOTION_DETECTOR_CFG,
-                                                 (uint16_t) sizeof(motion_config));
+                    status |=
+                            this->DciWriteData(reinterpret_cast<const uint8_t *>(&(motion_config)),
+                                               VL53L5CX_DCI_MOTION_DETECTOR_CFG,
+                                               (uint16_t) sizeof(motion_config));
                 }
 
                 return status;
             }
             uint8_t Vl53l5x::MotionSetDistance(uint16_t distance_min_mm, uint16_t distance_max_mm) {
                 uint8_t status = 0U;
-                float   tmp;
 
                 if (((distance_max_mm - distance_min_mm) > (uint16_t) 1500) ||
                     (distance_min_mm < (uint16_t) 400) || (distance_max_mm > (uint16_t) 4000)) {
                     status |= 1U;
                 } else {
+                    float tmp;
                     tmp = (float) ((((float) distance_min_mm / (float) 37.5348) - (float) 4.0) *
                                    (float) 2048.5);
                     motion_config.ref_bin_offset = (int32_t) tmp;
@@ -891,9 +904,10 @@ namespace Component
                                    (float) 0.5);
                     motion_config.feature_length = (uint8_t) tmp;
 
-                    status |= this->DciWriteData((uint8_t *) (&motion_config),
-                                                 VL53L5CX_DCI_MOTION_DETECTOR_CFG,
-                                                 (uint16_t) sizeof(motion_config));
+                    status |=
+                            this->DciWriteData(reinterpret_cast<const uint8_t *>(&(motion_config)),
+                                               VL53L5CX_DCI_MOTION_DETECTOR_CFG,
+                                               (uint16_t) sizeof(motion_config));
                 }
 
                 return status;
@@ -905,7 +919,7 @@ namespace Component
                 status |= this->DciReplaceData(this->temp_buffer,
                                                VL53L5CX_DCI_FREQ_HZ,
                                                4,
-                                               (uint8_t *) &frequency_hz,
+                                               const_cast<const uint8_t *>(&(frequency_hz)),
                                                1,
                                                0x01);
 

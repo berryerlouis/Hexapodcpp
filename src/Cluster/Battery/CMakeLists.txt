@@ -7,3 +7,8 @@ target_include_directories(ClusterBattery
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
+
+target_link_libraries(ClusterBattery
+    PUBLIC
+        ClusterBase
+)
