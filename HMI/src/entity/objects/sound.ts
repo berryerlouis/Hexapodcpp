@@ -21,7 +21,7 @@ export default class SoundObject extends Object3D {
     constructor() {
         super();
         this.x = 0;
-        this.y = 1;
+        this.y = 2;
         this.z = -2.5;
 
         this.soundLeft = this.createSound();

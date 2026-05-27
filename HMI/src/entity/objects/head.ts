@@ -4,7 +4,15 @@ import {ClusterName} from "../../communication/clusters/clusterType.ts";
 import {ClusterProximityCommands} from "../../communication/clusters/clusterProximity.ts";
 import {ClusterSoundCommands} from "../../communication/clusters/clusterSound.ts";
 import SoundObject, {SoundSide} from "./sound.ts";
-import {Object3D} from "three";
+import {
+    BoxGeometry,
+    CylinderGeometry,
+    Group,
+    Mesh,
+    MeshStandardMaterial,
+    Object3D,
+    SphereGeometry
+} from "three";
 import ProximityObject, {ProximitySide} from "./proximity.ts";
 
 interface Proximity {
@@ -43,13 +51,82 @@ export default class Head extends Object3D {
         super();
         this.socket = socket;
         this.sound = new SoundObject();
-        this.proximity = new ProximityObject();
+        this.proximity = new ProximityObject(this.socket);
+
+        this.position.set(0, 1, -1.5);
+        this.buildHeadModel();
+
+        this.proximity.position.set(0, 0.22, -0.48);
+        this.sound.position.set(0, 0.38, 0.02);
 
         this.add(this.sound);
         this.add(this.proximity);
 
         this.addProximityCallbacks();
         this.addSoundCallbacks();
+    }
+
+    private buildHeadModel() {
+        const shellMat = new MeshStandardMaterial({ color: '#c4c7cb', metalness: 0.55, roughness: 0.36 });
+        const darkMat = new MeshStandardMaterial({ color: '#4a4d54', metalness: 0.45, roughness: 0.5 });
+        const sensorMat = new MeshStandardMaterial({ color: '#9fd6ff', metalness: 0.2, roughness: 0.15, emissive: '#0a1526' });
+        const laserMat = new MeshStandardMaterial({ color: '#ff9f9f', metalness: 0.2, roughness: 0.15, emissive: '#0a1526' });
+        const micMat = new MeshStandardMaterial({ color: '#181a1f', metalness: 0.35, roughness: 0.45 });
+
+        const neck = new Mesh(new CylinderGeometry(0.22, 0.18, 0.18, 18), darkMat);
+        neck.position.set(0, -0.05, 0.05);
+        this.add(neck);
+
+        const headShell = new Mesh(new CylinderGeometry(0.56, 0.64, 0.34, 3), shellMat);
+        headShell.position.set(0, 0.12, -0.02);
+        this.add(headShell);
+
+        const topPlate = new Mesh(new CylinderGeometry(0.42, 0.5, 0.08, 3), darkMat);
+        topPlate.position.set(0, 0.33, -0.02);
+        this.add(topPlate);
+
+        const laserHousing = new Mesh(new BoxGeometry(0.38, 0.2, 0.22), darkMat);
+        laserHousing.position.set(0, 0.12, -0.30);
+        this.add(laserHousing);
+
+        const laserLens = new Mesh(new CylinderGeometry(0.01, 0.06, 0.08, 16), laserMat);
+        laserLens.rotation.x = -Math.PI / 2;
+        laserLens.position.set(0, 0.12, -0.44);
+        this.add(laserLens);
+
+        this.add(this.createUltrasoundModule(1, micMat, darkMat, sensorMat));
+        this.add(this.createUltrasoundModule(-1, micMat, darkMat, sensorMat));
+    }
+
+    private createUltrasoundModule(side: -1 | 1, micMat: MeshStandardMaterial, darkMat: MeshStandardMaterial, sensorMat: MeshStandardMaterial): Group {
+        const module = new Group();
+        const angle = side * Math.PI / 3;
+        module.rotation.y = angle;
+        module.position.set(-1*side * 0.40, 0.20, -0.25);
+
+        const bracket = new Mesh(new BoxGeometry(0.3, 0.14, 0.12), darkMat);
+        bracket.position.set(0, 0, 0);
+        module.add(bracket);
+
+        const emitterLeft = new Mesh(new CylinderGeometry(0.05, 0.05, 0.08, 18), sensorMat);
+        emitterLeft.rotation.x = Math.PI / 2;
+        emitterLeft.position.set(-0.07, 0.01, -0.08);
+        module.add(emitterLeft);
+
+        const emitterRight = new Mesh(new CylinderGeometry(0.05, 0.05, 0.08, 18), sensorMat);
+        emitterRight.rotation.x = Math.PI / 2;
+        emitterRight.position.set(0.07, 0.01, -0.08);
+        module.add(emitterRight);
+
+        const microphoneBase = new Mesh(new CylinderGeometry(0.04, 0.04, 0.06, 14), micMat);
+        microphoneBase.position.set(0, 0.12, -0.01);
+        module.add(microphoneBase);
+
+        const microphoneCap = new Mesh(new SphereGeometry(0.035, 16, 12), micMat);
+        microphoneCap.position.set(0, 0.17, -0.01);
+        module.add(microphoneCap);
+
+        return module;
     }
 
     addProximityCallbacks() {

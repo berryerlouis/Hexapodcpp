@@ -14,6 +14,9 @@ export default class Graphic extends WebGLRenderer {
     cbResize: () => void;
     width: number;
     height: number;
+    private lastFrameTime: number = 0;
+    private static readonly TARGET_FPS = 30;
+    private static readonly FRAME_INTERVAL_MS = 1000 / Graphic.TARGET_FPS;
 
     constructor(scene: Scene, camera: Camera) {
         const canvas = getCanvas();
@@ -34,10 +37,13 @@ export default class Graphic extends WebGLRenderer {
     }
 
     loop() {
+        requestAnimationFrame(this.cbLoop);
+        const now = performance.now();
+        if (now - this.lastFrameTime < Graphic.FRAME_INTERVAL_MS) return;
+        this.lastFrameTime = now;
         const dt = this.clock.getDelta();
         if (this.cbUpdate) this.cbUpdate(dt);
         this.render(this.scene, this.camera);
-        requestAnimationFrame(this.cbLoop);
     }
 
     onUpdate(callback: UpdateCallback) {

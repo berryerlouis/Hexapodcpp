@@ -12,12 +12,10 @@
 
 <body>
     <div class="popup" id="popup"></div>
-    <div id="panel"></div>
+
     <div class="header">
         <div class="header-left">
             <h1>Hexapod<span id="version">V0.0</span></h1>
-        </div>
-        <div class="header-center">
         </div>
         <div class="header-right">
             <span>Connect to:</span>
@@ -38,8 +36,42 @@
         </div>
     </div>
 
-    <div class="app" id="app">
-        <canvas></canvas>
+    <div class="workspace">
+        <div class="app" id="app">
+            <canvas></canvas>
+        </div>
+
+        <div class="cockpit-horizon" aria-label="Cockpit horizon">
+            <div class="cockpit-horizon-face">
+                <div class="cockpit-horizon-sky"></div>
+                <div class="cockpit-horizon-ground"></div>
+                <div class="cockpit-horizon-line"></div>
+                <div class="cockpit-horizon-crosshair">
+                    <div class="cockpit-horizon-reticle-center"></div>
+                    <div class="cockpit-horizon-reticle-vbar"></div>
+                    <div class="cockpit-horizon-reticle-lower-left"></div>
+                    <div class="cockpit-horizon-reticle-lower-right"></div>
+                </div>
+                <div class="cockpit-horizon-crosshair-dot"></div>
+            </div>
+            <div class="cockpit-heading-north-cursor" aria-hidden="true"></div>
+            <div class="cockpit-horizon-heading" aria-hidden="true">
+                <span class="cockpit-heading-label cockpit-heading-n">N</span>
+                <span class="cockpit-heading-label cockpit-heading-e">E</span>
+                <span class="cockpit-heading-label cockpit-heading-s">S</span>
+                <span class="cockpit-heading-label cockpit-heading-w">W</span>
+            </div>
+        </div>
+
+        <aside class="settings-dock is-collapsed" id="settings-dock">
+            <div class="settings-head">
+                <h2>Controls</h2>
+            </div>
+            <div id="panel"></div>
+        </aside>
+        <button id="toggle-settings" type="button" aria-label="Toggle settings panel" class="toggle-settings-floating">
+            <i class="bi bi-layout-sidebar-inset"></i>
+        </button>
     </div>
 
     <div class="footer">
@@ -48,11 +80,40 @@
                 <i class="bi bi-toggle2-off"></i>
             </div>
             <div class="cockpit-direction" id="direction">
-                <div class="up" id="forward"><i class="bi bi-arrow-up-circle"></i></div>
-                <div class="down" id="backward"><i class="bi bi-arrow-down-circle"></i></div>
-                <div class="left" id="left"><i class="bi bi-arrow-left-circle"></i></div>
-                <div class="right" id="right"><i class="bi bi-arrow-right-circle"></i></div>
-                <div class="stop" id="stop"><i class="bi bi-stop-circle"></i></div>
+                <div class="cockpit-joystick" aria-label="Movement joystick">
+                    <button class="cockpit-joy-btn" id="joy-nw" type="button">&#8598;</button>
+                    <button class="cockpit-joy-btn" id="forward" type="button">&#8593;</button>
+                    <button class="cockpit-joy-btn" id="joy-ne" type="button">&#8599;</button>
+                    <button class="cockpit-joy-btn" id="left" type="button">&#8592;</button>
+                    <button class="cockpit-joy-btn is-stop" id="stop" type="button">&#9632;</button>
+                    <button class="cockpit-joy-btn" id="right" type="button">&#8594;</button>
+                    <button class="cockpit-joy-btn" id="joy-sw" type="button">&#8601;</button>
+                    <button class="cockpit-joy-btn" id="backward" type="button">&#8595;</button>
+                    <button class="cockpit-joy-btn" id="joy-se" type="button">&#8600;</button>
+                </div>
+                <div class="cockpit-drive-params">
+                    <label class="cockpit-param-row" for="cockpit-speed">
+                        <span>Speed</span>
+                        <span id="cockpit-speed-value">50%</span>
+                    </label>
+                    <input id="cockpit-speed" type="range" min="0" max="100" step="1" value="50" />
+
+                    <label class="cockpit-param-row" for="cockpit-rotation">
+                        <span>Turn (↺ left / ↻ right)</span>
+                        <span id="cockpit-rotation-value">0</span>
+                    </label>
+                    <input id="cockpit-rotation" type="range" min="-180" max="180" step="1" value="0" />
+
+                    <label class="cockpit-param-row" for="cockpit-gait">
+                        <span>Gait</span>
+                    </label>
+                    <select id="cockpit-gait">
+                        <option value="TRIPOD">TRIPOD</option>
+                        <option value="WAVE">WAVE</option>
+                        <option value="RIPPLE">RIPPLE</option>
+                        <option value="DOUBLE_WAVE">DOUBLE_WAVE</option>
+                    </select>
+                </div>
             </div>
             <div class="cockpit-items">
                 <div class="cockpit-item">
@@ -61,7 +122,7 @@
                         <div class="cockpit-item-content-value">
                             <div class="cockpit-item-content-value-title"><span id="voltage">_</span>V</div>
                             <div class="cockpit-item-content-value-title"><span id="current">_</span>A</div>
-                            <div class="cockpit-item-content-value-title"><span id="temperature">_</span>°C</div>
+                            <div class="cockpit-item-content-value-title"><span id="temperature">_</span>C</div>
                         </div>
                     </div>
                 </div>
@@ -69,9 +130,9 @@
                     <div class="cockpit-item-content">
                         <i class="bi bi-compass"></i>
                         <div class="cockpit-item-content-value">
-                            <div class="cockpit-item-content-value-title">roll:<span id="roll">_</span>°</div>
-                            <div class="cockpit-item-content-value-title">pitch:<span id="pitch">_</span>°</div>
-                            <div class="cockpit-item-content-value-title">yaw:<span id="yaw">_</span>°</div>
+                            <div class="cockpit-item-content-value-title">roll:<span id="roll">_</span>deg</div>
+                            <div class="cockpit-item-content-value-title">pitch:<span id="pitch">_</span>deg</div>
+                            <div class="cockpit-item-content-value-title">yaw:<span id="yaw">_</span>deg</div>
                         </div>
                     </div>
                 </div>

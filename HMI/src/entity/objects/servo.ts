@@ -29,7 +29,7 @@ export default class Servo extends Object3D {
         this.socket = socket;
         this.servoData = {name: name, angle: 90, status: false, id: id, min: 0, max: 180};
         const geometry = new SphereGeometry(this.width, 10, 10);
-        const material = new MeshPhongMaterial({color: '#020202'});
+        const material = new MeshPhongMaterial({color: '#909090'});
         const body = new Mesh(geometry, material);
         this.position.set(x, y, z);
         this.addServoCallbacks();
