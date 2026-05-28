@@ -15,6 +15,7 @@ namespace Service
                            ServiceBody               &serviceBody,
                            ServiceButton             &serviceButton,
                            ServiceSound              &serviceSound,
+                           ServiceGamepad            &serviceGamepad,
                            Message::MessageInterface &messageListener)
             : mServices{{{GENERAL, &serviceGeneral},
                          {CONTROL, &serviceControl},
@@ -25,7 +26,8 @@ namespace Service
                          {DISPLAY, &serviceDisplay},
                          {BODY, &serviceBody},
                          {BUTTON, &serviceButton},
-                         {SOUND, &serviceSound}}}
+                         {SOUND, &serviceSound},
+                         {GAMEPAD, &serviceGamepad}}}
             , mMessageListener(messageListener) {
         }
 

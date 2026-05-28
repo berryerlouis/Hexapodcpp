@@ -5,6 +5,7 @@
 #include "../../Component/Button/ButtonInterface.h"
 #include "../../Component/Communication/CommunicationInterface.h"
 #include "../../Component/Display/Ssd1306Interface.h"
+#include "../../Component/Gamepad/GamepadInterface.h"
 #include "../../Component/Proximity/SensorProximityInterface.h"
 #include "../../Component/Proximity/SensorsId.h"
 #include "../../Component/Sound/SoundInterface.h"
@@ -18,6 +19,7 @@ namespace Service
     {
         using namespace Component::Battery;
         using namespace Component::Display;
+        using namespace Component::Gamepad;
         using namespace Component::Proximity;
         using namespace Component::Sound;
         using namespace Component::Communication;
@@ -47,6 +49,8 @@ namespace Service
 
             void                 DisplayBatteryLevel(const Battery::BatteryState state);
 
+            void                 DisplayGamepadState(const GamepadConnectedState &gamepadState);
+
             void DisplayProximitySensor(const Component::Proximity::SensorsId sensorId,
                                         const uint16_t                        distance);
 
@@ -56,6 +60,7 @@ namespace Service
             Ssd1306Interface   &mSsd1306;
             Bitmaps::SBitmap    mBmpBatteryLevel;
             Bitmaps::SBitmap    mBmpCommunication;
+            Bitmaps::SBitmap    mBmpGamepad;
             Bitmaps::SBitmap    mBmpProximity;
             Bitmaps::SBitmap    mBmpButton;
             Bitmaps::SBitmap    mBmpSound;

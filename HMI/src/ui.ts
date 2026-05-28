@@ -93,10 +93,7 @@ export default class Ui {
         this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.GET_STATE_PCA));
 
         for (let i = 0; i < 18; i++) {
-            this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.GET_ANGLE, [i]));
-            this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.GET_MIN, [i]));
-            this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.GET_MAX, [i]));
-            this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.GET_STATE, [i]));
+            this.socket.write(new Message(ClusterName.SERVO, ClusterServoCommands.GET_SERVO_ALL, [i]));
         }
         this.socket.write(new Message(ClusterName.GENERAL, ClusterGeneralCommands.VERSION));
     }

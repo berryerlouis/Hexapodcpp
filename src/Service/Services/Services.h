@@ -10,6 +10,7 @@
 #include "../Control/ServiceControl.h"
 #include "../Display/ServiceDisplay.h"
 #include "../Event/EventDispatcherInterface.h"
+#include "../Gamepad/ServiceGamepad.h"
 #include "../General/ServiceGeneral.h"
 #include "../Orientation/ServiceOrientation.h"
 #include "../Proximity/ServiceProximity.h"
@@ -30,6 +31,7 @@ namespace Service
         using namespace ::Service::Body;
         using namespace ::Service::Button;
         using namespace ::Service::Sound;
+        using namespace ::Service::Gamepad;
 
         class Services : public Core::CoreInterface {
         public:
@@ -43,6 +45,7 @@ namespace Service
                      ServiceBody               &serviceBody,
                      ServiceButton             &serviceButton,
                      ServiceSound              &serviceSound,
+                     ServiceGamepad            &serviceGamepad,
                      Message::MessageInterface &messageListener);
 
             ~Services() = default;
@@ -52,7 +55,7 @@ namespace Service
             virtual void         Update(const uint64_t currentTime) final override;
 
         private:
-            std::array<std::pair<EServices, Service *>, 10U> mServices;
+            std::array<std::pair<EServices, Service *>, 11U> mServices;
             Message::MessageInterface                       &mMessageListener;
         };
     } // namespace Services

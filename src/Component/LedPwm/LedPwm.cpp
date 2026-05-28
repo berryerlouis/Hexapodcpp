@@ -1,5 +1,4 @@
 #include "LedPwm.h"
-#include <algorithm>
 #include <cmath>
 
 namespace Component
@@ -13,7 +12,7 @@ namespace Component
             , mLastUpdate(0U)
             , mRunning(false)
             , mFadeStepMs(5U)
-            , mFrequency(2.0F)
+            , mFrequency(1.2F) // ~72 BPM resting heartbeat
             , mAmplitude(1000U) {
         }
 
@@ -35,14 +34,13 @@ namespace Component
                 return;
             }
 
-            // Update sine wave every 5ms for smooth
-            // animation
+            // Advance the heartbeat waveform every mFadeStepMs for a smooth animation.
             if (currentTime >= this->mLastUpdate + this->mFadeStepMs) {
-                this->UpdateSineWave();
+                this->UpdateHeartbeat();
                 this->mLastUpdate = currentTime;
             }
 
-            // Apply current sine duty cycle to LED
+            // Apply current duty cycle to LED
             this->mLed.Pwm(this->mDutyCycle);
         }
 
@@ -57,31 +55,44 @@ namespace Component
             this->mPhase = 0.0F;
         }
 
-        void LedPwm::UpdateSineWave() {
-            // Phase advance: angular frequency = 2πf, time
-            // step = 5ms
-            const float timeStep = 0.005f; // 5ms in seconds
-            this->mPhase += 2.0F * M_PI * this->mFrequency * timeStep;
-
-            // Wrap phase to [0, 2π]
-            if (this->mPhase >= M_PI * 2.0F) {
-                this->mPhase -= M_PI * 2.0F;
+        void LedPwm::UpdateHeartbeat() {
+            // mFrequency is interpreted as beats per second (Hz). One full
+            // heartbeat cycle is a normalized phase in [0, 1) composed of:
+            //   * a primary "lub" pulse (full amplitude)
+            //   * a short gap
+            //   * a smaller "dub" pulse (~70% amplitude)
+            //   * a longer rest until the next beat
+            // Each pulse uses a half-sine shape for a smooth, organic feel.
+            const float timeStep = static_cast<float>(this->mFadeStepMs) / 1000.0F;
+            this->mPhase += this->mFrequency * timeStep;
+            if (this->mPhase >= 1.0F) {
+                this->mPhase -= floorf(this->mPhase);
             }
 
-            // Compute sine wave: sin(φ) ∈ [-1,1] → [0,1000]
-            // scaled by amplitude
-            const float    sineValue = sinf(this->mPhase);
-            const uint16_t targetDuty =
-                    static_cast<uint16_t>((sineValue + 1.0F) * 0.5f * this->mAmplitude);
-            this->mDutyCycle = targetDuty;
-            // Smooth transition to prevent flicker
-            /*if (this->mDutyCycle < targetDuty) {
-                this->mDutyCycle = std::min(targetDuty,
-            static_cast<uint16_t>(this->mDutyCycle + 20U));
-            } else if (this->mDutyCycle > targetDuty) {
-            this->mDutyCycle = std::max(targetDuty,
-            static_cast<uint16_t>(this->mDutyCycle - 20U));
-            }*/
+            // Pulse window boundaries inside the normalized [0, 1) cycle.
+            constexpr float LUB_START = 0.00F;
+            constexpr float LUB_END = 0.18F;
+            constexpr float DUB_START = 0.28F;
+            constexpr float DUB_END = 0.42F;
+            constexpr float DUB_AMPLITUDE_RATIO = 0.70F;
+
+            float intensity = 0.0F; // 0..1
+            if (this->mPhase >= LUB_START && this->mPhase < LUB_END) {
+                const float local = (this->mPhase - LUB_START) / (LUB_END - LUB_START);
+                intensity = sinf(local * static_cast<float>(M_PI));
+            } else if (this->mPhase >= DUB_START && this->mPhase < DUB_END) {
+                const float local = (this->mPhase - DUB_START) / (DUB_END - DUB_START);
+                intensity = sinf(local * static_cast<float>(M_PI)) * DUB_AMPLITUDE_RATIO;
+            }
+
+            if (intensity < 0.0F) {
+                intensity = 0.0F;
+            } else if (intensity > 1.0F) {
+                intensity = 1.0F;
+            }
+
+            this->mDutyCycle =
+                    static_cast<uint16_t>(intensity * static_cast<float>(this->mAmplitude));
         }
 
     } // namespace LedPwm

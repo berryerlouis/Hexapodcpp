@@ -22,6 +22,7 @@ namespace App
 
     App::App()
         : mSocket()
+        , mJoystick("/dev/input/js0")
         , mTwi(Driver::Twi::EI2cFreq::FREQ_400_KHZ)
         , mEnablePwm(enablePwm)
         , mGpioButton(buttonPin)
@@ -59,6 +60,7 @@ namespace App
         , mPca9685Left(mTwi, 0x41U)
         , mPca9685Right(mTwi, 0x40U)
         , mServos(mPca9685Left, mPca9685Right, mEnablePwm)
+        , mGamepad(mJoystick)
         , mSoftware()
         , mLegs(mServos)
         , mBody(mLegs)
@@ -91,6 +93,7 @@ namespace App
         , mServiceBody(mBody, mMessageListener, mEventDispatcher)
         , mServiceDisplay(mSsd1306, mMessageListener, mEventDispatcher)
         , mServiceGeneral(mLedPwmStatus, mSoftware, mMessageListener, mEventDispatcher)
+        , mServiceGamepad(mGamepad, mBody, mMessageListener, mEventDispatcher)
         , mServices(mServiceGeneral,
                     mServiceControl,
                     mServiceCommunication,
@@ -101,6 +104,7 @@ namespace App
                     mServiceBody,
                     mServiceButton,
                     mServiceSound,
+                    mServiceGamepad,
                     mMessageListener)
         , mNextUpdateDeadlineMs(0U) {
     }

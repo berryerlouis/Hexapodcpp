@@ -5,6 +5,7 @@ add_subdirectory(Battery)
 add_subdirectory(Button)
 add_subdirectory(Communication)
 add_subdirectory(Display)
+add_subdirectory(Gamepad)
 add_subdirectory(Imu)
 add_subdirectory(Led)
 add_subdirectory(LedPwm)
@@ -30,6 +31,7 @@ target_link_libraries(Component
         Button
         Communication
         Display
+        Gamepad
         Imu
         Led
         LedPwm

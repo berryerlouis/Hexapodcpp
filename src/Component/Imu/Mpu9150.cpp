@@ -94,8 +94,9 @@ namespace Component
                     LOG_COMPONENT_DEBUG("Imu", "address 0x%02X Initialized.", this->mAddress);
                     success = Core::Status::CORE_OK;
                 }
+            } else {
+                LOG_COMPONENT_ERROR("Imu", "address 0x%02X Initialization failed.", this->mAddress);
             }
-            LOG_COMPONENT_WARNING("Imu", "address 0x%02X Initialized.", this->mAddress);
             return success;
         }
 

@@ -196,15 +196,15 @@ export default class RotationCircle extends Object3D {
     public setHeading(headingDeg: number) {
         const rounded = Math.round(headingDeg);
         if (rounded === this.currentHeading) return;
-        const delta = rounded - this.currentHeading;
+        // const delta = rounded - this.currentHeading;
         this.currentHeading = rounded;
         this.headingCursor.rotation.y = -this.toRad(this.currentHeading);
 
         // Keep the walk direction fixed in world space as the bot yaws.
-        if (this.currentDirectionDeg !== 0 || delta !== 0) {
-            const newDir = ((this.currentDirectionDeg - delta) % 360 + 360) % 360;
-            this.sendDirection(newDir);
-        }
+        // if (this.currentDirectionDeg !== 0 || delta !== 0) {
+        //     const newDir = ((this.currentDirectionDeg - delta) % 360 + 360) % 360;
+        //     this.sendDirection(newDir);
+        // }
     }
 
     public dispose() {

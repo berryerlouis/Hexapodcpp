@@ -72,11 +72,11 @@ export default class DirectionArrow extends Object3D {
         this.add(this.circle);
 
         this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS, (message: Message) => {
-            if (message.params && message.params.length === 9) {
-                this.setDirection(message.getValueUint16(2));
-                this.hexapodStruct.turningRate = message.getValueUint16(4);
-                this.hexapodStruct.clockwise = message.getValueUint8(6) === 1;
-                this.hexapodStruct.duration = message.getValueUint16(7);
+            if (message.params && message.params.length === 11) {
+                this.setDirection(message.getValueUint16(4));
+                this.hexapodStruct.turningRate = message.getValueUint16(6);
+                this.hexapodStruct.clockwise = message.getValueUint8(8) === 1;
+                this.hexapodStruct.duration = message.getValueUint16(9);
                 this.syncMotionControls();
             }
         });

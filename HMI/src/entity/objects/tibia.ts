@@ -1,9 +1,12 @@
 import {
+    BoxGeometry,
     CylinderGeometry,
+    ExtrudeGeometry,
     MathUtils,
     Mesh,
     MeshStandardMaterial,
     Object3D,
+    Shape,
     SphereGeometry
 } from 'three'
 import Servo from "./servo.ts";
@@ -21,31 +24,63 @@ export default class Tibia extends Object3D {
         super()
         this.socket = socket;
 
-        // Tapered tube — smooth, high-poly for realistic appearance
-        const tubeMat = new MeshStandardMaterial({ color: '#c0c0c0', metalness: 0.5, roughness: 0.45 });
-        const tubeGeom = new CylinderGeometry(0.04, 0.08, this.height, 14, 8);
-        this.tibiaBody = new Mesh(tubeGeom, tubeMat);
+        // Capers II tibia is a single flat aluminium bracket, wide at the femur/servo
+        // mount end and tapering smoothly to a point at the foot, with a rubber tip
+        // bonded onto the end. The bracket is flat in the rotation plane.
+        const aluMat = new MeshStandardMaterial({ color: '#c8c8cc', metalness: 0.7, roughness: 0.35 });
+        const hornMat = new MeshStandardMaterial({ color: '#f2f2f2', metalness: 0.05, roughness: 0.55 });
+        const footMat = new MeshStandardMaterial({ color: '#202020', metalness: 0.0, roughness: 0.95 });
+
+        // Build the tapered flat-plate shape in 2D (x = length along tibia, y = width).
+        const L = this.height;
+        const halfTop = 0.085;   // wide end at femur side
+        const halfBot = 0.018;   // narrow end at foot
+        const plateThk = 0.022;
+        const shape = new Shape();
+        shape.moveTo(0, -halfTop);
+        shape.lineTo(0, halfTop);
+        shape.lineTo(L, halfBot);
+        shape.lineTo(L, -halfBot);
+        shape.closePath();
+        const plateGeom = new ExtrudeGeometry(shape, { depth: plateThk, bevelEnabled: false });
+        // Centre the plate thickness around X=0 then re-orient axes so that:
+        //   shape "length" (X) -> local Y (along the tibia)
+        //   shape "width"  (Y) -> local Z (front-back)
+        //   extrude depth  (Z) -> local X (thickness)
+        plateGeom.translate(0, 0, -plateThk / 2);
+        plateGeom.rotateZ(Math.PI / 2);   // length axis: world X -> world Y
+        plateGeom.rotateY(Math.PI / 2);   // depth axis: world Z -> world X
+
+        this.tibiaBody = new Mesh(plateGeom, aluMat);
         this.position.set(x, y, z);
-        this.tibiaBody.geometry.translate(0, this.height / 2, 0);
         this.rotation.set(MathUtils.degToRad(90), 0, 0);
 
-        // Pivot joint at base (femur output, joint axis along Z) — high-poly smooth joint
-        const jointMat = new MeshStandardMaterial({ color: '#e0e0e0', metalness: 0.85, roughness: 0.2 });
-        const pivotGeom = new CylinderGeometry(0.09, 0.09, 0.20, 16, 4);
-        const pivot = new Mesh(pivotGeom, jointMat);
-        pivot.rotation.x = Math.PI / 2;
-        pivot.position.set(0, 0, 0);
-        this.tibiaBody.add(pivot);
+        // Reinforcement boss at the femur-servo mount (wide end).
+        const mountBoss = new Mesh(
+            new BoxGeometry(plateThk + 0.012, 0.14, halfTop * 1.6),
+            aluMat
+        );
+        mountBoss.position.set(0, 0.07, 0);
+        this.tibiaBody.add(mountBoss);
 
-        // Rubber foot tip at distal end — enhanced rounded capper
-        const footMat = new MeshStandardMaterial({ color: '#555555', metalness: 0.0, roughness: 0.95 });
-        // High-poly sphere for smooth, realistic rounded shape (24 width segments, 16 height segments)
-        const footGeom = new SphereGeometry(0.055, 24, 16);
-        const foot = new Mesh(footGeom, footMat);
+        // White servo horns on each X-side at the femur pivot.
+        const horn = new Mesh(
+            new CylinderGeometry(0.07, 0.07, 0.012, 28),
+            hornMat
+        );
+        horn.rotation.z = Math.PI / 2;
+        horn.position.set(plateThk / 2 + 0.012, 0, 0);
+        this.tibiaBody.add(horn);
+        const hornB = horn.clone();
+        hornB.position.set(-plateThk / 2 - 0.012, 0, 0);
+        this.tibiaBody.add(hornB);
+
+        // Rubber foot tip at the distal end.
+        const foot = new Mesh(new SphereGeometry(0.045, 20, 14), footMat);
         foot.position.set(0, this.height, 0);
         this.tibiaBody.add(foot);
 
-        this.servo = new Servo('tibia', id, 0, 0, 0, this.socket);
+        this.servo = new Servo('tibia', id, 0, 0.04, 0, this.socket);
 
         this.add(this.tibiaBody);
     }

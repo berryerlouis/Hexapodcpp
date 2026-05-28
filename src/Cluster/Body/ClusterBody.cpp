@@ -34,6 +34,8 @@ namespace Cluster
         Core::Status ClusterBody::ExecuteFrame(const Frame &request, Frame &response) {
             Core::Status success = Core::Status::CORE_ERROR;
             if (request.GetCommandId() == EBodyCommands::GET_ALL_PARAMS) {
+                const Move::Walk::EWalkStatus walkStatus = this->mBody.GetWalkStatus();
+                const Move::Gait::GaitType gait = this->mBody.GetGait();
                 const uint8_t  amplitude = this->mBody.GetAmplitude() * 10U;
                 const uint8_t  elevation = this->mBody.GetElevation() * 10U;
                 const uint16_t direction = Misc::Utils::ToDeg(this->mBody.GetDirection());
@@ -41,7 +43,7 @@ namespace Cluster
                 const bool     clockWize = this->mBody.GetRotationClockWize();
                 const uint16_t duration = this->mBody.GetDuration();
                 success = BuildFrameUpdateAll(
-                        response, amplitude, elevation, direction, rotation, clockWize, duration);
+                        response,walkStatus, gait, amplitude, elevation, direction, rotation, clockWize, duration);
             } else if (request.GetCommandId() == EBodyCommands::SET_BODY_POS_ROT) {
                 const Position3d position = {.x = request.Get2BytesParam(0U) / 10.0F,
                                              .y = request.Get2BytesParam(2U) / 10.0F,
@@ -68,7 +70,7 @@ namespace Cluster
                 const uint16_t travelTime = request.Get2BytesParam(1U);
                 this->mBody.UpdateWalkStatus(status, travelTime);
                 success = BuildFrameUpdateWalkStatus(
-                        response, static_cast<uint8_t>(this->mBody.GetWalkStatus()));
+                        response, this->mBody.GetWalkStatus());
             } else if (request.GetCommandId() == EBodyCommands::GET_DIRECTION) {
                 success = BuildFrameUpdateDirection(response,
                                                     Misc::Utils::ToDeg(this->mBody.GetDirection()));
@@ -138,11 +140,11 @@ namespace Cluster
         }
 
         Core::Status ClusterBody::BuildFrameUpdateWalkStatus(Frame        &response,
-                                                             const uint8_t walkStatus) {
+                                                             const EWalkStatus walkStatus) {
             const Core::Status success =
                     response.Build(EClusters::BODY, EBodyCommands::SET_WALK_STATUS);
             if (success == Core::Status::CORE_OK) {
-                response.Set1ByteParam(walkStatus);
+                response.Set1ByteParam(static_cast<uint8_t>(walkStatus));
             }
             return success;
         }
@@ -190,6 +192,8 @@ namespace Cluster
         }
 
         Core::Status ClusterBody::BuildFrameUpdateAll(Frame         &response,
+                                                      const Move::Walk::EWalkStatus walkStatus,
+                                                      const Move::Gait::GaitType gait,
                                                       const uint8_t  amplitude,
                                                       const uint8_t  elevation,
                                                       const uint16_t direction,
@@ -199,6 +203,8 @@ namespace Cluster
             const Core::Status success =
                     response.Build(EClusters::BODY, EBodyCommands::GET_ALL_PARAMS);
             if (success == Core::Status::CORE_OK) {
+                response.Set1ByteParam(static_cast<uint8_t>(walkStatus));
+                response.Set1ByteParam(static_cast<uint8_t>(gait));
                 response.Set1ByteParam(amplitude);
                 response.Set1ByteParam(elevation);
                 response.Set2BytesParam(direction);

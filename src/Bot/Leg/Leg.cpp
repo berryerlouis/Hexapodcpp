@@ -1,8 +1,38 @@
 #include "Leg.h"
 
+#include <cmath>
 #include <cstdio>
 
 #include "../../Misc/Maths/Utils.h"
+
+namespace
+{
+    // Keeps acos() arguments inside its mathematical domain to avoid NaN when
+    // the requested foot position lies on (or just past) the workspace boundary.
+    inline float ClampAcosArg(const float value) {
+        if (value < -1.0F) {
+            return -1.0F;
+        }
+        if (value > 1.0F) {
+            return 1.0F;
+        }
+        return value;
+    }
+
+    // Clamps a servo command to the physical [0, 180] degree range before the
+    // final cast to uint8_t. Also catches NaN coming out of an IK pass.
+    inline bool TryClampServoAngle(float &angle) {
+        if (std::isnan(angle) || std::isinf(angle)) {
+            return false;
+        }
+        if (angle < 0.0F) {
+            angle = 0.0F;
+        } else if (angle > 180.0F) {
+            angle = 180.0F;
+        }
+        return true;
+    }
+} // namespace
 
 namespace Bot
 {
@@ -201,16 +231,24 @@ namespace Bot
             this->mLegIk.iksw = sqrt(((this->mLegIk.coxaFootDist - COXA_LENGTH) *
                                       (this->mLegIk.coxaFootDist - COXA_LENGTH)) +
                                      (this->mLegIk.newFootPos.z * this->mLegIk.newFootPos.z));
+
+            // atan2 handles z == 0 without dividing by zero (degenerate horizontal pose).
             this->mLegIk.ika1 =
-                    atan((this->mLegIk.coxaFootDist - COXA_LENGTH) / this->mLegIk.newFootPos.z);
-            this->mLegIk.ika2 =
-                    acos(((TIBIA_LENGTH * TIBIA_LENGTH) - (FEMUR_LENGTH * FEMUR_LENGTH) -
-                          (this->mLegIk.iksw * this->mLegIk.iksw)) /
-                         (-2.0F * this->mLegIk.iksw * FEMUR_LENGTH));
-            this->mLegIk.tangle =
-                    acos(((this->mLegIk.iksw * this->mLegIk.iksw) - (TIBIA_LENGTH * TIBIA_LENGTH) -
-                          (FEMUR_LENGTH * FEMUR_LENGTH)) /
-                         (-2.0F * FEMUR_LENGTH * TIBIA_LENGTH));
+                    atan2(this->mLegIk.coxaFootDist - COXA_LENGTH, this->mLegIk.newFootPos.z);
+
+            // Guard the law-of-cosines arguments against floating point drift / unreachable
+            // targets so we never feed NaN into the servos.
+            const float ika2Arg = ClampAcosArg(((TIBIA_LENGTH * TIBIA_LENGTH) -
+                                                (FEMUR_LENGTH * FEMUR_LENGTH) -
+                                                (this->mLegIk.iksw * this->mLegIk.iksw)) /
+                                               (-2.0F * this->mLegIk.iksw * FEMUR_LENGTH));
+            const float tangleArg = ClampAcosArg(((this->mLegIk.iksw * this->mLegIk.iksw) -
+                                                  (TIBIA_LENGTH * TIBIA_LENGTH) -
+                                                  (FEMUR_LENGTH * FEMUR_LENGTH)) /
+                                                 (-2.0F * FEMUR_LENGTH * TIBIA_LENGTH));
+            this->mLegIk.ika2 = acos(ika2Arg);
+            this->mLegIk.tangle = acos(tangleArg);
+
             this->mLegIk.tibiaIk = 90.0F + (90.0F - this->mLegIk.tangle * 180.0F / M_PI);
             this->mLegIk.femurIk =
                     90.0F + (90.0F - (this->mLegIk.ika1 + this->mLegIk.ika2) * 180.0F / M_PI);
@@ -224,21 +262,35 @@ namespace Bot
                 this->mLegIk.coxaIk += 360.0F;
             }
 
+            // Validate and clamp to physical servo range before casting to uint8_t.
+            float coxaCmd = this->mLegIk.coxaIk;
+            float femurCmd = this->mLegIk.femurIk;
+            float tibiaCmd = this->mLegIk.tibiaIk;
+            if (!TryClampServoAngle(coxaCmd) || !TryClampServoAngle(femurCmd) ||
+                !TryClampServoAngle(tibiaCmd)) {
+                LOG_BOT_ERROR("Leg",
+                              "leg %s(%d) IK produced invalid angle (target=%.2f,%.2f,%.2f)",
+                              ElegToString(this->mLegId).c_str(),
+                              this->mLegId,
+                              position.x,
+                              position.y,
+                              position.z);
+                return Core::Status::CORE_ERROR;
+            }
+
             Core::Status success = Core::Status::CORE_OK;
-            success |= this->mCoxa.SetAngle(static_cast<uint8_t>(this->mLegIk.coxaIk), travelTime);
-            success |=
-                    this->mFemur.SetAngle(static_cast<uint8_t>(this->mLegIk.femurIk), travelTime);
-            success |=
-                    this->mTibia.SetAngle(static_cast<uint8_t>(this->mLegIk.tibiaIk), travelTime);
+            success |= this->mCoxa.SetAngle(static_cast<uint8_t>(coxaCmd), travelTime);
+            success |= this->mFemur.SetAngle(static_cast<uint8_t>(femurCmd), travelTime);
+            success |= this->mTibia.SetAngle(static_cast<uint8_t>(tibiaCmd), travelTime);
 
             if (success != Core::Status::CORE_OK) {
                 LOG_BOT_ERROR("Leg",
                               "leg %s(%d) Set IK (coxaIk:%d, femurIk:%d, tibiaIk:%d)",
                               ElegToString(this->mLegId).c_str(),
                               this->mLegId,
-                              static_cast<uint8_t>(this->mLegIk.coxaIk),
-                              static_cast<uint8_t>(this->mLegIk.femurIk),
-                              static_cast<uint8_t>(this->mLegIk.tibiaIk));
+                              static_cast<uint8_t>(coxaCmd),
+                              static_cast<uint8_t>(femurCmd),
+                              static_cast<uint8_t>(tibiaCmd));
             }
             return success;
         }
@@ -254,16 +306,22 @@ namespace Bot
             this->mLegIk.iksw = sqrt(((this->mLegIk.coxaFootDist - COXA_LENGTH) *
                                       (this->mLegIk.coxaFootDist - COXA_LENGTH)) +
                                      (this->mLegIk.newFootPos.z * this->mLegIk.newFootPos.z));
+
+            // atan2 handles z == 0 without dividing by zero (degenerate horizontal pose).
             this->mLegIk.ika1 =
-                    atan((this->mLegIk.coxaFootDist - COXA_LENGTH) / this->mLegIk.newFootPos.z);
-            this->mLegIk.ika2 =
-                    acos(((TIBIA_LENGTH * TIBIA_LENGTH) - (FEMUR_LENGTH * FEMUR_LENGTH) -
-                          (this->mLegIk.iksw * this->mLegIk.iksw)) /
-                         (-2.0F * this->mLegIk.iksw * FEMUR_LENGTH));
-            this->mLegIk.tangle =
-                    acos(((this->mLegIk.iksw * this->mLegIk.iksw) - (TIBIA_LENGTH * TIBIA_LENGTH) -
-                          (FEMUR_LENGTH * FEMUR_LENGTH)) /
-                         (-2.0F * FEMUR_LENGTH * TIBIA_LENGTH));
+                    atan2(this->mLegIk.coxaFootDist - COXA_LENGTH, this->mLegIk.newFootPos.z);
+
+            const float ika2Arg = ClampAcosArg(((TIBIA_LENGTH * TIBIA_LENGTH) -
+                                                (FEMUR_LENGTH * FEMUR_LENGTH) -
+                                                (this->mLegIk.iksw * this->mLegIk.iksw)) /
+                                               (-2.0F * this->mLegIk.iksw * FEMUR_LENGTH));
+            const float tangleArg = ClampAcosArg(((this->mLegIk.iksw * this->mLegIk.iksw) -
+                                                  (TIBIA_LENGTH * TIBIA_LENGTH) -
+                                                  (FEMUR_LENGTH * FEMUR_LENGTH)) /
+                                                 (-2.0F * FEMUR_LENGTH * TIBIA_LENGTH));
+            this->mLegIk.ika2 = acos(ika2Arg);
+            this->mLegIk.tangle = acos(tangleArg);
+
             this->mLegIk.tibiaIk = 90.0F + (90.0F - this->mLegIk.tangle * 180.0F / M_PI);
             this->mLegIk.femurIk =
                     90.0F + (90.0F - (this->mLegIk.ika1 + this->mLegIk.ika2) * 180.0F / M_PI);
@@ -302,19 +360,26 @@ namespace Bot
                 this->mLegIk.coxaIk += 360.0F;
             }
 
-            // Clamp to valid servo range (60-120 degrees)
-            if ((this->mLegIk.coxaIk < 60.0F) || (this->mLegIk.coxaIk >= 240.0F)) {
-                this->mLegIk.coxaIk = 60.0F;
-            } else if (this->mLegIk.coxaIk > 120.0F && this->mLegIk.coxaIk < 240.0F) {
-                this->mLegIk.coxaIk = 120.0F;
+            // Validate and clamp servo commands. Coxa is additionally constrained to its
+            // mechanical [60, 120] degree usable range for body-IK posture moves.
+            float coxaCmd = this->mLegIk.coxaIk;
+            float femurCmd = this->mLegIk.femurIk;
+            float tibiaCmd = this->mLegIk.tibiaIk;
+            if (!TryClampServoAngle(coxaCmd) || !TryClampServoAngle(femurCmd) ||
+                !TryClampServoAngle(tibiaCmd)) {
+                LOG_BOT_ERROR("Leg", "leg Id:%d Body IK produced invalid angle", this->mLegId);
+                return Core::Status::CORE_ERROR;
+            }
+            if (coxaCmd < 60.0F) {
+                coxaCmd = 60.0F;
+            } else if (coxaCmd > 120.0F) {
+                coxaCmd = 120.0F;
             }
 
             Core::Status success = Core::Status::CORE_OK;
-            success |= this->mCoxa.SetAngle(static_cast<uint8_t>(this->mLegIk.coxaIk), travelTime);
-            success |=
-                    this->mFemur.SetAngle(static_cast<uint8_t>(this->mLegIk.femurIk), travelTime);
-            success |=
-                    this->mTibia.SetAngle(static_cast<uint8_t>(this->mLegIk.tibiaIk), travelTime);
+            success |= this->mCoxa.SetAngle(static_cast<uint8_t>(coxaCmd), travelTime);
+            success |= this->mFemur.SetAngle(static_cast<uint8_t>(femurCmd), travelTime);
+            success |= this->mTibia.SetAngle(static_cast<uint8_t>(tibiaCmd), travelTime);
 
             if (success != Core::Status::CORE_OK) {
                 LOG_BOT_ERROR("Leg", "leg Id:%d Set Body IK error", this->mLegId);

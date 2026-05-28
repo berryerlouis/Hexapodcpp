@@ -1,13 +1,18 @@
 #include "GaitStrategy.h"
 
+#include <cmath>
+
 namespace
 {
+    // Maps any (possibly negative or very large) phase into [0, cycleLength).
+    // Using fmodf rather than a while-loop keeps the cost bounded if phase
+    // drifts unexpectedly (e.g. after a long pause / re-sync).
     float WrapPhase(const float phase, const float cycleLength) {
-        float wrappedPhase = phase;
-        while (wrappedPhase >= cycleLength) {
-            wrappedPhase -= cycleLength;
+        if (cycleLength <= 0.0F) {
+            return 0.0F;
         }
-        while (wrappedPhase < 0.0F) {
+        float wrappedPhase = std::fmod(phase, cycleLength);
+        if (wrappedPhase < 0.0F) {
             wrappedPhase += cycleLength;
         }
         return wrappedPhase;
@@ -158,6 +163,9 @@ namespace Move
             const float offsetPerLeg =
                     static_cast<float>(positions.size()) / static_cast<float>(Bot::Legs::NB_LEGS);
 
+            // Wave gait: exactly one leg in swing at any time → swing duty = 1/N.
+            const float swingDuty = 1.0F / static_cast<float>(Bot::Legs::NB_LEGS);
+
             for (auto &leg: legs) {
                 const uint8_t phaseRank = GetWavePhaseRank(leg.second.GetId());
                 const float   phaseOffset = offsetPerLeg * static_cast<float>(phaseRank);
@@ -167,7 +175,7 @@ namespace Move
                                        gaitParams,
                                        positions,
                                        globalPhase + phaseOffset,
-                                       1.0F / static_cast<float>(Bot::Legs::NB_LEGS));
+                                       swingDuty);
             }
         }
 
@@ -186,6 +194,9 @@ namespace Move
             const float offsetPerLeg =
                     static_cast<float>(positions.size()) / static_cast<float>(Bot::Legs::NB_LEGS);
 
+            // Ripple gait: two legs in swing simultaneously → swing duty = 2/N.
+            const float swingDuty = 2.0F / static_cast<float>(Bot::Legs::NB_LEGS);
+
             for (auto &leg: legs) {
                 const uint8_t phaseRank = GetRipplePhaseRank(leg.second.GetId());
                 const float   phaseOffset = offsetPerLeg * static_cast<float>(phaseRank);
@@ -195,7 +206,7 @@ namespace Move
                                        gaitParams,
                                        positions,
                                        globalPhase + phaseOffset,
-                                       1.0F / 3.0F);
+                                       swingDuty);
             }
         }
     } // namespace Gait

@@ -16,6 +16,9 @@ namespace Service
             , mBmpCommunication{.bmp = const_cast<uint8_t *>(Bitmaps::Communication),
                                 .width = 16U,
                                 .height = 8U}
+            , mBmpGamepad{.bmp = const_cast<uint8_t *>(Bitmaps::Gamepad),
+                           .width = 16U,
+                           .height = 8U}
             , mBmpProximity{.bmp = const_cast<uint8_t *>(Bitmaps::ArrowCenter),
                             .width = 16U,
                             .height = 6U}
@@ -42,6 +45,7 @@ namespace Service
                 this->DisplayBackground();
                 this->DisplayBatteryLevel(UNKNOWN);
                 this->DisplayButtonBmp(Button::ButtonState::RELEASE);
+                this->DisplayGamepadState(GamepadConnectedState{false});
                 this->mInitialized = true;
                 success = Core::Status::CORE_OK;
             }
@@ -217,6 +221,22 @@ namespace Service
                 this->mSsd1306.EraseArea(0U, 12U, this->mBmpSound.width, 8U);
             }
         }
+        
+        void ServiceDisplay::DisplayGamepadState(const GamepadConnectedState &gamepadState){
+            if (gamepadState.connected) {
+                this->mSsd1306.DrawBitmap(&this->mBmpGamepad,
+                                            SCREEN_WIDTH - this->mBmpCommunication.width - 2U -
+                                              this->mBmpButton.width - 2U- this->mBmpGamepad.width,
+                                            0U,
+                                            Bitmaps::Color::COLOR_WHITE);
+            } else {
+                this->mSsd1306.EraseArea(SCREEN_WIDTH - this->mBmpCommunication.width - 2U -
+                                              this->mBmpButton.width - 2U- this->mBmpGamepad.width,
+                                            0U,
+                                            this->mBmpGamepad.width,
+                                            8U);
+            }
+        }
 
         void ServiceDisplay::OnEvent(const Event::Event &event) {
             if (event.serviceId == EServices::COMMUNICATION) {
@@ -263,6 +283,14 @@ namespace Service
                         const Component::Sound::SoundStruct soundStruct =
                                 std::any_cast<Component::Sound::SoundStruct>(event.eventArg);
                         this->DisplaySound(soundStruct);
+                    }
+                }
+            } else if (event.serviceId == EServices::GAMEPAD) {
+                if (event.eventType == EventType::EVENT_GAMEPAD_UPDATE) {
+                    if (event.eventArg.type() == typeid(Component::Gamepad::GamepadConnectedState)) {
+                        const Component::Gamepad::GamepadConnectedState gamepadState =
+                                std::any_cast<Component::Gamepad::GamepadConnectedState>(event.eventArg);
+                        this->DisplayGamepadState(gamepadState);
                     }
                 }
             }

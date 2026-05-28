@@ -110,7 +110,7 @@
             "preLaunchTask": "Build, Deploy & Debug RPi"
         },
         {
-            "name": "Remote Debug RPi",
+            "name": "Debug RPi",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/hexapod-RPI-DEBUG/src/Hexapodcpp",

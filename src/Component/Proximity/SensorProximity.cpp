@@ -32,7 +32,8 @@ namespace Component
         size_t sensorId = 0U;
 
         void   SensorProximity::Update(const uint64_t currentTime) {
-            this->mSensors[sensorId++]->Update(currentTime);
+            (void)currentTime;
+            //this->mSensors[sensorId++]->Update(currentTime);
             if (sensorId == NB_SENSORS) {
                 sensorId = 0U;
             }

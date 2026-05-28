@@ -16,10 +16,11 @@ namespace Service
         BODY = 7U,
         BUTTON = 8U,
         SOUND = 9U,
-        NONE = 10U
+        GAMEPAD = 10U,
+        NONE = 11U
     };
 
-    static constexpr uint8_t NB_SERVICES = 10U;
+    static constexpr uint8_t NB_SERVICES = 11U;
 
     class EServicesStruct {
     public:
@@ -45,6 +46,8 @@ namespace Service
                     return "BUTTON";
                 case SOUND:
                     return "SOUND";
+                case GAMEPAD:
+                    return "GAMEPAD";
                 default:
                     return "UNKNOWN";
             }

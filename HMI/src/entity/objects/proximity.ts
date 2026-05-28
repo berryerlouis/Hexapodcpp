@@ -11,9 +11,8 @@ export default class ProximityObject extends Object3D {
     x: number;
     y: number;
     z: number;
-    worldTrailLayer: Object3D;
-    leftWorldTrail: Mesh[];
-    rightWorldTrail: Mesh[];
+    leftWorldPoint: Mesh | null;
+    rightWorldPoint: Mesh | null;
     centerWorldTrail: Mesh[][][]; // [i][j][traceIndex]
     socket: Socket;
 
@@ -24,11 +23,8 @@ export default class ProximityObject extends Object3D {
         this.y = 0;
         this.z = 0;
 
-        this.worldTrailLayer = new Object3D();
-        this.worldTrailLayer.name = "proximity-world-trail";
-
-        this.leftWorldTrail = [];
-        this.rightWorldTrail = [];
+        this.leftWorldPoint = null;
+        this.rightWorldPoint = null;
         this.centerWorldTrail = [];
         for (let i = 0; i < 8; i++) {
             this.centerWorldTrail[i] = [];
@@ -54,19 +50,6 @@ export default class ProximityObject extends Object3D {
         return new Mesh(geometry, material);
     }
 
-    private ensureWorldTrailLayer() {
-        let root: Object3D = this;
-        while (root.parent) {
-            root = root.parent;
-        }
-        if (this.worldTrailLayer.parent !== root) {
-            if (this.worldTrailLayer.parent) {
-                this.worldTrailLayer.parent.remove(this.worldTrailLayer);
-            }
-            root.add(this.worldTrailLayer);
-        }
-    }
-
     private createTrailMarker(sizeX: number, sizeY: number, sizeZ: number, distanceCm: number): Mesh {
         const mesh = this.createProximityObject(new BoxGeometry(sizeX, sizeY, sizeZ));
         mesh.userData.distanceCm = distanceCm;
@@ -76,8 +59,7 @@ export default class ProximityObject extends Object3D {
     static MAX_TRACE_DEPTH = 100;
 
     private pushMarker(queue: Mesh[], marker: Mesh) {
-        this.ensureWorldTrailLayer();
-        this.worldTrailLayer.add(marker);
+        this.add(marker);
         queue.push(marker);
         if (queue.length > ProximityObject.MAX_TRACE_DEPTH) {
             const removed = queue.shift();
@@ -110,12 +92,6 @@ export default class ProximityObject extends Object3D {
         }
     }
 
-    private toWorldPoint(localX: number, localY: number, localZ: number): Vector3 {
-        const world = new Vector3(localX, localY, localZ);
-        this.localToWorld(world);
-        return world;
-    }
-
     show(distance: number | number[][], side: ProximitySide) {
         if (side === ProximitySide.center && Array.isArray(distance)) {
             for (let i = 0; i < 8; i++) {
@@ -124,32 +100,50 @@ export default class ProximityObject extends Object3D {
                     if (dist <= 0) {
                         continue;
                     }
-                    const localX = (i - 3.5) * 0.5;
-                    const localY = (j - 3.5) * 0.5;
-                    const localZ = -1 - dist / 10;
-                    const worldPosition = this.toWorldPoint(localX, localY, localZ);
+                    const coneAngle = Math.PI / 6; // 60° total field of view
+                    const maxSpan = Math.tan(coneAngle);
+                    const localX = ((i - 3.5) / 3.5) * maxSpan;
+                    const localY = ((j - 3.5) / 3.5) * maxSpan;
+                    const range = dist / 10;
+                    const direction = new Vector3(localX, localY, -1).normalize().multiplyScalar(range);
                     const marker = this.createTrailMarker(0.08, 0.08, 0.08, dist);
-                    marker.position.copy(worldPosition);
+                    marker.position.copy(direction);
                     this.pushMarker(this.centerWorldTrail[i][j], marker);
                     this.updateQueueOpacity(this.centerWorldTrail[i][j]);
                 }
             }
         } else if (typeof distance === 'number') {
             if (distance > 0) {
+                const sideSign = side === ProximitySide.left ? -1 : 1;
+                const range = distance / 10;
+                const sensorOriginX = sideSign * 0.1;
+                const rayDirection = new Vector3(sideSign * Math.sin(Math.PI / 3), 0, -Math.cos(Math.PI / 3)).normalize().multiplyScalar(range);
+                const localPoint = new Vector3(sensorOriginX, 0, 0).add(rayDirection);
+
                 if (side === ProximitySide.left) {
-                    const range = distance / 10;
-                    const worldPosition = this.toWorldPoint(-0.1 - (Math.sin(Math.PI / 3) * range), 0, -1 - (Math.cos(Math.PI / 3) * range));
-                    const marker = this.createTrailMarker(0.12, 0.12, 0.12, distance);
-                    marker.position.copy(worldPosition);
-                    this.pushMarker(this.leftWorldTrail, marker);
-                    this.updateQueueOpacity(this.leftWorldTrail);
+                    if (!this.leftWorldPoint) {
+                        this.leftWorldPoint = this.createTrailMarker(0.12, 0.12, 0.12, distance);
+                        this.add(this.leftWorldPoint);
+                    }
+                    this.leftWorldPoint.position.copy(localPoint);
+                    this.leftWorldPoint.userData.distanceCm = distance;
+                    this.applyVisualStyle(this.leftWorldPoint, 1);
                 } else if (side === ProximitySide.right) {
-                    const range = distance / 10;
-                    const worldPosition = this.toWorldPoint(-0.1 + (Math.sin(Math.PI / 3) * range), 0, -1 - (Math.cos(Math.PI / 3) * range));
-                    const marker = this.createTrailMarker(0.12, 0.12, 0.12, distance);
-                    marker.position.copy(worldPosition);
-                    this.pushMarker(this.rightWorldTrail, marker);
-                    this.updateQueueOpacity(this.rightWorldTrail);
+                    if (!this.rightWorldPoint) {
+                        this.rightWorldPoint = this.createTrailMarker(0.12, 0.12, 0.12, distance);
+                        this.add(this.rightWorldPoint);
+                    }
+                    this.rightWorldPoint.position.copy(localPoint);
+                    this.rightWorldPoint.userData.distanceCm = distance;
+                    this.applyVisualStyle(this.rightWorldPoint, 1);
+                }
+            } else {
+                if (side === ProximitySide.left && this.leftWorldPoint && this.leftWorldPoint.parent) {
+                    this.leftWorldPoint.parent.remove(this.leftWorldPoint);
+                    this.leftWorldPoint = null;
+                } else if (side === ProximitySide.right && this.rightWorldPoint && this.rightWorldPoint.parent) {
+                    this.rightWorldPoint.parent.remove(this.rightWorldPoint);
+                    this.rightWorldPoint = null;
                 }
             }
         }
@@ -157,20 +151,14 @@ export default class ProximityObject extends Object3D {
 
     // Reset all traces
     resetTraces() {
-        for (let idx = 0; idx < this.leftWorldTrail.length; idx++) {
-            const marker = this.leftWorldTrail[idx];
-            if (marker.parent) {
-                marker.parent.remove(marker);
-            }
+        if (this.leftWorldPoint && this.leftWorldPoint.parent) {
+            this.leftWorldPoint.parent.remove(this.leftWorldPoint);
         }
-        for (let idx = 0; idx < this.rightWorldTrail.length; idx++) {
-            const marker = this.rightWorldTrail[idx];
-            if (marker.parent) {
-                marker.parent.remove(marker);
-            }
+        if (this.rightWorldPoint && this.rightWorldPoint.parent) {
+            this.rightWorldPoint.parent.remove(this.rightWorldPoint);
         }
-        this.leftWorldTrail = [];
-        this.rightWorldTrail = [];
+        this.leftWorldPoint = null;
+        this.rightWorldPoint = null;
 
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
@@ -185,8 +173,5 @@ export default class ProximityObject extends Object3D {
             }
         }
 
-        if (this.worldTrailLayer.parent) {
-            this.worldTrailLayer.parent.remove(this.worldTrailLayer);
-        }
     }
 }

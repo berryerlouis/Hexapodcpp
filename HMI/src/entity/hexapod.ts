@@ -69,7 +69,7 @@ export default class Hexapod extends Object3D {
         this.head = new Head(this.socket);
         this.directionArrow = new DirectionArrow(this.socket, this.hexapodStruct);
         this.rotationCircle = new RotationCircle(this.socket);
-        this.body = new Body(0, 1, 0, this.socket, 50);
+        this.body = new Body(0, 1, 0, this.socket, 100);
         this.imu = new Imu(this.socket, 2000);
         this.battery = new Battery(this.socket, 5000);
         this.loopTime = new LoopTime(this.socket, 1000);
@@ -107,13 +107,14 @@ export default class Hexapod extends Object3D {
 
 
         this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS, (message: Message) => {
-            if (message.params && message.params.length === 9) {
-                this.hexapodStruct.amplitude = message.getValueUint8(0);
-                this.hexapodStruct.elevation = message.getValueUint8(1);
-                this.hexapodStruct.direction = message.getValueUint16(2);
-                this.hexapodStruct.turningRate = message.getValueUint16(4);
-                this.hexapodStruct.clockwise = message.getValueUint8(6) === 1;
-                this.hexapodStruct.duration = message.getValueUint16(7);
+            if (message.params && message.params.length === 11) {
+                this.hexapodStruct.gait = this.gaitFromId(message.getValueUint8(1));
+                this.hexapodStruct.amplitude = message.getValueUint8(2);
+                this.hexapodStruct.elevation = message.getValueUint8(3);
+                this.hexapodStruct.direction = message.getValueUint16(4);
+                this.hexapodStruct.turningRate = message.getValueUint16(6);
+                this.hexapodStruct.clockwise = message.getValueUint8(8) === 1;
+                this.hexapodStruct.duration = message.getValueUint16(9);
                 this.body.setDirection(this.hexapodStruct.direction);
                 this.rotationCircle.setDirection(this.hexapodStruct.direction);
             }

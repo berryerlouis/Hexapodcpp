@@ -11,7 +11,7 @@ NC='\033[0m' # No Color
 echo ""
 printf  "${GREEN}Deploy to Raspberry Pi:${NC}\n"
 echo "  Stopping running process on hexabot..."
-ssh hexabot "sudo systemctl stop hexabot.service 2>/dev/null; sudo pkill -9 gdbserver 2>/dev/null; sudo killall -9 Hexapodcpp 2>/dev/null; sleep 0.5; true"
+ssh hexabot "sudo systemctl stop hexabot.service 2>/dev/null; sudo systemctl stop pigpiod 2>/dev/null; sudo pkill -9 gdbserver 2>/dev/null; sudo killall -9 Hexapodcpp 2>/dev/null; sudo killall -9 pigpiod 2>/dev/null; sudo rm -f /var/run/pigpio.pid; sleep 0.5; true"
 echo "  Copying binary..."
 scp Hexapodcpp hexabot:/home/hexabot/
 printf " ${GREEN}Deployment complete!${NC}\n"

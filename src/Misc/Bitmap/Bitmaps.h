@@ -32,6 +32,7 @@ namespace Misc
             static const uint8_t ArrowDown[];
             static const uint8_t ArrowCenter[];
             static const uint8_t Communication[];
+            static const uint8_t Gamepad[];
             static const uint8_t ButtonRelease[];
             static const uint8_t ButtonPush[];
             static const uint8_t SoundLeft[];

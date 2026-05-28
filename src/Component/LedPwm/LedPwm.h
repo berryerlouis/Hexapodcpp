@@ -27,7 +27,7 @@ namespace Component
 
 
         private:
-            void               UpdateSineWave(void);
+            void               UpdateHeartbeat(void);
             Led::LedInterface &mLed;
 
             uint16_t           mDutyCycle;

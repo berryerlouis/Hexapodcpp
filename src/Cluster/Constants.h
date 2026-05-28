@@ -96,9 +96,10 @@ namespace Cluster
         SET_REVERSE,
         GET_STATE_PCA,
         SET_STATE_PCA,
+        GET_SERVO_ALL,
     };
 
-    static constexpr uint8_t NB_COMMANDS_SERVO = 15U;
+    static constexpr uint8_t NB_COMMANDS_SERVO = 16U;
 
 
     enum EProximityCommands {
