@@ -60,7 +60,7 @@ namespace Component
         }
 
         TEST_F(UT_CMP_MPU9150, UpdateNoCalib_Ok) {
-            EXPECT_CALL(mMockTwi, ReadRegister(_, Mpu9150::ERegister::INT_ENABLE, _))
+            EXPECT_CALL(mMockTwi, ReadRegister(_, Mpu9150::ERegister::INT_STATUS, _))
                     .WillOnce(DoAll(SetArgReferee<2U>(true), Return(true)));
             EXPECT_CALL(mMockTwi, ReadRegisters(_, Mpu9150::ERegister::ACCEL_XOUT_H, _, 14U))
                     .WillOnce(Return(true));

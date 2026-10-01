@@ -527,8 +527,8 @@ export default class Panel {
         this.createActionButton(proximityButtons, "Read Right", () => {
             this.sendIfReady(new Message(ClusterName.PROXIMITY, ClusterProximityCommands.US_RIGHT));
         });
-        // Add reset button for proximity trace
-        this.createActionButton(proximityButtons, "Reset Proximity Trace", () => {
+        // Add reset button for the live view and the explored map
+        this.createActionButton(proximityButtons, "Clear map", () => {
             if (this.hexapod && this.hexapod.head && this.hexapod.head.proximity) {
                 this.hexapod.head.proximity.resetTraces();
             }

@@ -27,17 +27,22 @@ namespace Bot
             static constexpr float FEMUR_LENGTH = 8.40;
             static constexpr float TIBIA_LENGTH = 12.70;
 
-            struct SLegIk {
-                Position3d newFootPos;
-                float      coxaFootDist;
-                float      iksw;
-                float      ika1;
-                float      ika2;
-                float      tangle;
-                float      coxaIk;
-                float      femurIk;
-                float      tibiaIk;
+            // Coxa range shared by every move: at the limits two neighbouring legs are parallel,
+            // still 7.7 cm apart at full reach; beyond it they converge and collide.
+            static constexpr float COXA_ANGLE_MIN = 60.0F;
+            static constexpr float COXA_ANGLE_MAX = 120.0F;
+
+            // Servo angles in degrees, neutral pose is 90/90/90.
+            struct SLegAngles {
+                float coxa;
+                float femur;
+                float tibia;
             };
+
+            // Foot position relative to the coxa axis, in the leg frame (x radial,
+            // y tangent, z down). Targets outside the workspace are projected onto it.
+            // Returns false only for non-finite input.
+            static bool SolveIk(const Position3d &foot, SLegAngles &angles);
 
             Leg(const Legs::ELeg legId,
                 ServoInterface  &coxa,
@@ -52,15 +57,13 @@ namespace Bot
 
             Position3d  &GetCurrentPosition(void) final override;
 
-            void         ComputeLerpTarget(const uint64_t           currentTime,
-                                           Misc::Maths::Position3d &position,
-                                           const float              amplitude,
-                                           const float              elevation,
-                                           const float              direction,
-                                           const bool               isRotated,
-                                           const float              rotation,
-                                           const bool               clockWize,
-                                           const uint64_t           timeStamp) final override;
+            void         ComputeTarget(Misc::Maths::Position3d &position,
+                                       const float              amplitude,
+                                       const float              elevation,
+                                       const float              direction,
+                                       const bool               isRotated,
+                                       const float              rotation,
+                                       const bool               clockWize) const final override;
 
             Legs::ELeg   GetId(void) const final override;
 
@@ -77,9 +80,9 @@ namespace Bot
                                  float       angleRotation,
                                  bool        clockwize) const final override;
 
-            void ComputeAmplitude(Position3d &position, uint8_t amplitude) final override;
+            void ComputeAmplitude(Position3d &position, float amplitude) const final override;
 
-            void ComputeElevation(Position3d &position, uint8_t elevation) final override;
+            void ComputeElevation(Position3d &position, float elevation) const final override;
 
             Position3d GetFootPosition(void) const final override;
 
@@ -87,15 +90,16 @@ namespace Bot
 
             float      GetBodyCenterOffsetY(void) const final override;
 
-        public:
-            float      mBodyCenterOffsetX;
-            float      mBodyCenterOffsetY;
-            Position3d mFootPosition;
-            SLegIk     mLegIk;
-            Position3d mStartPos;
-            Position3d mCurrentPos;
-
         private:
+            Core::Status ApplyAngles(const SLegAngles &angles, const uint16_t travelTime);
+
+            // Offsets of the coxa axis from the body center, in cm like the leg lengths.
+            float           mBodyCenterOffsetX;
+            float           mBodyCenterOffsetY;
+            // Direction of the coxa axis in the body frame, atan2(y, x) in radians.
+            float           mMountAngle;
+            Position3d      mFootPosition;
+            Position3d      mCurrentPos;
             Legs::ELeg      mLegId;
             ServoInterface &mCoxa;
             ServoInterface &mFemur;

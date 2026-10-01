@@ -18,17 +18,27 @@ import Hexapod from "../entity/hexapod.ts";
  */
 export default class Keyboard {
     private static readonly DEFAULT_YAW_RATE_DEG = 30;
+    private static readonly COMMAND_KEYS = new Set([
+        'KeyW', 'ArrowUp', 'KeyS', 'ArrowDown', 'KeyA', 'ArrowLeft', 'KeyD', 'ArrowRight',
+        'KeyQ', 'KeyE', 'KeyR', 'Space', 'Enter',
+    ]);
 
     private hexapod: Hexapod;
+    private onCommand: () => void;
 
-    constructor(hexapod: Hexapod) {
+    constructor(hexapod: Hexapod, onCommand: () => void = () => {}) {
         this.hexapod = hexapod;
+        this.onCommand = onCommand;
         document.addEventListener('keydown', (e) => this.onKeyDown(e));
     }
 
     private onKeyDown(event: KeyboardEvent) {
         if (this.isTypingInForm(event.target)) {
             return;
+        }
+
+        if (Keyboard.COMMAND_KEYS.has(event.code)) {
+            this.onCommand();
         }
 
         switch (event.code) {

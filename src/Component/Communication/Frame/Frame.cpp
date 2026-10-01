@@ -111,7 +111,7 @@ namespace Component
     }
 
     uint64_t Frame::Get6BytesParam(const uint8_t index) const {
-        return PTR_TO_UINT56(&this->params[index]);
+        return PTR_TO_UINT48(&this->params[index]);
     }
 
     uint64_t Frame::Get8BytesParam(const uint8_t index) const {

@@ -40,11 +40,9 @@ namespace Service
                 service->DispatchEvent<Core::Status>(
                         service->GetServiceId(), EventType::EVENT_INIT_UPDATE, success);
                 if (success != Core::Status::CORE_OK) {
-#ifdef DEBUG
                     LOG_SERVICE_ERROR("Service id:%s Initialization "
                                       "error.",
                                       EServicesStruct::ServiceIdToString(pair.first).c_str());
-#endif
                 }
             }
             Frame response;

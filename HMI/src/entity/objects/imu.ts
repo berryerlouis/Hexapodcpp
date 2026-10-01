@@ -67,7 +67,7 @@ export default class Imu {
 
             const rootStyle = document.documentElement.style;
             rootStyle.setProperty('--imu-roll', `${this.imuData.ypr.roll.toFixed(2)}deg`);
-            rootStyle.setProperty('--imu-pitch', `${(this.imuData.ypr.pitch * 0.6).toFixed(2)}px`);
+            rootStyle.setProperty('--imu-pitch', `${(this.imuData.ypr.pitch * 1.5).toFixed(2)}px`);
             rootStyle.setProperty('--imu-yaw', `${this.imuData.ypr.yaw.toFixed(2)}deg`);
         });
 

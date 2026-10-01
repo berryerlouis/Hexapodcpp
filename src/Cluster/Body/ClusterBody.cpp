@@ -2,6 +2,13 @@
 
 #include "../../Move/Gait/Constants.h"
 
+namespace
+{
+    int16_t SignedParam(const Cluster::Frame &request, const uint8_t index) {
+        return static_cast<int16_t>(request.Get2BytesParam(index));
+    }
+} // namespace
+
 namespace Cluster
 {
     namespace Body
@@ -36,30 +43,30 @@ namespace Cluster
             if (request.GetCommandId() == EBodyCommands::GET_ALL_PARAMS) {
                 const Move::Walk::EWalkStatus walkStatus = this->mBody.GetWalkStatus();
                 const Move::Gait::GaitType gait = this->mBody.GetGait();
-                const uint8_t  amplitude = this->mBody.GetAmplitude() * 10U;
-                const uint8_t  elevation = this->mBody.GetElevation() * 10U;
-                const uint16_t direction = Misc::Utils::ToDeg(this->mBody.GetDirection());
-                const uint16_t rotation = Misc::Utils::ToDeg(this->mBody.GetRotation());
+                const uint8_t  amplitude = Misc::Utils::RoundTo<uint8_t>(this->mBody.GetAmplitude() * 10.0F);
+                const uint8_t  elevation = Misc::Utils::RoundTo<uint8_t>(this->mBody.GetElevation() * 10.0F);
+                const uint16_t direction = Misc::Utils::RoundTo<uint16_t>(Misc::Utils::ToDeg(this->mBody.GetDirection()));
+                const uint16_t rotation = Misc::Utils::RoundTo<uint16_t>(Misc::Utils::ToDeg(this->mBody.GetRotation()));
                 const bool     clockWize = this->mBody.GetRotationClockWize();
                 const uint16_t duration = this->mBody.GetDuration();
                 success = BuildFrameUpdateAll(
                         response,walkStatus, gait, amplitude, elevation, direction, rotation, clockWize, duration);
             } else if (request.GetCommandId() == EBodyCommands::SET_BODY_POS_ROT) {
-                const Position3d position = {.x = request.Get2BytesParam(0U) / 10.0F,
-                                             .y = request.Get2BytesParam(2U) / 10.0F,
-                                             .z = request.Get2BytesParam(4U) / 10.0F};
-                const Rotation3d rotation = {.angleX = request.Get2BytesParam(6U) / 10.0F,
-                                             .angleY = request.Get2BytesParam(8U) / 10.0F,
-                                             .angleZ = request.Get2BytesParam(10U) / 10.0F};
+                const Position3d position = {.x = SignedParam(request, 0U) / 10.0F,
+                                             .y = SignedParam(request, 2U) / 10.0F,
+                                             .z = SignedParam(request, 4U) / 10.0F};
+                const Rotation3d rotation = {.angleX = SignedParam(request, 6U) / 10.0F,
+                                             .angleY = SignedParam(request, 8U) / 10.0F,
+                                             .angleZ = SignedParam(request, 10U) / 10.0F};
                 const uint16_t   travelTime = request.Get2BytesParam(12U);
                 const uint32_t   successMove =
                         this->mBody.SetBodyPositionRotation(position, rotation, travelTime);
                 success = BuildFrameSetBodyPosition(response, successMove);
             } else if (request.GetCommandId() == EBodyCommands::SET_LEG_POS_ROT) {
                 const uint8_t    legId = request.Get1ByteParam(0U);
-                const Position3d position = {.x = request.Get2BytesParam(1U) / 10.0F,
-                                             .y = request.Get2BytesParam(3U) / 10.0F,
-                                             .z = request.Get2BytesParam(5U) / 10.0F};
+                const Position3d position = {.x = SignedParam(request, 1U) / 10.0F,
+                                             .y = SignedParam(request, 3U) / 10.0F,
+                                             .z = SignedParam(request, 5U) / 10.0F};
                 const uint16_t   travelTime = request.Get2BytesParam(7U);
                 const uint32_t   successMove =
                         this->mBody.SetLegPositionRotation(legId, position, travelTime);
@@ -72,36 +79,44 @@ namespace Cluster
                 success = BuildFrameUpdateWalkStatus(
                         response, this->mBody.GetWalkStatus());
             } else if (request.GetCommandId() == EBodyCommands::GET_DIRECTION) {
-                success = BuildFrameUpdateDirection(response,
-                                                    Misc::Utils::ToDeg(this->mBody.GetDirection()));
+                success = BuildFrameUpdateDirection(
+                        response,
+                        Misc::Utils::RoundTo<uint16_t>(Misc::Utils::ToDeg(this->mBody.GetDirection())));
             } else if (request.GetCommandId() == EBodyCommands::SET_DIRECTION) {
                 const uint16_t direction = request.Get2BytesParam(0U);
                 this->mBody.SetDirection(Misc::Utils::ToRad(direction));
-                success = BuildFrameUpdateDirection(response,
-                                                    Misc::Utils::ToDeg(this->mBody.GetDirection()));
+                success = BuildFrameUpdateDirection(
+                        response,
+                        Misc::Utils::RoundTo<uint16_t>(Misc::Utils::ToDeg(this->mBody.GetDirection())));
             } else if (request.GetCommandId() == EBodyCommands::GET_ROTATION) {
-                success = BuildFrameUpdateRotation(response,
-                                                   Misc::Utils::ToDeg(this->mBody.GetRotation()),
-                                                   this->mBody.GetRotationClockWize());
+                success = BuildFrameUpdateRotation(
+                        response,
+                        Misc::Utils::RoundTo<uint16_t>(Misc::Utils::ToDeg(this->mBody.GetRotation())),
+                        this->mBody.GetRotationClockWize());
             } else if (request.GetCommandId() == EBodyCommands::SET_ROTATION) {
                 const uint16_t rotation = request.Get2BytesParam(0U);
                 const bool     clockWize = static_cast<bool>(request.Get1ByteParam(2U));
                 this->mBody.SetRotation(Misc::Utils::ToRad(rotation), clockWize);
-                success = BuildFrameUpdateRotation(response,
-                                                   Misc::Utils::ToDeg(this->mBody.GetRotation()),
-                                                   this->mBody.GetRotationClockWize());
+                success = BuildFrameUpdateRotation(
+                        response,
+                        Misc::Utils::RoundTo<uint16_t>(Misc::Utils::ToDeg(this->mBody.GetRotation())),
+                        this->mBody.GetRotationClockWize());
             } else if (request.GetCommandId() == EBodyCommands::GET_AMPLITUDE) {
-                success = BuildFrameUpdateAmplitude(response, this->mBody.GetAmplitude() * 10U);
+                success = BuildFrameUpdateAmplitude(
+                        response, Misc::Utils::RoundTo<uint8_t>(this->mBody.GetAmplitude() * 10.0F));
             } else if (request.GetCommandId() == EBodyCommands::SET_AMPLITUDE) {
                 const uint8_t amplitude = request.Get1ByteParam(0U);
                 this->mBody.SetAmplitude(amplitude / 10.0F);
-                success = BuildFrameUpdateAmplitude(response, this->mBody.GetAmplitude() * 10U);
+                success = BuildFrameUpdateAmplitude(
+                        response, Misc::Utils::RoundTo<uint8_t>(this->mBody.GetAmplitude() * 10.0F));
             } else if (request.GetCommandId() == EBodyCommands::GET_ELEVATION) {
-                success = BuildFrameUpdateElevation(response, this->mBody.GetElevation() * 10U);
+                success = BuildFrameUpdateElevation(
+                        response, Misc::Utils::RoundTo<uint8_t>(this->mBody.GetElevation() * 10.0F));
             } else if (request.GetCommandId() == EBodyCommands::SET_ELEVATION) {
                 const uint8_t elevation = request.Get1ByteParam(0U);
                 this->mBody.SetElevation(elevation / 10.0F);
-                success = BuildFrameUpdateElevation(response, this->mBody.GetElevation() * 10U);
+                success = BuildFrameUpdateElevation(
+                        response, Misc::Utils::RoundTo<uint8_t>(this->mBody.GetElevation() * 10.0F));
             } else if (request.GetCommandId() == EBodyCommands::GET_DURATION) {
                 success = BuildFrameUpdateDuration(response, this->mBody.GetDuration());
             } else if (request.GetCommandId() == EBodyCommands::SET_DURATION) {
@@ -111,9 +126,11 @@ namespace Cluster
             } else if (request.GetCommandId() == EBodyCommands::GET_GAIT) {
                 success = BuildFrameUpdateGait(response, this->mBody.GetGait());
             } else if (request.GetCommandId() == EBodyCommands::SET_GAIT) {
-                const Move::Gait::GaitType gait =
-                        static_cast<Move::Gait::GaitType>(request.Get1ByteParam(0U));
-                this->mBody.SetGait(gait);
+                const uint8_t gaitId = request.Get1ByteParam(0U);
+                if (gaitId >= static_cast<uint8_t>(Move::Gait::GaitType::NB_GAITS)) {
+                    return Core::Status::CORE_ERROR_ARGUMENT;
+                }
+                this->mBody.SetGait(static_cast<Move::Gait::GaitType>(gaitId));
                 success = BuildFrameUpdateGait(response, this->mBody.GetGait());
             }
             return success;

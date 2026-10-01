@@ -8,14 +8,12 @@ namespace Move
     {
         class MockGaitStrategy : public GaitStrategy {
         public:
-            MOCK_CONST_METHOD7(doGaitStrategy,
-                               void(const bool,
-                                    const uint64_t,
-                                    std::map<Bot::Legs::ELeg, Bot::Leg::Leg> &,
-                                    const Move::Gait::GaitParams &,
-                                    const std::vector<std::vector<Misc::Maths::Position3d>> &,
-                                    const uint8_t,
-                                    const float));
+            MOCK_METHOD5(doGaitStrategy,
+                         void(std::map<Bot::Legs::ELeg, Bot::Leg::Leg> &,
+                              const Move::Gait::GaitParams &,
+                              const Move::Gait::GaitTrajectory &,
+                              const float,
+                              const float));
         };
     } // namespace Gait
 } // namespace Move

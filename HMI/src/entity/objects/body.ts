@@ -1,17 +1,16 @@
 import {
-    BoxGeometry,
-    CylinderGeometry,
     ExtrudeGeometry,
-    Mesh,
-    MeshStandardMaterial,
     Object3D,
+    Path,
     Shape,
+    Vector2,
 } from 'three'
 import Legs from "./legs.ts";
 import Socket from "../../communication/socket.ts";
 import { ClusterName } from "../../communication/clusters/clusterType.ts";
 import { ClusterServoCommands } from "../../communication/clusters/clusterServo.ts";
 import Message from "../../communication/message.ts";
+import { LEG, Mat, ModelBuilder } from "./materials.ts";
 
 interface BodyStruct {
     width: number;
@@ -21,13 +20,66 @@ interface BodyStruct {
     color: string;
 }
 
+function convexHull(points: Vector2[]): Vector2[] {
+    const sorted = [...points].sort((a, b) => a.x - b.x || a.y - b.y);
+    const cross = (o: Vector2, a: Vector2, b: Vector2) => (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+    const lower: Vector2[] = [];
+    for (const p of sorted) {
+        while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], p) <= 0) lower.pop();
+        lower.push(p);
+    }
+    const upper: Vector2[] = [];
+    for (let i = sorted.length - 1; i >= 0; i--) {
+        const p = sorted[i];
+        while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], p) <= 0) upper.pop();
+        upper.push(p);
+    }
+    lower.pop();
+    upper.pop();
+    return lower.concat(upper);
+}
+
+// Convex outline made of one circle of the given radius around each point.
+function roundedHull(points: [number, number][], radius: number, samples = 20): Vector2[] {
+    const cloud: Vector2[] = [];
+    for (const [px, py] of points) {
+        for (let i = 0; i < samples; i++) {
+            const t = (Math.PI * 2 * i) / samples;
+            cloud.push(new Vector2(px + radius * Math.cos(t), py + radius * Math.sin(t)));
+        }
+    }
+    return convexHull(cloud);
+}
+
+function roundedRect(cx: number, cy: number, w: number, h: number, r: number): Path {
+    const x = cx - w / 2;
+    const y = cy - h / 2;
+    const p = new Path();
+    p.moveTo(x + r, y);
+    p.lineTo(x + w - r, y);
+    p.quadraticCurveTo(x + w, y, x + w, y + r);
+    p.lineTo(x + w, y + h - r);
+    p.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    p.lineTo(x + r, y + h);
+    p.quadraticCurveTo(x, y + h, x, y + h - r);
+    p.lineTo(x, y + r);
+    p.quadraticCurveTo(x, y, x + r, y);
+    return p;
+}
+
+function roundHole(cx: number, cy: number, r: number): Path {
+    const p = new Path();
+    p.absarc(cx, cy, r, 0, Math.PI * 2, true);
+    return p;
+}
+
 export default class Body extends Object3D {
 
     interval: number | null = null;
     params: BodyStruct = {
-        width: 1.4,
-        widthMiddle: 1.8,
-        height: 2,
+        width: 0.8,
+        widthMiddle: 1.3,
+        height: 1.5,
         thickness: 0.2,
         color: '#515151'
     }
@@ -104,98 +156,129 @@ export default class Body extends Object3D {
         });
     }
 
+    // Capers II frame: two CNC aluminium plates held 50 mm apart by six brass standoffs. The coxa
+    // servo horns bolt to the top plate and the bearings ride in the bottom plate. The electronics
+    // hang under the top plate and the battery is strapped under the bottom plate.
     drawBody(): void {
-        // Capers II inspired chassis: two flat hex plates separated by visible
-        // standoffs at each of the six leg mounts, with servo blocks on the
-        // lower plate and an electronics / battery stack on the upper deck.
-        const plateMat = new MeshStandardMaterial({ color: '#d8dadc', metalness: 0.35, roughness: 0.55 });
-        const standoffMat = new MeshStandardMaterial({ color: '#c9a24a', metalness: 0.9,  roughness: 0.25 });
-        const boardMat = new MeshStandardMaterial({ color: '#1f5d3a', metalness: 0.15, roughness: 0.75 });
-        const batteryMat = new MeshStandardMaterial({ color: '#23272b', metalness: 0.2,  roughness: 0.8  });
-        const ledMat = new MeshStandardMaterial({ color: '#ff3030', metalness: 0.1,  roughness: 0.3, emissive: '#ff1010', emissiveIntensity: 0.6 });
+        const y0 = this.y;
+        const h = this.params.height;
+        const w = this.params.width;
+        const wm = this.params.widthMiddle;
+        const T = LEG.plateThickness;
+        const topY = y0 - LEG.topPlateZ;
+        const bottomY = y0 - LEG.bottomPlateZ;
 
-        const h = this.params.height;       // body length (X)
-        const w = this.params.width;        // body width at front/back corners (Z)
-        const wm = this.params.widthMiddle; // body width at middle mounts (Z)
-        const t = this.params.thickness;
-
-        // Mount points ordered CCW around the body perimeter so they form a
-        // valid simple polygon for the chassis plate footprint.
-        const mountPoints: [number, number][] = [
-            [ h / 2, -w / 2 ],   // Front Left
-            [ h / 2,  w / 2 ],   // Front Right
-            [ 0,     wm / 2 ],   // Middle Right
-            [-h / 2,  w / 2 ],   // Back Right
-            [-h / 2, -w / 2 ],   // Back Left
-            [ 0,    -wm / 2 ],   // Middle Left
+        const mounts: [number, number][] = [
+            [ h / 2, -w / 2 ],
+            [ h / 2,  w / 2 ],
+            [ 0,      wm / 2 ],
+            [-h / 2,  w / 2 ],
+            [-h / 2, -w / 2 ],
+            [ 0,     -wm / 2 ],
         ];
+        const outline = roundedHull(mounts, 0.19);
 
-        const plateThick = t * 0.45;
-        const lowerY = this.y + plateThick / 2;
-        const standoffHeight = t * -1.8;
-        const upperY = lowerY + plateThick / 2 + standoffHeight + plateThick / 2;
-
-        // Build a polygon footprint that reaches slightly past every leg mount
-        // so the chassis plate visibly meets each coxa, including the corners.
-        const outwardMargin = 0.22;
-        const outline = mountPoints.map<[number, number]>(([mx, mz]) => {
-            const len = Math.hypot(mx, mz) || 1;
-            return [mx + (mx / len) * outwardMargin, mz + (mz / len) * outwardMargin];
-        });
-
-        const makePlateGeom = (pts: [number, number][], thick: number): ExtrudeGeometry => {
-            const shape = new Shape();
-            shape.moveTo(pts[0][0], pts[0][1]);
-            for (let i = 1; i < pts.length; i++) shape.lineTo(pts[i][0], pts[i][1]);
-            shape.closePath();
-            const geom = new ExtrudeGeometry(shape, { depth: thick, bevelEnabled: false });
-            // Shape lives in XY with extrusion along +Z; rotate so the plate
-            // lies in the XZ plane with thickness along Y, then centre it.
-            geom.rotateX(-Math.PI / 2);
-            geom.translate(0, thick / 2, 0);
-            return geom;
+        // Shape y maps to world -z; every hole below is symmetric in z.
+        const makePlate = (holes: Path[]): ExtrudeGeometry => {
+            const shape = new Shape(outline.map((p) => new Vector2(p.x, -p.y)));
+            shape.holes.push(...holes);
+            const geometry = new ExtrudeGeometry(shape, {
+                depth: T - 0.008,
+                bevelEnabled: true,
+                bevelThickness: 0.004,
+                bevelSize: 0.004,
+                bevelSegments: 1,
+                curveSegments: 8,
+            });
+            geometry.rotateX(-Math.PI / 2);
+            geometry.translate(0, -(T - 0.008) / 2, 0);
+            return geometry;
         };
 
-        // --- Lower chassis plate ---------------------------------------------
-        const lowerPlate = new Mesh(makePlateGeom(outline, plateThick), plateMat);
-        lowerPlate.position.set(this.x, lowerY, 0);
-        this.add(lowerPlate);
+        const b = new ModelBuilder();
+        b.add(makePlate([roundedRect(0, 0, 0.58, 0.24, 0.05), roundHole(-0.72, 0, 0.04)]), Mat.alu, 0, topY, 0);
+        b.add(makePlate([roundedRect(-0.25, 0, 0.05, 0.3, 0.02), roundedRect(0.25, 0, 0.05, 0.3, 0.02)]), Mat.alu, 0, bottomY, 0);
 
-        // --- Brass standoffs connecting lower and upper plates ---------------
-        const standoffGeom = new CylinderGeometry(0.03, 0.03, standoffHeight, 10);
-        for (const [mx, mz] of mountPoints) {
-            const standoffR = 0.78;
-            const standoff = new Mesh(standoffGeom, standoffMat);
-            standoff.position.set(
-                this.x + mx * standoffR,
-                lowerY + plateThick / 2 + standoffHeight / 2 + plateThick,
-                mz * standoffR,
-            );
-            this.add(standoff);
+        // Standoffs with screw heads on both plates.
+        const standoffLength = topY - bottomY - T;
+        const standoffs: [number, number][] = [[0.5, 0.3], [0.5, -0.3], [-0.5, 0.3], [-0.5, -0.3], [0, 0.28], [0, -0.28]];
+        for (const [sx, sz] of standoffs) {
+            b.cyl(0.03, standoffLength, Mat.brass, sx, (topY + bottomY) / 2, sz, 'y', 6);
+            b.cyl(0.028, 0.012, Mat.steel, sx, topY + T / 2 + 0.006, sz, 'y', 12);
+            b.cyl(0.028, 0.012, Mat.steel, sx, bottomY - T / 2 - 0.006, sz, 'y', 12);
         }
 
-        // --- Upper deck plate (slightly inset) -------------------------------
-        const upperOutline = outline.map<[number, number]>(([px, pz]) => [px * 0.93, pz * 0.93]);
-        const upperPlate = new Mesh(makePlateGeom(upperOutline, plateThick), plateMat);
-        upperPlate.position.set(this.x, upperY, 0);
-        this.add(upperPlate);
+        // Horn screws around every coxa mount.
+        for (const [mx, mz] of mounts) {
+            for (let i = 0; i < 4; i++) {
+                const a = Math.PI / 4 + (Math.PI / 2) * i;
+                b.cyl(0.011, 0.008, Mat.steel, mx + Math.cos(a) * 0.085, topY + T / 2 + 0.004, mz + Math.sin(a) * 0.085, 'y', 8);
+            }
+        }
 
-        // Controller board (PCB) sitting on the upper deck, slightly toward the back
-        const board = new Mesh(
-            new BoxGeometry(h * 0.55, plateThick * 0.3, w * 0.5),
-            boardMat,
-        );
-        board.position.set(this.x - h * 0.05, upperY + plateThick / 2 + plateThick * 0.3 + 0.35, 0);
-        this.add(board);
+        // Push button (BP) and status LEDs on the top plate.
+        b.cyl(0.04, 0.04, Mat.steel, -0.72, topY + T / 2 + 0.01, 0, 'y', 20);
+        b.cyl(0.028, 0.03, Mat.ledCyan, -0.72, topY + T / 2 + 0.045, 0, 'y', 20);
+        b.cyl(0.012, 0.02, Mat.ledRed, 0.62, topY + T / 2 + 0.01, -0.12, 'y', 10);
+        b.cyl(0.012, 0.02, Mat.ledGreen, 0.62, topY + T / 2 + 0.01, 0.12, 'y', 10);
 
-        // Status LED on the board
-        const led = new Mesh(new CylinderGeometry(0.01, 0.01, 0.04, 10), ledMat);
-        led.position.set(this.x - h * 0.05 + h * 0.2, upperY + plateThick / 2 + plateThick * 0.6+0.35, -w * 0.2);
-        this.add(led);
+        this.addElectronics(b, topY - T / 2);
+        this.addBattery(b, bottomY - T / 2);
+        b.build(this);
     }
 
-    update() {
-        this.members?.update();
+    // Boards hang under the top plate, components facing up so the cut-out shows them.
+    private addElectronics(b: ModelBuilder, plateUnderside: number) {
+        const standoff = (x: number, y: number, z: number, length: number) =>
+            b.cyl(0.014, length, Mat.nylon, x, y, z, 'y', 8);
+
+        // Raspberry Pi Zero 2 W
+        const piY = plateUnderside - 0.07;
+        b.box(0.65, 0.016, 0.3, Mat.pcbGreen, 0, piY, 0);
+        b.box(0.13, 0.022, 0.13, Mat.silver, -0.08, piY + 0.019, 0);
+        b.box(0.5, 0.03, 0.05, Mat.black, 0.02, piY + 0.023, -0.1);
+        b.box(0.1, 0.022, 0.12, Mat.silver, 0.27, piY + 0.019, 0);
+        b.box(0.06, 0.02, 0.05, Mat.silver, -0.2, piY + 0.018, 0.14);
+        b.box(0.06, 0.02, 0.05, Mat.silver, -0.1, piY + 0.018, 0.14);
+        for (const sx of [-0.3, 0.3]) {
+            for (const sz of [-0.12, 0.12]) {
+                standoff(sx, piY + 0.04, sz, 0.065);
+            }
+        }
+
+        // Two PCA9685 servo drivers stacked under the Pi
+        for (const [i, color] of [[0, Mat.pcbBlue], [1, Mat.pcbBlue]] as const) {
+            const py = piY - 0.075 * (i + 1);
+            b.box(0.625, 0.016, 0.254, color, 0, py, 0);
+            b.box(0.12, 0.05, 0.07, Mat.terminal, -0.25, py + 0.033, 0.07);
+            b.box(0.52, 0.03, 0.06, Mat.black, 0.03, py + 0.023, -0.09);
+            b.box(0.05, 0.018, 0.05, Mat.black, 0.22, py + 0.017, 0.07);
+            for (const sx of [-0.28, 0.28]) {
+                standoff(sx, py + 0.037, 0.1, 0.06);
+            }
+        }
+
+        // IMU / barometer breakout
+        b.box(0.2, 0.012, 0.13, Mat.pcbPurple, 0.38, piY + 0.04, 0.02);
+        b.box(0.06, 0.016, 0.06, Mat.black, 0.38, piY + 0.054, 0.02);
+        standoff(0.38, piY + 0.075, 0.02, 0.03);
+    }
+
+    private addBattery(b: ModelBuilder, plateBottom: number) {
+        const bh = 0.19;
+        const cy = plateBottom - bh / 2;
+        b.box(0.95, bh, 0.34, Mat.battery, 0, cy, 0);
+        b.box(0.5, bh + 0.002, 0.2, Mat.pcbBlue, -0.05, cy, 0);
+        for (const sx of [-0.25, 0.25]) {
+            b.box(0.06, bh + 0.02, 0.36, Mat.strap, sx, cy, 0);
+        }
+        b.box(0.05, 0.05, 0.07, Mat.xt60, -0.5, cy, 0);
+        b.cyl(0.012, 0.18, Mat.wireRed, -0.5, cy + 0.04, -0.02, 'x', 8);
+        b.cyl(0.012, 0.18, Mat.black, -0.5, cy + 0.04, 0.02, 'x', 8);
+    }
+
+    update(dt: number = 1 / 60) {
+        this.members?.update(dt);
     }
 
     setDirection(direction: number) {

@@ -8,22 +8,13 @@ import { HexapodStruct } from "../entity/hexapod.ts";
 
 export default class DirectionArrow extends Object3D {
     socket: Socket;
-    right: HTMLElement;
-    forward: HTMLElement;
-    left: HTMLElement;
-    backward: HTMLElement;
     stop: HTMLElement;
-    frontLeft: HTMLElement | null;
-    frontRight: HTMLElement | null;
-    backLeft: HTMLElement | null;
-    backRight: HTMLElement | null;
     enable: HTMLElement;
     speedControl: HTMLInputElement | null;
     speedValue: HTMLElement | null;
     rotationControl: HTMLInputElement | null;
     rotationValue: HTMLElement | null;
     gaitSelect: HTMLSelectElement | null;
-    directionButtons: HTMLElement[];
     circle: Mesh;
     hexapodStruct: HexapodStruct;
 
@@ -31,32 +22,13 @@ export default class DirectionArrow extends Object3D {
         super();
         this.socket = socket;
         this.hexapodStruct = hexapodStruct;
-        this.forward = document.getElementById('forward')!;
-        this.right = document.getElementById('right')!;
-        this.left = document.getElementById('left')!;
-        this.backward = document.getElementById('backward')!;
         this.stop = document.getElementById('stop')!;
-        this.frontLeft = document.getElementById('joy-nw');
-        this.frontRight = document.getElementById('joy-ne');
-        this.backLeft = document.getElementById('joy-sw');
-        this.backRight = document.getElementById('joy-se');
         this.enable = document.getElementById('enable')!;
         this.speedControl = document.getElementById('cockpit-speed') as HTMLInputElement | null;
         this.speedValue = document.getElementById('cockpit-speed-value');
         this.rotationControl = document.getElementById('cockpit-rotation') as HTMLInputElement | null;
         this.rotationValue = document.getElementById('cockpit-rotation-value');
         this.gaitSelect = document.getElementById('cockpit-gait') as HTMLSelectElement | null;
-        this.directionButtons = [
-            this.frontLeft,
-            this.forward,
-            this.frontRight,
-            this.left,
-            this.stop,
-            this.right,
-            this.backLeft,
-            this.backward,
-            this.backRight,
-        ].filter((button): button is HTMLElement => button !== null);
 
         this.initializeButtons();
         this.syncMotionControls();
@@ -99,29 +71,6 @@ export default class DirectionArrow extends Object3D {
                 [0xFF, 0xFFFF],
             ),
         );
-    }
-
-    private updateDirectionSelection(selected: HTMLElement | null) {
-        this.directionButtons.forEach((button) => button.classList.remove('select'));
-        if (selected) {
-            selected.classList.add('select');
-        }
-    }
-
-    private sendDirection(angleDeg: number, selected: HTMLElement | null) {
-        this.updateDirectionSelection(selected);
-        this.hexapodStruct.turningRate = 0;
-        this.socket.write(
-            new Message(
-                ClusterName.BODY,
-                ClusterBodyCommands.SET_ROTATION,
-                [0, this.hexapodStruct.clockwise ? 1 : 0],
-                [0xFFFF, 0xFF],
-            ),
-        );
-        this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_DIRECTION, [angleDeg], [0xFFFF]));
-        this.setWalkStatus(true);
-        this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS));
     }
 
     private speedPercentFromDuration(duration: number): number {
@@ -167,32 +116,7 @@ export default class DirectionArrow extends Object3D {
     }
 
     initializeButtons() {
-        this.forward.addEventListener('click', () => {
-            this.sendDirection(0, this.forward);
-        });
-        this.frontRight?.addEventListener('click', () => {
-            this.sendDirection(315, this.frontRight);
-        });
-        this.right.addEventListener('click', () => {
-            this.sendDirection(270, this.right);
-        });
-        this.backRight?.addEventListener('click', () => {
-            this.sendDirection(225, this.backRight);
-        });
-        this.left.addEventListener('click', () => {
-            this.sendDirection(90, this.left);
-        });
-        this.frontLeft?.addEventListener('click', () => {
-            this.sendDirection(45, this.frontLeft);
-        });
-        this.backward.addEventListener('click', () => {
-            this.sendDirection(180, this.backward);
-        });
-        this.backLeft?.addEventListener('click', () => {
-            this.sendDirection(135, this.backLeft);
-        });
         this.stop.addEventListener('click', () => {
-            this.updateDirectionSelection(this.stop);
             this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_DIRECTION, [0], [0xFFFF]));
             this.setWalkStatus(false);
             this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.GET_ALL_PARAMS));

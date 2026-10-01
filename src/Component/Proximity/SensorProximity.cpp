@@ -7,15 +7,19 @@ namespace Component
         SensorProximity::SensorProximity(SensorProximityInterface &srf05Left,
                                          SensorProximityInterface &srf05Right,
                                          SensorProximityInterface &vl53lxx)
-            : mSensors{&srf05Left, &srf05Right, &vl53lxx} {
+            : mSensors{&srf05Left, &srf05Right, &vl53lxx}
+            , mReady{false, false, false}
+            , mNextUltrasound(SRF_LEFT) {
         }
 
         Core::Status SensorProximity::Initialize() {
             uint8_t success = 0U;
 
-            for (SensorProximityInterface *sensor: this->mSensors) {
+            for (uint8_t id = 0U; id < NB_SENSORS; id++) {
+                SensorProximityInterface *sensor = this->mSensors[id];
                 if (sensor->Initialize() == Core::Status::CORE_OK) {
                     sensor->Attach(this);
+                    this->mReady[id] = true;
                     success++;
                 }
             }
@@ -29,14 +33,16 @@ namespace Component
             this->Notify(sensor);
         }
 
-        size_t sensorId = 0U;
-
-        void   SensorProximity::Update(const uint64_t currentTime) {
-            (void)currentTime;
-            //this->mSensors[sensorId++]->Update(currentTime);
-            if (sensorId == NB_SENSORS) {
-                sensorId = 0U;
+        void SensorProximity::Update(const uint64_t currentTime) {
+            // The ToF has no acoustic crosstalk, so it is polled every tick; the two ultrasound
+            // sensors take turns.
+            if (this->mReady[VLX]) {
+                this->mSensors[VLX]->Update(currentTime);
             }
+            if (this->mReady[this->mNextUltrasound]) {
+                this->mSensors[this->mNextUltrasound]->Update(currentTime);
+            }
+            this->mNextUltrasound = (this->mNextUltrasound == SRF_LEFT) ? SRF_RIGHT : SRF_LEFT;
         }
 
         uint16_t SensorProximity::GetDistance(const SensorsId &sensorId) {

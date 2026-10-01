@@ -1,38 +1,35 @@
-import {AmbientLight, DirectionalLight, PointLight, Object3D, Vector2} from 'three'
+import {DirectionalLight, HemisphereLight, Object3D} from 'three'
 import Hexapod from "../entity/hexapod.ts";
 
 export default class Light extends Object3D {
     constructor() {
         super()
-        // Soft fill for overall visibility
-        const ambient = new AmbientLight('#FFFFFF', 1.4);
+        const hemisphere = new HemisphereLight('#a9c4e8', '#1b222c', 0.7);
 
-        // Key light — main illumination from top-front-left
-        const keyLight = new PointLight('#FFFFFF', 120, 40);
-        keyLight.position.set(-4, 9, 5);
-        keyLight.castShadow = true;
-        keyLight.shadow.bias = -0.001;
-        keyLight.shadow.mapSize = new Vector2(2048, 2048);
+        const key = new DirectionalLight('#fff1dc', 2.6);
+        key.position.set(-5, 9, 6);
+        key.castShadow = true;
+        key.shadow.mapSize.set(2048, 2048);
+        key.shadow.camera.left = -4.5;
+        key.shadow.camera.right = 4.5;
+        key.shadow.camera.top = 4.5;
+        key.shadow.camera.bottom = -4.5;
+        key.shadow.camera.near = 1;
+        key.shadow.camera.far = 30;
+        key.shadow.bias = -0.0004;
+        key.shadow.normalBias = 0.02;
 
-        // Fill light — warm tone from opposite side to reduce harsh shadows
-        const fillLight = new PointLight('#c8d8f0', 40, 30);
-        fillLight.position.set(5, 4, -3);
+        const rim = new DirectionalLight('#5ab0ff', 1.6);
+        rim.position.set(5, 4, -8);
 
-        // Rim light — cool blue from behind for silhouette definition
-        const rimLight = new PointLight('#4a90d9', 25, 25);
-        rimLight.position.set(0, -1, -7);
+        const fill = new DirectionalLight('#ffd7a8', 0.5);
+        fill.position.set(7, 2, 5);
 
-        // Ground bounce — subtle warm uplight
-        const bounceLight = new DirectionalLight('#ffd580', 0.3);
-        bounceLight.position.set(0, -5, 0);
-        bounceLight.target.position.set(0, 0, 0);
-
-        this.add(ambient);
-        this.add(keyLight);
-        this.add(fillLight);
-        this.add(rimLight);
-        this.add(bounceLight);
-        this.add(bounceLight.target);
+        this.add(hemisphere);
+        this.add(key);
+        this.add(key.target);
+        this.add(rim);
+        this.add(fill);
     }
 
     update(hexapod: Hexapod) {

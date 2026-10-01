@@ -1,8 +1,9 @@
-import {BoxGeometry, CylinderGeometry, Mesh, MeshPhongMaterial, Object3D} from 'three'
+import { Object3D } from 'three'
 import Socket from "../../communication/socket.ts";
 import {ClusterName} from "../../communication/clusters/clusterType.ts";
 import {ClusterServoCommands} from "../../communication/clusters/clusterServo.ts";
 import Message from "../../communication/message.ts";
+import { Mat, ModelBuilder } from "./materials.ts";
 
 export interface ServoStruct {
     name: string;
@@ -22,6 +23,7 @@ export default class Servo extends Object3D {
     readonly width: number = 0.09;
     servoData: ServoStruct;
     socket: Socket;
+    private shownAngle = Number.NaN;
 
     constructor(name: string, id: number, x: number, y: number, z: number, socket: Socket) {
         super()
@@ -29,57 +31,41 @@ export default class Servo extends Object3D {
         this.y = y;
         this.z = z;
         this.socket = socket;
-        this.servoData = {name: name, angle: 90, status: false, id: id, min: 0, max: 180};
+        this.servoData = {name: name, angle: 90, offset: 0, status: false, id: id, min: 0, max: 180, reversed: false};
 
-        // Hitec HS-645MG style standard servo (Capers II uses these).
-        // Dimensions roughly mirror the real ~40 x 20 x 38 mm body, scaled to scene units.
-        const caseW = 0.18; // length along X (long side)
-        const caseD = 0.09; // depth along Z (short side)
-        const caseH = 0.20; // total height along Y
-        const caseMat = new MeshPhongMaterial({color: '#1a1a1a', shininess: 30});
-        const caseGeom = new BoxGeometry(caseW, caseH, caseD);
-        const body = new Mesh(caseGeom, caseMat);
-        this.add(body);
-
-        // Top gear housing — small raised box on the horn side
-        const gearHousingMat = new MeshPhongMaterial({color: '#2a2a2a', shininess: 20});
-        const gearHousing = new Mesh(
-            new BoxGeometry(caseW * 0.55, 0.035, caseD),
-            gearHousingMat
-        );
-        gearHousing.position.set(-caseW * 0.225, caseH / 2 + 0.0175, 0);
-        this.add(gearHousing);
-
-        // Mounting tabs / flanges sticking out on each long side
-        const tabMat = new MeshPhongMaterial({color: '#1a1a1a', shininess: 30});
-        const tab = new Mesh(
-            new BoxGeometry(caseW * 1.5, 0.012, caseD),
-            tabMat
-        );
-        tab.position.set(0, caseH * 0.18, 0);
-        this.add(tab);
-
-        // Servo horn / wheel — white circular disc on top of the gear shaft.
-        // This is the "wheel" that bolts to the next bracket.
-        const hornMat = new MeshPhongMaterial({color: '#f2f2f2', shininess: 80});
-        const horn = new Mesh(
-            new CylinderGeometry(0.075, 0.075, 0.018, 28),
-            hornMat
-        );
-        horn.position.set(-caseW * 0.225, caseH / 2 + 0.035 + 0.009, 0);
-        this.add(horn);
-
-        // Horn center hub (slightly raised) + retaining screw
-        const hubMat = new MeshPhongMaterial({color: '#d0d0d0', shininess: 60});
-        const hub = new Mesh(
-            new CylinderGeometry(0.022, 0.022, 0.012, 16),
-            hubMat
-        );
-        hub.position.set(-caseW * 0.225, caseH / 2 + 0.035 + 0.018 + 0.006, 0);
-        this.add(hub);
-
+        this.buildModel();
         this.position.set(x, y, z);
         this.addServoCallbacks();
+    }
+
+    // Hitec HS-645MG. Model frame: output shaft on +Y, case length along +X (shaft 1 cm from the end),
+    // width along Z, origin on the shaft axis at the top face of the case.
+    private buildModel() {
+        const L = 0.406;
+        const W = 0.198;
+        const shaftOffset = 0.1;
+        const cx = -shaftOffset + L / 2;
+        const b = new ModelBuilder();
+
+        b.box(L, 0.326, W, Mat.servo, cx, -0.203, 0);
+        b.cyl(0.099, 0.04, Mat.servoCap, 0, -0.02, 0, 'y', 28);
+        b.box(0.2, 0.04, W, Mat.servoCap, 0.1, -0.02, 0);
+        b.cyl(0.05, 0.012, Mat.steel, 0, 0.006, 0, 'y', 16);
+        b.cyl(0.118, 0.016, Mat.horn, 0, 0.02, 0, 'y', 36);
+        b.cyl(0.026, 0.01, Mat.steel, 0, 0.033, 0, 'y', 12);
+
+        b.box(0.548, 0.026, W, Mat.servo, cx, -0.12, 0);
+        for (const sx of [-1, 1]) {
+            for (const sz of [-1, 1]) {
+                b.cyl(0.014, 0.008, Mat.steel, cx + sx * 0.235, -0.103, sz * 0.07, 'y', 10);
+            }
+        }
+
+        b.box(0.05, 0.08, 0.11, Mat.black, cx + L / 2 + 0.02, -0.3, 0);
+        b.plane(0.26, 0.1, Mat.servoLabel, cx, -0.25, W / 2 + 0.001);
+        b.plane(0.26, 0.1, Mat.servoLabel, cx, -0.25, -W / 2 - 0.001, true);
+
+        b.build(this);
     }
 
     addServoCallbacks() {
@@ -111,5 +97,14 @@ export default class Servo extends Object3D {
 
     getAngle(): number {
         return  (((this.servoData.angle - 90) * -1) + 90);
+    }
+
+    // Angles arrive a few times per second; ease toward them so the legs move continuously.
+    smooth(dt: number): number {
+        const target = this.getAngle();
+        this.shownAngle = Number.isNaN(this.shownAngle)
+            ? target
+            : this.shownAngle + (target - this.shownAngle) * (1 - Math.exp(-dt * 18));
+        return this.shownAngle;
     }
 }

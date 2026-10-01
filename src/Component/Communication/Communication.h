@@ -34,7 +34,7 @@ namespace Component
             virtual void         Notified(const Socket::SocketStruct &state) final override;
 
         private:
-            static constexpr size_t RX_QUEUE_CAPACITY = 16U;
+            static constexpr size_t RX_QUEUE_CAPACITY = 32U;
 
             Core::Status            PushReceivedFrame(const Frame &frame);
 

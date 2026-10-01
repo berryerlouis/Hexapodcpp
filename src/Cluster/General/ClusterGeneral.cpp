@@ -34,6 +34,7 @@ namespace Cluster
                 success = BuildFrameGetMaxTime(
                         Service::EServices::GENERAL, this->mSoftware.GetMaxTime(), response);
             } else if (request.GetCommandId() == EGeneralCommands::RESET_EXECUTION_TIME) {
+                this->mSoftware.ResetTime();
                 success = BuildFrameResetTime(Service::EServices::GENERAL, response);
             }
             return success;

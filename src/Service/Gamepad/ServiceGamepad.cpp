@@ -14,11 +14,12 @@ namespace Service
         static constexpr float    DEFAULT_AMPLITUDE      = 0.0F;
         static constexpr float    DEFAULT_ROTATION_ANGLE = 0.0F;
         // Step duration is bumped by L1 / R1 between these bounds.
-        static constexpr uint16_t MIN_DURATION_MS        = 600U;
+        static constexpr uint16_t MIN_DURATION_MS        = 1000U;
         static constexpr uint16_t MAX_DURATION_MS        = 3000U;
         static constexpr uint16_t DURATION_STEP_MS       = 200U;
-        // Body elevation bump on D-pad up / down.
-        static constexpr float    ELEVATION_STEP         = 5.0F;
+        // Body elevation bump on D-pad up / down, bounded like GaitParams elevation.
+        static constexpr float    ELEVATION_STEP         = 0.5F;
+        static constexpr float    ELEVATION_MAX          = 3.0F;
         // Stop-to-start transition time.
         static constexpr uint16_t WALK_TRANSITION_MS     = 1000U;
 
@@ -56,10 +57,10 @@ namespace Service
             Frame asyncStatus;
             const Move::Walk::EWalkStatus walkStatus = this->mBody.GetWalkStatus();
             const Move::Gait::GaitType gait = this->mBody.GetGait();
-            const uint8_t  amplitude = this->mBody.GetAmplitude() * 10U;
-            const uint8_t  elevation = this->mBody.GetElevation() * 10U;
-            const uint16_t direction = Misc::Utils::ToDeg(this->mBody.GetDirection());
-            const uint16_t rotation = Misc::Utils::ToDeg(this->mBody.GetRotation());
+            const uint8_t  amplitude = Misc::Utils::RoundTo<uint8_t>(this->mBody.GetAmplitude() * 10.0F);
+            const uint8_t  elevation = Misc::Utils::RoundTo<uint8_t>(this->mBody.GetElevation() * 10.0F);
+            const uint16_t direction = Misc::Utils::RoundTo<uint16_t>(Misc::Utils::ToDeg(this->mBody.GetDirection()));
+            const uint16_t rotation = Misc::Utils::RoundTo<uint16_t>(Misc::Utils::ToDeg(this->mBody.GetRotation()));
             const bool     clockWize = this->mBody.GetRotationClockWize();
             const uint16_t duration = this->mBody.GetDuration();
             Cluster::Body::ClusterBody::BuildFrameUpdateAll(asyncStatus, walkStatus, gait, amplitude, elevation, direction, rotation, clockWize, duration);
@@ -82,9 +83,16 @@ namespace Service
 
             const float magnitude = std::sqrt((lx * lx) + (ly * ly));
             if (magnitude > 0.0F) {
-                // atan2 -> radians; convert to degrees (0..360) so it matches the rest of the API.
-                float angleDeg = std::atan2(ly, lx) * 180.0F / static_cast<float>(M_PI);
-                this->mBody.SetDirection(angleDeg);
+                // Gait direction is in radians in [0, 2pi), counter-clockwise, 0 = forward.
+                constexpr float TWO_PI = 2.0F * static_cast<float>(M_PI);
+                float           angle = std::atan2(-lx, ly);
+                if (angle < 0.0F) {
+                    angle += TWO_PI;
+                }
+                if (angle >= TWO_PI) {
+                    angle = 0.0F;
+                }
+                this->mBody.SetDirection(angle);
                 this->mBody.SetAmplitude(magnitude > 1.0F ? 1.0F : magnitude);
             } else {
                 this->mBody.SetAmplitude(DEFAULT_AMPLITUDE);
@@ -161,10 +169,12 @@ namespace Service
             }
 
             if (edgeDUp) {
-                this->mBody.SetElevation(this->mBody.GetElevation() + ELEVATION_STEP);
+                const float elevation = this->mBody.GetElevation() + ELEVATION_STEP;
+                this->mBody.SetElevation(elevation > ELEVATION_MAX ? ELEVATION_MAX : elevation);
             }
             if (edgeDDown) {
-                this->mBody.SetElevation(this->mBody.GetElevation() - ELEVATION_STEP);
+                const float elevation = this->mBody.GetElevation() - ELEVATION_STEP;
+                this->mBody.SetElevation(elevation < 0.0F ? 0.0F : elevation);
             }
         }
     } // namespace Gamepad

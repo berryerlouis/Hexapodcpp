@@ -16,7 +16,9 @@ export default class Button {
 
         socket.addSpecificCallbackRead(ClusterName.BUTTON, ClusterButtonCommands.BP_STATUS, (message: Message) => {
             this.buttonData.pushed = message.getValueBool(0);
-            document.getElementById('button')!.innerText = this.buttonData.pushed ? 'Pushed' : 'Released';
+            const label = document.getElementById('button')!;
+            label.innerText = this.buttonData.pushed ? 'Pushed' : 'Released';
+            label.dataset.state = this.buttonData.pushed ? 'pushed' : 'released';
         });
     }
 }

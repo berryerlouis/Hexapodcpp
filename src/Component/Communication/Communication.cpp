@@ -30,7 +30,7 @@ namespace Component
         void Communication::Update(const uint64_t currentTime) {
             this->mSocket.Update(currentTime);
 
-            while (this->mSocket.HasNewFrame()) {
+            while (this->mRxCount < RX_QUEUE_CAPACITY && this->mSocket.HasNewFrame()) {
                 // this->mLedStatus.On();
                 Frame              request;
                 const Core::Status parsedStatus = Protocol::Decode(

@@ -1,4 +1,5 @@
-import { WebGLRenderer, Clock, Scene } from 'three'
+import { ACESFilmicToneMapping, Clock, PCFSoftShadowMap, PMREMGenerator, Scene, WebGLRenderer } from 'three'
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js'
 import { getCanvas } from '../tool/function.ts'
 import Camera from "./camera.ts";
 
@@ -29,6 +30,15 @@ export default class Graphic extends WebGLRenderer {
         this.width = 0;
         this.height = 0;
         this.shadowMap.enabled = true;
+        this.shadowMap.type = PCFSoftShadowMap;
+        this.toneMapping = ACESFilmicToneMapping;
+        this.toneMappingExposure = 1.05;
+
+        // Image-based lighting so the brushed aluminium has something to reflect.
+        const pmrem = new PMREMGenerator(this);
+        scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+        scene.environmentIntensity = 0.5;
+        pmrem.dispose();
         this.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
 
         window.addEventListener('resize', this.cbResize);

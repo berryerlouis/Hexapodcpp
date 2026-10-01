@@ -1,12 +1,14 @@
-import { BoxGeometry, CylinderGeometry, MathUtils, Mesh, MeshStandardMaterial, Object3D } from 'three'
+import { Group, MathUtils, Object3D, Vector3 } from 'three'
 import Femur from "./femur.ts";
 import Servo from "./servo.ts";
 import Socket from "../../communication/socket.ts";
+import { LEG, Mat, ModelBuilder, orient } from "./materials.ts";
 
+// Frame: +Y points away from the body, +Z points down, +X runs along the body (forward on the right side).
 export default class Coxys extends Object3D {
     readonly width: number = 0.1;
-    readonly height: number = 0.28;
-    coxysBody: Mesh;
+    readonly height: number = LEG.coxa;
+    coxysBody: Group;
     femur: Femur;
     servo: Servo;
     socket: Socket;
@@ -14,52 +16,42 @@ export default class Coxys extends Object3D {
     constructor(id: number, x: number, y: number, z: number, socket: Socket) {
         super()
         this.socket = socket;
-
-        // Capers II coxa is a servo-bracket assembly: two flat aluminium side plates
-        // joined by a base plate, with a ball-bearing housing at the top.
-        const aluMat = new MeshStandardMaterial({ color: '#c8c8cc', metalness: 0.7, roughness: 0.35 });
-        const screwMat = new MeshStandardMaterial({ color: '#303030', metalness: 0.6, roughness: 0.4 });
-
-        // Root mesh = base plate (lying flat at the body-side mount).
-        const basePlateGeom = new BoxGeometry(0.32, 0.025, 0.22);
-        this.coxysBody = new Mesh(basePlateGeom, aluMat);
         this.position.set(x, y, z);
-        this.coxysBody.geometry.translate(0, 0.0125, 0);
+        this.coxysBody = new Group();
 
-        // Two upright side plates (left/right along X), forming the bracket walls.
-        const sidePlateGeom = new BoxGeometry(0.025, this.height - 0.025, 0.22);
-        const leftPlate = new Mesh(sidePlateGeom, aluMat);
-        leftPlate.position.set(-0.145, 0.025 + (this.height - 0.025) / 2, 0);
-        this.coxysBody.add(leftPlate);
-        const rightPlate = new Mesh(sidePlateGeom, aluMat);
-        rightPlate.position.set(0.145, 0.025 + (this.height - 0.025) / 2, 0);
-        this.coxysBody.add(rightPlate);
-
-        // Ball-bearing housing at top of one side plate (Capers II uses a flanged bearing).
-        const bearingHousing = new Mesh(
-            new CylinderGeometry(0.06, 0.06, 0.028, 20),
-            aluMat
-        );
-        bearingHousing.rotation.z = Math.PI / 2;
-        bearingHousing.position.set(-0.145, this.height - 0.04, 0);
-        this.coxysBody.add(bearingHousing);
-
-        // Inner bearing race (darker)
-        const bearingInner = new Mesh(
-            new CylinderGeometry(0.022, 0.022, 0.032, 16),
-            screwMat
-        );
-        bearingInner.rotation.z = Math.PI / 2;
-        bearingInner.position.set(-0.145, this.height - 0.04, 0);
-        this.coxysBody.add(bearingInner);
-
-        // The coxa servo sits inside the bracket, horn pointing up toward the femur joint.
-        // Visual servo body is the Servo instance below; placed centered between the plates.
-        this.servo = new Servo('coxys', id, 0, this.height - 0.16, 0, this.socket);
-        this.femur = new Femur(id + 1, 0, this.height, 0, this.socket);
+        // Coxa servo: vertical shaft on the leg axis, case pointing inboard, horn bolted to the top plate.
+        this.servo = new Servo('coxys', id, 0, 0, -0.25, this.socket);
+        orient(this.servo, new Vector3(0, -1, 0), new Vector3(0, 0, -1), new Vector3(1, 0, 0));
         this.coxysBody.add(this.servo);
-        this.coxysBody.add(this.femur);
 
+        this.femur = new Femur(id + 1, 0, this.height, 0, this.socket);
+        // Femur servo sits in the C-bracket, shaft along +X, case pointing outward.
+        const femurServo = this.femur.servo;
+        orient(femurServo, new Vector3(0, 1, 0), new Vector3(1, 0, 0), new Vector3(0, 0, -1));
+        femurServo.position.set(0, this.height, 0);
+        this.coxysBody.add(femurServo);
+
+        const b = new ModelBuilder();
+        const y0 = 0.04;
+        const y1 = 0.62;
+        const len = y1 - y0;
+        const yc = (y0 + y1) / 2;
+        b.box(0.405, len, 0.025, Mat.alu, -0.1825, yc, -0.1155);
+        b.box(0.405, len, 0.025, Mat.alu, -0.1825, yc, 0.1155);
+        b.box(0.025, len, 0.256, Mat.alu, -0.3975, yc, 0);
+        for (const sx of [-0.33, -0.12]) {
+            for (const sy of [0.5, 0.58]) {
+                b.cyl(0.014, 0.008, Mat.steel, sx, sy, -0.1355, 'z', 10);
+            }
+        }
+
+        // Flanged ball bearing under the coxa servo shaft, riding in the lower plate.
+        b.cyl(0.04, 0.084, Mat.steel, 0, 0, 0.158, 'z', 16);
+        b.cyl(0.065, 0.012, Mat.silver, 0, 0, 0.194, 'z', 28);
+        b.cyl(0.05, 0.012, Mat.silver, 0, 0, 0.236, 'z', 24);
+        b.build(this.coxysBody);
+
+        this.coxysBody.add(this.femur);
         this.add(this.coxysBody);
     }
 
@@ -67,7 +59,7 @@ export default class Coxys extends Object3D {
         this.servo.setAngle(angle);
     }
 
-    update() {
-        this.coxysBody.rotation.z = MathUtils.degToRad(this.servo.getAngle() - 90);
+    update(dt: number = 1 / 60) {
+        this.coxysBody.rotation.z = MathUtils.degToRad(this.servo.smooth(dt) - 90);
     }
 }

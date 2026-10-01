@@ -484,7 +484,7 @@ namespace Cluster
             Core::Status      success = Core::Status::CORE_ERROR;
             Frame             response;
             constexpr uint8_t servoId = 1U;
-            Frame             request(SERVO, 15U);
+            Frame             request(SERVO, 16U);
             request.Set1ByteParam(servoId);
             request.Set1ByteParam(true);
             Component::Servo::MockServo mMockservo;

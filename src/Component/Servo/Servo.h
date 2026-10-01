@@ -81,6 +81,7 @@ namespace Component
             ServosController::Pca9685Interface &mPca9685;
             uint8_t                             mServoId;
             uint8_t                             mAngle;
+            uint8_t                             mStartAngle;
             uint8_t                             mTargetAngle;
             uint64_t                            mStartTime;
             uint16_t                            mSpeed;

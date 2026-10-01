@@ -2,6 +2,7 @@ import {CircleGeometry, DoubleSide, MathUtils, Mesh, MeshBasicMaterial, Object3D
 import Coxys from "./coxys.ts";
 import {ServoStruct} from "./servo.ts";
 import Socket from "../../communication/socket.ts";
+import { GROUND_Y, LEG } from "./materials.ts";
 
 export interface LegStruct {
     name: string;
@@ -31,7 +32,8 @@ export default class Leg extends Object3D {
         const geometry = new RingGeometry(0.25, 0.3, 32);
         geometry.rotateX(Math.PI / 2);
         geometry.rotateY(Math.PI);
-        geometry.translate(this.x, 0.001, this.z > 0 ? this.z + 1 : this.z - 1);
+        const reach = LEG.coxa + LEG.femur;
+        geometry.translate(this.x, GROUND_Y + 0.01, this.z > 0 ? this.z + reach : this.z - reach);
         const material = new MeshBasicMaterial({color: 0x4a6a8f});
         material.side = DoubleSide;
         const circle = new Mesh(geometry, material);
@@ -45,8 +47,8 @@ export default class Leg extends Object3D {
         material1.side = DoubleSide;
         this.direction = new Mesh(geometry1, material1);
         this.direction.translateX(this.x);
-        this.direction.translateY(0.0015);
-        this.direction.translateZ(this.z > 0 ? this.z + 1 : this.z - 1);
+        this.direction.translateY(GROUND_Y + 0.0115);
+        this.direction.translateZ(this.z > 0 ? this.z + reach : this.z - reach);
         this.add(this.direction);
 
         this.legData = {
@@ -75,14 +77,14 @@ export default class Leg extends Object3D {
         this.coxys.femur.tibia.setAngle(angle);
     }
 
-    update() {
-        this.coxys.update();
-        this.coxys.femur.update();
-        this.coxys.femur.tibia.update();
+    update(dt: number = 1 / 60) {
+        this.coxys.update(dt);
+        this.coxys.femur.update(dt);
+        this.coxys.femur.tibia.update(dt);
     }
 
     getFootWorldPosition(target: Vector3): Vector3 {
-        target.set(0, this.coxys.femur.tibia.height, 0);
+        target.copy(this.coxys.femur.tibia.footLocal);
         return this.coxys.femur.tibia.tibiaBody.localToWorld(target);
     }
 }

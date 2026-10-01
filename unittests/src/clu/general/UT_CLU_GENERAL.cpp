@@ -114,6 +114,7 @@ namespace Cluster
             Frame        request;
             Frame        response;
 
+            EXPECT_CALL(mMockSoftware, ResetTime()).Times(1U);
             request.Build(GENERAL, EGeneralCommands::RESET_EXECUTION_TIME);
             success = mClusterGeneral.ExecuteFrame(request, response);
 

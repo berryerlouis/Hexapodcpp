@@ -13,167 +13,192 @@
 <body>
     <div class="popup" id="popup"></div>
 
-    <div class="header">
-        <div class="header-left">
+    <header class="topbar">
+        <div class="brand">
+            <i class="bi bi-hexagon-fill brand-mark"></i>
             <h1>Hexapod<span id="version">V0.0</span></h1>
         </div>
-        <div class="header-right">
-            <span>Connect to:</span>
-            <div id="connect-target">
+        <div class="topbar-right">
+            <div class="link-chip" id="link-status" data-state="idle">
+                <span class="link-dot"></span>
+                <span id="connect-target"></span>
+                <span class="link-label" id="link-label">Not connected</span>
             </div>
+            <button id="toggle-settings" type="button" class="topbar-btn" aria-label="Toggle settings panel">
+                <i class="bi bi-sliders"></i>
+                <span>Controls</span>
+            </button>
         </div>
-    </div>
+    </header>
 
     <div id="modal-connect" class="modal">
-        <div class="modal-title">
-            <span>Connection Target:</span>
-        </div>
-        <div class="modal-content">
-            <div class="modal-content-buttons">
-                <button id="connect-x64" value="X64">X64</button>
-                <button id="connect-bot" value="BOT">Hexapod</button>
+        <div class="modal-card">
+            <div class="modal-header">
+                <i class="bi bi-hexagon-fill brand-mark"></i>
+                <div>
+                    <h2>Connect to a target</h2>
+                    <p>Choose where the HMI should send its commands.</p>
+                </div>
+            </div>
+            <div class="modal-choices">
+                <button id="connect-x64" class="modal-choice" value="X64" type="button">
+                    <i class="bi bi-pc-display"></i>
+                    <span class="modal-choice-text">
+                        <b>X64</b>
+                        <small>Local simulation</small>
+                    </span>
+                    <i class="bi bi-chevron-right modal-choice-arrow"></i>
+                </button>
+                <button id="connect-bot" class="modal-choice" value="BOT" type="button">
+                    <i class="bi bi-robot"></i>
+                    <span class="modal-choice-text">
+                        <b>Hexapod</b>
+                        <small>Real robot over Wi-Fi</small>
+                    </span>
+                    <i class="bi bi-chevron-right modal-choice-arrow"></i>
+                </button>
             </div>
         </div>
     </div>
 
-    <div class="workspace">
+    <main class="workspace">
         <div class="app" id="app">
             <canvas></canvas>
         </div>
 
-        <div class="cockpit-horizon" aria-label="Cockpit horizon">
-            <div class="cockpit-horizon-face">
-                <div class="cockpit-horizon-sky"></div>
-                <div class="cockpit-horizon-ground"></div>
-                <div class="cockpit-horizon-line"></div>
-                <div class="cockpit-horizon-crosshair">
-                    <div class="cockpit-horizon-reticle-center"></div>
-                    <div class="cockpit-horizon-reticle-vbar"></div>
-                    <div class="cockpit-horizon-reticle-lower-left"></div>
-                    <div class="cockpit-horizon-reticle-lower-right"></div>
+        <section class="attitude" aria-label="Attitude indicator">
+            <div class="adi">
+                <div class="adi-window">
+                    <div class="adi-sphere"></div>
                 </div>
-                <div class="cockpit-horizon-crosshair-dot"></div>
+                <div class="adi-compass" aria-hidden="true">
+                    <span class="adi-card adi-card-n" style="--a: 0deg">N</span>
+                    <span class="adi-card" style="--a: 90deg">E</span>
+                    <span class="adi-card" style="--a: 180deg">S</span>
+                    <span class="adi-card" style="--a: 270deg">W</span>
+                </div>
+                <svg class="adi-aircraft" viewBox="0 0 100 100" aria-hidden="true">
+                    <path d="M22 52 H42 L50 60 L58 52 H78" />
+                    <circle cx="50" cy="52" r="1.8" />
+                </svg>
+                <div class="adi-pointer" aria-hidden="true"></div>
             </div>
-            <div class="cockpit-heading-north-cursor" aria-hidden="true"></div>
-            <div class="cockpit-horizon-heading" aria-hidden="true">
-                <span class="cockpit-heading-label cockpit-heading-n">N</span>
-                <span class="cockpit-heading-label cockpit-heading-e">E</span>
-                <span class="cockpit-heading-label cockpit-heading-s">S</span>
-                <span class="cockpit-heading-label cockpit-heading-w">W</span>
-            </div>
-        </div>
+            <dl class="attitude-readout">
+                <div><dt>Roll</dt><dd><span id="roll">--</span><i>&deg;</i></dd></div>
+                <div><dt>Pitch</dt><dd><span id="pitch">--</span><i>&deg;</i></dd></div>
+                <div><dt>Yaw</dt><dd><span id="yaw">--</span><i>&deg;</i></dd></div>
+            </dl>
+        </section>
 
         <aside class="settings-dock is-collapsed" id="settings-dock">
             <div class="settings-head">
-                <h2>Controls</h2>
+                <h2><i class="bi bi-sliders2"></i>Controls</h2>
             </div>
             <div id="panel"></div>
         </aside>
-        <button id="toggle-settings" type="button" aria-label="Toggle settings panel" class="toggle-settings-floating">
-            <i class="bi bi-layout-sidebar-inset"></i>
-        </button>
-    </div>
 
-    <div class="footer">
-        <div class="cockpit">
-            <div class="cockpit-enable" id="enable">
-                <i class="bi bi-toggle2-off"></i>
-            </div>
-            <div class="cockpit-direction" id="direction">
-                <div class="cockpit-joystick" aria-label="Movement joystick">
-                    <button class="cockpit-joy-btn" id="joy-nw" type="button">&#8598;</button>
-                    <button class="cockpit-joy-btn" id="forward" type="button">&#8593;</button>
-                    <button class="cockpit-joy-btn" id="joy-ne" type="button">&#8599;</button>
-                    <button class="cockpit-joy-btn" id="left" type="button">&#8592;</button>
-                    <button class="cockpit-joy-btn is-stop" id="stop" type="button">&#9632;</button>
-                    <button class="cockpit-joy-btn" id="right" type="button">&#8594;</button>
-                    <button class="cockpit-joy-btn" id="joy-sw" type="button">&#8601;</button>
-                    <button class="cockpit-joy-btn" id="backward" type="button">&#8595;</button>
-                    <button class="cockpit-joy-btn" id="joy-se" type="button">&#8600;</button>
-                </div>
-                <div class="cockpit-drive-params">
-                    <label class="cockpit-param-row" for="cockpit-speed">
-                        <span>Speed</span>
-                        <span id="cockpit-speed-value">50%</span>
-                    </label>
-                    <input id="cockpit-speed" type="range" min="0" max="100" step="1" value="50" />
+        <section class="radar" id="sensor-hud" aria-label="Range sensors"></section>
 
-                    <label class="cockpit-param-row" for="cockpit-rotation">
-                        <span>Turn (↺ left / ↻ right)</span>
-                        <span id="cockpit-rotation-value">0</span>
-                    </label>
-                    <input id="cockpit-rotation" type="range" min="-180" max="180" step="1" value="0" />
+        <div class="hud-bottom">
+            <section class="drive-dock">
+                <div class="enable-chip" id="enable" role="button" aria-label="Toggle servos">
+                    <i class="bi bi-toggle2-off"></i>
+                    <span class="enable-text">
+                        <b>Servos</b>
+                        <small class="when-off">Disabled</small>
+                        <small class="when-on">Enabled</small>
+                    </span>
+                </div>
 
-                    <label class="cockpit-param-row" for="cockpit-gait">
-                        <span>Gait</span>
-                    </label>
-                    <select id="cockpit-gait">
-                        <option value="TRIPOD">TRIPOD</option>
-                        <option value="WAVE">WAVE</option>
-                        <option value="RIPPLE">RIPPLE</option>
-                        <option value="DOUBLE_WAVE">DOUBLE_WAVE</option>
-                    </select>
-                </div>
-            </div>
-            <div class="cockpit-items">
-                <div class="cockpit-item">
-                    <div class="cockpit-item-content">
-                        <i class="bi bi-battery-full"></i>
-                        <div class="cockpit-item-content-value">
-                            <div class="cockpit-item-content-value-title"><span id="voltage">_</span>V</div>
-                            <div class="cockpit-item-content-value-title"><span id="current">_</span>A</div>
-                            <div class="cockpit-item-content-value-title"><span id="temperature">_</span>C</div>
+                <div class="drive-pad" id="direction">
+                    <div class="stick stick-move" id="stick-move" aria-label="Move stick">
+                        <span class="stick-mark is-n"><i class="bi bi-chevron-up"></i></span>
+                        <span class="stick-mark is-s"><i class="bi bi-chevron-down"></i></span>
+                        <span class="stick-mark is-w"><i class="bi bi-chevron-left"></i></span>
+                        <span class="stick-mark is-e"><i class="bi bi-chevron-right"></i></span>
+                        <div class="stick-knob"></div>
+                    </div>
+                    <div class="drive-params">
+                        <label class="param-row" for="cockpit-speed">
+                            <span>Speed</span>
+                            <b id="cockpit-speed-value">50%</b>
+                        </label>
+                        <input id="cockpit-speed" type="range" min="0" max="100" step="1" value="50" />
+
+                        <label class="param-row" for="cockpit-rotation">
+                            <span>Turn</span>
+                            <b id="cockpit-rotation-value">0</b>
+                        </label>
+                        <input id="cockpit-rotation" type="range" min="-180" max="180" step="1" value="0" />
+
+                        <label class="param-row" for="cockpit-gait">
+                            <span>Gait</span>
+                        </label>
+                        <select id="cockpit-gait">
+                            <option value="TRIPOD">TRIPOD</option>
+                            <option value="WAVE">WAVE</option>
+                            <option value="RIPPLE">RIPPLE</option>
+                            <option value="DOUBLE_WAVE">DOUBLE_WAVE</option>
+                        </select>
+
+                        <div class="keys-hint">
+                            <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move
+                            <kbd>Q</kbd><kbd>E</kbd> turn
+                            <kbd>Space</kbd> stop<br>
+                            Click the floor to go there
                         </div>
                     </div>
-                </div>
-                <div class="cockpit-item">
-                    <div class="cockpit-item-content">
-                        <i class="bi bi-compass"></i>
-                        <div class="cockpit-item-content-value">
-                            <div class="cockpit-item-content-value-title">roll:<span id="roll">_</span>deg</div>
-                            <div class="cockpit-item-content-value-title">pitch:<span id="pitch">_</span>deg</div>
-                            <div class="cockpit-item-content-value-title">yaw:<span id="yaw">_</span>deg</div>
+                    <div class="drive-side">
+                        <div class="stick stick-turn" id="stick-turn" aria-label="Turn stick">
+                            <span class="stick-mark is-w"><i class="bi bi-arrow-counterclockwise"></i></span>
+                            <span class="stick-mark is-e"><i class="bi bi-arrow-clockwise"></i></span>
+                            <div class="stick-knob"></div>
                         </div>
+                        <button class="joy-btn is-stop" id="stop" type="button" aria-label="Stop"><i class="bi bi-stop-fill"></i><span>Stop</span></button>
                     </div>
                 </div>
-                <div class="cockpit-item">
-                    <div class="cockpit-item-content">
-                        <i class="bi bi-activity"></i>
-                        <div class="cockpit-item-content-value">
-                            <div class="cockpit-item-content-value-title">msg:
-                                <div class="cockpit-item-content-value-content">
-                                    <div class="progressbar">
-                                        <div class="progressbar-container" id="progress-message-queue" style="width:0">
-                                        </div>
-                                        <div class="progressbar-value" id="progress-message-queue-val"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="cockpit-item-content-value-title">max:<span id="max-time">_</span>ms</div>
-                            <div class="cockpit-item-content-value-title">min:<span id="min-time">_</span>ms</div>
-                        </div>
+            </section>
+
+            <section class="telemetry" aria-label="Telemetry">
+                <div class="tile">
+                    <div class="tile-head"><i class="bi bi-lightning-charge-fill"></i><span>Power</span></div>
+                    <div class="tile-main"><span id="voltage">--</span><em>V</em></div>
+                    <div class="tile-sub">
+                        <span><b id="current">--</b> A</span>
+                        <span><b id="temperature">--</b> &deg;C</span>
                     </div>
                 </div>
-                <div class="cockpit-item">
-                    <div class="cockpit-item-content">
-                        <i class="bi bi-motherboard"></i>
-                        <div class="cockpit-item-content-value">
-                            <div class="cockpit-item-content-value-title">BP:<span id="button">Released</span></div>
-                        </div>
+
+                <div class="tile">
+                    <div class="tile-head"><i class="bi bi-arrow-up-circle-fill"></i><span>Altitude</span></div>
+                    <div class="tile-main"><span id="altitude">0.0</span><em>m</em></div>
+                    <div class="tile-sub">
+                        <span><b id="pressure">0</b> Pa</span>
                     </div>
                 </div>
-                <div class="cockpit-item">
-                    <div class="cockpit-item-content">
-                        <i class="bi bi-airplane-engines"></i>
-                        <div class="cockpit-item-content-value">
-                            <div><span id="altitude">0.00</span>m</div>
-                            <div><span id="pressure">0.00</span>pa</div>
+
+                <div class="tile">
+                    <div class="tile-head"><i class="bi bi-activity"></i><span>Link</span></div>
+                    <div class="tile-main tile-main-bar">
+                        <div class="progressbar">
+                            <div class="progressbar-container" id="progress-message-queue" style="width:0"></div>
                         </div>
+                        <span class="queue-count" id="progress-message-queue-val">0</span>
+                    </div>
+                    <div class="tile-sub">
+                        <span>min <b id="min-time">--</b> ms</span>
+                        <span>max <b id="max-time">--</b> ms</span>
                     </div>
                 </div>
-            </div>
+
+                <div class="tile">
+                    <div class="tile-head"><i class="bi bi-motherboard-fill"></i><span>Button</span></div>
+                    <div class="tile-main tile-main-text"><span id="button" data-state="released">Released</span></div>
+                </div>
+            </section>
         </div>
-    </div>
+    </main>
+
     <script type="module" src="./src/main.ts"></script>
 </body>
 

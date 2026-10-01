@@ -24,13 +24,15 @@ export default class Cockpit {
 
         this.socket.addCallbackStarted(() => {
             this.enableCockpit();
+            this.setLinkState('online', 'Connected');
         });
         this.socket.addCallbackStopped(() => {
             this.disableCockpit();
+            this.setLinkState('offline', 'Reconnecting...');
         });
+        this.setLinkState('connecting', 'Connecting...');
 
-        // Mirror the bot's walk status: show the direction joystick while walking,
-        // hide it on emergency / regular stop.
+        // Show the drive pad as soon as the bot walks; stopping keeps it so the sticks stay usable.
         this.socket.addSpecificCallbackRead(
             ClusterName.BODY,
             ClusterBodyCommands.GET_ALL_PARAMS,
@@ -38,14 +40,22 @@ export default class Cockpit {
                 if (!message.params || message.params.length !== 11) {
                     return;
                 }
-                const status = message.getValueUint8(0);
-                if (status === WALK_STATUS_STOPPED) {
-                    this.disableCockpitDirection();
-                } else {
+                if (message.getValueUint8(0) !== WALK_STATUS_STOPPED) {
                     this.enableCockpitDirection();
                 }
             },
         );
+    }
+
+    private setLinkState(state: 'connecting' | 'online' | 'offline', label: string) {
+        const chip = document.getElementById('link-status');
+        const text = document.getElementById('link-label');
+        if (chip) {
+            chip.dataset.state = state;
+        }
+        if (text) {
+            text.innerText = label;
+        }
     }
 
     private disableCockpit() {

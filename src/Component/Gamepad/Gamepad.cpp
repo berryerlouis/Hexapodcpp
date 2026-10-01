@@ -50,6 +50,18 @@ namespace Component
                 this->mConnectedState.connected = this->mJoystick.IsConnected();
                 Core::Observable<3U, GamepadConnectedState>::Notify(this->mConnectedState);
                 this->mConnected = this->mJoystick.IsConnected();
+
+                if (!this->mConnected) {
+                    // Release every input so the robot does not keep the last stick command.
+                    for (uint8_t i = 0U; i < NB_AXES; i++) {
+                        this->mButtonState.axes[i] = 0.0F;
+                    }
+                    for (uint8_t i = 0U; i < NB_BUTTONS; i++) {
+                        this->mButtonState.buttons[i] = false;
+                    }
+                    this->mDirty = false;
+                    ComponentInterface<3U, GamepadButtonState>::Notify(this->mButtonState);
+                }
             }
 
             if (this->mConnected) {

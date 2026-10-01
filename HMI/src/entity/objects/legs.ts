@@ -51,12 +51,12 @@ export default class Legs extends Object3D {
         });
     }
 
-    update() {
+    update(dt: number = 1 / 60) {
         for (let i = 0; i < 6; i++) {
             this.legs.leg[i].setCoxysAngle(this.legs.leg[i].coxys.servo.getAngle());
             this.legs.leg[i].setFemurAngle(this.legs.leg[i].coxys.femur.servo.getAngle());
             this.legs.leg[i].setTibiaAngle(this.legs.leg[i].coxys.femur.tibia.servo.getAngle());
-            this.legs.leg[i].update();
+            this.legs.leg[i].update(dt);
         }
     }
 

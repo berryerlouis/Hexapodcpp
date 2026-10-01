@@ -295,13 +295,25 @@ namespace Cluster
             EXPECT_CALL(mBodyMock, SetGait(_)).Times(1U);
             EXPECT_CALL(mBodyMock, GetGait()).Times(1U);
             request.Build(BODY, EBodyCommands::SET_GAIT);
-            request.Set2BytesParam(10U);
+            request.Set1ByteParam(1U);
             success = mClusterBody.ExecuteFrame(request, response);
 
             EXPECT_EQ(response.GetClusterId(), BODY);
             EXPECT_EQ(response.GetCommandId(), EBodyCommands::GET_GAIT);
             EXPECT_EQ(response.GetNbParams(), 1U);
             EXPECT_EQ(success, Core::Status::CORE_OK);
+        }
+
+        TEST_F(UT_CLU_BODY, Execute_SET_GAIT_InvalidGait_Ko) {
+            Frame request;
+            Frame response;
+
+            EXPECT_CALL(mBodyMock, SetGait(_)).Times(0U);
+            request.Build(BODY, EBodyCommands::SET_GAIT);
+            request.Set1ByteParam(10U);
+
+            EXPECT_EQ(mClusterBody.ExecuteFrame(request, response),
+                      Core::Status::CORE_ERROR_ARGUMENT);
         }
     } // namespace Body
 } // namespace Cluster

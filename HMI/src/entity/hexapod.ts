@@ -1,7 +1,8 @@
-import { Box3, Object3D } from 'three'
+import { Box3, Matrix4, Object3D, Quaternion, Vector3 } from 'three'
 import Socket from "../communication/socket.ts";
 import Body from "./objects/body.ts";
 import Head from "./objects/head.ts";
+import { enableShadows, LEG } from "./objects/materials.ts";
 import Battery from "./objects/battery.ts";
 import Imu from "./objects/imu.ts";
 import Button from "./objects/button.ts";
@@ -12,7 +13,6 @@ import Message from "../communication/message.ts";
 import { Encoding } from "../communication/protocol.ts";
 import DirectionArrow from "../engine/directionArrow.ts";
 import { Target } from '../connect-target.ts';
-import RotationCircle from "./objects/rotationCircle.ts";
 
 type Gait = 'TRIPOD' | 'WAVE' | 'RIPPLE' | 'DOUBLE_WAVE';
 
@@ -29,7 +29,9 @@ export interface HexapodStruct {
 }
 
 type CallbackMove = () => void;
-const ROTATION_RATE_SCALE = 0.25;
+
+// Feet within this height of the lowest foot (body frame, scene units) count as planted.
+const STANCE_BAND = 0.07;
 
 export default class Hexapod extends Object3D {
     hexapodStruct: HexapodStruct = {
@@ -51,16 +53,17 @@ export default class Hexapod extends Object3D {
     imu: Imu;
     loopTime: LoopTime;
     directionArrow: DirectionArrow;
-    rotationCircle: RotationCircle;
     listOfCallbackMove: CallbackMove[];
     isMoving: boolean;
     readonly groundBounds: Box3;
-    legSpeedScale: number;
-    previousServoAngles: number[];
     simulatedYawOffsetRad: number;
     lastObservedImuYawDeg: number;
     imuHeadingObserved: boolean;
-    private targetYawRad: number | null;
+    private readonly footBody: Vector3[] = [];
+    private readonly footWeight: number[] = [];
+    private previousFootBody: Vector3[] | null = null;
+    private previousFootWeight: number[] = [];
+    private readonly bodyQuaternion = new Quaternion();
 
     constructor(socket: Socket, target: Target) {
         super();
@@ -68,39 +71,22 @@ export default class Hexapod extends Object3D {
         this.button = new Button(this.socket);
         this.head = new Head(this.socket);
         this.directionArrow = new DirectionArrow(this.socket, this.hexapodStruct);
-        this.rotationCircle = new RotationCircle(this.socket);
         this.body = new Body(0, 1, 0, this.socket, 100);
         this.imu = new Imu(this.socket, 2000);
         this.battery = new Battery(this.socket, 5000);
         this.loopTime = new LoopTime(this.socket, 1000);
         this.isMoving = false;
         this.groundBounds = new Box3();
-        this.legSpeedScale = 0;
-        this.previousServoAngles = [];
         this.simulatedYawOffsetRad = 0;
         this.lastObservedImuYawDeg = Number.NaN;
         this.imuHeadingObserved = target === Target.HEXAPOD; // Only trust IMU heading if connected to real hexapod
-        this.targetYawRad = null;
         this.listOfCallbackMove = [];
 
         this.body.rotation.y = Math.PI / 2;
+        this.body.add(this.head);
+        enableShadows(this.body);
         this.add(this.body);
-        this.add(this.head);
         this.add(this.directionArrow);
-        this.add(this.rotationCircle);
-
-        // Rotation-circle target callback: compute absolute target yaw.
-        this.rotationCircle.onRotationTarget = (offsetDeg: number, clockwise: boolean) => {
-            if (offsetDeg === 0) {
-                this.targetYawRad = null;
-                this.rotationCircle.setRotationTarget(null);
-            } else {
-                const offsetRad = (offsetDeg * Math.PI) / 180;
-                const sign = clockwise ? -1 : 1;
-                this.targetYawRad = this.rotation.y + sign * offsetRad;
-                this.rotationCircle.setRotationTarget(sign * offsetRad);
-            }
-        };
 
         // Spawn with feet/body resting on the world plane.
         this.alignToGround();
@@ -116,21 +102,18 @@ export default class Hexapod extends Object3D {
                 this.hexapodStruct.clockwise = message.getValueUint8(8) === 1;
                 this.hexapodStruct.duration = message.getValueUint16(9);
                 this.body.setDirection(this.hexapodStruct.direction);
-                this.rotationCircle.setDirection(this.hexapodStruct.direction);
             }
         });
         this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_DIRECTION, (message: Message) => {
             if (message.params && message.params.length === 2) {
                 this.hexapodStruct.direction = message.getValueUint16(0);
                 this.body.setDirection(this.hexapodStruct.direction);
-                this.rotationCircle.setDirection(this.hexapodStruct.direction);
             }
         });
         this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_ROTATION, (message: Message) => {
             if (message.params && message.params.length === 3) {
                 this.hexapodStruct.turningRate = message.getValueUint16(0);
                 this.hexapodStruct.clockwise = message.getValueUint8(2) === 1;
-                this.rotationCircle.setTurningRate(this.hexapodStruct.turningRate, this.hexapodStruct.clockwise);
             }
         });
         this.socket.addSpecificCallbackRead(ClusterName.BODY, ClusterBodyCommands.GET_AMPLITUDE, (message: Message) => {
@@ -158,11 +141,6 @@ export default class Hexapod extends Object3D {
             this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_WALK_STATUS, [2, this.hexapodStruct.duration], [0xFF, 0xFFFF]));
             this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_DIRECTION, [0, 0], [0xFF, 0xFF]));
             this.socket.write(new Message(ClusterName.BODY, ClusterBodyCommands.SET_ROTATION, [0, 0], [0xFFFF as Encoding, 0xFF as Encoding]));
-            this.rotationCircle.enable();
-        });
-
-        this.socket.addCallbackStopped(() => {
-            this.rotationCircle.disable();
         });
     }
 
@@ -197,52 +175,82 @@ export default class Hexapod extends Object3D {
         }
     }
 
-    private getCurrentServoAngles(): number[] {
-        const angles: number[] = [];
+    // Planted feet stay fixed on the floor, so the body travels opposite to their motion in the
+    // body frame. Only the servo angles received from the firmware are used (forward kinematics).
+    private walkOnFeet(dt: number) {
         const legs = this.body.members.legs.leg;
+        this.updateMatrixWorld(true);
+        const toBody = new Matrix4().copy(this.body.matrixWorld).invert();
+        const world = new Vector3();
+        let minBottom = Infinity;
+        let lowest = Infinity;
         for (let i = 0; i < legs.length; i++) {
-            for (let j = 0; j < legs[i].legData.servos.length; j++) {
-                angles.push(legs[i].legData.servos[j].angle);
+            legs[i].getFootWorldPosition(world);
+            minBottom = Math.min(minBottom, world.y - LEG.footRadius);
+            if (!this.footBody[i]) {
+                this.footBody[i] = new Vector3();
             }
+            this.footBody[i].copy(world).applyMatrix4(toBody);
+            lowest = Math.min(lowest, this.footBody[i].y);
         }
-        return angles;
+        for (let i = 0; i < legs.length; i++) {
+            this.footWeight[i] = Math.max(0, 1 - (this.footBody[i].y - lowest) / STANCE_BAND);
+        }
+
+        if (this.previousFootBody) {
+            this.moveBodyFromFeet(this.previousFootBody, this.previousFootWeight);
+        }
+        this.previousFootBody = this.footBody.map((v) => v.clone());
+        this.previousFootWeight = [...this.footWeight];
+
+        // Lowest foot rests on the floor.
+        this.position.y -= minBottom * Math.min(1, dt * 10);
     }
 
-    private updateLegSpeedScale(dt: number): number {
-        const angles = this.getCurrentServoAngles();
-        if (angles.length === 0) {
-            this.legSpeedScale = 0;
-            return 0;
+    // Weighted 2D rigid fit (x, z) of the planted feet between two frames.
+    private moveBodyFromFeet(prev: Vector3[], prevWeight: number[]) {
+        let wSum = 0;
+        let cax = 0, caz = 0, cbx = 0, cbz = 0;
+        let count = 0;
+        for (let i = 0; i < prev.length; i++) {
+            const w = Math.min(prevWeight[i], this.footWeight[i]);
+            if (w <= 0) continue;
+            wSum += w;
+            count++;
+            cax += w * prev[i].x;
+            caz += w * prev[i].z;
+            cbx += w * this.footBody[i].x;
+            cbz += w * this.footBody[i].z;
         }
-
-        if (this.previousServoAngles.length !== angles.length) {
-            this.previousServoAngles = angles;
-            this.legSpeedScale = 0;
-            return 0;
+        if (wSum < 1e-3) {
+            return;
         }
+        cax /= wSum; caz /= wSum; cbx /= wSum; cbz /= wSum;
 
-        const deltas: number[] = [];
-        for (let i = 0; i < angles.length; i++) {
-            deltas.push(Math.abs(angles[i] - this.previousServoAngles[i]));
+        let dot = 0;
+        let cross = 0;
+        for (let i = 0; i < prev.length; i++) {
+            const w = Math.min(prevWeight[i], this.footWeight[i]);
+            if (w <= 0) continue;
+            const ax = prev[i].x - cax, az = prev[i].z - caz;
+            const bx = this.footBody[i].x - cbx, bz = this.footBody[i].z - cbz;
+            dot += w * (ax * bx + az * bz);
+            cross += w * (ax * bz - az * bx);
         }
+        const theta = count >= 2 ? Math.atan2(cross, dot) : 0;
+        const c = Math.cos(theta);
+        const s = Math.sin(theta);
 
-        this.previousServoAngles = angles;
+        // Body motion in the previous body frame: -R^T t, with t = cb - R ca.
+        const move = new Vector3(cax - (cbx * c + cbz * s), 0, caz - (-cbx * s + cbz * c));
+        this.body.getWorldQuaternion(this.bodyQuaternion);
+        move.applyQuaternion(this.bodyQuaternion);
+        move.y = 0;
+        this.position.add(move);
 
-        deltas.sort((a, b) => b - a);
-        const activeServoCount = Math.max(6, Math.floor(deltas.length / 2));
-        let activeDeltaSum = 0;
-        for (let i = 0; i < activeServoCount; i++) {
-            activeDeltaSum += deltas[i];
+        if (!this.imuHeadingObserved) {
+            this.simulatedYawOffsetRad += theta;
         }
-
-        const averageActiveDeltaDeg = activeDeltaSum / activeServoCount;
-        const degreesPerSecond = averageActiveDeltaDeg / Math.max(dt, 0.001);
-
-        // Active legs at ~8 deg/s map to 1.0x body speed.
-        const targetScale = Math.min(6, Math.max(0, degreesPerSecond / 8));
-        const smoothing = Math.min(1, dt * 12);
-        this.legSpeedScale += (targetScale - this.legSpeedScale) * smoothing;
-        return this.legSpeedScale;
     }
 
     private applyImuRotation() {
@@ -256,7 +264,6 @@ export default class Hexapod extends Object3D {
         const effectiveYaw = yawRad + (this.imuHeadingObserved ? 0 : this.simulatedYawOffsetRad);
 
         this.rotation.y = Math.atan2(Math.sin(effectiveYaw), Math.cos(effectiveYaw));
-        this.rotationCircle.setHeading((this.rotation.y * 180) / Math.PI);
         this.body.rotation.x = pitchRad;
         this.body.rotation.y = Math.PI / 2;
         this.body.rotation.z = rollRad;
@@ -274,60 +281,10 @@ export default class Hexapod extends Object3D {
         const dt = Math.min(Math.max(deltaTime, 0), 0.1);
         this.updateImuHeadingObservation();
         this.applyImuRotation();
-        this.body.update();
+        this.body.update(dt);
         this.head.update();
-
-        if (!this.isMoving) {
-            return;
-        }
-
-        const speedScale = this.updateLegSpeedScale(dt);
-
-        const durationS = Math.max(this.hexapodStruct.duration, 200) / 1000;
-        const directionRad = (this.hexapodStruct.direction * Math.PI) / 180;
-        const rotationRateRadPerSec = (((this.hexapodStruct.turningRate * Math.PI) / 180) / durationS) * ROTATION_RATE_SCALE;
-        const rotationSign = this.hexapodStruct.clockwise ? -1 : 1;
-
-        if (!this.imuHeadingObserved) {
-            this.simulatedYawOffsetRad += rotationRateRadPerSec * rotationSign * dt;
-            this.simulatedYawOffsetRad = Math.atan2(
-                Math.sin(this.simulatedYawOffsetRad),
-                Math.cos(this.simulatedYawOffsetRad),
-            );
-        }
+        this.walkOnFeet(dt);
         this.applyImuRotation();
-
-        // Target-seeking: stop rotation when the target yaw is reached.
-        if (this.targetYawRad !== null && this.hexapodStruct.turningRate > 0) {
-            const diff = Math.atan2(
-                Math.sin(this.targetYawRad - this.rotation.y),
-                Math.cos(this.targetYawRad - this.rotation.y),
-            );
-            // Update the target cursor position each frame as the bot rotates.
-            this.rotationCircle.setRotationTarget(diff);
-            if (Math.abs(diff) < 0.035) { // ~2 degrees tolerance
-                this.targetYawRad = null;
-                this.hexapodStruct.turningRate = 0;
-                this.hexapodStruct.clockwise = false;
-                this.rotationCircle.setTurningRate(0, false);
-                this.rotationCircle.setRotationTarget(null);
-                this.socket.write(new Message(
-                    ClusterName.BODY,
-                    ClusterBodyCommands.SET_ROTATION,
-                    [0, 0],
-                    [0xFFFF as Encoding, 0xFF as Encoding],
-                ));
-            }
-        }
-
-        const effectiveSpeedScale = Math.max(1, speedScale);
-
-        const speedBoost = 3;
-        const linearSpeed = ((this.hexapodStruct.amplitude / 1000) / durationS) * effectiveSpeedScale * speedBoost;
-        const worldAngle = this.rotation.y + directionRad;
-
-        this.position.x -= Math.sin(worldAngle) * linearSpeed * dt;
-        this.position.z -= Math.cos(worldAngle) * linearSpeed * dt;
 
         this.notifyCallbackMove();
     }
@@ -336,21 +293,14 @@ export default class Hexapod extends Object3D {
         this.body.setDirection(direction);
         this.directionArrow.setDirection(direction);
         this.hexapodStruct.direction = direction;
-        this.rotationCircle.setDirection(direction);
     }
 
     setRotation(rotation: number) {
         this.hexapodStruct.turningRate = rotation;
-        this.rotationCircle.setTurningRate(rotation, this.hexapodStruct.clockwise);
     }
 
     setRotationClockwise(clockwise: boolean) {
         this.hexapodStruct.clockwise = clockwise;
-        this.rotationCircle.setTurningRate(this.hexapodStruct.turningRate, clockwise);
-    }
-
-    setRotationCircleCamera(camera: any) {
-        this.rotationCircle.setCamera(camera);
     }
 
     // ── High-level commands (UI helpers) ─────────────────────────
@@ -385,13 +335,24 @@ export default class Hexapod extends Object3D {
         ));
     }
 
-    /** Start/stop the gait engine. */
-    commitWalkStatus(walking: boolean) {
+    /** Start/stop the gait engine; the transition defaults to the step duration. */
+    commitWalkStatus(walking: boolean, transitionMs: number = this.hexapodStruct.duration) {
         this.socket.write(new Message(
             ClusterName.BODY,
             ClusterBodyCommands.SET_WALK_STATUS,
-            [walking ? 0 : 2, this.hexapodStruct.duration],
+            [walking ? 0 : 2, transitionMs],
             [0xFF, 0xFFFF as Encoding],
+        ));
+    }
+
+    /** Stride amplitude in tenths of a unit (0 = march in place, 30 = full stride). */
+    commitAmplitude(amplitude: number) {
+        const clamped = Math.max(0, Math.min(30, Math.round(amplitude)));
+        this.socket.write(new Message(
+            ClusterName.BODY,
+            ClusterBodyCommands.SET_AMPLITUDE,
+            [clamped],
+            [0xFF],
         ));
     }
 }

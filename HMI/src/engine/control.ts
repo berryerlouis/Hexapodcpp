@@ -8,6 +8,9 @@ export default class Control extends OrbitControls {
 
         this.minDistance = 3;
         this.maxDistance = 50;
+        this.target.set(0, 0.9, 0);
+        this.enableDamping = true;
+        this.dampingFactor = 0.08;
 
         this.maxPolarAngle = Math.PI / 2;
     }
