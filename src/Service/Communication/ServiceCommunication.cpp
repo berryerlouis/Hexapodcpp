@@ -26,7 +26,7 @@ namespace Service
         void ServiceCommunication::Update(const uint64_t currentTime) {
             this->mCommunication.Update(currentTime);
 
-            constexpr uint8_t MAX_MESSAGES_PER_UPDATE = 8U;
+            constexpr uint8_t MAX_MESSAGES_PER_UPDATE = 16U;
             uint8_t           processedMessages = 0U;
             Frame             message;
             while (processedMessages < MAX_MESSAGES_PER_UPDATE &&

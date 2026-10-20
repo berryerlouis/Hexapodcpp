@@ -18,8 +18,9 @@ namespace Component
                                     this->mQuaternion[1] * this->mQuaternion[1] -
                                     this->mQuaternion[2] * this->mQuaternion[2] -
                                     this->mQuaternion[3] * this->mQuaternion[3]);
-            ypr.pitch = -asin(2.0F * (this->mQuaternion[1] * this->mQuaternion[3] -
-                                      this->mQuaternion[0] * this->mQuaternion[2]));
+            const float sinPitch = 2.0F * (this->mQuaternion[1] * this->mQuaternion[3] -
+                                           this->mQuaternion[0] * this->mQuaternion[2]);
+            ypr.pitch = -asin(sinPitch > 1.0F ? 1.0F : (sinPitch < -1.0F ? -1.0F : sinPitch));
             ypr.roll = atan2(2.0F * (this->mQuaternion[0] * this->mQuaternion[1] +
                                      this->mQuaternion[2] * this->mQuaternion[3]),
                              this->mQuaternion[0] * this->mQuaternion[0] -
@@ -27,9 +28,9 @@ namespace Component
                                      this->mQuaternion[2] * this->mQuaternion[2] +
                                      this->mQuaternion[3] * this->mQuaternion[3]);
 
-            ypr.yaw *= 180.0F / M_PI + 2.06F;
             // 2° 47' E  ± 0° 22 Declination Chirens
             // declination_offset = degrees   minutes / 60
+            ypr.yaw = ypr.yaw * (180.0F / M_PI) + 2.06F;
             ypr.pitch *= 180.0F / M_PI;
             ypr.roll *= 180.0F / M_PI;
         }
@@ -137,11 +138,13 @@ namespace Component
                  (-_2bx * q1 + _2bz * q3) * (_2bx * (q2q3 - q1q4) + _2bz * (q1q2 + q3q4) - mag.y) +
                  _2bx * q2 * (_2bx * (q1q3 + q2q4) + _2bz * (0.5f - q2q2 - q3q3) - mag.z);
             norm = sqrt(s1 * s1 + s2 * s2 + s3 * s3 + s4 * s4); // normalise step magnitude
-            norm = 1.0F / norm;
-            s1 *= norm;
-            s2 *= norm;
-            s3 *= norm;
-            s4 *= norm;
+            if (norm > 0.0F) {
+                norm = 1.0F / norm;
+                s1 *= norm;
+                s2 *= norm;
+                s3 *= norm;
+                s4 *= norm;
+            }
 
             // Compute rate of change of quaternion
             qDot1 = 0.5f * (-q2 * gyr.x - q3 * gyr.y - q4 * gyr.z) - this->mBeta * s1;

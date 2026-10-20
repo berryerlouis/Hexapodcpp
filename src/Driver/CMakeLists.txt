@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.22)
 add_subdirectory(Adc)
 add_subdirectory(Gpio)
 add_subdirectory(InputCapture)
+add_subdirectory(Joystick)
 add_subdirectory(Socket)
 add_subdirectory(Timer)
 add_subdirectory(Twi)
@@ -18,6 +19,7 @@ target_link_libraries(Driver
         DriverAdc
         DriverGpio
         DriverInputCapture
+        DriverJoystick
         DriverSocket
         DriverTimer
         DriverTwi

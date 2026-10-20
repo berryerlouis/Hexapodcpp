@@ -1,4 +1,5 @@
 #include "Socket.h"
+#include <cstring>
 #include <stdint.h>
 #include "tiny_websockets/server.hpp"
 
@@ -10,16 +11,22 @@ namespace Driver
         websockets::WebsocketsClient         client;
         static websockets::WSInterfaceString bufferMessage;
         static bool                          once = false;
-        static volatile char                 sBufferRx[50U] = {0U};
+        static constexpr size_t              RX_FRAME_SIZE = 50U;
+        static constexpr size_t              RX_QUEUE_CAPACITY = 32U;
+        static char                          sBufferRx[RX_FRAME_SIZE] = {0U};
+        static char                          sReceivedFrames[RX_QUEUE_CAPACITY][RX_FRAME_SIZE] = {{0U}};
         static uint8_t                       sIndexBufferRx = 0U;
         static bool                          sBeginIncomingFrame = false;
-        static bool                          sHasNewFrame = false;
+        static size_t                        sRxReadIndex = 0U;
+        static size_t                        sRxWriteIndex = 0U;
+        static size_t                        sRxCount = 0U;
 
         void Socket::onMessage(const websockets::WebsocketsClient &client,
                                websockets::WebsocketsMessage       message) {
             (void) client;
             bufferMessage += message.data();
-            sHasNewFrame = ReceivedStringFrame();
+            while (ReceivedStringFrame()) {
+            }
         }
 
         void Socket::onEvent(const websockets::WebsocketsClient &client,
@@ -31,6 +38,11 @@ namespace Driver
                 event == websockets::WebsocketsEvent::ConnectionClosed) {
                 bufferMessage.clear();
                 once = false;
+                sIndexBufferRx = 0U;
+                sBeginIncomingFrame = false;
+                sRxReadIndex = 0U;
+                sRxWriteIndex = 0U;
+                sRxCount = 0U;
             }
         }
 
@@ -72,13 +84,19 @@ namespace Driver
         }
 
         bool Socket::HasNewFrame(void) {
-            bool hasNewFrame = sHasNewFrame;
-            sHasNewFrame = false;
-            return hasNewFrame;
+            if (sRxCount == 0U) {
+                return false;
+            }
+
+            sRxReadIndex = (sRxReadIndex + 1U) % RX_QUEUE_CAPACITY;
+            sRxCount -= 1U;
+            return true;
         }
 
         volatile char *Socket::ReadIncomingData(void) {
-            return reinterpret_cast<volatile char *>(sBufferRx);
+            const size_t currentFrameIndex =
+                    (sRxReadIndex + RX_QUEUE_CAPACITY - 1U) % RX_QUEUE_CAPACITY;
+            return reinterpret_cast<volatile char *>(sReceivedFrames[currentFrameIndex]);
         }
 
         uint8_t Socket::Read() {
@@ -116,13 +134,25 @@ namespace Driver
                         sBufferRx[sIndexBufferRx] = '\0';
                         sIndexBufferRx = 0U;
                         sBeginIncomingFrame = false;
-                        return (true);
+                        return PushReceivedFrame();
                     }
                     sIndexBufferRx = 0U;
                     sBeginIncomingFrame = false;
                 }
             }
             return (false);
+        }
+
+        bool Socket::PushReceivedFrame() {
+            if (sRxCount >= RX_QUEUE_CAPACITY) {
+                LOG_DRIVER_WARNING("Socket", "RX queue full, drop frame.");
+                return true;
+            }
+
+            std::memcpy(sReceivedFrames[sRxWriteIndex], sBufferRx, sizeof(sBufferRx));
+            sRxWriteIndex = (sRxWriteIndex + 1U) % RX_QUEUE_CAPACITY;
+            sRxCount += 1U;
+            return true;
         }
     } // namespace Socket
 } // namespace Driver

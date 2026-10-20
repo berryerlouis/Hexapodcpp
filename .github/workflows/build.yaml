@@ -30,6 +30,34 @@ jobs:
             build/hexapod-X64-${{ matrix.build_type }}
             build/hexapod-X64-${{ matrix.build_type }}/src/Hexapodcpp
 
+  build-HMI:
+    name: Build HMI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: HMI
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: HMI/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check and build
+        run: npm run build
+
+      - name: Upload HMI build
+        uses: actions/upload-artifact@v4
+        with:
+          name: hmi-dist
+          path: HMI/dist
+
   run-tests:
     name: Run Google Tests
     runs-on: ubuntu-latest

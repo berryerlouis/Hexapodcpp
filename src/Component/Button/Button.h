@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include "../../Driver/Gpio/GpioInterface.h"
 #include "ButtonInterface.h"
 
@@ -27,9 +28,14 @@ namespace Component
         private:
             Driver::Gpio::GpioInterface &mGpioButton;
             uint64_t                     mPushTime;
+            // Edges are recorded in the interrupt thread and notified from Update().
+            std::atomic<bool>            mPushPending;
+            std::atomic<bool>            mReleasePending;
+            std::atomic<uint32_t>        mReleaseDelayUs;
+            ButtonState                  mNotifiedState;
 
         public:
-            ButtonState mState;
+            std::atomic<ButtonState> mState;
         };
     } // namespace Button
 } // namespace Component

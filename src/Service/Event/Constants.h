@@ -18,7 +18,8 @@ namespace Service
         EVENT_COM_UPDATE,
         EVENT_BATTERY_UPDATE,
         EVENT_SENSOR_UPDATE,
-        EVENT_SOUND_UPDATE
+        EVENT_SOUND_UPDATE,
+        EVENT_GAMEPAD_UPDATE
     };
 
     namespace Event
@@ -47,6 +48,8 @@ namespace Service
                         return "EVENT_SENSOR_UPDATE";
                     case EVENT_SOUND_UPDATE:
                         return "EVENT_SOUND_UPDATE";
+                    case EVENT_GAMEPAD_UPDATE:
+                        return "EVENT_GAMEPAD_UPDATE";
                     default:
                         return "UNKNOWN";
                 }

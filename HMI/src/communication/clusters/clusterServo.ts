@@ -16,6 +16,7 @@ export enum ClusterServoCommands {
     SET_REVERSE = 'SET_REVERSE',
     GET_STATE_PCA = 'GET_STATE_PCA',
     SET_STATE_PCA = 'SET_STATE_PCA',
+    GET_SERVO_ALL = 'GET_SERVO_ALL',
 }
 
 export const CommandServoId = '03';
@@ -41,6 +42,7 @@ export default class ClusterServo extends Cluster {
                 {code: '0C', name: ClusterServoCommands.SET_REVERSE},
                 {code: '0D', name: ClusterServoCommands.GET_STATE_PCA},
                 {code: '0E', name: ClusterServoCommands.SET_STATE_PCA},
+                {code: '0F', name: ClusterServoCommands.GET_SERVO_ALL},
                 {code: 'FF', name: ClusterGenericCommands.GENERIC}
             ]
         );

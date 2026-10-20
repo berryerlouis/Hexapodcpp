@@ -4,6 +4,14 @@ namespace Bot
 {
     namespace Body
     {
+        // tan() diverges near 90 degrees.
+        static constexpr float MAX_TILT_DEG = 45.0F;
+
+        static float           ClampTilt(const float angleDeg) {
+            return (angleDeg > MAX_TILT_DEG)    ? MAX_TILT_DEG
+                   : (angleDeg < -MAX_TILT_DEG) ? -MAX_TILT_DEG
+                                                : angleDeg;
+        }
         Body::Body(Legs::LegsInterface &legs)
             : mBodyIk{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, {0.0, 0.0, 0.0}}
             , mLegs(legs)
@@ -91,6 +99,9 @@ namespace Bot
             uint32_t success = 0U;
             for (size_t legId = 0U; legId < Legs::NB_LEGS; legId++) {
                 Leg::LegInterface *leg = this->mLegs.GetLeg(static_cast<Legs::ELeg>(legId));
+                if (leg == nullptr) {
+                    continue;
+                }
                 this->SetComputeIk(*leg, position, rotation);
                 const uint8_t successServos =
                         leg->SetLegBodyIk(position, this->mBodyIk.bodyIk, travelTime);
@@ -104,6 +115,9 @@ namespace Bot
                                               const uint16_t    travelTime) {
             if (legId < Legs::NB_LEGS) {
                 Leg::LegInterface *leg = this->mLegs.GetLeg(static_cast<Legs::ELeg>(legId));
+                if (leg == nullptr) {
+                    return 255UL;
+                }
                 return leg->SetLegIk(position, travelTime);
             }
             return 255UL;
@@ -119,8 +133,8 @@ namespace Bot
             this->mBodyIk.distBodyCenterFeet = sqrt(this->mBodyIk.totalX * this->mBodyIk.totalX +
                                                     this->mBodyIk.totalY * this->mBodyIk.totalY);
             this->mBodyIk.angleBodyCenterX = atan2(this->mBodyIk.totalY, this->mBodyIk.totalX);
-            this->mBodyIk.rollZ = tan(rotation.angleZ * M_PI / 180.0) * this->mBodyIk.totalX;
-            this->mBodyIk.pitchZ = tan(rotation.angleX * M_PI / 180.0) * this->mBodyIk.totalY;
+            this->mBodyIk.rollZ = tan(ClampTilt(rotation.angleZ) * M_PI / 180.0) * this->mBodyIk.totalX;
+            this->mBodyIk.pitchZ = tan(ClampTilt(rotation.angleX) * M_PI / 180.0) * this->mBodyIk.totalY;
             this->mBodyIk.bodyIk.x =
                     (cos(this->mBodyIk.angleBodyCenterX + (rotation.angleY * M_PI / 180.0)) *
                      this->mBodyIk.distBodyCenterFeet) -

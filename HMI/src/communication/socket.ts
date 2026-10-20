@@ -1,5 +1,5 @@
 import Message from "./message.ts";
-import Protocol, { Direction } from "./protocol.ts";
+import Protocol, { MessageDirection } from "./protocol.ts";
 import { clearAllPopups, openPopupError, openPopupInfo, openPopupWarning } from "../engine/popup.ts";
 import { ClusterGenericCommands, ClusterName, CommandName } from "./clusters/clusterType.ts";
 import { getErrorName } from "./clusters/clusters.ts";
@@ -16,7 +16,9 @@ interface SpecificCallback {
     params?: number[];
 }
 
-const MAX_MESSAGE_QUEUE_SIZE = 100;
+const MAX_MESSAGE_QUEUE_SIZE = 32;
+const MAX_SOCKET_BUFFERED_BYTES = 4096;
+const FLUSH_RETRY_INTERVAL_MS = 10;
 const RECONNECT_INTERVAL_MS = 2500;
 
 export default class Socket {
@@ -32,6 +34,7 @@ export default class Socket {
     private messagesList: Message[];
     private url: string | URL;
     private reconnectTimer: number | null = null;
+    private flushTimer: number | null = null;
     private shouldReconnect: boolean = true;
     private pb: HTMLElement | null;
     private pbVal: HTMLElement | null;
@@ -78,30 +81,19 @@ export default class Socket {
             }
 
             this.notifyCallbackStarted();
+            this.flushPendingMessages();
         });
 
         socket.addEventListener('message', (event) => {
             try {
                 let frame = Protocol.decode(event.data);
-                frame.direction = Direction.RX;
+                frame.direction = MessageDirection.RX;
                 frame.setDate();
                 this.notifyRead(frame);
 
-                if (this.messagesList.length > 0) {
-                    if (frame.command?.name === ClusterGenericCommands.GENERIC ||
-                        frame.cluster?.name === ClusterName.GENERIC ||
-                        frame.cluster?.code === this.messagesList[0].cluster?.code) {
-
-                        if (frame.command?.name === ClusterGenericCommands.GENERIC ||
-                            frame.cluster?.name === ClusterName.GENERIC) {
-                            openPopupWarning(getErrorName(frame.params[0]) + ': ' + this.messagesList[0].raw);
-                        }
-                        this.messagesList.shift();
-                        this.updateProgressBar();
-                        if (this.messagesList.length > 0) {
-                            this.writeOnSocket(this.messagesList[0]).then();
-                        }
-                    }
+                if (frame.command?.name === ClusterGenericCommands.GENERIC ||
+                    frame.cluster?.name === ClusterName.GENERIC) {
+                    openPopupWarning(getErrorName(frame.params[0] ?? 0));
                 }
             } catch (error) {
                 console.error('Error decoding message:', error);
@@ -115,6 +107,12 @@ export default class Socket {
             openPopupWarning('WebSocket disconnected!');
             this.notifyCallbackStopped();
             this.messagesList = [];
+            this.updateProgressBar();
+
+            if (this.flushTimer) {
+                clearTimeout(this.flushTimer);
+                this.flushTimer = null;
+            }
 
             // Attempt reconnection if enabled
             if (this.shouldReconnect) {
@@ -177,7 +175,7 @@ export default class Socket {
         });
     }
 
-    addCallbackStopped(cb: CallbackStarted) {
+    addCallbackStopped(cb: CallbackStopped) {
         this.listOfCallbackStopped.push(cb);
     }
 
@@ -245,22 +243,27 @@ export default class Socket {
         });
     }
 
-    private writeOnSocket(message: Message): Promise<boolean> {
-        return new Promise((resolve, reject) => {
-            if (this.socket.readyState === WebSocket.OPEN) {
-                if (message.raw) {
-                    this.socket.send(message.raw);
-                    this.notifyWrite(message);
-                    resolve(true);
-                } else {
-                    openPopupError('WebSocket write error: message.raw is undefined!');
-                    reject(false);
-                }
-            } else {
-                openPopupError('WebSocket write error: WebSocket is not open!');
-                reject(false);
+    private flushPendingMessages() {
+        if (this.flushTimer) {
+            clearTimeout(this.flushTimer);
+            this.flushTimer = null;
+        }
+
+        while (this.socket.readyState === WebSocket.OPEN &&
+               this.socket.bufferedAmount < MAX_SOCKET_BUFFERED_BYTES &&
+               this.messagesList.length > 0) {
+            const message = this.messagesList.shift();
+            if (message?.raw) {
+                this.socket.send(message.raw);
+                this.notifyWrite(message);
             }
-        });
+        }
+
+        this.updateProgressBar();
+        if (this.messagesList.length > 0 && this.socket.readyState === WebSocket.OPEN) {
+            this.flushTimer = window.setTimeout(
+                () => this.flushPendingMessages(), FLUSH_RETRY_INTERVAL_MS);
+        }
     }
 
     private updateProgressBar() {
@@ -283,15 +286,12 @@ export default class Socket {
             return;
         }
 
+        if (this.messagesList.some((queuedMessage) => queuedMessage.raw === message.raw)) {
+            return;
+        }
+
         this.messagesList.push(message);
         this.updateProgressBar();
-
-        if (this.messagesList.length === 1) {
-            this.writeOnSocket(message).catch((error) => {
-                console.error('Failed to write message:', error);
-                this.messagesList.shift();
-                this.updateProgressBar();
-            });
-        }
+        this.flushPendingMessages();
     }
 }

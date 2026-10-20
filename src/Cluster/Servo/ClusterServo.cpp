@@ -25,6 +25,7 @@ namespace Cluster
             this->AddClusterItem(ClusterItem(EServoCommands::SET_REVERSE, 2U));
             this->AddClusterItem(ClusterItem(EServoCommands::GET_STATE_PCA, 0U));
             this->AddClusterItem(ClusterItem(EServoCommands::GET_STATE_PCA, 1U));
+            this->AddClusterItem(ClusterItem(EServoCommands::GET_SERVO_ALL, 1U));
             LOG_CLUSTER_DEBUG("Servo", "(%d) Initialized.", SERVO);
         }
 
@@ -132,6 +133,15 @@ namespace Cluster
                 const bool reversed = static_cast<bool>(request.Get1ByteParam(1U));
                 servo->SetReverse(reversed);
                 return BuildFrameSetReverse(servoId, reversed, response);
+            }
+            if (request.GetCommandId() == EServoCommands::GET_SERVO_ALL) {
+                const bool state = servo->IsEnable();
+                const uint8_t angle = servo->GetAngle();
+                const uint8_t offset = servo->GetOffset();
+                const uint8_t min = servo->GetMin();
+                const uint8_t max = servo->GetMax();
+                const bool reversed = servo->GetReverse();
+                return BuildFrameGetServoAllParams(servoId, state, angle, offset, min, max, reversed, response);
             }
             return Core::Status::CORE_ERROR;
         }
@@ -309,10 +319,33 @@ namespace Cluster
                     response.Build(EClusters::SERVO, EClusterCommandGeneric::GENERIC);
             if (success == Core::Status::CORE_OK) {
                 response.Set1ByteParam(servoId);
-                response.Set1ByteParam(error);
+                response.Set1ByteParam(static_cast<uint8_t>(error));
                 response.Set1ByteParam(angle);
             }
             return (success);
+        }
+
+        Core::Status ClusterServo::BuildFrameGetServoAllParams( const uint8_t      servoId,
+                                                                const bool         state,
+                                                                const uint8_t      angle,
+                                                                const uint8_t      offset,
+                                                                const uint8_t      min,
+                                                                const uint8_t      max,
+                                                                const bool         reversed,
+                                                                Frame             &response) {
+            const Core::Status success =
+                    response.Build(EClusters::SERVO, EServoCommands::GET_SERVO_ALL);
+            if (success == Core::Status::CORE_OK) {
+                response.Set1ByteParam(servoId);
+                response.Set1ByteParam(static_cast<uint8_t>(state));
+                response.Set1ByteParam(angle);
+                response.Set1ByteParam(offset);
+                response.Set1ByteParam(min);
+                response.Set1ByteParam(max);
+                response.Set1ByteParam(static_cast<uint8_t>(reversed));
+            }
+            return (success);
+
         }
     }; // namespace Servo
 } // namespace Cluster

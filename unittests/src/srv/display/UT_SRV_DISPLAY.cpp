@@ -60,6 +60,7 @@ namespace Service
                 EXPECT_CALL(mMockSsd1306,
                             DrawBitmap(_, 94U, 0U, Bitmap::Bitmaps::Color::COLOR_WHITE))
                         .Times(1U);
+                EXPECT_CALL(mMockSsd1306, EraseArea(76U, 0U, 16U, 8U)).Times(1U);
 
                 EXPECT_CALL(mMockEventDispatcherInterface, AddListener(_));
                 EXPECT_EQ(Core::Status::CORE_OK, mServiceDisplay.Initialize());
@@ -106,6 +107,25 @@ namespace Service
             EXPECT_CALL(mMockSsd1306, EraseArea(94U, 0U, 16U, 8U)).Times(1U);
             EXPECT_CALL(mMockSsd1306, DrawBitmap(_, 94U, 0U, Bitmap::Bitmaps::Color::COLOR_WHITE))
                     .Times(1U);
+            mServiceDisplay.OnEvent(event);
+        }
+
+        TEST_F(UT_SRV_DISPLAY, OnEvent_GamepadConnected) {
+            const Component::Gamepad::GamepadConnectedState state{true};
+            const Event::Event                              event =
+                    Event::Event(GAMEPAD, EventType::EVENT_GAMEPAD_UPDATE, state);
+
+            EXPECT_CALL(mMockSsd1306, DrawBitmap(_, 76U, 0U, Bitmap::Bitmaps::Color::COLOR_WHITE))
+                    .Times(1U);
+            mServiceDisplay.OnEvent(event);
+        }
+
+        TEST_F(UT_SRV_DISPLAY, OnEvent_GamepadDisconnected) {
+            const Component::Gamepad::GamepadConnectedState state{false};
+            const Event::Event                              event =
+                    Event::Event(GAMEPAD, EventType::EVENT_GAMEPAD_UPDATE, state);
+
+            EXPECT_CALL(mMockSsd1306, EraseArea(76U, 0U, 16U, 8U)).Times(1U);
             mServiceDisplay.OnEvent(event);
         }
 

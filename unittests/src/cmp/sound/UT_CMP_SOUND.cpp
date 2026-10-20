@@ -224,6 +224,91 @@ namespace Component
             mSoundRight.ComputeAndNotifyMaxSound();
         }
 
+        TEST_F(UT_CMP_SOUND, ComputeAndNotifyMaxSound_Left_First_Arrival_Wins_Over_Duration) {
+            HitTest(SOUND_LEFT, LOUD, 1000U);
+            HitTest(SOUND_RIGHT, LOUD, 1300U);
+            HitTest(SOUND_LEFT, NO_SOUND, 3000U);
+            HitTest(SOUND_RIGHT, NO_SOUND, 5000U);
+            mSoundLeft.Update(10000U);
+            mSoundRight.Update(10000U);
+
+            const SoundStruct result = Sound::ComputeAndNotifyMaxSound();
+            EXPECT_EQ(result.id, SOUND_LEFT);
+            EXPECT_EQ(result.delay, 2000U);
+        }
+
+        TEST_F(UT_CMP_SOUND, ComputeAndNotifyMaxSound_Right_First_Arrival_Ok) {
+            HitTest(SOUND_RIGHT, LOUD, 1000U);
+            HitTest(SOUND_LEFT, LOUD, 1200U);
+            HitTest(SOUND_RIGHT, NO_SOUND, 3000U);
+            HitTest(SOUND_LEFT, NO_SOUND, 3200U);
+            mSoundLeft.Update(10000U);
+            mSoundRight.Update(10000U);
+
+            const SoundStruct result = Sound::ComputeAndNotifyMaxSound();
+            EXPECT_EQ(result.id, SOUND_RIGHT);
+            EXPECT_EQ(result.delay, 2000U);
+        }
+
+        TEST_F(UT_CMP_SOUND, ComputeAndNotifyMaxSound_Close_Arrival_Longest_Wins) {
+            HitTest(SOUND_LEFT, LOUD, 1000U);
+            HitTest(SOUND_RIGHT, LOUD, 1010U);
+            HitTest(SOUND_LEFT, NO_SOUND, 3000U);
+            HitTest(SOUND_RIGHT, NO_SOUND, 5000U);
+            mSoundLeft.Update(10000U);
+            mSoundRight.Update(10000U);
+
+            const SoundStruct result = Sound::ComputeAndNotifyMaxSound();
+            EXPECT_EQ(result.id, SOUND_RIGHT);
+            EXPECT_EQ(result.delay, 3990U);
+        }
+
+        TEST_F(UT_CMP_SOUND, ComputeAndNotifyMaxSound_Single_Sensor_Ok) {
+            HitTest(SOUND_RIGHT, LOUD, 1000U);
+            HitTest(SOUND_RIGHT, NO_SOUND, 4000U);
+            mSoundLeft.Update(10000U);
+            mSoundRight.Update(10000U);
+
+            const SoundStruct result = Sound::ComputeAndNotifyMaxSound();
+            EXPECT_EQ(result.id, SOUND_RIGHT);
+            EXPECT_EQ(result.delay, 3000U);
+        }
+
+        TEST_F(UT_CMP_SOUND, ComputeAndNotifyMaxSound_Noise_Ignored) {
+            HitTest(SOUND_LEFT, LOUD, 1000U);
+            HitTest(SOUND_LEFT, NO_SOUND, 1200U);
+            mSoundLeft.Update(10000U);
+            mSoundRight.Update(10000U);
+
+            EXPECT_EQ(Sound::ComputeAndNotifyMaxSound().id, SOUND_NONE);
+        }
+
+        TEST_F(UT_CMP_SOUND, ComputeAndNotifyMaxSound_Majority_Of_Events_Wins) {
+            HitTest(SOUND_LEFT, LOUD, 10000U);
+            HitTest(SOUND_RIGHT, LOUD, 10300U);
+            HitTest(SOUND_LEFT, NO_SOUND, 12000U);
+            HitTest(SOUND_RIGHT, NO_SOUND, 12300U);
+            HitTest(SOUND_RIGHT, LOUD, 20000U);
+            HitTest(SOUND_LEFT, LOUD, 20300U);
+            HitTest(SOUND_RIGHT, NO_SOUND, 22000U);
+            HitTest(SOUND_LEFT, NO_SOUND, 22300U);
+            HitTest(SOUND_RIGHT, LOUD, 30000U);
+            HitTest(SOUND_LEFT, LOUD, 30300U);
+            HitTest(SOUND_RIGHT, NO_SOUND, 32000U);
+            HitTest(SOUND_LEFT, NO_SOUND, 32300U);
+            mSoundLeft.Update(40000U);
+            mSoundRight.Update(40000U);
+
+            EXPECT_EQ(Sound::ComputeAndNotifyMaxSound().id, SOUND_RIGHT);
+        }
+
+        TEST_F(UT_CMP_SOUND, Hit_Without_Level_Change_Is_Ignored) {
+            HitTest(SOUND_LEFT, LOUD, 1000U);
+            EXPECT_CALL(mMockGpio, Get()).WillOnce(Return(false));
+            mSoundLeft.Hit(5000U);
+            EXPECT_EQ(mSoundLeft.mStartSoundTime, 1000U);
+        }
+
 
     } // namespace Sound
 } // namespace Component

@@ -20,15 +20,13 @@ namespace Bot
 
             virtual Position3d  &GetCurrentPosition(void) = 0;
 
-            virtual void         ComputeLerpTarget(const uint64_t           currentTime,
-                                                   Misc::Maths::Position3d &position,
-                                                   const float              amplitude,
-                                                   const float              elevation,
-                                                   const float              direction,
-                                                   const bool               isRotated,
-                                                   const float              rotation,
-                                                   const bool               clockWize,
-                                                   const uint64_t           timeStamp) = 0;
+            virtual void         ComputeTarget(Misc::Maths::Position3d &position,
+                                               const float              amplitude,
+                                               const float              elevation,
+                                               const float              direction,
+                                               const bool               isRotated,
+                                               const float              rotation,
+                                               const bool               clockWize) const = 0;
 
             virtual Legs::ELeg   GetId(void) const = 0;
 
@@ -44,9 +42,9 @@ namespace Bot
             virtual void
             ComputeRotation(Position3d &position, float angleRotation, bool clockwize) const = 0;
 
-            virtual void       ComputeAmplitude(Position3d &position, uint8_t amplitude) = 0;
+            virtual void       ComputeAmplitude(Position3d &position, float amplitude) const = 0;
 
-            virtual void       ComputeElevation(Position3d &position, uint8_t elevation) = 0;
+            virtual void       ComputeElevation(Position3d &position, float elevation) const = 0;
 
             virtual Position3d GetFootPosition() const = 0;
 

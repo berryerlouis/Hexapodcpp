@@ -64,6 +64,14 @@ namespace Cluster
                                                    const uint8_t      servoId,
                                                    const uint8_t      angle,
                                                    Frame             &response);
+            static Core::Status BuildFrameGetServoAllParams( const uint8_t      servoId,
+                                                            const bool         state,
+                                                            const uint8_t      angle,
+                                                            const uint8_t      offset,
+                                                            const uint8_t      min,
+                                                            const uint8_t      max,
+                                                            const bool         reversed,
+                                                            Frame             &response);
 
         private:
             ServosInterface &mServosInterface;

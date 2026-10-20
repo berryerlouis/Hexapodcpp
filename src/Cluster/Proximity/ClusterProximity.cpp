@@ -32,7 +32,11 @@ namespace Cluster
                 const uint16_t  distance = this->mProximity.GetDistance(sensorId);
                 success = BuildFrameDistanceUS(sensorId, distance, response);
             } else if (request.GetCommandId() == EProximityCommands::SET_THRESHOLD) {
-                const SensorsId sensorId = static_cast<SensorsId>(request.Get1ByteParam(0U));
+                const uint8_t sensorIdRaw = request.Get1ByteParam(0U);
+                if (sensorIdRaw >= NB_SENSORS) {
+                    return Core::Status::CORE_ERROR_ARGUMENT;
+                }
+                const SensorsId sensorId = static_cast<SensorsId>(sensorIdRaw);
                 const uint16_t  threshold = request.Get2BytesParam(1U);
                 this->mProximity.SetThreshold(sensorId, threshold);
                 success = BuildFrameThreshold(sensorId, threshold, response);

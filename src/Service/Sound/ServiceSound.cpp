@@ -41,7 +41,7 @@ namespace Service
                 Cluster::Sound::ClusterSound::BuildFrameGetSoundState(
                         maxSound.id, maxSound.delay, response);
                 this->SendMessage(response);
-                this->DispatchEvent<SoundStruct>(EventType::EVENT_SENSOR_UPDATE, maxSound);
+                this->DispatchEvent<SoundStruct>(EventType::EVENT_SOUND_UPDATE, maxSound);
             }
         }
 

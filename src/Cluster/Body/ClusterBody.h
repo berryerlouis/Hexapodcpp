@@ -4,12 +4,14 @@
 #include "../ClusterBase.h"
 
 #include "../../Move/Gait/Constants.h"
+#include "../../Move/Walk/Constants.h"
 
 namespace Cluster
 {
     namespace Body
     {
         using namespace Bot::Body;
+        using Move::Walk::EWalkStatus;
 
         class ClusterBody : public ClusterBase, ClusterCommand {
         public:
@@ -25,7 +27,7 @@ namespace Cluster
             static Core::Status  BuildFrameSetLegPosition(Frame         &response,
                                                           const uint32_t successMove);
 
-            static Core::Status  BuildFrameUpdateWalkStatus(Frame &response, uint8_t walkStatus);
+            static Core::Status  BuildFrameUpdateWalkStatus(Frame &response, EWalkStatus walkStatus);
 
             static Core::Status  BuildFrameUpdateDirection(Frame         &response,
                                                            const uint16_t direction);
@@ -38,6 +40,8 @@ namespace Cluster
             static Core::Status BuildFrameUpdateElevation(Frame &response, const uint8_t elevation);
 
             static Core::Status BuildFrameUpdateAll(Frame         &response,
+                                                    const Move::Walk::EWalkStatus walkStatus,
+                                                    const Move::Gait::GaitType gait,
                                                     const uint8_t  amplitude,
                                                     const uint8_t  elevation,
                                                     const uint16_t direction,

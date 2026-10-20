@@ -178,6 +178,16 @@ namespace Misc
                                                   _XXX____,
                                                   ________,
                                                   ________};
+                                                  
+        const uint8_t Bitmaps::Gamepad[]       = {________,________,
+                                                  ____XXXX,XXXX____,
+                                                  __XX_XXX,XXX_XX__,
+                                                  __X_X_XX,XX_X_X__,
+                                                  __XX_XXX,XXX_XX__,
+                                                  _XXXX___,___XXXX_,
+                                                  XXXX____,____XXXX,
+                                                  XX______,______XX,
+                                                  ________,________,};
 
         const uint8_t Bitmaps::ButtonRelease[] = {_____XXX,
                                                   XXX_____,

@@ -1,4 +1,5 @@
-import { WebGLRenderer, Clock, Scene } from 'three'
+import { ACESFilmicToneMapping, Clock, PCFSoftShadowMap, PMREMGenerator, Scene, WebGLRenderer } from 'three'
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js'
 import { getCanvas } from '../tool/function.ts'
 import Camera from "./camera.ts";
 
@@ -14,6 +15,9 @@ export default class Graphic extends WebGLRenderer {
     cbResize: () => void;
     width: number;
     height: number;
+    private lastFrameTime: number = 0;
+    private static readonly TARGET_FPS = 30;
+    private static readonly FRAME_INTERVAL_MS = 1000 / Graphic.TARGET_FPS;
 
     constructor(scene: Scene, camera: Camera) {
         const canvas = getCanvas();
@@ -26,6 +30,15 @@ export default class Graphic extends WebGLRenderer {
         this.width = 0;
         this.height = 0;
         this.shadowMap.enabled = true;
+        this.shadowMap.type = PCFSoftShadowMap;
+        this.toneMapping = ACESFilmicToneMapping;
+        this.toneMappingExposure = 1.05;
+
+        // Image-based lighting so the brushed aluminium has something to reflect.
+        const pmrem = new PMREMGenerator(this);
+        scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+        scene.environmentIntensity = 0.5;
+        pmrem.dispose();
         this.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
 
         window.addEventListener('resize', this.cbResize);
@@ -34,10 +47,13 @@ export default class Graphic extends WebGLRenderer {
     }
 
     loop() {
+        requestAnimationFrame(this.cbLoop);
+        const now = performance.now();
+        if (now - this.lastFrameTime < Graphic.FRAME_INTERVAL_MS) return;
+        this.lastFrameTime = now;
         const dt = this.clock.getDelta();
         if (this.cbUpdate) this.cbUpdate(dt);
         this.render(this.scene, this.camera);
-        requestAnimationFrame(this.cbLoop);
     }
 
     onUpdate(callback: UpdateCallback) {

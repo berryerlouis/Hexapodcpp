@@ -2,7 +2,7 @@ import Message from "./message.ts";
 import { Cluster, Command } from "./clusters/clusterType.ts";
 import { getClusterByCode, getCommandByCode } from "./clusters/clusters.ts";
 
-export enum Direction {
+export enum MessageDirection {
     RX = "Rx",
     TX = "Tx"
 }

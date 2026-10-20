@@ -57,6 +57,8 @@ namespace Driver
 
             static bool    ReceivedStringFrame(void);
 
+            static bool    PushReceivedFrame(void);
+
             static void    onMessage(const websockets::WebsocketsClient &client,
                                      websockets::WebsocketsMessage       message);
 

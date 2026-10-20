@@ -6,12 +6,12 @@ export default class Camera extends PerspectiveCamera {
     needUpdate: boolean;
 
     constructor(hexapod: Hexapod) {
-        super(70, innerWidth / innerHeight)
+        super(50, innerWidth / innerHeight, 0.1, 200)
         this.hexapod = hexapod;
         this.needUpdate = false;
         this.hexapod.addCallbackMove(this.move.bind(this));
-        this.position.set(0, 10, 10);
-        this.lookAt(this.hexapod.position);
+        this.position.set(2.8, 4.8, 4.4);
+        this.lookAt(0, 0.9, 0);
     }
 
     move() {

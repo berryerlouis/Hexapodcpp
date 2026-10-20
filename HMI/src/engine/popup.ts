@@ -24,30 +24,30 @@ export function clearAllPopups() {
 
 export function openPopupInfo(message: string) {
     let id: string = Math.floor(Math.random() * 100000000).toString();
-    openPopup(message, id);
-    document.getElementById(id)!.style.backgroundColor = '#68b33c';
+    openPopup(message, id, 'is-info', 'bi-check-circle-fill');
 }
 
 export function openPopupWarning(message: string) {
     let id: string = Math.floor(Math.random() * 100000000).toString();
-    openPopup(message, id);
-    document.getElementById(id)!.style.backgroundColor = '#b3993c';
+    openPopup(message, id, 'is-warning', 'bi-exclamation-triangle-fill');
 }
 
 export function openPopupError(message: string) {
     let id: string = Math.floor(Math.random() * 100000000).toString();
-    openPopup(message, id);
-    document.getElementById(id)!.style.backgroundColor = '#b33c40';
+    openPopup(message, id, 'is-error', 'bi-x-octagon-fill');
 }
 
-function openPopup(message: string, id: string) {
+function openPopup(message: string, id: string, tone: string, iconClass: string) {
+    const icon = document.createElement("i");
+    icon.classList.add("bi", iconClass, "popup-icon");
+
     const popMessage = document.createElement("span");
     popMessage.classList.add("popup-message");
     popMessage.innerText = message;
 
     const close = document.createElement("a");
     close.classList.add("popup-close");
-    close.innerText = '✖️';
+    close.innerHTML = '<i class="bi bi-x-lg"></i>';
 
     const closeHandler = () => {
         content.style.display = 'none';
@@ -74,8 +74,9 @@ function openPopup(message: string, id: string) {
     close.addEventListener('click', closeHandler);
 
     const content = document.createElement("div");
-    content.classList.add("popup-content");
+    content.classList.add("popup-content", tone);
     content.id = id;
+    content.append(icon);
     content.append(popMessage);
     content.append(close);
 

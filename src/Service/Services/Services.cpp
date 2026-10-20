@@ -15,6 +15,7 @@ namespace Service
                            ServiceBody               &serviceBody,
                            ServiceButton             &serviceButton,
                            ServiceSound              &serviceSound,
+                           ServiceGamepad            &serviceGamepad,
                            Message::MessageInterface &messageListener)
             : mServices{{{GENERAL, &serviceGeneral},
                          {CONTROL, &serviceControl},
@@ -25,7 +26,8 @@ namespace Service
                          {DISPLAY, &serviceDisplay},
                          {BODY, &serviceBody},
                          {BUTTON, &serviceButton},
-                         {SOUND, &serviceSound}}}
+                         {SOUND, &serviceSound},
+                         {GAMEPAD, &serviceGamepad}}}
             , mMessageListener(messageListener) {
         }
 
@@ -38,11 +40,9 @@ namespace Service
                 service->DispatchEvent<Core::Status>(
                         service->GetServiceId(), EventType::EVENT_INIT_UPDATE, success);
                 if (success != Core::Status::CORE_OK) {
-#ifdef DEBUG
                     LOG_SERVICE_ERROR("Service id:%s Initialization "
                                       "error.",
                                       EServicesStruct::ServiceIdToString(pair.first).c_str());
-#endif
                 }
             }
             Frame response;

@@ -1,24 +1,61 @@
 import Socket from "../communication/socket.ts";
+import Message from "../communication/message.ts";
+import {ClusterName} from "../communication/clusters/clusterType.ts";
+import { ClusterBodyCommands } from "../communication/clusters/clusterBody.ts";
+
+// Walk status values exchanged with the bot (see EWalkStatus in C++):
+//   0 = WALKING, 1 = transition, 2 = STOPPED.
+const WALK_STATUS_STOPPED = 2;
 
 export default class Cockpit {
     cockpitEnable: HTMLElement;
     cockpitDirection: HTMLElement;
+    cockpitEnableIcon: HTMLElement | null;
     socket: Socket;
 
     constructor(socket: Socket) {
         this.socket = socket;
         this.cockpitEnable = document.getElementById('enable')!;
         this.cockpitDirection = document.getElementById('direction')!;
+        this.cockpitEnableIcon = this.cockpitEnable.querySelector('i');
         this.cockpitEnable.addEventListener('click', () => {
             this.cockpitEnable.classList.contains('select') ? this.enableCockpitDirection() : this.disableCockpitDirection();
         });
 
         this.socket.addCallbackStarted(() => {
             this.enableCockpit();
+            this.setLinkState('online', 'Connected');
         });
         this.socket.addCallbackStopped(() => {
             this.disableCockpit();
+            this.setLinkState('offline', 'Reconnecting...');
         });
+        this.setLinkState('connecting', 'Connecting...');
+
+        // Show the drive pad as soon as the bot walks; stopping keeps it so the sticks stay usable.
+        this.socket.addSpecificCallbackRead(
+            ClusterName.BODY,
+            ClusterBodyCommands.GET_ALL_PARAMS,
+            (message: Message) => {
+                if (!message.params || message.params.length !== 11) {
+                    return;
+                }
+                if (message.getValueUint8(0) !== WALK_STATUS_STOPPED) {
+                    this.enableCockpitDirection();
+                }
+            },
+        );
+    }
+
+    private setLinkState(state: 'connecting' | 'online' | 'offline', label: string) {
+        const chip = document.getElementById('link-status');
+        const text = document.getElementById('link-label');
+        if (chip) {
+            chip.dataset.state = state;
+        }
+        if (text) {
+            text.innerText = label;
+        }
     }
 
     private disableCockpit() {
@@ -32,9 +69,21 @@ export default class Cockpit {
 
     private disableCockpitDirection() {
         this.cockpitDirection.setAttribute('style', 'display:none');
+        this.cockpitEnable.classList.remove('select');
+        this.setEnableIcon(false);
     }
 
     private enableCockpitDirection() {
-        this.cockpitDirection.setAttribute('style', 'display:block');
+        this.cockpitDirection.setAttribute('style', 'display:flex');
+        this.cockpitEnable.classList.add('select');
+        this.setEnableIcon(true);
+    }
+
+    private setEnableIcon(on: boolean) {
+        if (!this.cockpitEnableIcon) {
+            return;
+        }
+        this.cockpitEnableIcon.classList.remove('bi-toggle2-on', 'bi-toggle2-off');
+        this.cockpitEnableIcon.classList.add(on ? 'bi-toggle2-on' : 'bi-toggle2-off');
     }
 }

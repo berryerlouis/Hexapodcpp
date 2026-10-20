@@ -46,7 +46,7 @@ namespace Component
         }
 
         bool Ads1115::IsReady() const {
-            uint8_t                  buffer[2U];
+            uint8_t                  buffer[2U] = {0U, 0U};
 
             static constexpr uint8_t kPollCount = 12U;
             const uint32_t           conversionDelayUs = GetConversionDelayUs(this->mSps);
@@ -93,17 +93,17 @@ namespace Component
                     config |= ADS1115_REG_CONFIG_MUX_SINGLE_3;
                     break;
             }
-            uint8_t buffer[2U];
-
+            uint8_t buffer[2U] = {0U, 0U};
             buffer[0U] = config >> 8U;
             buffer[1U] = config & 0xFFU;
             this->mTwi.WriteRegisters(this->mAddress, ADS1115_REG_POINTER_CONFIG, buffer, 2U);
 
             if (this->IsReady()) {
                 this->mTwi.ReadRegisters(this->mAddress, ADS1115_REG_POINTER_CONVERT, buffer, 2U);
-                return ((static_cast<uint16_t>(buffer[0U]) << 8U) +
-                        static_cast<uint16_t>(buffer[1U])) *
-                       (6144.0F / 32768.0F);
+                const int16_t raw = static_cast<int16_t>((static_cast<uint16_t>(buffer[0U]) << 8U) |
+                                                         static_cast<uint16_t>(buffer[1U]));
+                // Single-ended noise can read slightly below zero.
+                return (raw < 0 ? 0 : raw) * (6144.0F / 32768.0F);
             }
             return 0.0F;
         }

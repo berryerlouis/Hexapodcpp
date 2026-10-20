@@ -14,6 +14,8 @@ set(SRC_FILES
 set(TEST_FILES
         src/move/gait/UT_MOVE_GAIT_PARAMS.cpp
         src/move/gait/UT_MOVE_GAIT_CYCLE.cpp
+        src/move/gait/UT_MOVE_GAIT_COLLISION.cpp
+        src/move/gait/UT_MOVE_GAIT_STRATEGY.cpp
 )
 
 # Combine and export to parent scope

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <memory>
-#include <vector>
+#include <cstdint>
 #include "../../Bot/Constants.h"
 #include "../../Bot/Legs/LegsInterface.h"
 #include "Constants.h"
@@ -14,6 +13,11 @@ namespace Move
     {
         class GaitCycle {
         public:
+            // Time to blend from the neutral pose to the full gait (and back).
+            static constexpr uint64_t RAMP_DURATION_MS = 500U;
+            // Longest time step integrated at once, protects against a stalled main loop.
+            static constexpr uint64_t MAX_STEP_MS = 250U;
+
             GaitCycle(Bot::Legs::LegsInterface &legs, GaitParams &gaitParams);
 
             ~GaitCycle() = default;
@@ -29,31 +33,31 @@ namespace Move
             void Update(uint64_t currentTime);
 
         private:
-            float                     GetDeltaTimeOfCycleDuration(const uint64_t currentTime) const;
+            void                      SelectStrategy(GaitType gaitType);
 
-            float                     GetNormalizedTime(const uint64_t currentTime) const;
-
-            bool                      IsCycleComplete(const uint64_t currentTime) const;
-
-            void                      AdvanceToNextCycle(const uint64_t currentTime);
+            void                      ApplyGait(float scale);
 
             Bot::Legs::LegsInterface &mLegs;
             GaitParams               &mGaitParams;
-            std::unique_ptr<Move::Gait::GaitStrategy>         mGaitStrategy;
+            GaitTripod                mGaitTripod;
+            GaitWave                  mGaitWave;
+            GaitRipple                mGaitRipple;
+            GaitStrategy             *mGaitStrategy;
 
-            uint64_t                                          mStartTime;
-            uint8_t                                           mStepPositionIndex;
-            std::vector<Misc::Maths::Position3d>              mPositionsLift = {{0.0F, 1.0F, 0.0F},
-                                                                                {0.0F, 0.0F, -1.0F},
-                                                                                {0.0F, -1.0F, 0.0F}};
-            std::vector<Misc::Maths::Position3d>              mPositionsDown = {{0.0F, -1.0F, 0.0F},
-                                                                                {0.0F, 0.0F, 0.1F},
-                                                                                {0.0F, 1.0F, 0.0F}};
-            Misc::Maths::Position3d                           mPositionsStop = {0.0F, 0.0F, 0.0F};
+            uint64_t                  mLastUpdateTime;
+            bool                      mHasLastUpdateTime;
+            float                     mPhase;
+            float                     mRamp;
+            bool                      mResetPhaseWhenIdle;
+            bool                      mSettled;
 
-            std::vector<std::vector<Misc::Maths::Position3d>> mPositions = {mPositionsLift,
-                                                                            mPositionsDown};
+            // Foot goes through the swing (lift) then the stance (push), the extremities match.
+            const GaitTrajectory      mTrajectory = {{{{{0.0F, 1.0F, 0.0F},
+                                                        {0.0F, 0.0F, -2.0F},
+                                                        {0.0F, -1.0F, 0.0F}}},
+                                                      {{{0.0F, -1.0F, 0.0F},
+                                                        {0.0F, 0.0F, 0.1F},
+                                                        {0.0F, 1.0F, 0.0F}}}}};
         };
-    } // namespace
-      // Gait
+    } // namespace Gait
 } // namespace Move

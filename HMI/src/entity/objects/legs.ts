@@ -35,9 +35,9 @@ export default class Legs extends Object3D {
         this.legs.leg.push(new Leg('FrontLeft', 0, this.x + bodyHeight / 2, this.y, -bodyWidth / 2, true, this.socket));
         this.legs.leg.push(new Leg('MiddleLeft', 1, this.x, this.y, -bodyWidthMiddle / 2, true, this.socket));
         this.legs.leg.push(new Leg('BackLeft', 2, this.x - bodyHeight / 2, this.y, -bodyWidth / 2, true, this.socket));
-        this.legs.leg.push(new Leg('BackRight', 3, this.x + bodyHeight / 2, this.y, bodyWidth / 2, false, this.socket));
+        this.legs.leg.push(new Leg('FrontRight', 3, this.x + bodyHeight / 2, this.y, bodyWidth / 2, false, this.socket));
         this.legs.leg.push(new Leg('MiddleRight', 4, this.x, this.y, bodyWidthMiddle / 2, false, this.socket));
-        this.legs.leg.push(new Leg('FrontRight', 5, this.x - bodyHeight / 2, this.y, bodyWidth / 2, false, this.socket));
+        this.legs.leg.push(new Leg('BackRight', 5, this.x - bodyHeight / 2, this.y, bodyWidth / 2, false, this.socket));
         for (let i = 0; i < 6; i++) {
             this.add(this.legs.leg[i]);
         }
@@ -51,12 +51,12 @@ export default class Legs extends Object3D {
         });
     }
 
-    update() {
+    update(dt: number = 1 / 60) {
         for (let i = 0; i < 6; i++) {
             this.legs.leg[i].setCoxysAngle(this.legs.leg[i].coxys.servo.getAngle());
             this.legs.leg[i].setFemurAngle(this.legs.leg[i].coxys.femur.servo.getAngle());
             this.legs.leg[i].setTibiaAngle(this.legs.leg[i].coxys.femur.tibia.servo.getAngle());
-            this.legs.leg[i].update();
+            this.legs.leg[i].update(dt);
         }
     }
 

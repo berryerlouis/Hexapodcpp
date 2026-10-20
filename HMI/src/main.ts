@@ -3,6 +3,7 @@ import Socket from "./communication/socket.ts";
 import Cockpit from "./engine/cockpit.ts";
 import ConnectTarget, { Target } from './connect-target.ts';
 
+
 export enum IPTarget {
     X64 = '127.0.0.1:8080',
     HEXAPOD = '88.183.190.4:58080',
@@ -17,7 +18,7 @@ new ConnectTarget((target: Target) => {
     } else {
         throw new Error('Invalid target');
     }
-    new Ui(socket);
+    new Ui(socket, target);
     new Cockpit(socket);
 });
 

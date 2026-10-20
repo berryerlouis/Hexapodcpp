@@ -284,7 +284,6 @@ namespace Component
                 uint8_t           status = 0U;
                 uint32_t          signal_grid[64];
                 int16_t           range_grid[64];
-                uint8_t           dss_4x4[] = {0x0F, 0x04, 0x04, 0x00, 0x08, 0x10, 0x10, 0x07};
                 constexpr uint8_t footer[] = {0x00, 0x00, 0x00, 0x0F, 0x03, 0x01, 0x01, 0xE4};
                 uint16_t          k;
 
@@ -292,7 +291,8 @@ namespace Component
 
                 /* Data extrapolation is required for 4X4 offset */
                 if (resolution == (uint8_t) VL53L5CX_RESOLUTION_4X4) {
-                    int8_t i, j;
+                    int8_t  i, j;
+                    uint8_t dss_4x4[] = {0x0F, 0x04, 0x04, 0x00, 0x08, 0x10, 0x10, 0x07};
                     (void) memcpy(&(this->temp_buffer[0x10]), dss_4x4, sizeof(dss_4x4));
                     SwapBuffer(this->temp_buffer, VL53L5CX_OFFSET_BUFFER_SIZE);
                     (void) memcpy(signal_grid, &(this->temp_buffer[0x3C]), sizeof(signal_grid));
@@ -333,9 +333,6 @@ namespace Component
 
             uint8_t Vl53l5x::SendXtalkData(uint8_t resolution) {
                 uint8_t  status = 0U;
-                uint8_t  res4x4[] = {0x0F, 0x04, 0x04, 0x17, 0x08, 0x10, 0x10, 0x07};
-                uint8_t  dss_4x4[] = {0x00, 0x78, 0x00, 0x08, 0x00, 0x00, 0x00, 0x08};
-                uint8_t  profile_4x4[] = {0xA0, 0xFC, 0x01, 0x00};
                 uint32_t signal_grid[64U];
 
                 (void) memcpy(
@@ -343,7 +340,10 @@ namespace Component
 
                 /* Data extrapolation is required for 4X4 Xtalk */
                 if (resolution == (uint8_t) VL53L5CX_RESOLUTION_4X4) {
-                    int8_t i, j;
+                    int8_t  i, j;
+                    uint8_t res4x4[] = {0x0F, 0x04, 0x04, 0x17, 0x08, 0x10, 0x10, 0x07};
+                    uint8_t dss_4x4[] = {0x00, 0x78, 0x00, 0x08, 0x00, 0x00, 0x00, 0x08};
+                    uint8_t profile_4x4[] = {0xA0, 0xFC, 0x01, 0x00};
                     (void) memcpy(&(this->temp_buffer[0x8]), res4x4, sizeof(res4x4));
                     (void) memcpy(&(this->temp_buffer[0x020]), dss_4x4, sizeof(dss_4x4));
 
@@ -626,17 +626,6 @@ namespace Component
 
             uint8_t Vl53l5x::DciWriteData(const uint8_t *data, uint32_t index, uint16_t data_size) {
                 uint8_t  status = 0U;
-
-                uint8_t  headers[] = {0x00, 0x00, 0x00, 0x00};
-                uint8_t  footer[] = {0x00,
-                                     0x00,
-                                     0x00,
-                                     0x0f,
-                                     0x05,
-                                     0x01,
-                                     (uint8_t) ((data_size + (uint16_t) 8) >> 8),
-                                     (uint8_t) ((data_size + (uint16_t) 8) & (uint8_t) 0xFF)};
-
                 uint16_t reg =
                         (uint16_t) VL53L5CX_UI_CMD_END - (data_size + (uint16_t) 12) + (uint16_t) 1;
 
@@ -644,6 +633,15 @@ namespace Component
                 if ((data_size + (uint16_t) 12) > (uint16_t) 1024) {
                     status |= 1U;
                 } else {
+                    uint8_t headers[] = {0x00, 0x00, 0x00, 0x00};
+                    uint8_t footer[] = {0x00,
+                                        0x00,
+                                        0x00,
+                                        0x0f,
+                                        0x05,
+                                        0x01,
+                                        (uint8_t) ((data_size + (uint16_t) 8) >> 8),
+                                        (uint8_t) ((data_size + (uint16_t) 8) & (uint8_t) 0xFF)};
                     headers[0] = (uint8_t) (index >> 8);
                     headers[1] = (uint8_t) (index & (uint32_t) 0xff);
                     headers[2] = (uint8_t) (((data_size & (uint16_t) 0xff0) >> 4));

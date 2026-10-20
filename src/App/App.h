@@ -10,6 +10,7 @@
 #include "../Component/Button/Button.h"
 #include "../Component/Communication/Communication.h"
 #include "../Component/Display/Ssd1306.h"
+#include "../Component/Gamepad/Gamepad.h"
 #include "../Component/Imu/Mpu9150.h"
 #include "../Component/Led/Led.h"
 #include "../Component/LedPwm/LedPwm.h"
@@ -23,6 +24,7 @@
 #include "../Driver/Adc/Adc.h"
 #include "../Driver/Gpio/Gpio.h"
 #include "../Driver/InputCapture/InputCapture.h"
+#include "../Driver/Joystick/Joystick.h"
 #include "../Driver/Socket/Socket.h"
 #include "../Driver/Twi/Twi.h"
 #include "../Service/Battery/ServiceBattery.h"
@@ -32,6 +34,7 @@
 #include "../Service/Control/ServiceControl.h"
 #include "../Service/Display/ServiceDisplay.h"
 #include "../Service/Event/EventDispatcher.h"
+#include "../Service/Gamepad/ServiceGamepad.h"
 #include "../Service/General/ServiceGeneral.h"
 #include "../Service/Message/MessageListener.h"
 #include "../Service/Orientation/ServiceOrientation.h"
@@ -51,6 +54,7 @@ namespace App
 
     private:
         Driver::Socket::Socket                       mSocket;
+        Driver::Joystick::Joystick                   mJoystick;
         Driver::Twi::Twi                             mTwi;
         Driver::Gpio::Gpio                           mEnablePwm;
         Driver::Gpio::Gpio                           mGpioButton;
@@ -82,6 +86,7 @@ namespace App
         Component::ServosController::Pca9685         mPca9685Left;
         Component::ServosController::Pca9685         mPca9685Right;
         Component::Servos::Servos                    mServos;
+        Component::Gamepad::Gamepad                  mGamepad;
         Component::Software::Software                mSoftware;
         Bot::Legs::Legs                              mLegs;
         Bot::Body::Body                              mBody;
@@ -110,6 +115,7 @@ namespace App
         Service::Body::ServiceBody                   mServiceBody;
         Service::Display::ServiceDisplay             mServiceDisplay;
         Service::General::ServiceGeneral             mServiceGeneral;
+        Service::Gamepad::ServiceGamepad             mServiceGamepad;
         Service::Services::Services                  mServices;
         uint64_t                                     mNextUpdateDeadlineMs;
     };

@@ -17,6 +17,7 @@ namespace Component
             : mPca9685(pca9685)
             , mServoId(servoId)
             , mAngle(angle)
+            , mStartAngle(angle)
             , mTargetAngle(0U)
             , mStartTime(0UL)
             , mSpeed(1U)
@@ -63,9 +64,13 @@ namespace Component
             const uint64_t endTime = this->mStartTime + this->mSpeed;
 
             if (currentTime < endTime) {
-                float deltaTime = 1.0F;
-                deltaTime -= ((endTime - currentTime) / static_cast<float>(this->mSpeed));
-                return (Misc::Utils::Lerp<uint8_t>(this->mAngle, this->mTargetAngle, deltaTime));
+                const float progress =
+                        1.0F - ((endTime - currentTime) / static_cast<float>(this->mSpeed));
+                const float angle =
+                        Misc::Utils::Lerp<float>(static_cast<float>(this->mStartAngle),
+                                                 static_cast<float>(this->mTargetAngle),
+                                                 progress);
+                return static_cast<uint8_t>(angle + 0.5F);
             }
             this->mIsMoving = false;
             return (this->mTargetAngle);
@@ -95,6 +100,7 @@ namespace Component
                     this->mSpeed = 0U;
                 } else {
                     this->mSpeed = travelTime;
+                    this->mStartAngle = this->mAngle;
                     this->mStartTime = Driver::Timer::Tick::GetInstance().GetMs();
                 }
                 this->mIsMoving = true;
@@ -153,7 +159,7 @@ namespace Component
         void Servo::SetEnable(const bool enable) {
             this->mEnable = enable;
             if (this->mEnable) {
-                this->SetAngle(this->mAngle, 0U);
+                this->SetAngle(this->GetAngle(), 0U);
             } else {
                 this->mPca9685.SetPwm(this->mServoId, 4096U);
             }

@@ -1,7 +1,8 @@
-import {CircleGeometry, DoubleSide, MathUtils, Mesh, MeshBasicMaterial, Object3D, RingGeometry} from 'three'
+import {CircleGeometry, DoubleSide, MathUtils, Mesh, MeshBasicMaterial, Object3D, RingGeometry, Vector3} from 'three'
 import Coxys from "./coxys.ts";
 import {ServoStruct} from "./servo.ts";
 import Socket from "../../communication/socket.ts";
+import { GROUND_Y, LEG } from "./materials.ts";
 
 export interface LegStruct {
     name: string;
@@ -24,14 +25,15 @@ export default class Leg extends Object3D {
         this.z = z;
         this.socket = socket;
 
-        this.coxys = new Coxys(id * 3, this.x, this.y, this.z, this.socket);
+        this.coxys = new Coxys(id * 3, this.x, this.y, this.z, this.socket, !leftSide);
         this.coxys.rotation.set(MathUtils.degToRad(90), 0, leftSide ? MathUtils.degToRad(180) : 0);
         this.add(this.coxys);
 
         const geometry = new RingGeometry(0.25, 0.3, 32);
         geometry.rotateX(Math.PI / 2);
         geometry.rotateY(Math.PI);
-        geometry.translate(this.x, 0.001, this.z > 0 ? this.z + 1 : this.z - 1);
+        const reach = LEG.coxa + LEG.femur;
+        geometry.translate(this.x, GROUND_Y + 0.01, this.z > 0 ? this.z + reach : this.z - reach);
         const material = new MeshBasicMaterial({color: 0x4a6a8f});
         material.side = DoubleSide;
         const circle = new Mesh(geometry, material);
@@ -45,8 +47,8 @@ export default class Leg extends Object3D {
         material1.side = DoubleSide;
         this.direction = new Mesh(geometry1, material1);
         this.direction.translateX(this.x);
-        this.direction.translateY(0.0015);
-        this.direction.translateZ(this.z > 0 ? this.z + 1 : this.z - 1);
+        this.direction.translateY(GROUND_Y + 0.0115);
+        this.direction.translateZ(this.z > 0 ? this.z + reach : this.z - reach);
         this.add(this.direction);
 
         this.legData = {
@@ -58,6 +60,8 @@ export default class Leg extends Object3D {
     }
 
     setDirection(direction: number) {
+        // Dot starts at +X in local space; body's rotation.y=π/2 maps it to -Z (forward) in world.
+        // Convention: 0°=forward, 90°=left, 180°=back, 270°=right (CCW from above).
         this.direction.rotation.y = (MathUtils.degToRad(direction));
     }
 
@@ -73,9 +77,14 @@ export default class Leg extends Object3D {
         this.coxys.femur.tibia.setAngle(angle);
     }
 
-    update() {
-        this.coxys.update();
-        this.coxys.femur.update();
-        this.coxys.femur.tibia.update();
+    update(dt: number = 1 / 60) {
+        this.coxys.update(dt);
+        this.coxys.femur.update(dt);
+        this.coxys.femur.tibia.update(dt);
+    }
+
+    getFootWorldPosition(target: Vector3): Vector3 {
+        target.copy(this.coxys.femur.tibia.footLocal);
+        return this.coxys.femur.tibia.tibiaBody.localToWorld(target);
     }
 }

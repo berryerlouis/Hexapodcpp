@@ -1,4 +1,4 @@
-import Protocol, { Direction, Encoding } from "./protocol.ts";
+import Protocol, { MessageDirection, Encoding } from "./protocol.ts";
 import { Cluster, ClusterName, Command, CommandName } from "./clusters/clusterType.ts";
 import { getClusterByName, getCommandByName } from "./clusters/clusters.ts";
 
@@ -11,7 +11,7 @@ export class MessageSizeError extends Error {
 
 export default class Message {
     date: string = '';
-    direction: Direction;
+    direction: MessageDirection;
     cluster: Cluster;
     command: Command;
     size: number;
@@ -22,7 +22,7 @@ export default class Message {
     retry: number = 0;
 
     constructor(clusterName: ClusterName, commandName: CommandName, params: (number)[] = [], encode: (Encoding)[] = []) {
-        this.direction = Direction.TX;
+        this.direction = MessageDirection.TX;
         this.cluster = getClusterByName(clusterName);
         this.command = getCommandByName(this.cluster, commandName);
         this.size = params.length ? params.length : 0;

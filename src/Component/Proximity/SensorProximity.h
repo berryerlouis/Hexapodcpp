@@ -31,6 +31,8 @@ namespace Component
 
         private:
             SensorProximityInterface *mSensors[NB_SENSORS];
+            bool                      mReady[NB_SENSORS];
+            SensorsId                 mNextUltrasound;
         };
     } // namespace Proximity
 } // namespace Component

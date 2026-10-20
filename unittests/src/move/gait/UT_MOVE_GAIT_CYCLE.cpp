@@ -4,6 +4,7 @@
 #include "../../../../src/Move/Gait/GaitCycle.h"
 #include "../../../mock/bot/MockLeg.h"
 #include "../../../mock/bot/MockLegs.h"
+#include "../../../mock/cmp/MockServo.h"
 
 using ::testing::_;
 using ::testing::Return;
@@ -131,6 +132,55 @@ namespace Move
             EXPECT_CALL(mMockLegs, GetLegs()).Times(1).WillOnce(::testing::ReturnRef(mockLegsMap));
             EXPECT_CALL(mMockLegs, Update()).Times(1).WillOnce(Return(Core::Status::CORE_OK));
             gaitCycle.Update(1100U);
+        }
+
+        // The gait blends in from the neutral pose and back out when paused
+        TEST_F(UT_MOVE_GAIT_CYCLE, TestBlendInAndOut) {
+            ::testing::NiceMock<Component::Servo::MockServo> servos[3U];
+            for (auto &servo: servos) {
+                ON_CALL(servo, SetAngle(_, _)).WillByDefault(Return(Core::Status::CORE_OK));
+            }
+            std::map<Bot::Legs::ELeg, Bot::Leg::Leg> legsMap;
+            legsMap.emplace(Bot::Legs::ELeg::MIDDLE_RIGHT,
+                            Bot::Leg::Leg(Bot::Legs::ELeg::MIDDLE_RIGHT,
+                                          servos[0U],
+                                          servos[1U],
+                                          servos[2U]));
+            EXPECT_CALL(mMockLegs, GetLegs()).WillRepeatedly(::testing::ReturnRef(legsMap));
+            EXPECT_CALL(mMockLegs, Update()).WillRepeatedly(Return(Core::Status::CORE_OK));
+
+            Bot::Leg::Leg &leg = legsMap.at(Bot::Legs::ELeg::MIDDLE_RIGHT);
+
+            gaitCycle.Start();
+            gaitCycle.Update(0U);
+            EXPECT_FLOAT_EQ(leg.GetCurrentPosition().y, 0.0F);
+
+            // Half way through the blend the foot is only partially extended
+            gaitCycle.Update(125U);
+            const float partialY = std::fabs(leg.GetCurrentPosition().y);
+            EXPECT_GT(partialY, 0.0F);
+
+            gaitCycle.Update(250U);
+            gaitCycle.Update(500U);
+            gaitCycle.Update(750U);
+            EXPECT_GT(std::fabs(leg.GetCurrentPosition().y), partialY);
+
+            // Pausing brings the leg back to the neutral pose without a jump
+            gaitCycle.Pause();
+            gaitCycle.Update(1000U);
+            gaitCycle.Update(1250U);
+            gaitCycle.Update(1500U);
+            EXPECT_FLOAT_EQ(leg.GetCurrentPosition().x, 0.0F);
+            EXPECT_FLOAT_EQ(leg.GetCurrentPosition().y, 0.0F);
+            EXPECT_FLOAT_EQ(leg.GetCurrentPosition().z, 0.0F);
+        }
+
+        // Switching gait restarts from the neutral pose
+        TEST_F(UT_MOVE_GAIT_CYCLE, TestSetGaitType) {
+            EXPECT_TRUE(gaitCycle.SetGaitType(GaitType::WAVE));
+            EXPECT_EQ(gaitParams.GetGaitType(), GaitType::WAVE);
+            EXPECT_TRUE(gaitCycle.SetGaitType(GaitType::RIPPLE));
+            EXPECT_EQ(gaitParams.GetGaitType(), GaitType::RIPPLE);
         }
     } // namespace Gait
 } // namespace Move

@@ -16,6 +16,10 @@ namespace Component
         Button::Button(Gpio::GpioInterface &gpio)
             : mGpioButton(gpio)
             , mPushTime(0U)
+            , mPushPending(false)
+            , mReleasePending(false)
+            , mReleaseDelayUs(0U)
+            , mNotifiedState(RELEASE)
             , mState(RELEASE) {
             button[buttonIndex] = this;
             buttonIndex++;
@@ -31,18 +35,28 @@ namespace Component
             if (this->mGpioButton.Get()) {
                 this->mState = PUSH;
                 this->mPushTime = Timer::Tick::GetInstance().GetUs();
-                this->Notify({this->mState, 0U});
+                this->mPushPending = true;
             } else {
                 if (this->mState == PUSH) {
                     this->mState = RELEASE;
-                    const uint64_t delayMs = Timer::Tick::GetInstance().GetUs() - this->mPushTime;
-                    this->Notify({this->mState, delayMs});
+                    const uint64_t delayUs = Timer::Tick::GetInstance().GetUs() - this->mPushTime;
+                    this->mReleaseDelayUs = static_cast<uint32_t>(
+                            delayUs > UINT32_MAX ? UINT32_MAX : delayUs);
+                    this->mReleasePending = true;
                 }
             }
         }
 
         void Button::Update(const uint64_t currentTime) {
             (void) currentTime;
+            if (this->mPushPending.exchange(false)) {
+                this->mNotifiedState = PUSH;
+                this->Notify({this->mNotifiedState, 0U});
+            }
+            if (this->mReleasePending.exchange(false)) {
+                this->mNotifiedState = RELEASE;
+                this->Notify({this->mNotifiedState, this->mReleaseDelayUs.load()});
+            }
         }
 
         ButtonState Button::Get() const {

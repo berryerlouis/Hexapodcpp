@@ -6,6 +6,7 @@ add_subdirectory(Communication)
 add_subdirectory(Control)
 add_subdirectory(Display)
 add_subdirectory(Event)
+add_subdirectory(Gamepad)
 add_subdirectory(General)
 add_subdirectory(Message)
 add_subdirectory(Orientation)
@@ -29,6 +30,7 @@ target_link_libraries(Service
         ServiceControl
         ServiceDisplay
         ServiceEvent
+        ServiceGamepad
         ServiceGeneral
         ServiceMessage
         ServiceOrientation

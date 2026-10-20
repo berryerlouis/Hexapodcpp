@@ -94,8 +94,9 @@ namespace Component
                     LOG_COMPONENT_DEBUG("Imu", "address 0x%02X Initialized.", this->mAddress);
                     success = Core::Status::CORE_OK;
                 }
+            } else {
+                LOG_COMPONENT_ERROR("Imu", "address 0x%02X Initialization failed.", this->mAddress);
             }
-            LOG_COMPONENT_WARNING("Imu", "address 0x%02X Initialized.", this->mAddress);
             return success;
         }
 
@@ -103,18 +104,20 @@ namespace Component
             (void) currentTime;
             if (!this->mStartCalib) {
                 if (this->IsDataReady()) {
-                    static float deltaTime;
                     this->UpdateAll();
                     this->UpdateMag();
                     this->UpdateTemp();
                     const uint64_t now = Timer::Tick::GetInstance().GetUs();
-                    deltaTime = ((now - this->mLastLoopTime) / 1000000.0F);
-                    Vector3F gyr = this->mGyr;
-                    gyr.x *= M_PI / 180.0F;
-                    gyr.y *= M_PI / 180.0F;
-                    gyr.z *= M_PI / 180.0F;
-                    this->mAhrs.Update(this->mAcc, gyr, this->mMag, deltaTime);
-                    this->mAhrs.GetRollPitchYaw(this->mYawPitchRoll);
+                    // No valid time base on the first sample.
+                    if (this->mLastLoopTime != 0U) {
+                        const float deltaTime = ((now - this->mLastLoopTime) / 1000000.0F);
+                        Vector3F gyr = this->mGyr;
+                        gyr.x *= M_PI / 180.0F;
+                        gyr.y *= M_PI / 180.0F;
+                        gyr.z *= M_PI / 180.0F;
+                        this->mAhrs.Update(this->mAcc, gyr, this->mMag, deltaTime);
+                        this->mAhrs.GetRollPitchYaw(this->mYawPitchRoll);
+                    }
                     this->mLastLoopTime = now;
                 }
             } else {
@@ -187,7 +190,7 @@ namespace Component
                 gyrRawCalib = {0, 0, 0};
             } else if (this->mSensorToCalib == MAG) {
                 this->mMagCalibMin = {100000, 100000, 100000};
-                this->mMagCalibMax = {0, 0, 0};
+                this->mMagCalibMax = {-100000, -100000, -100000};
             }
         }
 
@@ -261,7 +264,7 @@ namespace Component
         }
 
         void Mpu9150::AdjustingMag() {
-            int8_t adjustMagValues[3U] = {0, 0, 0};
+            uint8_t adjustMagValues[3U] = {0U, 0U, 0U};
             this->mI2c.ReadRegisters(this->mAddressMag,
                                      ERegisterMag::ASAX,
                                      reinterpret_cast<uint8_t *>(&adjustMagValues),
@@ -316,7 +319,7 @@ namespace Component
         bool Mpu9150::IsDataReady() const {
             uint8_t isReady = 0U;
 
-            this->mI2c.ReadRegister(this->mAddress, ERegister::INT_ENABLE, isReady);
+            this->mI2c.ReadRegister(this->mAddress, ERegister::INT_STATUS, isReady);
             isReady &= 0x01U;
             return static_cast<bool>(isReady);
         }

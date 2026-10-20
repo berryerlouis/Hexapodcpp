@@ -51,11 +51,11 @@ namespace Component
         };
 
         TEST_F(UT_CMP_PROXIMITY, Update_Ok) {
-            EXPECT_CALL(mMockSrf05Left, Update(_)).Times(1U);
+            EXPECT_CALL(mMockVl53l0x, Update(0UL)).Times(2U);
+            EXPECT_CALL(mMockSrf05Left, Update(0UL)).Times(1U);
+            EXPECT_CALL(mMockSrf05Right, Update(0UL)).Times(1U);
+
             mSensorProximity.Update(0UL);
-            EXPECT_CALL(mMockSrf05Right, Update(_)).Times(1U);
-            mSensorProximity.Update(0UL);
-            EXPECT_CALL(mMockVl53l0x, Update(_)).Times(1U);
             mSensorProximity.Update(0UL);
         }
 
