@@ -134,6 +134,23 @@ export default class RangeMap extends Object3D {
         }
     }
 
+    // True when a discovered obstacle lies within `radius` (scene units) of the point.
+    isBlocked(x: number, z: number, radius: number): boolean {
+        const n = Math.floor(radius / RangeMap.CELL);
+        for (let i = -n; i <= n; i++) {
+            for (let j = -n; j <= n; j++) {
+                if (Math.hypot(i, j) * RangeMap.CELL > radius) {
+                    continue;
+                }
+                const index = this.cellIndex(x + i * RangeMap.CELL, z + j * RangeMap.CELL);
+                if (index >= 0 && this.state[index] === RangeMap.OBSTACLE) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     addTrailPoint(x: number, z: number) {
         const p = this.trailPoints;
         const n = this.trailCount;

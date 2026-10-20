@@ -11,6 +11,7 @@ import {
     MeshStandardMaterial,
     Object3D,
     PlaneGeometry,
+    RepeatWrapping,
     SRGBColorSpace,
     Vector3,
 } from 'three';
@@ -48,6 +49,15 @@ function makeServoLabel(): CanvasTexture {
     return texture;
 }
 
+// Same label with the U axis flipped, so the text still reads correctly on a mirrored leg.
+function makeMirroredServoLabel(): CanvasTexture {
+    const texture = makeServoLabel();
+    texture.wrapS = RepeatWrapping;
+    texture.repeat.x = -1;
+    texture.offset.x = 1;
+    return texture;
+}
+
 function metal(color: string, roughness: number, metalness = 0.9): MeshStandardMaterial {
     return new MeshStandardMaterial({ color, metalness, roughness });
 }
@@ -66,6 +76,7 @@ export const Mat = {
     servo: matte('#16171a', 0.55, 0.1),
     servoCap: matte('#24262b', 0.5, 0.1),
     servoLabel: new MeshStandardMaterial({ map: makeServoLabel(), roughness: 0.55 }),
+    servoLabelMirrored: new MeshStandardMaterial({ map: makeMirroredServoLabel(), roughness: 0.55 }),
     horn: matte('#f4f3ee', 0.45),
     rubber: matte('#0c0c0e', 0.95, 0),
     black: matte('#0d0e11', 0.6, 0.1),

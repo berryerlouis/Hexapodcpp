@@ -21,7 +21,7 @@ export default class Femur extends Object3D {
         this.position.set(x, y, z);
 
         this.servo = new Servo('femur', id, 0, 0, 0, this.socket);
-        this.tibia = new Tibia(id + 1, 0, this.height, 0, this.socket);
+        this.tibia = new Tibia(id + 1, -0.085, this.height, 0, this.socket);
         this.femurBody = new Group();
 
         const L = this.height;
@@ -49,11 +49,12 @@ export default class Femur extends Object3D {
         plate.applyMatrix4(new Matrix4().makeBasis(new Vector3(0, 1, 0), new Vector3(0, 0, 1), new Vector3(1, 0, 0)));
 
         const b = new ModelBuilder();
-        b.add(plate, Mat.alu, 0.03, 0, 0);
+        // Plate on -X of the axis, horn side; the tibia is shifted by the same amount so it still hugs the plate.
+        b.add(plate, Mat.alu, -0.055, 0, 0);
         // Bent lip along the top edge.
-        b.box(0.07, 0.62, 0.02, Mat.alu, 0.065, 0.42, -0.11);
+        b.box(0.07, 0.62, 0.02, Mat.alu, -0.065, 0.42, -0.11);
         for (const u of [0.18, 0.74]) {
-            b.cyl(0.013, 0.008, Mat.steel, 0.0615, u, 0, 'x', 10);
+            b.cyl(0.013, 0.008, Mat.steel, -0.0615, u, 0, 'x', 10);
         }
         b.build(this.femurBody);
 

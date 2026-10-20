@@ -12,10 +12,13 @@ export default class Coxys extends Object3D {
     femur: Femur;
     servo: Servo;
     socket: Socket;
+    // Right-side legs are mirrored on X so every tibia servo sits on the rear of the leg, like the left side.
+    private readonly mirrored: boolean;
 
-    constructor(id: number, x: number, y: number, z: number, socket: Socket) {
+    constructor(id: number, x: number, y: number, z: number, socket: Socket, mirrored: boolean = false) {
         super()
         this.socket = socket;
+        this.mirrored = mirrored;
         this.position.set(x, y, z);
         this.coxysBody = new Group();
 
@@ -25,9 +28,9 @@ export default class Coxys extends Object3D {
         this.coxysBody.add(this.servo);
 
         this.femur = new Femur(id + 1, 0, this.height, 0, this.socket);
-        // Femur servo sits in the C-bracket, shaft along +X, case pointing outward.
+        // Femur servo sits in the C-bracket, shaft along -X, case pointing outward and rearward (+X).
         const femurServo = this.femur.servo;
-        orient(femurServo, new Vector3(0, 1, 0), new Vector3(1, 0, 0), new Vector3(0, 0, -1));
+        orient(femurServo, new Vector3(0, 1, 0), new Vector3(-1, 0, 0), new Vector3(0, 0, 1));
         femurServo.position.set(0, this.height, 0);
         this.coxysBody.add(femurServo);
 
@@ -36,10 +39,10 @@ export default class Coxys extends Object3D {
         const y1 = 0.62;
         const len = y1 - y0;
         const yc = (y0 + y1) / 2;
-        b.box(0.405, len, 0.025, Mat.alu, -0.1825, yc, -0.1155);
-        b.box(0.405, len, 0.025, Mat.alu, -0.1825, yc, 0.1155);
-        b.box(0.025, len, 0.256, Mat.alu, -0.3975, yc, 0);
-        for (const sx of [-0.33, -0.12]) {
+        b.box(0.405, len, 0.025, Mat.alu, 0.1825, yc, -0.1155);
+        b.box(0.405, len, 0.025, Mat.alu, 0.1825, yc, 0.1155);
+        b.box(0.025, len, 0.256, Mat.alu, 0.3975, yc, 0);
+        for (const sx of [0.33, 0.12]) {
             for (const sy of [0.5, 0.58]) {
                 b.cyl(0.014, 0.008, Mat.steel, sx, sy, -0.1355, 'z', 10);
             }
@@ -53,6 +56,13 @@ export default class Coxys extends Object3D {
 
         this.coxysBody.add(this.femur);
         this.add(this.coxysBody);
+
+        if (mirrored) {
+            this.scale.x = -1;
+            this.servo.mirrorLabels();
+            this.femur.servo.mirrorLabels();
+            this.femur.tibia.servo.mirrorLabels();
+        }
     }
 
     setAngle(angle: number) {
@@ -60,6 +70,8 @@ export default class Coxys extends Object3D {
     }
 
     update(dt: number = 1 / 60) {
-        this.coxysBody.rotation.z = MathUtils.degToRad(this.servo.smooth(dt) - 90);
+        const angle = MathUtils.degToRad(this.servo.smooth(dt) - 90);
+        // The X mirror reverses the swing direction of the coxa around Z.
+        this.coxysBody.rotation.z = this.mirrored ? -angle : angle;
     }
 }

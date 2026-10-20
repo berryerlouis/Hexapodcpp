@@ -25,7 +25,7 @@ export default class Leg extends Object3D {
         this.z = z;
         this.socket = socket;
 
-        this.coxys = new Coxys(id * 3, this.x, this.y, this.z, this.socket);
+        this.coxys = new Coxys(id * 3, this.x, this.y, this.z, this.socket, !leftSide);
         this.coxys.rotation.set(MathUtils.degToRad(90), 0, leftSide ? MathUtils.degToRad(180) : 0);
         this.add(this.coxys);
 

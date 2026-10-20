@@ -27,10 +27,10 @@ namespace Bot
             static constexpr float FEMUR_LENGTH = 8.40;
             static constexpr float TIBIA_LENGTH = 12.70;
 
-            // Coxa range shared by every move: at the limits two neighbouring legs are parallel,
-            // still 7.7 cm apart at full reach; beyond it they converge and collide.
-            static constexpr float COXA_ANGLE_MIN = 60.0F;
-            static constexpr float COXA_ANGLE_MAX = 120.0F;
+            // Coxa range shared by every move. Legs are perpendicular to the body and 7.5 cm apart,
+            // so neighbouring legs moving in opposite directions touch beyond this swing.
+            static constexpr float COXA_ANGLE_MIN = 84.0F;
+            static constexpr float COXA_ANGLE_MAX = 96.0F;
 
             // Servo angles in degrees, neutral pose is 90/90/90.
             struct SLegAngles {

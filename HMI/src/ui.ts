@@ -76,7 +76,8 @@ export default class Ui {
             'x',
             (x) => this.drive.setTurn('stick', x),
         );
-        this.pointAndGo = new PointAndGo(this.hexapod, this.drive, this.camera, this.graphic.domElement, this.socket);
+        this.rangeMap = new RangeMap();
+        this.pointAndGo = new PointAndGo(this.hexapod, this.drive, this.rangeMap, this.camera, this.graphic.domElement, this.socket);
         this.gamepad = new GamepadInput(this.drive, () => {
             this.hexapod.commitWalkStatus(false);
             this.pointAndGo.cancel(true);
@@ -86,7 +87,6 @@ export default class Ui {
         // Keys hand the bot over to the keyboard, so a running trip must not fight them.
         this.keyboard = new Keyboard(this.hexapod, () => this.pointAndGo.cancel(false));
 
-        this.rangeMap = new RangeMap();
         this.hexapod.head.proximity.setMap(this.rangeMap);
         this.rangeSimulator = new RangeSimulator(this.hexapod.head.proximity);
         // The X64 target has no range sensors, so it starts on the virtual room.

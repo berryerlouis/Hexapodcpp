@@ -1,4 +1,4 @@
-import { Object3D } from 'three'
+import { Mesh, Object3D } from 'three'
 import Socket from "../../communication/socket.ts";
 import {ClusterName} from "../../communication/clusters/clusterType.ts";
 import {ClusterServoCommands} from "../../communication/clusters/clusterServo.ts";
@@ -66,6 +66,15 @@ export default class Servo extends Object3D {
         b.plane(0.26, 0.1, Mat.servoLabel, cx, -0.25, -W / 2 - 0.001, true);
 
         b.build(this);
+    }
+
+    // Call when an ancestor is mirrored (negative scale) so the label text is not reversed.
+    mirrorLabels() {
+        this.traverse((o) => {
+            if (o instanceof Mesh && o.material === Mat.servoLabel) {
+                o.material = Mat.servoLabelMirrored;
+            }
+        });
     }
 
     addServoCallbacks() {

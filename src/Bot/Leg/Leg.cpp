@@ -28,13 +28,14 @@ namespace
         float angleDeg;
     };
 
+    // Mount angle: direction of the leg at servo 90 deg, CCW from the body right axis (legs are perpendicular to the body).
     SLegMount GetLegMount(const Bot::Legs::ELeg legId) {
         using Bot::Leg::Leg;
         switch (legId) {
             case Bot::Legs::ELeg::FRONT_LEFT:
                 return {-Leg::BODY_LEG_FRONT_REAR_FROM_CENTER_X_LENGTH,
                         Leg::BODY_LEG_FRONT_REAR_FROM_CENTER_Y_LENGTH,
-                        120.0F};
+                        180.0F};
             case Bot::Legs::ELeg::MIDDLE_LEFT:
                 return {-Leg::BODY_LEG_MIDDLE_FROM_CENTER_X_LENGTH,
                         Leg::BODY_LEG_MIDDLE_FROM_CENTER_Y_LENGTH,
@@ -42,11 +43,11 @@ namespace
             case Bot::Legs::ELeg::REAR_LEFT:
                 return {-Leg::BODY_LEG_FRONT_REAR_FROM_CENTER_X_LENGTH,
                         -Leg::BODY_LEG_FRONT_REAR_FROM_CENTER_Y_LENGTH,
-                        -120.0F};
+                        180.0F};
             case Bot::Legs::ELeg::FRONT_RIGHT:
                 return {Leg::BODY_LEG_FRONT_REAR_FROM_CENTER_X_LENGTH,
                         Leg::BODY_LEG_FRONT_REAR_FROM_CENTER_Y_LENGTH,
-                        60.0F};
+                        0.0F};
             case Bot::Legs::ELeg::MIDDLE_RIGHT:
                 return {Leg::BODY_LEG_MIDDLE_FROM_CENTER_X_LENGTH,
                         Leg::BODY_LEG_MIDDLE_FROM_CENTER_Y_LENGTH,
@@ -55,7 +56,7 @@ namespace
             default:
                 return {Leg::BODY_LEG_FRONT_REAR_FROM_CENTER_X_LENGTH,
                         -Leg::BODY_LEG_FRONT_REAR_FROM_CENTER_Y_LENGTH,
-                        -60.0F};
+                        0.0F};
         }
     }
 } // namespace
@@ -127,9 +128,10 @@ namespace Bot
 
         void Leg::ComputeDirection(Position3d &position, const float angleDirection) const {
             // Input is in the travel frame: x lateral, -y along the travel direction.
-            // The travel direction is rotated by angleDirection (counter-clockwise, 0 = forward)
-            // in the body frame, then expressed in the leg frame.
-            const float alpha = angleDirection - this->mMountAngle;
+            // The travel direction is rotated by angleDirection (counter-clockwise, 0 = forward,
+            // 90 = left) in the body frame, then expressed in the leg frame. The leg frame turns
+            // the opposite way to the gait frame, hence the negated angle.
+            const float alpha = -angleDirection - this->mMountAngle;
             const float lateral = position.x;
             const float along = -position.y;
 

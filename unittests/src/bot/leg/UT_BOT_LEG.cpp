@@ -124,12 +124,12 @@ namespace Bot
         TEST_F(UT_BOT_LEG, SetLegIk_CoxaStaysInSafeRange) {
             for (auto &leg: mLegs) {
                 const uint8_t id = static_cast<uint8_t>(leg.first);
-                EXPECT_CALL(mServos[id * 3U], SetAngle(120U, 0U));
+                EXPECT_CALL(mServos[id * 3U], SetAngle(96U, 0U));
                 EXPECT_EQ(leg.second.SetLegIk({0.0F, 20.0F, 0.0F}, 0U), Core::Status::CORE_OK);
             }
             for (auto &leg: mLegs) {
                 const uint8_t id = static_cast<uint8_t>(leg.first);
-                EXPECT_CALL(mServos[id * 3U], SetAngle(60U, 0U));
+                EXPECT_CALL(mServos[id * 3U], SetAngle(84U, 0U));
                 EXPECT_EQ(leg.second.SetLegIk({0.0F, -20.0F, 0.0F}, 0U), Core::Status::CORE_OK);
             }
         }
@@ -141,7 +141,7 @@ namespace Bot
                                              {0.0F, -30.0F, 0.0F}};
             for (auto &leg: mLegs) {
                 const uint8_t id = static_cast<uint8_t>(leg.first);
-                EXPECT_CALL(mServos[id * 3U], SetAngle(::testing::AllOf(::testing::Ge(60), ::testing::Le(120)), 0U))
+                EXPECT_CALL(mServos[id * 3U], SetAngle(::testing::AllOf(::testing::Ge(84), ::testing::Le(96)), 0U))
                         .Times(4);
                 for (const Position3d &shift: bodyShifts) {
                     EXPECT_EQ(leg.second.SetLegBodyIk({0.0F, 0.0F, 0.0F}, shift, 0U),
@@ -154,7 +154,7 @@ namespace Bot
             // Swing end of the trajectory: the foot moves forward by one unit.
             const float directions[] = {0.0F, M_PI / 2.0F, M_PI, 3.0F * M_PI / 2.0F, 0.7F};
             for (const float direction: directions) {
-                // Counter-clockwise from forward, body frame x right, y forward.
+                // Counter-clockwise from forward (90 = left), body frame x right, y forward.
                 const float expectedX = -std::sin(direction);
                 const float expectedY = std::cos(direction);
 
@@ -165,7 +165,8 @@ namespace Bot
                     Position3d       local = {0.0F, -1.0F, 0.0F};
                     leg.second.ComputeDirection(local, direction);
 
-                    const float bodyX = (local.x * std::cos(mount)) - (local.y * std::sin(mount));
+                    // The leg frame mirrors the body frame, so the lateral axis is flipped back.
+                    const float bodyX = -((local.x * std::cos(mount)) - (local.y * std::sin(mount)));
                     const float bodyY = (local.x * std::sin(mount)) + (local.y * std::cos(mount));
                     EXPECT_NEAR(bodyX, expectedX, 1e-4F)
                             << "leg " << leg.first << " direction " << direction;

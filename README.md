@@ -8,7 +8,7 @@
 
 # Hexapod Robot Controller
 
-![HMI](images/HMI2.png)
+![HMI](images/HMI.png)
 
 A C++17 hexapod robot control system with layered architecture, supporting both X64 (development/testing) and Raspberry
 Pi Zero 2W (production) platforms.
