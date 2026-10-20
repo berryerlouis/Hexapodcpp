@@ -11,6 +11,10 @@ namespace Component
         class GamepadInterface : public ComponentInterface<3U, GamepadButtonState>,
                                  public Core::Observable<3U, GamepadConnectedState> {
         public:
+            // Both observable bases declare Attach/Notify; expose them as overloads to avoid ambiguous lookup.
+            using ComponentInterface<3U, GamepadButtonState>::Attach;
+            using Core::Observable<3U, GamepadConnectedState>::Attach;
+
             GamepadInterface()  = default;
             ~GamepadInterface() = default;
 
@@ -19,6 +23,10 @@ namespace Component
             virtual const GamepadConnectedState &GetConnectedState(void) const = 0;
 
             virtual bool                        IsConnected(void) const = 0;
+
+        protected:
+            using ComponentInterface<3U, GamepadButtonState>::Notify;
+            using Core::Observable<3U, GamepadConnectedState>::Notify;
         };
     } // namespace Gamepad
 } // namespace Component

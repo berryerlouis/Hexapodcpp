@@ -48,7 +48,7 @@ namespace Component
                 }
 
                 this->mConnectedState.connected = this->mJoystick.IsConnected();
-                Core::Observable<3U, GamepadConnectedState>::Notify(this->mConnectedState);
+                this->Notify(this->mConnectedState);
                 this->mConnected = this->mJoystick.IsConnected();
 
                 if (!this->mConnected) {
@@ -60,7 +60,7 @@ namespace Component
                         this->mButtonState.buttons[i] = false;
                     }
                     this->mDirty = false;
-                    ComponentInterface<3U, GamepadButtonState>::Notify(this->mButtonState);
+                    this->Notify(this->mButtonState);
                 }
             }
 
@@ -88,7 +88,7 @@ namespace Component
 
                 if (this->mDirty) {
                     this->mDirty = false;
-                    ComponentInterface<3U, GamepadButtonState>::Notify(this->mButtonState);
+                    this->Notify(this->mButtonState);
                 }
             }
         }
