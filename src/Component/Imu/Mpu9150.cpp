@@ -104,14 +104,13 @@ namespace Component
             (void) currentTime;
             if (!this->mStartCalib) {
                 if (this->IsDataReady()) {
-                    static float deltaTime;
                     this->UpdateAll();
                     this->UpdateMag();
                     this->UpdateTemp();
                     const uint64_t now = Timer::Tick::GetInstance().GetUs();
                     // No valid time base on the first sample.
                     if (this->mLastLoopTime != 0U) {
-                        deltaTime = ((now - this->mLastLoopTime) / 1000000.0F);
+                        const float deltaTime = ((now - this->mLastLoopTime) / 1000000.0F);
                         Vector3F gyr = this->mGyr;
                         gyr.x *= M_PI / 180.0F;
                         gyr.y *= M_PI / 180.0F;

@@ -11,6 +11,7 @@ cppcheck \
     --suppress=unusedFunction \
     --suppress=missingInclude \
     --suppress=knownConditionTrueFalse \
+    --suppress=unmatchedSuppression \
     --inconclusive \
     --force \
     --inline-suppr \
