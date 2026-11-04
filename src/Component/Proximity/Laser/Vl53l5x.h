@@ -48,7 +48,7 @@ namespace Component
 
                 uint8_t      GetAmbientPerSpad(const uint8_t pixel) const;
 
-                auto         GetDistanceMatrix(void) const -> const uint16_t (*)[8U] override {
+                auto         GetDistanceMatrix(void) const -> DistanceMatrix override {
                     return this->mDistanceMatrix;
                 }
 

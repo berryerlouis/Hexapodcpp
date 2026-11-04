@@ -1,0 +1,61 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [ develop ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build site
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: HMI/package-lock.json
+
+      - name: Build live cockpit (HMI)
+        working-directory: HMI
+        run: |
+          npm ci
+          npm run build -- --base=/${{ github.event.repository.name }}/app/
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site/app _site/images
+          cp -r site/. _site/
+          cp images/HMI.png images/architecture.svg _site/images/
+          cp HMI/bot.ico _site/
+          cp -r HMI/dist/. _site/app/
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

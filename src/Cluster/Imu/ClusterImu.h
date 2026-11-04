@@ -16,7 +16,7 @@ namespace Cluster
         public:
             ClusterImu(Mpu9150Interface &imu, BarometerInterface &barometer);
 
-            ~ClusterImu() = default;
+            ~ClusterImu() override = default;
 
             virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override;
 

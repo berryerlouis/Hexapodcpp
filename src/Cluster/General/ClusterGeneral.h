@@ -13,7 +13,7 @@ namespace Cluster
         public:
             explicit ClusterGeneral(SoftwareInterface &software);
 
-            ~ClusterGeneral() = default;
+            ~ClusterGeneral() override = default;
 
             virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) final override;
 

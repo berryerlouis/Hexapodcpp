@@ -12,6 +12,7 @@ cppcheck \
     --suppress=missingInclude \
     --suppress=knownConditionTrueFalse \
     --suppress=unmatchedSuppression \
+    --suppress=normalCheckLevelMaxBranches \
     --inconclusive \
     --force \
     --inline-suppr \

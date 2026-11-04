@@ -15,7 +15,7 @@ namespace Bot
         public:
             explicit Legs(ServosInterface &servos);
 
-            ~Legs() = default;
+            ~Legs() override = default;
 
             std::map<ELeg, Leg::Leg> &GetLegs(void) final override;
 

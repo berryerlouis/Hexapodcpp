@@ -13,7 +13,7 @@ namespace Cluster
         public:
             explicit ClusterSound(SoundInterface &soundLeft, SoundInterface &soundRight);
 
-            ~ClusterSound() = default;
+            ~ClusterSound() override = default;
 
             virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override;
 

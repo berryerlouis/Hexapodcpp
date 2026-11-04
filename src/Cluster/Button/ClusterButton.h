@@ -13,7 +13,7 @@ namespace Cluster
         public:
             explicit ClusterButton(ButtonInterface &button);
 
-            ~ClusterButton() = default;
+            ~ClusterButton() override = default;
 
             virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override;
 

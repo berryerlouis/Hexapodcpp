@@ -17,7 +17,7 @@ namespace Cluster
         public:
             explicit ClusterBody(BodyInterface &body);
 
-            ~ClusterBody() = default;
+            ~ClusterBody() override = default;
 
             virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override;
 

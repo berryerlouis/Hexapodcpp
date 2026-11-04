@@ -19,7 +19,9 @@ namespace Component
 
                 ~Vl53lxxInterface() = default;
 
-                virtual auto GetDistanceMatrix(void) const -> const uint16_t (*)[8U] {
+                using DistanceMatrix = const uint16_t (*)[8U];
+
+                virtual auto GetDistanceMatrix(void) const -> DistanceMatrix {
                     return nullptr; // Default: no matrix support
                 }
 

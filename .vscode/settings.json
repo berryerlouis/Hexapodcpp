@@ -69,6 +69,7 @@
         "variant": "cpp"
     },
     "editor.formatOnSave": true,
+    "testMate.cpp.test.executables": "build/hexapod-X64-TEST/unittests/HexapodcppTest",
     "clang-format.executable": "/usr/bin/clang-format",
     "C_Cpp.dimInactiveRegions": false,
     "clangd.fallbackFlags": [

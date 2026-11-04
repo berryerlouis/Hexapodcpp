@@ -13,7 +13,7 @@ namespace Cluster
         public:
             explicit ClusterBattery(BatteryInterface &battery);
 
-            ~ClusterBattery() = default;
+            ~ClusterBattery() override = default;
 
             virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override;
 

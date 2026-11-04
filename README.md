@@ -258,6 +258,8 @@ flowchart LR
 
 Binaries, test results, and coverage/static-analysis reports are published as workflow artifacts.
 
+Pushes to `develop` also run [pages.yaml](.github/workflows/pages.yaml), which deploys the project site from [site/](site) and the live cockpit (built from [HMI/](HMI)) to GitHub Pages.
+
 ---
 
 ## 🍓 Raspberry Pi deployment
@@ -374,6 +376,8 @@ npm run build    # type-check + production bundle in HMI/dist
 ```
 
 On startup, choose a target: **X64** (local simulation at `127.0.0.1:8080`) or **Hexapod** (the real robot).
+
+The published cockpit is at https://berryerlouis.github.io/Hexapodcpp/app/ (the project page is at the site root).
 
 ---
 

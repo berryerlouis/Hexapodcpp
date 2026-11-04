@@ -13,7 +13,7 @@ namespace Cluster
         public:
             explicit ClusterServo(ServosInterface &servos);
 
-            ~ClusterServo() = default;
+            ~ClusterServo() override = default;
 
             virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override;
 

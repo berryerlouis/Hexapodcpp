@@ -6,13 +6,13 @@ jobs:
 
   build-X64:
     name: Build X64
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         build_type: [ DEBUG, RELEASE ]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install build tools
         run: |
@@ -23,22 +23,22 @@ jobs:
         run: bin/dev/build.sh X64 sources ${{ matrix.build_type }}
 
       - name: Upload ${{ matrix.build_type }} Binary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: hexapodcpp-X64-${{ matrix.build_type }}
           path: build/hexapod-X64-${{ matrix.build_type }}/src/Hexapodcpp
 
   build-HMI:
     name: Build HMI
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: HMI
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: npm
@@ -51,17 +51,17 @@ jobs:
         run: npm run build
 
       - name: Upload HMI build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: hmi-dist
           path: HMI/dist
 
   run-tests:
     name: Run Google Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Run Google Test
         run: bin/dev/test.sh all
@@ -74,7 +74,7 @@ jobs:
 
       - name: Upload Test Results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: test-results
           path: archive/test_results.xml
@@ -82,10 +82,10 @@ jobs:
 
   coverage:
     name: Coverage Analysis
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install coverage tools
         run: |
@@ -96,17 +96,17 @@ jobs:
         run: bin/dev/coverage.sh
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-report
           path: coverage-report
 
   clang-tidy:
     name: Static Analysis (clang-tidy)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install clang-tidy
         run: sudo apt-get update && sudo apt-get install -y clang-tidy-20
@@ -117,7 +117,7 @@ jobs:
           CLANG_TIDY: clang-tidy-20
 
       - name: Upload clang-tidy Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: clang-tidy-report
           path: |
@@ -125,10 +125,10 @@ jobs:
 
   cppcheck:
     name: Static Analysis (Cppcheck)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install cppcheck
         run: sudo apt-get update && sudo apt-get install -y cppcheck
@@ -137,7 +137,7 @@ jobs:
         run: bin/dev/cppcheck.sh
 
       - name: Upload Cppcheck Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: cppcheck-report
           path: |
@@ -146,13 +146,13 @@ jobs:
 
   build-RPI:
     name: Docker Cross-Compile (RPI Zero 2 W - ARM64)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         build_type: [ DEBUG, RELEASE ]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: docker/setup-buildx-action@v3
 
@@ -173,7 +173,7 @@ jobs:
           HEXAPOD_SKIP_IMAGE_BUILD: 1
 
       - name: Upload RPi Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: hexapodcpp-RPI-${{ matrix.build_type }}
           path: build/hexapod-RPI-${{ matrix.build_type }}/src/Hexapodcpp

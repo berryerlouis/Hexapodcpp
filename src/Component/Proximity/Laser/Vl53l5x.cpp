@@ -15,8 +15,8 @@ namespace Component
                 , mDistance(0U)
                 , mThreshold(DISTANCE_THRESHOLD)
                 , mResolution(VL53L5CX_RESOLUTION_8X8)
-                , mDataReadSize(0U) {
-                // Initialize distance matrix to zeros
+                , mDataReadSize(0U)
+                , motion_config() {
                 for (uint8_t row = 0U; row < MATRIX_SIDE; ++row) {
                     for (uint8_t col = 0U; col < MATRIX_SIDE; ++col) {
                         this->mDistanceMatrix[row][col] = 0U;
@@ -124,7 +124,7 @@ namespace Component
 
             void Vl53l5x::ParseFrame(void) {
                 for (uint32_t i = (uint32_t) 16; i < this->mDataReadSize; i += (uint32_t) 4) {
-                    union Block_header *bh_ptr = (union Block_header *) &(this->temp_buffer[i]);
+                    union Block_header *bh_ptr = reinterpret_cast<union Block_header *>(&(this->temp_buffer[i]));
                     uint32_t            msize =
                             ((bh_ptr->type > (uint32_t) 0x1) && (bh_ptr->type < (uint32_t) 0x0D))
                                                ? (bh_ptr->type * bh_ptr->size)
@@ -766,7 +766,7 @@ namespace Component
                         continue;
                     }
 
-                    bh_ptr = (union Block_header *) &(output[i]);
+                    bh_ptr = reinterpret_cast<union Block_header *>(&(output[i]));
                     if (((uint8_t) bh_ptr->type >= (uint8_t) 0x1) &&
                         ((uint8_t) bh_ptr->type < (uint8_t) 0x0d)) {
                         if ((bh_ptr->idx >= (uint16_t) 0x54d0) &&

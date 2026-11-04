@@ -49,7 +49,7 @@ namespace Bot
                 ServoInterface  &femur,
                 ServoInterface  &tibia);
 
-            ~Leg() = default;
+            ~Leg() override = default;
 
             void         SetTarget(const Position3d &target) final override;
 

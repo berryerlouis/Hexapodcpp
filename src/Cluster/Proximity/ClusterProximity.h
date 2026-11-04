@@ -13,7 +13,7 @@ namespace Cluster
         public:
             explicit ClusterProximity(SensorProximityMultipleInterface &proximity);
 
-            ~ClusterProximity() = default;
+            ~ClusterProximity() override = default;
 
             virtual Core::Status ExecuteFrame(const Frame &request, Frame &response) override;
 

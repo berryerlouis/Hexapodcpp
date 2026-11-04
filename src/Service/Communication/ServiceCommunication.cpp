@@ -43,7 +43,7 @@ namespace Service
                 auto *const cluster =
                         this->mClusters.GetCluster(static_cast<EClusters>(frameClusterID));
                 if (cluster != nullptr) {
-                    if (cluster->Execute((Frame &) message, response) != Core::Status::CORE_OK) {
+                    if (cluster->Execute(const_cast<Frame &>(message), response) != Core::Status::CORE_OK) {
                         response.Build(frameClusterID, GENERIC);
                         response.Set1ByteParam(Core::Status::CORE_ERROR_ARGUMENT);
                         LOG_COMPONENT_ERROR("Communication",
