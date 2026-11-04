@@ -2,6 +2,9 @@
 
 set -e
 
+GREEN='\033[0;32m'
+NC='\033[0m'
+
 # Create archive directory
 mkdir -p archive
 

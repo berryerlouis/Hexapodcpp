@@ -31,14 +31,6 @@ RUN git clone --depth=1 https://github.com/WiringPi/WiringPi wiringpi-src \
     ln -sf "$(basename "$sofile")" /usr/aarch64-linux-gnu/lib/libwiringPi.so; echo "Created symlink libwiringPi.so -> $(basename "$sofile")"; }) \
     && echo "WiringPi cross build complete"
 
-# Fetch TinyWebsockets
-RUN git clone --depth=1 https://github.com/berryerlouis/TinyWebsockets.git /tmp/tinywebsockets \
-    && echo "TinyWebsockets cached for FetchContent"
-
-# Pre-populate FetchContent cache to avoid network access during CMake
-ENV FETCHCONTENT_SOURCE_DIR_WIRINGPI=/tmp/wiringpi-src
-ENV FETCHCONTENT_SOURCE_DIR_TINYWEBSOCKETS=/tmp/tinywebsockets
-
 # Final build stage (copies sources for reproducible build)
 FROM toolchain AS build
 WORKDIR /workspace

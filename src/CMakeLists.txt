@@ -14,6 +14,9 @@ endif ()
 # Platform-specific dependencies
 include(FetchContent)
 
+# Some fetched dependencies declare cmake_minimum_required < 3.5, which CMake >= 4.0 rejects.
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+
 # TinyWebsockets for RPI
 FetchContent_Declare(
         TinyWebsockets
@@ -22,6 +25,8 @@ FetchContent_Declare(
         GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(TinyWebsockets)
+# TinyWebsockets forces -Werror; don't fail our build on third-party warnings (e.g. GCC 15 -Wmaybe-uninitialized at -O3)
+target_compile_options(tiny_websockets_lib PRIVATE -Wno-error)
 
 if (${TARGET} STREQUAL "X64")
     add_compile_definitions(X64)
@@ -39,7 +44,7 @@ elseif (${TARGET} STREQUAL "RPI")
             GIT_SHALLOW TRUE
     )
     FetchContent_MakeAvailable(wiringPi)
-    
+
     # pigpio
     FetchContent_Declare(
             pigpio
@@ -65,13 +70,6 @@ add_compile_options(
         -fno-threadsafe-statics
 )
 
-# Debug symbols
-if (CMAKE_BUILD_TYPE STREQUAL "DEBUG")
-    add_compile_options(-O0 -g3)
-else ()
-    add_compile_options(-O2)
-endif ()
-
 # Add subdirectories
 add_subdirectory(Core)
 add_subdirectory(Driver)
@@ -83,16 +81,8 @@ add_subdirectory(Bot)
 add_subdirectory(Move)
 add_subdirectory(App)
 
-# Source files organization
-set(SRC_FILES_MAIN Hexapodcpp.cpp)
-
-# Collect all source files
-set(SRC_FILES
-        ${SRC_FILES_MAIN}
-)
-
 # Create executable
-add_executable(${PROJECT_NAME} ${SRC_FILES})
+add_executable(${PROJECT_NAME} Hexapodcpp.cpp)
 
 # Link libraries
 target_link_libraries(${PROJECT_NAME}

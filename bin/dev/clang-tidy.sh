@@ -11,7 +11,7 @@ set -euo pipefail
 BUILD_DIR="${1:-build/hexapod-X64-DEBUG}"
 
 # Default checks: start from clang-tidy defaults and add a few extra analyzers
-CHECKS="${2:-'clang-analyzer-*,cppcoreguidelines-*,modernize-*,performance-*,readability-*,\
+CHECKS="${2:-clang-analyzer-*,cppcoreguidelines-*,modernize-*,performance-*,readability-*,\
 -modernize-use-trailing-return-type,\
 -modernize-use-auto,\
 -modernize-concat-nested-namespaces,\
@@ -67,35 +67,35 @@ CHECKS="${2:-'clang-analyzer-*,cppcoreguidelines-*,modernize-*,performance-*,rea
 -readability-container-size-empty,\
 -readability-braces-around-statements,\
 -cppcoreguidelines-owning-memory,\
--modernize-redundant-void-arg'}"
+-modernize-redundant-void-arg}"
 
-# Build the project to generate compile_commands.json
+# Configure the project to generate compile_commands.json (no build required)
 cmake -S . -B "$BUILD_DIR" \
-  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
   -DTARGET=X64 \
-  -DCMAKE_BUILD_TYPE=Debug
-
-cmake --build "$BUILD_DIR" -- -j"$(nproc)"
+  -DCMAKE_BUILD_TYPE=Debug \
+  -Wno-dev
 
 # Ensure compile_commands.json exists
 if [[ ! -f "$BUILD_DIR/compile_commands.json" ]]; then
   echo "Error: compile_commands.json not found in $BUILD_DIR."
-  echo "Make sure CMake is configured with -DCMAKE_EXPORT_COMPILE_COMMANDS=ON."
   exit 1
 fi
 
-# Ensure clang-tidy is installed
-if ! command -v clang-tidy >/dev/null 2>&1; then
-  echo "Error: clang-tidy not found in PATH. Install it first."
+# Tool names can be overridden, e.g. CLANG_TIDY=clang-tidy-20 RUN_CLANG_TIDY=run-clang-tidy-20
+CLANG_TIDY="${CLANG_TIDY:-clang-tidy}"
+if ! command -v "$CLANG_TIDY" >/dev/null 2>&1; then
+  echo "Error: $CLANG_TIDY not found in PATH. Install it first."
   exit 1
 fi
 
 # Prefer run-clang-tidy if available, otherwise fall back to clang-tidy -p
-RUN_CLANG_TIDY=""
-if command -v run-clang-tidy >/dev/null 2>&1; then
-  RUN_CLANG_TIDY="run-clang-tidy"
-elif command -v run-clang-tidy.py >/dev/null 2>&1; then
-  RUN_CLANG_TIDY="run-clang-tidy.py"
+RUN_CLANG_TIDY="${RUN_CLANG_TIDY:-}"
+if [[ -z "$RUN_CLANG_TIDY" ]]; then
+  if command -v run-clang-tidy >/dev/null 2>&1; then
+    RUN_CLANG_TIDY="run-clang-tidy"
+  elif command -v run-clang-tidy.py >/dev/null 2>&1; then
+    RUN_CLANG_TIDY="run-clang-tidy.py"
+  fi
 fi
 
 echo "Running clang-tidy..."
@@ -103,24 +103,26 @@ REPORT_DIR="clang-tidy-report"
 mkdir -p "$REPORT_DIR"
 REPORT_FILE="$REPORT_DIR/report.txt"
 
-HEADER_FILTER='Hexapod/src/**/*.cpp'   # adjust to your actual include/source tree root
-SOURCE_ROOT="src"                # adjust if different
+# Regexes on absolute paths: only analyze project sources/headers, not fetched dependencies
+PROJECT_SRC="$(pwd)/src/"
+HEADER_FILTER="^${PROJECT_SRC}.*"
 
 if [[ -n "$RUN_CLANG_TIDY" ]]; then
   "$RUN_CLANG_TIDY" \
+    -clang-tidy-binary "$(command -v "$CLANG_TIDY")" \
     -p "$BUILD_DIR" \
     -checks="$CHECKS" \
     -header-filter="$HEADER_FILTER" \
-    "$SOURCE_ROOT" \
     -j "$(nproc)" \
+    "^${PROJECT_SRC}" \
     >"$REPORT_FILE" 2>&1
 else
-  # Fallback: plain clang-tidy (runs on all files listed in compile_commands.json)
-  clang-tidy \
-    -p "$BUILD_DIR" \
-    -checks="$CHECKS" \
-    -header-filter="$HEADER_FILTER" \
-    -fix \
+  # Fallback: plain clang-tidy on project sources compiled for X64
+  find src -name '*.cpp' ! -name '*RPI.cpp' -print0 \
+    | xargs -0 "$CLANG_TIDY" \
+      -p "$BUILD_DIR" \
+      -checks="$CHECKS" \
+      -header-filter="$HEADER_FILTER" \
     >"$REPORT_FILE" 2>&1
 fi
 

@@ -1,35 +1,41 @@
-#!/bin/sh
+#!/usr/bin/env bash
+set -euo pipefail
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-NC='\033[0m'
+# Unit test script for Hexapodcpp
+# Usage: bin/dev/test.sh [all|clean|help|<TestSuiteName>]
+#   (none):          build and run all tests (shuffled)
+#   all:             build and run all tests, write build/hexapod-X64-TEST/test_results.xml
+#   clean|help:      forward to the build system
+#   <TestSuiteName>: build and run only that suite (gtest filter "<TestSuiteName>.*")
+# Exits with a non-zero status if the build or any test fails.
 
-# Clean partial googletest downloads on permission errors
-if [ -d "build/hexapod-X64-TEST/_deps/ex-googletest-populate"* ]; then
-    echo "Cleaning partial GoogleTest extraction..."
-    rm -rf build/hexapod-X64-TEST/_deps/ex-googletest-populate*
-fi
+BUILD_DIR="build/hexapod-X64-TEST"
+TEST_BIN="${BUILD_DIR}/unittests/HexapodcppTest"
+RESULTS_XML="${BUILD_DIR}/test_results.xml"
+ARG="${1:-}"
 
-bin/dev/prebuild.sh X64 test ${1}
+# Clean partial googletest downloads left by an interrupted fetch
+rm -rf "${BUILD_DIR}"/_deps/ex-googletest-populate*
 
-cd build/hexapod-X64-TEST/unittests
+bin/dev/prebuild.sh X64 test
 
-if [ $# -eq 0 ]; then
-    make -j16
-    ./HexapodcppTest --gtest_color=yes --rerun-failed --output-on-failure --gtest_shuffle
-else
-    if [ $1 = "all" ]; then
-        make -j16
-        ./HexapodcppTest --gtest_color=yes --rerun-failed --output-on-failure --gtest_shuffle --gtest_output="xml:../test_results.xml"
-    elif [ $1 = "clean" ] || [ $1 = "help" ]; then
-        make -j16 ${1}
-    else
-        # Run specific test using gtest filter
-        make -j16
-        ./HexapodcppTest --gtest_color=yes --gtest_filter="${1}.*" --output-on-failure --gtest_output="xml:../test_results.xml"
-    fi
-fi
+case "$ARG" in
+    clean|help)
+        cmake --build "${BUILD_DIR}" --target "${ARG}"
+        exit 0
+        ;;
+esac
 
-cd -
+cmake --build "${BUILD_DIR}" --target HexapodcppTest --parallel "$(nproc)"
 
-cd -
+case "$ARG" in
+    "")
+        "${TEST_BIN}" --gtest_color=yes --gtest_shuffle
+        ;;
+    all)
+        "${TEST_BIN}" --gtest_color=yes --gtest_shuffle --gtest_output="xml:${RESULTS_XML}"
+        ;;
+    *)
+        "${TEST_BIN}" --gtest_color=yes --gtest_filter="${ARG}.*" --gtest_output="xml:${RESULTS_XML}"
+        ;;
+esac

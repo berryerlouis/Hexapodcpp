@@ -23,6 +23,6 @@ cppcheck \
 
 cppcheck-htmlreport --file=cppcheck-report.xml --report-dir=cppcheck_html
 
-NB_ERROR=$(grep -c '<error ' cppcheck-report.xml)
+NB_ERROR=$(grep -c '<error ' cppcheck-report.xml || true)
 echo "Error count: $NB_ERROR"
-exit "$NB_ERROR"
+[ "$NB_ERROR" -eq 0 ]

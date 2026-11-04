@@ -20,15 +20,13 @@ jobs:
           sudo apt-get install -y build-essential gcc g++ cmake
 
       - name: Build ${{ matrix.build_type }}
-        run: bin/dev/build.sh X64 sources ${{ matrix.build_type }} install
+        run: bin/dev/build.sh X64 sources ${{ matrix.build_type }}
 
       - name: Upload ${{ matrix.build_type }} Binary
         uses: actions/upload-artifact@v4
         with:
           name: hexapodcpp-X64-${{ matrix.build_type }}
-          path: |
-            build/hexapod-X64-${{ matrix.build_type }}
-            build/hexapod-X64-${{ matrix.build_type }}/src/Hexapodcpp
+          path: build/hexapod-X64-${{ matrix.build_type }}/src/Hexapodcpp
 
   build-HMI:
     name: Build HMI
@@ -66,7 +64,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run Google Test
-        run: bin/dev/test.sh all || exit 1
+        run: bin/dev/test.sh all
 
       - name: Archive Test Results
         if: always()
@@ -115,6 +113,8 @@ jobs:
 
       - name: Run clang-tidy
         run: bin/dev/clang-tidy.sh
+        env:
+          CLANG_TIDY: clang-tidy-20
 
       - name: Upload clang-tidy Report
         uses: actions/upload-artifact@v4
@@ -149,37 +149,33 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        build_type: [ Debug, Release ]
+        build_type: [ DEBUG, RELEASE ]
 
     steps:
       - uses: actions/checkout@v4
 
       - uses: docker/setup-buildx-action@v3
 
-      - name: Pull Toolchain Image
-        run: docker pull loumagrule/hexapodcpp:rpi-toolchain
+      - name: Build Toolchain Image (Dockerfile.rpi-zero2)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.rpi-zero2
+          target: toolchain
+          tags: hexapodcpp:rpi-toolchain
+          load: true
+          cache-from: type=gha,scope=rpi-toolchain
+          cache-to: type=gha,mode=max,scope=rpi-toolchain
 
       - name: Cross-Compile for RPI (${{ matrix.build_type }})
-        run: |
-          BUILD_TYPE="${{ matrix.build_type }}"
-          BUILD_DIR="build/RPI-${BUILD_TYPE}"
-
-          docker run --rm \
-            -v ${{ github.workspace }}:/workspace \
-            -w /workspace \
-            loumagrule/hexapodcpp:rpi-toolchain \
-            bash -c "cmake -Wno-dev -S . -B $BUILD_DIR \
-              -DCMAKE_TOOLCHAIN_FILE=/workspace/cmake/toolchain-rpi-zero-2-w.cmake \
-              -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-              -DTARGET=RPI \
-              -DOPENSSL_USE_STATIC_LIBS=OFF \
-              -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-            && cmake --build $BUILD_DIR --target Hexapodcpp -- -j\$(nproc)"
+        run: bin/dev/docker-build-rpi.sh ${{ matrix.build_type }}
+        env:
+          HEXAPOD_SKIP_IMAGE_BUILD: 1
 
       - name: Upload RPi Artifact
         uses: actions/upload-artifact@v4
         with:
           name: hexapodcpp-RPI-${{ matrix.build_type }}
-          path: build/RPI-${{ matrix.build_type }}/src/Hexapodcpp
+          path: build/hexapod-RPI-${{ matrix.build_type }}/src/Hexapodcpp
 
   

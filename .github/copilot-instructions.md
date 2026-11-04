@@ -12,7 +12,8 @@
 ## Build And Test
 - On Windows, run project scripts through WSL.
 - Main build command:
-  - `wsl bash bin/dev/build.sh <TARGET:X64|RPI> <MODE:sources|test> <DEBUG|RELEASE>`
+  - `wsl bash bin/dev/build.sh <TARGET:X64|RPI> <MODE:sources|test> <DEBUG|RELEASE|CLEAN>`
+  - Output dirs: `build/hexapod-<TARGET>-<BUILD_TYPE>` (sources) and `build/hexapod-<TARGET>-TEST` (test).
 - Common commands:
   - `wsl bash bin/dev/build.sh X64 sources DEBUG`
   - `wsl bash bin/dev/test.sh all`

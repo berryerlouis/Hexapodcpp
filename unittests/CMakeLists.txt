@@ -13,6 +13,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+option(HEXAPOD_TEST_PRECOMPILE_HEADERS "Precompile GoogleTest and GoogleMock headers" ON)
+
 # Fetch GoogleTest
 include(FetchContent)
 
@@ -59,16 +61,21 @@ target_compile_definitions(HexapodcppTest
 target_link_libraries(HexapodcppTest
         PRIVATE
         GTest::gtest_main
-        GTest::gmock_main
+        GTest::gmock
 )
+
+if(HEXAPOD_TEST_PRECOMPILE_HEADERS)
+    target_precompile_headers(HexapodcppTest PRIVATE
+            <gtest/gtest.h>
+            <gmock/gmock.h>
+    )
+endif()
 
 # Enable compiler warnings for tests
 target_compile_options(HexapodcppTest
         PRIVATE
         -Wall
         -Wextra
-        -O0
-        -g3
 )
 
 # Discover and register tests
